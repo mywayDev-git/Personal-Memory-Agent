@@ -1,37 +1,19 @@
-# Personal Memory Agent — LLM Evaluation v1
+# Personal-Memory-Agent
+대학 캡스톤 I 프로젝트
 
-## Contents
-- `schema/memory_extraction_v1.schema.json`: common JSON Schema
-- `datasets/development_v1.jsonl`: 18-case prompt iteration subset
-- `datasets/test_v1.jsonl`: 120 synthetic test cases, 20 per category
-- `prompts/extraction_v1.txt`: common prompt
-- `scripts/run_evaluation.py`: llama.cpp OpenAI-compatible endpoint runner
-- `scripts/score_results.py`: structural validity and latency summary
+## Model
+- 최소 사양
+- 권장 사양
+- 최고 사양
 
-## Environment (Windows PowerShell)
-```powershell
-py -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install requests jsonschema
-```
+### 전체 아키텍처
+![alt text](attchments/image-1.png)
+![alt text](attchments/image.png)
 
-## Start llama.cpp server
-```powershell
-llama-server.exe -m "C:\models\your-model-Q4_K_M.gguf" --host 127.0.0.1 --port 8080 -c 4096
-```
-Use a build supporting the OpenAI-compatible `/v1/chat/completions` endpoint. JSON mode support varies by build; if `response_format` is unsupported, remove it or use the JSON Schema/grammar constrained-output feature available in your build.
-
-## Run
-From `scripts`:
-```powershell
-python run_evaluation.py --model-name "candidate-a" --out ../results/candidate-a.jsonl
-python score_results.py --results ../results/candidate-a.jsonl --out ../results/candidate-a-summary.json
-```
-Use the exact same prompt, test data, sampling parameters, and context length across models. Record GGUF filename, quantization, llama.cpp build/commit, GPU offload layers, context length, and machine memory usage.
-
-## Limitations to resolve before reporting results
-1. The test set contains semantic assertions and expected behaviors, not full gold-standard annotation for every memory/entity/relation.
-2. The scorer reports only schema validity and latency; it does not calculate semantic precision/recall/F1.
-3. Human-review the synthetic cases and add gold annotations before claiming model accuracy.
-4. Cross-reference integrity, candidate ID validity, quote grounding, temporal consistency, deduplication and DB update policy need application-level tests.
-5. `object`/`subject`/`target` use a discriminated value reference. The Schema constrains field types, but backend code must enforce kind-specific consistency (e.g. entity requires ref, literal requires value).
+### 핵심 원칙
+1. MemoryUnit 하나에는 독립적으로 이해할 수 있는 기억 하나를 저장한다.
+2. MemoryRelation은 두 기억 사이의 의미적·시간적 관계를 저장한다.
+3. Entity는 사람, 장소, 제품 등 반복 등장하는 대상을 식별한다.
+4. 시간을 세 종류로 구분한다. 기록이 저장된 시각, 사건이 발생한 시각, 사실이 유효한 기간은 서로 다르다.
+5. 원문과 추출 결과를 분리한다. LLM이 만든 기억이 원문과 다르더라도 원본을 보존한다.
+6. 불확실성을 허용한다. 발생 시점이나 대상의 동일성이 확실하지 않으면 억지로 확정하지 않는다.
