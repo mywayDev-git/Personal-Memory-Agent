@@ -1,187 +1,590 @@
 #!/usr/bin/env python3
-import argparse, json, time
+"""Evaluate Personal Memory Agent extraction v3 against a local OpenAI-compatible LLM server."""
+
+import argparse
+import json
+import re
+import sys
+import time
+from datetime import datetime
 from pathlib import Path
+from typing import Any
+
 import requests
 from jsonschema import Draft202012Validator, FormatChecker
 
-def read_jsonl(path):
-    return [json.loads(x) for x in Path(path).read_text(encoding="utf-8").splitlines() if x.strip()]
+import os
 
-def main():
-    ap=argparse.ArgumentParser()
-    ap.add_argument("--dataset",default="../datasets/test_v1.jsonl")
-    ap.add_argument("--schema",default="../schema/memory_extraction_v1.schema.json")
-    ap.add_argument("--prompt",default="../prompts/extraction_v1.txt")
-    ap.add_argument("--endpoint",default="http://127.0.0.1:8081/v1/chat/completions")
-    ap.add_argument("--model-name",default="local-gguf")
-    ap.add_argument("--out",default="../results/raw_results.jsonl")
-    ap.add_argument("--limit",type=int,default=0)
-    a=ap.parse_args(); here=Path(__file__).resolve().parent
-    def p(x):
-        x=Path(x); return x if x.is_absolute() else (here/x).resolve()
-    data=read_jsonl(p(a.dataset)); data=data[:a.limit] if a.limit else data
-    schema=json.loads(p(a.schema).read_text(encoding="utf-8"))
-    prompt=p(a.prompt).read_text(encoding="utf-8")
-    validator=Draft202012Validator(schema,format_checker=FormatChecker())
-    out=p(a.out); out.parent.mkdir(parents=True,exist_ok=True)
-    with out.open("w",encoding="utf-8") as f:
-        for c in data:
-            user_payload={"source_id":c["input"]["source_id"],"reference_time":c["input"]["reference_time"],"language":"ko","text":c["input"]["text"],"existing_entities":c["input"]["existing_entities"]}
-            body = {
-                "model": a.model_name,
-                "temperature": 0,
-                "messages": [
-                    {"role": "system", "content": prompt},
-                    {
-                        "role": "user",
-                        "content": json.dumps(user_payload, ensure_ascii=False)
-                    }
-                ],
-                "response_format": {
-                    "type": "json_schema",
-                    "json_schema": {
-                        "name": "memory_extraction",
-                        "schema": schema
-                    }
-                },
-                "max_tokens": 4069
+def save_result_immediately(path, result):
+    with path.open("a", encoding="utf-8") as f:
+        f.write(json.dumps(result, ensure_ascii=False) + "\n")
+        f.flush()
+        os.fsync(f.fileno())
+
+
+def read_jsonl(path: Path) -> list[dict[str, Any]]:
+    rows = []
+    with path.open("r", encoding="utf-8") as f:
+        for line_no, line in enumerate(f, start=1):
+            if not line.strip():
+                continue
+            try:
+                row = json.loads(line)
+            except json.JSONDecodeError as exc:
+                raise ValueError(f"{path}:{line_no}: invalid JSON: {exc}") from exc
+            if not isinstance(row, dict):
+                raise ValueError(f"{path}:{line_no}: each JSONL row must be an object")
+            rows.append(row)
+    return rows
+
+
+def write_jsonl(path: Path, rows: list[dict[str, Any]]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8") as f:
+        for row in rows:
+            f.write(json.dumps(row, ensure_ascii=False) + "\n")
+
+
+def first_present(obj: dict[str, Any], names: list[str], default=None):
+    for name in names:
+        if name in obj:
+            return obj[name]
+    return default
+
+
+
+def get_source_text(row):
+    # 현재 테스트 데이터는 원문이 row["input"]["text"]에 있음
+    input_data = row.get("input")
+
+    if isinstance(input_data, dict):
+        value = input_data.get("text")
+        if isinstance(value, str):
+            return value
+
+    # 기존 데이터 형식과의 호환성 유지
+    value = first_present(
+        row,
+        ["text", "content", "input", "source_text", "document"]
+    )
+
+    if isinstance(value, str):
+        return value
+
+    raise ValueError(
+        "Dataset row has no source text field. "
+        "Expected input.text or a supported top-level text field."
+    )
+
+
+
+def load_schema(path: Path) -> dict[str, Any]:
+    with path.open("r", encoding="utf-8") as f:
+        schema = json.load(f)
+    Draft202012Validator.check_schema(schema)
+    return schema
+
+
+def schema_errors(instance: Any, validator: Draft202012Validator) -> list[str]:
+    errors = sorted(
+        validator.iter_errors(instance),
+        key=lambda e: (list(map(str, e.absolute_path)), e.message),
+    )
+    return [
+        f"{'/'.join(map(str, e.absolute_path)) or '<root>'}: {e.message}"
+        for e in errors
+    ]
+
+
+def extract_json(content: str) -> dict[str, Any]:
+    """Parse a JSON object, tolerating a surrounding Markdown code fence."""
+    text = content.strip()
+    if text.startswith("```"):
+        text = re.sub(r"^```(?:json)?\s*", "", text, flags=re.IGNORECASE)
+        text = re.sub(r"\s*```$", "", text)
+    try:
+        value = json.loads(text)
+    except json.JSONDecodeError:
+        # Try the outermost JSON object if the model added surrounding text.
+        start = text.find("{")
+        end = text.rfind("}")
+        if start < 0 or end <= start:
+            raise
+        value = json.loads(text[start : end + 1])
+    if not isinstance(value, dict):
+        raise ValueError("LLM response JSON must be an object")
+    return value
+
+
+def normalize_reference_time(value: Any) -> str | None:
+    """Keep only a supplied reference timestamp; never invent the current time."""
+    if value is None or value == "":
+        return None
+    if not isinstance(value, str):
+        raise ValueError("reference_time must be an ISO date-time string or null")
+    return value
+
+
+def make_source_context(row, default_language="ko"):
+    input_data = row.get("input")
+
+    if not isinstance(input_data, dict):
+        input_data = row
+
+    source_id = input_data.get(
+        "source_id",
+        row.get("case_id", "source-unknown")
+    )
+
+    reference_time = normalize_reference_time(
+        input_data.get("reference_time")
+    )
+
+    language = input_data.get("language", default_language)
+
+    return {
+        "source_id": str(source_id),
+        "reference_time": reference_time,
+        "language": language,
+    }
+
+
+def build_final_result(
+    llm_output: dict[str, Any],
+    source_context: dict[str, Any],
+) -> dict[str, Any]:
+    """Add deterministic metadata and IDs without changing extracted semantics."""
+    memories = llm_output.get("memories")
+    if not isinstance(memories, list):
+        raise ValueError("'memories' must be an array")
+
+    final_memories = []
+    for index, memory in enumerate(memories, start=1):
+        if not isinstance(memory, dict):
+            raise ValueError(f"memories[{index - 1}] must be an object")
+        item = dict(memory)
+        # IDs are assigned by Python, not generated by the LLM.
+        item.pop("local_id", None)
+        item["local_id"] = f"m{index}"
+        final_memories.append(item)
+
+    return {
+        "schema_version": "2.0",
+        "source_context": source_context,
+        "memories": final_memories,
+    }
+
+
+def evidence_checks(result: dict[str, Any], source_text: str) -> list[str]:
+    """Deterministic substring check; this does not prove semantic entailment."""
+    errors = []
+    for i, memory in enumerate(result.get("memories", [])):
+        for j, evidence in enumerate(memory.get("evidence", [])):
+            quote = evidence.get("quote") if isinstance(evidence, dict) else None
+            if not isinstance(quote, str) or not quote:
+                errors.append(f"memories[{i}].evidence[{j}]: quote is empty or invalid")
+            elif quote not in source_text:
+                errors.append(
+                    f"memories[{i}].evidence[{j}]: quote does not occur verbatim in source"
+                )
+    return errors
+
+
+def call_llm(
+    session: requests.Session,
+    endpoint: str,
+    model: str | None,
+    prompt: str,
+    source_text: str,
+    source_context: dict[str, Any],
+    timeout: float,
+    max_tokens: int,
+    temperature: float,
+    seed: int,
+    top_p: float,
+) -> tuple[str, dict[str, Any], float]:
+    """Call an OpenAI-compatible /chat/completions endpoint."""
+    # Provide trusted reference metadata separately from the required JSON output.
+    # The model must not copy source_context into its response JSON.
+    user_payload = (
+        "다음은 기억 추출 대상 원문과 신뢰할 수 있는 메타데이터다.\n"
+        "메타데이터는 원문에 없는 사실을 추론하는 근거로 사용하지 마라.\n"
+        "reference_time은 상대 시간 표현의 해석에만 사용한다.\n"
+        "reference_time이 null이면 상대 시간을 임의의 날짜나 시각으로 변환하지 마라.\n"
+        "시간을 명확하게 정규화할 수 없으면 time.start와 time.end를 null로 출력하라.\n"
+        "메타데이터는 출력 JSON에 포함하지 마라.\n\n"
+        f"[source_context]\n"
+        f"{json.dumps(source_context, ensure_ascii=False, sort_keys=True)}\n\n"
+        f"[source_text]\n{source_text}"
+    )
+
+    body: dict[str, Any] = {
+        "messages": [
+            {"role": "system", "content": prompt},
+            {"role": "user", "content": user_payload},
+        ],
+        "temperature": temperature,
+        "max_tokens": max_tokens,
+        "seed": 42,
+        "top_p": 1.0,
+        "stream": False,
+    }
+    if model:
+        body["model"] = model
+
+    started = time.perf_counter()
+    response = session.post(endpoint, json=body, timeout=timeout)
+    latency = time.perf_counter() - started
+    response.raise_for_status()
+    payload = response.json()
+    
+    try:
+        choice = payload["choices"][0]
+        message = choice["message"]
+        content = message.get("content")
+    except (KeyError, IndexError, TypeError) as exc:
+        raise ValueError(
+            f"Unexpected API response shape: {payload}"
+        ) from exc
+
+    if not isinstance(content, str) or not content.strip():
+        finish_reason = choice.get("finish_reason")
+        reasoning_content = message.get("reasoning_content")
+
+        raise ValueError(
+            "LLM returned empty content. "
+            f"finish_reason={finish_reason!r}, "
+            f"message_keys={list(message.keys())}, "
+            f"reasoning_content_present={bool(reasoning_content)}, "
+            f"response_id={payload.get('id')!r}"
+        )
+
+    content = content.strip()
+
+    usage = payload.get("usage") or {}
+    metadata = {
+        "http_status": response.status_code,
+        "finish_reason": choice.get("finish_reason"),
+        "prompt_tokens": usage.get("prompt_tokens"),
+        "completion_tokens": usage.get("completion_tokens"),
+        "total_tokens": usage.get("total_tokens"),
+        "model": payload.get("model", model),
+    }
+    return content, metadata, latency
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(
+        description="Evaluate Personal Memory Agent extraction v3."
+    )
+    parser.add_argument("--dataset", default="../datasets/test_v1.jsonl")
+    parser.add_argument("--prompt", default="../prompts/extraction_v3.txt")
+    parser.add_argument(
+        "--output-schema",
+        default="../schema/memory_extraction_output_v3.schema.json",
+    )
+    parser.add_argument(
+        "--final-schema",
+        default="../schema/memory_extraction_v3.schema.json",
+    )
+    parser.add_argument("--results", default="results/evaluation_v2.jsonl")
+    parser.add_argument("--summary", default="results/evaluation_v2_summary.json")
+    parser.add_argument(
+        "--endpoint",
+        default="http://127.0.0.1:8081/v1/chat/completions",
+    )
+    parser.add_argument("--model", default=None)
+    parser.add_argument("--timeout", type=float, default=180.0)
+    parser.add_argument("--max-tokens", type=int, default=4096)
+    parser.add_argument("--temperature", type=float, default=0.0)
+    parser.add_argument("--limit", type=int, default=0, help="0 means all rows")
+    parser.add_argument("--start-index", type=int, default=0, help="Zero-based index")
+    parser.add_argument(
+        "--stop-on-error",
+        action="store_true",
+        help="Stop after the first failed case",
+    )
+    parser.add_argument(
+        "--skip-evidence-check",
+        action="store_true",
+        help="Skip deterministic evidence substring checks",
+    )
+    parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--top_p", type=float, default=1.0)
+    args = parser.parse_args()
+
+    base_dir = Path(__file__).resolve().parent
+    def resolve_path(value: str) -> Path:
+        path = Path(value)
+        return path if path.is_absolute() else (base_dir / path).resolve()
+
+    dataset_path = resolve_path(args.dataset)
+    prompt_path = resolve_path(args.prompt)
+    output_schema_path = resolve_path(args.output_schema)
+    final_schema_path = resolve_path(args.final_schema)
+    results_path = resolve_path(args.results)
+    summary_path = resolve_path(args.summary)
+
+    results_path.parent.mkdir(parents=True, exist_ok=True)
+    results_path.write_text("", encoding="utf-8")
+
+    for path in (dataset_path, prompt_path, output_schema_path, final_schema_path):
+        if not path.exists():
+            print(f"ERROR: file not found: {path}", file=sys.stderr)
+            return 2
+
+    try:
+        rows = read_jsonl(dataset_path)
+        prompt = prompt_path.read_text(encoding="utf-8").strip()
+        if not prompt:
+            raise ValueError("Prompt file is empty")
+        output_schema = load_schema(output_schema_path)
+        final_schema = load_schema(final_schema_path)
+        output_validator = Draft202012Validator(
+            output_schema, format_checker=FormatChecker()
+        )
+        final_validator = Draft202012Validator(
+            final_schema, format_checker=FormatChecker()
+        )
+    except Exception as exc:
+        print(f"ERROR during setup: {exc}", file=sys.stderr)
+        return 2
+
+    if args.start_index < 0 or args.start_index > len(rows):
+        print("ERROR: --start-index is outside the dataset range", file=sys.stderr)
+        return 2
+    rows = rows[args.start_index :]
+    if args.limit > 0:
+        rows = rows[: args.limit]
+
+    results: list[dict[str, Any]] = []
+    counts = {
+        "total": len(rows),
+        "api_success": 0,
+        "json_parse_success": 0,
+        "output_schema_valid": 0,
+        "final_schema_valid": 0,
+        "evidence_all_present": 0,
+        "fully_valid": 0,
+        "api_errors": 0,
+        "parse_errors": 0,
+        "output_schema_errors": 0,
+        "postprocess_errors": 0,
+        "final_schema_errors": 0,
+        "evidence_errors": 0,
+    }
+    latencies: list[float] = []
+    total_prompt_tokens = 0
+    total_completion_tokens = 0
+    total_tokens = 0
+
+    with requests.Session() as session:
+        for offset, row in enumerate(rows):
+            case_index = args.start_index + offset
+            case_id = first_present(row, ["case_id", "test_id", "id"], f"case-{case_index + 1}")
+            record: dict[str, Any] = {
+                "case_id": str(case_id),
+                "dataset_index": case_index,
+                "status": "failed",
+                "errors": [],
+                "api": {},
+                "latency_seconds": None,
+                "llm_output": None,
+                "final_output": None,
             }
-            
-            t = time.perf_counter()
-            raw = None
-            request_error = None
-            parse_error = None
-            parsed = None
-            errors = []
-
-            http_status = None
-            finish_reason = None
-            usage = None
-            response_body_excerpt = None
-            request_status = "request_failed"
 
             try:
-                r = requests.post(
-                    a.endpoint,
-                    json=body,
-                    timeout=300
+                source_text = get_source_text(row)
+                source_context = make_source_context(row)
+            except Exception as exc:
+                record["errors"].append(f"input_error: {exc}")
+                save_result_immediately(results_path, record)
+                results.append(record)
+                print(f"[{case_id}] INPUT ERROR: {exc}")
+                if args.stop_on_error:
+                    break
+                continue
+
+            try:
+                content, api_meta, latency = call_llm(
+                    session=session,
+                    endpoint=args.endpoint,
+                    model=args.model,
+                    prompt=prompt,
+                    source_text=source_text,
+                    source_context=source_context,
+                    timeout=args.timeout,
+                    max_tokens=args.max_tokens,
+                    temperature=args.temperature,
+                    seed=args.seed,
+                    top_p=args.top_p,
+                )
+                record["api"] = api_meta
+                record["latency_seconds"] = round(latency, 3)
+                counts["api_success"] += 1
+                latencies.append(latency)
+                for field, total_name in (
+                    ("prompt_tokens", "prompt"),
+                    ("completion_tokens", "completion"),
+                    ("total_tokens", "total"),
+                ):
+                    value = api_meta.get(field)
+                    if isinstance(value, (int, float)):
+                        if total_name == "prompt":
+                            total_prompt_tokens += int(value)
+                        elif total_name == "completion":
+                            total_completion_tokens += int(value)
+                        else:
+                            total_tokens += int(value)
+            except Exception as exc:
+                counts["api_errors"] += 1
+                record["errors"].append(f"api_error: {type(exc).__name__}: {exc}")
+                save_result_immediately(results_path, record)
+                results.append(record)
+                print(f"[{case_id}] API ERROR: {exc}")
+                if args.stop_on_error:
+                    break
+                continue
+
+            if record["api"].get("finish_reason") == "length":
+                record["errors"].append(
+                    "truncated_output: finish_reason=length; increase --max-tokens or reduce prompt/context"
                 )
 
-                http_status = r.status_code
-                response_body_excerpt = r.text[:1000]
-                r.raise_for_status()
+            try:
+                llm_output = extract_json(content)
+                record["llm_output"] = llm_output
+                counts["json_parse_success"] += 1
+            except Exception as exc:
+                counts["parse_errors"] += 1
+                record["errors"].append(f"json_parse_error: {type(exc).__name__}: {exc}")
+                record["raw_response"] = content
+                save_result_immediately(results_path, record)
+                results.append(record)
+                print(f"[{case_id}] JSON ERROR")
+                if args.stop_on_error:
+                    break
+                continue
 
-                response_json = r.json()
-                choices = response_json.get("choices", [])
-
-                if not choices:
-                    request_status = "missing_choices"
-                    raise ValueError(
-                        "Response contains no choices"
-                    )
-
-                choice = choices[0]
-                message = choice.get("message") or {}
-
-                raw = message.get("content")
-                finish_reason = choice.get("finish_reason")
-                usage = response_json.get("usage")
-                request_status = "response_received"
-                
-                print("finish_reason:", finish_reason)
-                print("usage:", usage)
-                print("message keys:", list(message.keys()))
-                print("content length:", len(raw))
-                print("reasoning_content length:",
-                    len(message.get("reasoning_content") or ""))
-            except requests.exceptions.Timeout as e:
-                request_status = "timeout"
-                request_error = f"{type(e).__name__}: {e}"
-
-            except requests.exceptions.RequestException as e:
-                request_status = "http_or_network_error"
-                request_error = f"{type(e).__name__}: {e}"
-
-            except (ValueError, KeyError, TypeError) as e:
-                if request_status != "missing_choices":
-                    request_status = "invalid_response"
-                request_error = f"{type(e).__name__}: {e}"
-
-            except Exception as e:
-                request_status = "unexpected_error"
-                request_error = f"{type(e).__name__}: {e}"
-
-            elapsed = time.perf_counter() - t
-
-            if raw is None:
-                request_status = (
-                    "empty_content_none"
-                    if request_error is None
-                    else request_status
-                )
-                parse_error = "Model content is None"
-
-            elif not isinstance(raw, str):
-                request_status = "unexpected_content_type"
-                parse_error = (
-                    f"Expected string, got {type(raw).__name__}"
-                )
-
-            elif not raw.strip():
-                request_status = "empty_content"
-                parse_error = "Model content is empty"
-
+            out_errors = schema_errors(llm_output, output_validator)
+            record["output_schema_errors"] = out_errors
+            if out_errors:
+                counts["output_schema_errors"] += 1
+                record["errors"].append("output_schema_invalid")
             else:
-                try:
-                    parsed = json.loads(raw)
-                    errors = [
-                        e.message
-                        for e in validator.iter_errors(parsed)
-                    ]
-                except json.JSONDecodeError as e:
-                    parse_error = (
-                        f"{type(e).__name__}: {e}"
-                    )
-                except Exception as e:
-                    parse_error = (
-                        f"{type(e).__name__}: {e}"
-                    )
+                counts["output_schema_valid"] += 1
 
-            rec = {
-                "case_id": c["case_id"],
-                "category": c["category"],
-                "model_name": a.model_name,
-                "elapsed_seconds": round(elapsed, 4),
-                "request_status": request_status,
-                "request_error": request_error,
-                "http_status": http_status,
-                "finish_reason": finish_reason,
-                "usage": usage,
-                "content_type": (
-                    type(raw).__name__ if raw is not None else None
-                ),
-                "raw_output": raw,
-                "parsed_output": parsed,
-                "parse_error": parse_error,
-                "schema_valid": bool(
-                    parsed is not None and not errors
-                ),
-                "schema_errors": errors,
-                "response_body_excerpt": (
-                    response_body_excerpt
-                    if request_error is not None
-                    else None
-                ),
-            }
+            try:
+                final_output = build_final_result(llm_output, source_context)
+                record["final_output"] = final_output
+                final_errors = schema_errors(final_output, final_validator)
+                record["final_schema_errors"] = final_errors
+                if final_errors:
+                    counts["final_schema_errors"] += 1
+                    record["errors"].append("final_schema_invalid")
+                else:
+                    counts["final_schema_valid"] += 1
+            except Exception as exc:
+                counts["postprocess_errors"] += 1
+                record["errors"].append(
+                    f"postprocess_error: {type(exc).__name__}: {exc}"
+                )
+                final_output = None
 
-            f.write(json.dumps(rec, ensure_ascii=False) + "\n")
-            f.flush()
+            if final_output is not None and not args.skip_evidence_check:
+                ev_errors = evidence_checks(final_output, source_text)
+                record["evidence_errors"] = ev_errors
+                if ev_errors:
+                    counts["evidence_errors"] += 1
+                    record["errors"].append("evidence_check_failed")
+                else:
+                    counts["evidence_all_present"] += 1
+            elif final_output is not None:
+                record["evidence_errors"] = []
+                counts["evidence_all_present"] += 1
+
+            is_fully_valid = (
+                not out_errors
+                and final_output is not None
+                and not record.get("final_schema_errors")
+                and not record.get("evidence_errors")
+                and record["api"].get("finish_reason") != "length"
+            )
+            if is_fully_valid:
+                record["status"] = "valid"
+                counts["fully_valid"] += 1
+            else:
+                record["status"] = "invalid"
 
             print(
-                f'{c["case_id"]}: '
-                f'status={request_status} '
-                f'valid={rec["schema_valid"]} '
-                f'latency={elapsed:.2f}s'
+                f"[{case_id}] status={record['status']} "
+                f"memories={len(llm_output.get('memories', [])) if isinstance(llm_output.get('memories'), list) else '?'} "
+                f"latency={record['latency_seconds']}s"
             )
-    print(f"Saved {len(data)} outputs to {out}")
-if __name__=="__main__": main()
+            save_result_immediately(results_path, record)
+            results.append(record)
+
+            if args.stop_on_error and record["status"] != "valid":
+                break
+
+    write_jsonl(results_path, results)
+    completed = len(results)
+    successful_latencies = sorted(latencies)
+    if successful_latencies:
+        avg_latency = sum(successful_latencies) / len(successful_latencies)
+        p95_index = max(0, min(len(successful_latencies) - 1, int(0.95 * len(successful_latencies)) - 1))
+        p95_latency = successful_latencies[p95_index]
+    else:
+        avg_latency = None
+        p95_latency = None
+
+    def rate(key: str) -> float | None:
+        return round(counts[key] / completed, 4) if completed else None
+
+    summary = {
+        "created_at": datetime.now().astimezone().isoformat(timespec="seconds"),
+        "dataset": str(dataset_path),
+        "prompt": str(prompt_path),
+        "output_schema": str(output_schema_path),
+        "final_schema": str(final_schema_path),
+        "endpoint": args.endpoint,
+        "model": args.model,
+        "requested_cases": counts["total"],
+        "completed_cases": completed,
+        "counts": counts,
+        "rates_over_completed": {
+            "api_success_rate": rate("api_success"),
+            "json_parse_success_rate": rate("json_parse_success"),
+            "output_schema_valid_rate": rate("output_schema_valid"),
+            "final_schema_valid_rate": rate("final_schema_valid"),
+            "evidence_all_present_rate": rate("evidence_all_present"),
+            "fully_valid_rate": rate("fully_valid"),
+        },
+        "latency_seconds": {
+            "average": round(avg_latency, 3) if avg_latency is not None else None,
+            "p95_approx": round(p95_latency, 3) if p95_latency is not None else None,
+            "min": round(successful_latencies[0], 3) if successful_latencies else None,
+            "max": round(successful_latencies[-1], 3) if successful_latencies else None,
+        },
+        "tokens": {
+            "prompt_tokens": total_prompt_tokens,
+            "completion_tokens": total_completion_tokens,
+            "total_tokens": total_tokens,
+        },
+        "results_file": str(results_path),
+    }
+    summary_path.parent.mkdir(parents=True, exist_ok=True)
+    summary_path.write_text(
+        json.dumps(summary, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
+    print("\n=== Evaluation summary ===")
+    print(json.dumps(summary, ensure_ascii=False, indent=2))
+    print(f"\nSaved case results: {results_path}")
+    print(f"Saved summary:      {summary_path}")
+    return 0 if counts["fully_valid"] == completed else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
