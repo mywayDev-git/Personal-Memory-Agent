@@ -1,0 +1,14 @@
+{
+  "version": "1.0",
+  "dataset_cases": 120,
+  "development_cases": 18,
+  "categories": {
+    "basic_facts_preferences": 20,
+    "multi_event_segmentation": 20,
+    "entity_resolution": 20,
+    "time_negation_uncertainty": 20,
+    "relations_and_updates": 20,
+    "noise_duplicates_ambiguity": 20
+  },
+  "note": "Synthetic draft. Human review required before academic reporting."
+}
