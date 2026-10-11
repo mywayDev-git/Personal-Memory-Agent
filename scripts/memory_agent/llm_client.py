@@ -64,10 +64,7 @@ def call_llm(
         body["model"] = model
 
     if output_schema is not None:
-        body["response_format"] = {
-            "type": "json_schema",
-            "schema": output_schema,
-        }
+        body["json_schema"] = output_schema
 
     started = time.perf_counter()
 

@@ -34,7 +34,7 @@ mkdir -p results
 echo ""
 echo "[1/2] Running evaluation..."
 
-run_python evaluation/run_eval.py "$@"
+run_python evaluation/run_eval.py --prompt prompts/extraction_v5.txt "$@"
 
 # 2. 보고서 생성
 echo ""
