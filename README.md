@@ -1,37 +1,119 @@
-# Personal Memory Agent — LLM Evaluation v1
+## 1. 현재 시스템이 담고 있는 내용
 
-## Contents
-- `schema/memory_extraction_v1.schema.json`: common JSON Schema
-- `datasets/development_v1.jsonl`: 18-case prompt iteration subset
-- `datasets/test_v1.jsonl`: 120 synthetic test cases, 20 per category
-- `prompts/extraction_v1.txt`: common prompt
-- `scripts/run_evaluation.py`: llama.cpp OpenAI-compatible endpoint runner
-- `scripts/score_results.py`: structural validity and latency summary
+### 1-1. 기억 단위의 핵심 변수
 
-## Environment (Windows PowerShell)
-```powershell
-py -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install requests jsonschema
-```
+|변수|현재 담는 내용|예시|현재 상태|
+|---|---|---|---|
+|`memory_type`|기억의 종류|`profile`, `event`, `preference`, `plan`|유형 구분 가능|
+|`content`|독립적으로 이해할 수 있는 기억 요약|사용자는 매운 음식을 싫어한다|자유로운 한국어 문장|
+|`subject`|기억의 핵심 주체|사용자, 민수, 특정 조직|개체 참조 구조 존재|
+|`predicate`|핵심 행위·상태·관계|좋아한다, 작성했다, 소속되어 있다|문자열로 표현|
+|`object`|행위의 대상이나 상태값|보고서, 파란색, 특정 날짜|개체 참조 구조 존재|
+|`target`|핵심 삼중항 이외의 추가 관계|행사와 장소의 관계|관계 객체 최대 1개 또는 `null`|
+|`time`|원문 시간, 정규화된 시작·종료, 정밀도, 확실성|`2026-10`, `relative`, `explicit`|시간 전용 구조 존재|
+|`assertion_polarity`|핵심 명제의 긍정·부정·불확실성|`affirmed`, `negated`|평가 극성과 분리|
+|`polarity`|선호·평가의 긍정·부정 방향|`positive`, `negative`, `neutral`|평가 방향 표현|
+|`content_certainty`|기억 내용의 확실성|`explicit`, `inferred`, `uncertain`|내용 확실성 표현|
+|`evidence`|기억을 뒷받침하는 원문 인용|원문의 연속된 문장 일부|인용문 배열, 최소 1개 필수|
 
-## Start llama.cpp server
-```powershell
-llama-server.exe -m "C:\models\your-model-Q4_K_M.gguf" --host 127.0.0.1 --port 8080 -c 4096
-```
-Use a build supporting the OpenAI-compatible `/v1/chat/completions` endpoint. JSON mode support varies by build; if `response_format` is unsupported, remove it or use the JSON Schema/grammar constrained-output feature available in your build.
+이 변수들은 두 스키마의 공통 기억 구조에 정의되어 있고, 프롬프트에서도 각 필드의 사용 규칙을 설명하고 있어.
 
-## Run
-From `scripts`:
-```powershell
-python run_evaluation.py --model-name "candidate-a" --out ../results/candidate-a.jsonl
-python score_results.py --results ../results/candidate-a.jsonl --out ../results/candidate-a-summary.json
-```
-Use the exact same prompt, test data, sampling parameters, and context length across models. Record GGUF filename, quantization, llama.cpp build/commit, GPU offload layers, context length, and machine memory usage.
+memory_extraction_output_v4.schema.json
 
-## Limitations to resolve before reporting results
-1. The test set contains semantic assertions and expected behaviors, not full gold-standard annotation for every memory/entity/relation.
-2. The scorer reports only schema validity and latency; it does not calculate semantic precision/recall/F1.
-3. Human-review the synthetic cases and add gold annotations before claiming model accuracy.
-4. Cross-reference integrity, candidate ID validity, quote grounding, temporal consistency, deduplication and DB update policy need application-level tests.
-5. `object`/`subject`/`target` use a discriminated value reference. The Schema constrains field types, but backend code must enforce kind-specific consistency (e.g. entity requires ref, literal requires value).
+extraction_v4.txt
+
+### 1-2. 출력·저장 단계의 메타데이터
+
+|변수|출력 스키마|최종 스키마|의미|
+|---|---|---|---|
+|`memories`|필수|필수|추출한 기억 단위의 배열|
+|`schema_version`|없음|`"4.0"`으로 고정|최종 데이터 구조 버전|
+|`source_context.source_id`|없음|필수|원본 기록 식별자|
+|`source_context.reference_time`|없음|필수 필드, 값은 문자열 또는 `null`|시간 해석의 기준이 될 수 있는 시각|
+|`source_context.language`|없음|`"ko"`로 고정|원문 언어 메타데이터|
+|`local_id`|없음|기억마다 필수|기억 단위 식별자|
+
+이렇게 출력 스키마는 LLM의 추출 결과를, 최종 스키마는 후처리된 저장 데이터를 표현하도록 분리되어 있어.
+
+memory_extraction_output_v4.schema.json
+
+memory_extraction_v4.schema.json
+
+여기서 중요한 점은 `reference_time`이 최종 스키마에 존재한다고 해서, 현재 프롬프트가 이를 실제 시간 계산에 자동으로 활용하는 것은 아니라는 거야. 프롬프트는 상대적 시간을 절대 날짜로 변환하려면 기준 날짜가 입력에 명시되어야 한다고 규정하고 있어.
+
+extraction_v4.txt
+
+## 2. 현재 대처하기 어려운 변수와 상황
+
+아래 표는 현재 정의된 규칙과 구조를 바탕으로 정리한 잠재적인 실패 지점이야. 실제 테스트 데이터에서 오류가 얼마나 자주 발생하는지는 별도의 평가가 필요해.
+
+|우선순위|변수·상황|현재 대응 방식|대처하지 못하거나 취약한 부분|필요한 개선 방향|
+|---|---|---|---|---|
+|매우 높음|기억 추출 누락|유용한 정보를 식별하고 분리하도록 지시|모든 기억을 빠짐없이 추출했는지 판정하는 필드나 스키마 제약이 없음|원문별 정답 기억 목록을 두고 재현율 평가|
+|매우 높음|출력 길이 제한|JSON 하나를 출력하고 모든 기억을 포함하도록 요구|토큰 제한으로 JSON이 잘리거나 후반부 기억이 사라져도 프롬프트만으로 방지 불가|종료 사유, 토큰 한도, JSON 파싱 실패를 별도 기록|
+|매우 높음|원문과 근거의 실제 일치|`evidence.quote`가 원문의 연속 문자열이어야 한다고 지시|스키마는 인용문이 원문에 실제 존재하는지 검사할 수 없음|Python에서 원문 포함 여부 및 인용 구간 검증|
+|매우 높음|동일 기억의 중복 생성|중복 추출을 피하도록 지시|서로 다른 표현으로 생성된 기억이 같은 사실인지 스키마만으로 판단 불가|정규화 후 중복 후보 탐지 및 의미 기반 평가|
+|높음|대명사·생략된 주체|기록 작성자와 기록 속 인물을 구분하도록 지시|여러 인물이 등장하거나 주어가 생략되면 누구의 행동인지 오판할 수 있음|문맥상 주체 식별 테스트와 불명확성 처리 규칙 보강|
+|높음|인용문 속 발화자|실제 발화자가 확인될 때만 주체를 지정|인용 안의 `나`, `우리`, `그 사람`이 누구를 가리키는지 복잡한 대화에서 모호할 수 있음|화자와 인용 내용의 주체를 구분하는 사례 추가|
+|높음|상대적 시간|`내일`, `다음 주` 등을 `raw`에 기록하고 기준이 없으면 절대 날짜로 바꾸지 않음|기준 날짜와 시간대가 주어져도 이를 올바르게 계산하는지 보장되지 않음|기준 시각 전달 방식과 날짜 계산 규칙을 명확히 정의|
+|높음|시간 범위의 일관성|`start`, `end`, `precision`으로 표현|시작이 종료보다 늦은 경우, `precision`과 실제 날짜 형식이 어긋나는 경우를 모두 차단하지 못함|날짜 순서 및 정밀도 일관성 검증 추가|
+|높음|부정·이중 부정|명제 극성과 평가 극성을 분리|“싫지 않다”, “못한 것은 아니다” 등에서 문법적 부정과 의미적 평가가 혼동될 수 있음|부정 표현별 테스트 세트 및 극성 판정 기준 추가|
+|높음|불확실성의 범위|`content_certainty`, `time.certainty`를 분리|문장 일부만 불확실한 경우 어떤 필드와 기억에 불확실성을 적용할지 모호할 수 있음|주장 단위별 불확실성 적용 원칙 추가|
+|높음|여러 관계가 있는 기억|`target` 하나 또는 `null`|핵심 삼중항 외에 중요한 관계가 여러 개면 하나만 저장하도록 되어 있어 정보가 손실될 수 있음|관계 배열 도입 여부 검토 또는 관계를 별도 기억으로 분리|
+|높음|복합 행동의 분리|독립적으로 검색할 가치가 있는 최소 단위로 분리|어떤 행동을 분리하고 어떤 행동을 묶을지 판단 기준이 주관적임|분리 기준이 명시된 정답 예제와 평가 기준 마련|
+|높음|기억 간 연결|각 기억에 `subject`, `predicate`, `object`, 선택적 `target`을 저장|여러 기억에 걸친 동일 인물·사건·프로젝트의 연결을 직접 표현하는 전용 필드가 없음|개체 식별자와 기억 간 관계 모델 검토|
+|중간~높음|시간에 따른 정보 변경|각 기억을 개별적으로 추출|“예전에는 A였지만 지금은 B”에서 과거 사실과 현재 사실의 유효기간·변경 관계를 명시적으로 저장하지 않음|유효기간, 상태 변경, 과거·현재 관계 설계|
+|중간~높음|상충하는 기록|원문 근거가 있는 정보만 추출|서로 다른 기록에서 값이 충돌할 때 어느 것을 최신 정보로 볼지 결정하는 규칙이 없음|출처·기록 시각·확실성을 활용한 충돌 관리|
+|중간~높음|숫자·단위·금액|`value_type`으로 숫자·문자열 등을 구분|`100`, `100원`, `100달러`처럼 값과 단위의 의미를 일관되게 분리하는 구조가 없음|수치 단위와 통화의 표현 규칙 검토|
+|중간~높음|고유명사·개체 식별|`kind: entity`와 `value`로 표현|동명이인, 약칭, 별칭이 같은 개체인지 판정하는 식별 체계가 없음|개체 정규화 및 별칭 연결 도입 검토|
+|중간|다국어·혼합 언어|프롬프트와 최종 언어 설정이 한국어 중심|최종 스키마의 `language`가 `"ko"`로 고정되어 있어 다른 언어 원문을 일반화하기 어려움|다국어 지원이 필요하면 원문 언어와 출력 언어 분리|
+|중간|검색용 키워드·별칭|핵심 내용을 `content`와 삼중항에 저장|키워드, 별칭, 검색 동의어를 위한 전용 필드가 없음|검색 인덱스 단계에서 별도 생성할지 검토|
+|중간|개인정보 민감도|유용한 기억을 추출하는 일반 규칙|민감한 정보의 추출·저장·삭제·보존 여부를 구분하는 명시적인 필드와 정책이 없음|민감도 분류와 저장 정책을 별도 설계|
+|중간|추출 근거의 세부 위치|`quote`로 원문 일부를 저장|원문 내 시작·종료 위치, 문단, 메시지 ID를 구조적으로 기록하지 않음|원문 위치 정보는 Python 후처리에서 부여|
+|중간|기억의 중요도·재사용 가치|독립적으로 검색할 가치가 있는지 판단하도록 지시|중요도나 검색 우선순위를 나타내는 값이 없음|필요성이 확인되면 별도 랭킹 단계에서 평가|
+|중간|모델의 확신도|내용의 확실성을 `content_certainty`로 표현|모델이 얼마나 자신 있게 추출했는지를 나타내는 수치형 `confidence`는 명시적으로 제외됨|모델 확신도와 근거 강도를 분리할 필요가 있는지 실험|
+
+위 표에서 특히 주의할 것은 `content_certainty`와 `confidence`가 서로 다른 개념이라는 점이야. 현재 시스템은 원문 내용이 명시적인지, 추론인지, 불확실한지를 표현하지만, 모델이 그 판단을 얼마나 신뢰할 수 있는지에 대한 보정된 확률을 제공하지는 않아. 프롬프트는 `confidence`를 출력하지 않도록 명시하고 있어.
+
+extraction_v4.txt
+
+## 3. 스키마 자체에서 표현하거나 검증하기 어려운 변수
+
+여기서는 LLM이 잘못 판단하는 문제와 JSON Schema의 구조만으로 막을 수 없는 문제를 구분해야 해.
+
+|항목|현재 스키마의 제약|발생 가능한 문제|권장 대응|
+|---|---|---|---|
+|개체 값의 의미적 일관성|`kind`, `value`, `value_type`의 일부 조합만 제한|`kind: "self"`인데 `value`가 `"민수"`인 식의 의미상 부적절한 조합을 허용할 수 있음|`kind`별 허용 값 규칙을 Python에서 검증|
+|시간 정밀도|날짜 형식과 `precision`을 각각 제한|`precision: "year"`인데 `start`에 일자까지 포함하는 식의 불일치 가능|`precision`과 날짜 문자열의 정합성 검사|
+|시간 순서|`start`, `end`의 자료형과 형식 제한|시작일이 종료일보다 늦은 범위가 허용될 수 있음|날짜 비교 검증|
+|시간 확실성|`certainty`를 enum으로 제한|`certainty: "explicit"`이라고 해서 원문에 실제로 명시됐는지 확인할 수 없음|원문 근거와 비교|
+|극성의 의미|두 극성 필드 모두 enum으로 제한|필드값은 유효해도 의미상 서로 모순될 수 있음|의미 검증 규칙과 테스트 사례 추가|
+|추가 관계 개수|`target`은 객체 하나 또는 `null`|중요한 관계가 여러 개면 모두 보존할 수 없음|관계 배열이나 별도 관계 데이터 모델 검토|
+|근거의 원문 일치|`quote`의 문자열 및 최소 길이만 검증|원문에 없는 문장을 인용해도 스키마 자체는 통과할 수 있음|원문 포함 여부를 Python에서 검사|
+|기억의 중복|각 기억 객체의 구조만 검증|같은 사실이 두 번 이상 들어가도 통과할 수 있음|중복 탐지 로직 추가|
+|기억의 누락|`memories`는 배열|배열이 비어 있거나 일부 기억만 있어도 구조적으로 유효할 수 있음|정답 데이터와 비교해 추출 재현율 측정|
+|출처 연결|최종 스키마에 `source_id` 존재|원문 내 정확한 위치나 원본 메시지 단위까지 연결하지는 못함|원문 위치 메타데이터를 후처리로 부여|
+|식별자 유일성|`local_id`는 `m1`, `m2` 등의 형식만 제한|동일한 ID가 여러 기억에 중복되어도 패턴만으로는 막지 못함|배열 내 ID 중복 검사|
+
+이 중 `value_ref`, `time`, `target`, `evidence`의 구조와 조건은 현재 두 스키마에 실제로 정의되어 있어. 다만 자료형이나 enum을 통과하는 것과 의미적으로 올바른 기억이라는 것은 다른 문제야.
+
+memory_extraction_output_v4.schema.json
+
+memory_extraction_v4.schema.json
+
+## 4. 아직 변수로 정의되지 않은 영역
+
+지금 구조를 기준으로 추가 설계를 검토할 만한 변수는 다음과 같아.
+
+|후보 변수|표현할 내용|필요한 이유|도입 우선순위|
+|---|---|---|---|
+|`valid_from`, `valid_until`|정보가 유효한 기간|과거 직장·거주지·상태와 현재 정보를 구분|높음|
+|`source_location`|원문 내 문장·메시지 위치|잘못 추출된 기억을 원문에서 쉽게 확인|높음|
+|`entity_id`|동일 개체를 식별하는 고유 ID|이름·별칭이 달라도 동일 인물을 연결|높음|
+|`supersedes` 또는 변경 관계|새 기억이 이전 기억을 대체하는지|오래된 정보와 최신 정보의 충돌 관리|높음|
+|`unit`|숫자의 단위|금액·거리·무게·기간 등을 정확히 해석|중간|
+|`language` per source|원문 언어|한국어가 아닌 입력도 처리|요구사항에 따라 결정|
+|`sensitivity`|개인정보 민감도 분류|저장·검색·삭제 정책 적용|제품 정책에 따라 결정|
+|`confidence`|추출 판단에 대한 모델의 신뢰도|자동 검토가 필요한 기억을 선별|실험 후 결정|
+|`keywords`|검색용 키워드 및 별칭|검색어와 기억의 표현 차이를 줄임|검색 단계에서 검토|
+|`importance`|장기 보존·재검색의 중요도|검색 결과 우선순위와 기억 관리|후순위|

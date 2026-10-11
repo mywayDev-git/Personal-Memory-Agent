@@ -1,73 +1,51 @@
 #!/usr/bin/env bash
-set -euo pipefail
 
-# Run from the directory containing this script
+set -Eeuo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# 프로젝트 루트로 이동
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$ROOT_DIR"
 
-# Adjust these paths if your project structure differs
+# Python 실행 함수
+run_python() {
+    if command -v py >/dev/null 2>&1; then
+        py -3 "$@"
+    elif command -v python >/dev/null 2>&1; then
+        python "$@"
+    else
+        echo "ERROR: Python을 찾을 수 없습니다."
+        echo "Windows 터미널에서 'py --version'을 확인하세요."
+        return 1
+    fi
+}
 
-DATASET="$SCRIPT_DIR/datasets/test_v1.jsonl"
-TEMP_DATASET="$SCRIPT_DIR/datasets/split_001.jsonl"
-PROMPT="$SCRIPT_DIR/prompts/extraction_v2.txt"
-SCHEMA="$SCRIPT_DIR/schema/memory_extraction_v1.schema.json"
-OUTPUT="$SCRIPT_DIR/results/split_001_v1.jsonl"
-ENDPOINT="http://127.0.0.1:8081/v1/chat/completions"
+# Python 설치 확인
+echo "========================================"
+echo " Personal Memory Agent"
+echo " Evaluation Pipeline"
+echo "========================================"
 
-# Check required files
+run_python --version
 
-for file in "$DATASET" "$PROMPT" "$SCHEMA"; do
-if [[ ! -f "$file" ]]; then
-echo "ERROR: File not found: $file" >&2
-exit 1
-fi
-done
+# 결과 디렉터리 생성
+mkdir -p results
 
-# Extract only SPLIT-001
+# 1. 평가 실행
+echo ""
+echo "[1/2] Running evaluation..."
 
-python - "$DATASET" "$TEMP_DATASET" <<'PY'
-import json
-import sys
-from pathlib import Path
+run_python evaluation/run_eval.py "$@"
 
-source = Path(sys.argv[1])
-target = Path(sys.argv[2])
+# 2. 보고서 생성
+echo ""
+echo "[2/2] Generating report..."
 
-matches = []
+run_python evaluation/report.py
 
-for line in source.read_text(encoding="utf-8-sig").splitlines():
-    if not line.strip():
-        continue
-
-    item = json.loads(line)
-
-    if item.get("case_id") == "SPLIT-001":
-        matches.append(item)
-
-if len(matches) != 1:
-    raise SystemExit(
-        f"ERROR: Expected exactly one SPLIT-001, found {len(matches)}"
-    )
-
-target.parent.mkdir(parents=True, exist_ok=True)
-target.write_text(
-    json.dumps(matches[0], ensure_ascii=False) + "\n",
-    encoding="utf-8"
-)
-
-print(f"Prepared dataset: {target}")
-PY
-
-mkdir -p "$SCRIPT_DIR/results"
-
-# Run evaluation using prompt v1
-
-python "$SCRIPT_DIR/scripts/run_evaluation.py" 
---dataset "$TEMP_DATASET" 
---schema "$SCHEMA" 
---prompt "$PROMPT" 
---endpoint "$ENDPOINT" 
---out "$OUTPUT"
-
-echo
-echo "Evaluation complete: $OUTPUT"
+echo ""
+echo "========================================"
+echo " Evaluation completed successfully"
+echo "========================================"
+echo "Results : results/evaluation_v4.jsonl"
+echo "Metrics : results/evaluation_v4_metrics.json"
+echo "Report  : results/evaluation_report.md"
