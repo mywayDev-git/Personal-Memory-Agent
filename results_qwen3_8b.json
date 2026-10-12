@@ -1,0 +1,334 @@
+[
+  {
+    "id": 1,
+    "output": {
+      "title": "운영체제 중간고사",
+      "people": [],
+      "topic": "중간고사",
+      "emotion": "아쉬움",
+      "problem": "마지막 문제를 못 풀었음",
+      "decision": "",
+      "next_action": "",
+      "result": ""
+    },
+    "wrong": [
+      "emotion",
+      "plan"
+    ]
+  },
+  {
+    "id": 2,
+    "output": {
+      "title": "학식 시간",
+      "people": [
+        "현우",
+        "서연"
+      ],
+      "topic": "학식",
+      "emotion": "기분이 좋음",
+      "problem": "",
+      "decision": "",
+      "next_action": "",
+      "result": ""
+    },
+    "wrong": []
+  },
+  {
+    "id": 3,
+    "output": {
+      "title": "알바에서의 말다툼",
+      "people": [],
+      "topic": "알바 경험",
+      "emotion": "불쾌함",
+      "problem": "손님과 말다툼",
+      "decision": "",
+      "next_action": "",
+      "result": "사장님이 잘 해결해 주셔서 마무리됨"
+    },
+    "wrong": [
+      "people",
+      "emotion"
+    ]
+  },
+  {
+    "id": 4,
+    "output": {
+      "title": "지도교수 면담 준비",
+      "people": [
+        "지도교수님"
+      ],
+      "topic": "면담",
+      "emotion": "",
+      "problem": "",
+      "decision": "질문 목록을 미리 정리해 두기로 함",
+      "next_action": "",
+      "result": ""
+    },
+    "wrong": []
+  },
+  {
+    "id": 5,
+    "output": {
+      "title": "노트북 꺼짐 사고",
+      "people": [],
+      "topic": "노트북 문제",
+      "emotion": "안심",
+      "problem": "작업하던 코드가 날라갈 위험",
+      "decision": "앞으로는 깃에 자주 커밋하기로 함",
+      "next_action": "",
+      "result": "자동 저장 덕분에 대부분 복구"
+    },
+    "wrong": [
+      "emotion",
+      "problem"
+    ]
+  },
+  {
+    "id": 6,
+    "output": {
+      "title": "할머니 댁 방문",
+      "people": [
+        "가족",
+        "할머니"
+      ],
+      "topic": "김치찌개",
+      "emotion": "행복",
+      "problem": "",
+      "decision": "",
+      "next_action": "",
+      "result": "할머니가 만든 김치찌개를 먹음"
+    },
+    "wrong": [
+      "result"
+    ]
+  },
+  {
+    "id": 7,
+    "output": {
+      "title": "과제 준비",
+      "people": [],
+      "topic": "과제 자료조사",
+      "emotion": "조급함",
+      "problem": "자료조사 시작하지 않음",
+      "decision": "",
+      "next_action": "내일 오전에 도서관에서 끝내려고 함",
+      "result": ""
+    },
+    "wrong": []
+  },
+  {
+    "id": 8,
+    "output": {
+      "title": "민지 생일 축하",
+      "people": [
+        "민지"
+      ],
+      "topic": "생일 파티",
+      "emotion": "감동",
+      "problem": "",
+      "decision": "",
+      "next_action": "",
+      "result": "케이크로 깜짝 파티를 했고 민지가 고맙다고 말함"
+    },
+    "wrong": [
+      "emotion",
+      "result"
+    ]
+  },
+  {
+    "id": 9,
+    "output": {
+      "title": "서버 배포 문제",
+      "people": [],
+      "topic": "서버 배포",
+      "emotion": "",
+      "problem": "포트 오류 발생",
+      "decision": "",
+      "next_action": "",
+      "result": "방화벽 설정이 원인임을 확인"
+    },
+    "wrong": []
+  },
+  {
+    "id": 10,
+    "output": {
+      "title": "비가 오는 날",
+      "people": [],
+      "topic": "집으로 가기",
+      "emotion": "",
+      "problem": "비가 와서 수업 후 바로 집에 왔다",
+      "decision": "",
+      "next_action": "",
+      "result": ""
+    },
+    "wrong": [
+      "problem"
+    ]
+  },
+  {
+    "id": 11,
+    "output": {
+      "title": "동아리 회장 선거 준비",
+      "people": [
+        "하윤"
+      ],
+      "topic": "동아리 회장 선거",
+      "emotion": "",
+      "problem": "",
+      "decision": "동아리 회장 선거에 나가기로 함",
+      "next_action": "이번 주 안에 공약을 정리함",
+      "result": ""
+    },
+    "wrong": [
+      "emotion"
+    ]
+  },
+  {
+    "id": 12,
+    "output": {
+      "title": "자격증 접수 실패",
+      "people": [],
+      "topic": "자격증 접수",
+      "emotion": "짜증",
+      "problem": "서버가 터져 접수 실패",
+      "decision": "",
+      "next_action": "내일 아침 일찍 다시 시도할 예정",
+      "result": ""
+    },
+    "wrong": []
+  },
+  {
+    "id": 13,
+    "output": {
+      "title": "태오와의 만남",
+      "people": [
+        "태오"
+      ],
+      "topic": "고등학교 친구와의 만남",
+      "emotion": "",
+      "problem": "",
+      "decision": "",
+      "next_action": "",
+      "result": "사진을 많이 찍었다"
+    },
+    "wrong": [
+      "result"
+    ]
+  },
+  {
+    "id": 14,
+    "output": {
+      "title": "발표 연습",
+      "people": [],
+      "topic": "발표 준비",
+      "emotion": "자신감",
+      "problem": "",
+      "decision": "",
+      "next_action": "",
+      "result": "대본 없이도 발표할 수 있게 됨"
+    },
+    "wrong": []
+  },
+  {
+    "id": 15,
+    "output": {
+      "title": "아버님께 가기로",
+      "people": [
+        "아버님"
+      ],
+      "topic": "가족 방문",
+      "emotion": "",
+      "problem": "",
+      "decision": "이번 주말에 본가에 내려가기로 함",
+      "next_action": "",
+      "result": ""
+    },
+    "wrong": [
+      "people"
+    ]
+  },
+  {
+    "id": 16,
+    "output": {
+      "title": "과목 마감 후 청강 문의",
+      "people": [
+        "교수님"
+      ],
+      "topic": "수강 신청",
+      "emotion": "속상함",
+      "problem": "원하던 과목이 마감됨",
+      "decision": "",
+      "next_action": "교수님께 청강 가능 여부를 문의함",
+      "result": ""
+    },
+    "wrong": [
+      "plan"
+    ]
+  },
+  {
+    "id": 17,
+    "output": {
+      "title": "알고리즘 문제 풀이",
+      "people": [
+        "승훈이"
+      ],
+      "topic": "알고리즘 문제",
+      "emotion": "",
+      "problem": "",
+      "decision": "",
+      "next_action": "다음 주에도 같이 문제를 풀기로 함",
+      "result": ""
+    },
+    "wrong": [
+      "result"
+    ]
+  },
+  {
+    "id": 18,
+    "output": {
+      "title": "캡스톤 발표 순서 추첨",
+      "people": [],
+      "topic": "발표 순서 결정",
+      "emotion": "긴장",
+      "problem": "",
+      "decision": "",
+      "next_action": "",
+      "result": ""
+    },
+    "wrong": [
+      "result"
+    ]
+  },
+  {
+    "id": 19,
+    "output": {
+      "title": "영어 인증 점수 문제",
+      "people": [],
+      "topic": "영어 인증",
+      "emotion": "",
+      "problem": "영어 인증 점수가 부족함",
+      "decision": "",
+      "next_action": "다음 학기에 시험 보기",
+      "result": ""
+    },
+    "wrong": []
+  },
+  {
+    "id": 20,
+    "output": {
+      "title": "영화 감상",
+      "people": [
+        "지원이"
+      ],
+      "topic": "영화 관람",
+      "emotion": "지루함",
+      "problem": "줄거리가 지루해서 중간에 졸음",
+      "decision": "",
+      "next_action": "",
+      "result": ""
+    },
+    "wrong": [
+      "problem"
+    ]
+  }
+]
