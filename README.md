@@ -41,7 +41,7 @@ Memory Unit
 -   서버: `llama.cpp` OpenAI 호환 Chat Completions 엔드포인트
 -   모델: `Qwen3-8B-Q4_K_M`
 -   서버 빌드: `0.6.0-dev` (Windows x86_64, build `11524`)
--   스키마 파일: `memory_extraction_output_v4.schema.json`
+-   스키마 파일: `memory_extraction_output.schema.json`
 -   스키마 검증: Python `jsonschema` 패키지의 `Draft202012Validator`
 
 서버 주소와 모델 이름은 실행 환경에 따라 변경될 수 있습니다.
@@ -51,7 +51,7 @@ Memory Unit
   -------------------------------------------------------------------------------
   파일                                        역할
   ------------------------------------------- -----------------------------------
-  `memory_extraction_output_v4.schema.json`   기억 추출 결과의 구조, 필수 필드,
+  `memory_extraction_output.schema.json`   기억 추출 결과의 구조, 필수 필드,
                                               허용 값 및 제약 정의
 
   `test_memory_schema_c_mode.py`              llama.cpp의 JSON Schema 제약 출력
@@ -146,7 +146,7 @@ body["response_format"] = {
 -   `evidence.quote`는 원문에서 그대로 발췌한 연속 문자열이어야 합니다.
 
 각 필드의 실제 자료형, 필수 여부, 허용 값은
-`memory_extraction_output_v4.schema.json`을 기준으로 합니다.
+`memory_extraction_output.schema.json`을 기준으로 합니다.
 
 ## 6. 시간 처리
 
@@ -173,7 +173,7 @@ body["response_format"] = {
     확인합니다.
 3.  실제 추출 클라이언트에서 수정 프롬프트를 사용하고 있는지 확인합니다.
 4.  요청 본문에 `json_schema`가 최상위 필드로 들어가는지 확인합니다.
-5.  `memory_extraction_output_v4.schema.json`이 올바르게 로드되는지
+5.  `memory_extraction_output.schema.json`이 올바르게 로드되는지
     확인합니다.
 6.  서버 응답을 JSON으로 파싱하고 스키마 검증을 수행합니다.
 7.  `evidence.quote`가 원문에 포함되는지 별도로 검사합니다.
@@ -196,7 +196,7 @@ python test_memory_schema_c_mode.py
 1.  최소 JSON Schema
 2.  단순화한 기억 스키마
 3.  시간 및 `target`을 포함한 스키마
-4.  `memory_extraction_output_v4.schema.json` 원본 전체 스키마
+4.  `memory_extraction_output.schema.json` 원본 전체 스키마
 
 네 가지 테스트가 통과했다는 것은 해당 요청 형식이 스키마 제약 출력에
 사용될 수 있음을 뒷받침합니다. **기억 내용이 의미적으로 정확하다는

@@ -34,7 +34,9 @@ mkdir -p results
 echo ""
 echo "[1/2] Running evaluation..."
 
-run_python evaluation/run_eval.py --prompt prompts/extraction_v5.txt "$@"
+# for i in {1..30}; do
+run_python evaluation/run_eval.py "$@"
+# done
 
 # 2. 보고서 생성
 echo ""
@@ -46,6 +48,6 @@ echo ""
 echo "========================================"
 echo " Evaluation completed successfully"
 echo "========================================"
-echo "Results : results/evaluation_v4.jsonl"
-echo "Metrics : results/evaluation_v4_metrics.json"
+echo "Results : results/evaluation.jsonl"
+echo "Metrics : results/evaluation_metrics.json"
 echo "Report  : results/evaluation_report.md"

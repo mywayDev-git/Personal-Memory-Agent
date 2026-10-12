@@ -14,7 +14,7 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 OUTPUT_SCHEMA_PATH = (
-    PROJECT_ROOT / "schema" / "memory_extraction_output_v4.schema.json"
+    PROJECT_ROOT / "schema" / "memory_extraction_output.schema.json"
 )
 
 def load_output_schema() -> dict:

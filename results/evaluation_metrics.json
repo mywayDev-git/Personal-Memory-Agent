@@ -1,0 +1,13 @@
+{
+  "dataset": "datasets/test.jsonl",
+  "model": "Qwen3-8B-Q4_K_M",
+  "requested_samples": 120,
+  "valid_count": 0,
+  "invalid_count": 0,
+  "valid_rate": 0.0,
+  "schema_valid_rate": 0.0,
+  "evidence_valid_rate": 0.0,
+  "avg_latency_seconds": 0.0,
+  "finish_reasons": {},
+  "error_types": {}
+}

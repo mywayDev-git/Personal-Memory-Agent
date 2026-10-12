@@ -1,6 +1,7 @@
 
 """Client for OpenAI-compatible chat completion APIs."""
 
+import hashlib
 import json
 import time
 from typing import Any
@@ -73,6 +74,18 @@ def call_llm(
         json=body,
         timeout=timeout,
     )
+
+    request_json = json.dumps(
+        body,
+        ensure_ascii=False,
+        sort_keys=True,
+    )
+
+    request_hash = hashlib.sha256(
+        request_json.encode("utf-8")
+    ).hexdigest()
+
+    print(f"[DEBUG] request_hash={request_hash}")
 
     latency = time.perf_counter() - started
 

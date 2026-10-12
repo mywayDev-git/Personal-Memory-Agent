@@ -15,14 +15,13 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 import requests
 
-from config.settings import settings
+from config.settings import paths, settings
 from scripts.memory_agent.extractor import extract_memories
 from scripts.memory_agent.postprocess import build_final_result
 from scripts.memory_agent.validator import (
     validate_extraction,
     validate_final_result,
 )
-
 
 def read_jsonl(path: str | Path) -> list[dict[str, Any]]:
     """JSONL 파일을 읽어 레코드 목록으로 반환한다."""
@@ -517,29 +516,30 @@ def main() -> None:
 
     parser.add_argument(
         "--dataset",
-        default="datasets/test_v1.jsonl",
+        default=str(paths.datasets_dir / "test.jsonl"),
         help="입력 데이터셋 JSONL 경로",
     )
     parser.add_argument(
         "--prompt",
-        default="prompts/extraction_v4.txt",
+        default=str(paths.prompt),
         help="추출 프롬프트 경로",
     )
     parser.add_argument(
         "--raw-schema",
-        default="schema/memory_extraction_output_v4.schema.json",
+        default=str(paths.output_schema),
         help="LLM 원본 출력 스키마 경로",
     )
     parser.add_argument(
         "--final-schema",
-        default="schema/memory_extraction_v4.schema.json",
+        default=str(paths.final_schema),
         help="최종 결과 스키마 경로",
     )
     parser.add_argument(
         "--output",
-        default="results/eval_results.jsonl",
+        default=str(paths.results_dir / "eval_results.jsonl"),
         help="결과 JSONL 저장 경로",
     )
+
 
     args = parser.parse_args()
 
@@ -577,13 +577,18 @@ def main() -> None:
 
         print(f"\n[{index}/{len(dataset)}] {case_id}")
 
-        result = evaluate_one(
-            record=record,
-            index=index,
-            prompt=prompt,
-            raw_schema=raw_schema,
-            final_schema=final_schema,
-        )
+        try:
+            result = evaluate_one(
+                record=record,
+                index=index,
+                prompt=prompt,
+                raw_schema=raw_schema,
+                final_schema=final_schema,
+            )
+        except Exception as exc:
+            print(f"[UNEXPECTED ERROR] case_id={case_id}")
+            print(f"{type(exc).__name__}: {exc}")
+            raise
 
         results.append(result)
 

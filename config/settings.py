@@ -82,15 +82,15 @@ class Paths:
 
     @property
     def prompt(self) -> Path:
-        return self.root / "prompts" / "extraction_v4.txt"
+        return self.root / "prompts" / "extraction.txt"
 
     @property
     def output_schema(self) -> Path:
-        return self.root / "schema" / "memory_extraction_output_v4.schema.json"
+        return self.root / "schema" / "memory_extraction_output.schema.json"
 
     @property
     def final_schema(self) -> Path:
-        return self.root / "schema" / "memory_extraction_v4.schema.json"
+        return self.root / "schema" / "memory_extraction.schema.json"
 
     @property
     def datasets_dir(self) -> Path:

@@ -1,158 +1,158 @@
-# Personal Memory Agent 평가 보고서
+# Evaluation Report
 
-- 보고서 생성: 2026-10-12 01:10:18
-- 데이터셋: C:\development\Personal-Memory-Agent\datasets\test_v1.jsonl
-- 모델: None
-- 평가 대상: 120
-- 실제 평가: 120
+## 1. 실행 정보
 
-## 1. 주요 평가 지표
+- 데이터셋: `datasets/test.jsonl`
+- 모델: `Qwen3-8B-Q4_K_M`
+- 요청 샘플 수: 120
+- 실제 결과 수: 120
+
+## 2. 전체 평가 결과
 
 | 지표 | 결과 |
 |---|---:|
-| 최종 통과율 | 98.33% |
-| 스키마 통과율 | 98.33% |
-| 근거 검사 통과율 | 100.00% |
-| 평균 처리 시간 | 7.30s |
-| 통과 건수 | 118 |
-| 실패 건수 | 2 |
+| 최종 유효률 | 100.00% |
+| 최종 PASS | 120 / 120 |
+| 최종 FAIL | 0 |
+| 최종 스키마 유효률 | 100.00% |
+| 최종 스키마 유효 개수 | 120 |
+| Evidence 유효률 | 100.00% |
+| Evidence 유효 개수 | 120 |
+| 평균 지연 시간 | 7.12s |
 
-## 2. 종료 사유
+## 3. 종료 사유
 
-- `stop`: 120건
+| 종료 사유 | 개수 |
+|---|---:|
+| stop | 120 |
 
-## 3. 오류 유형
+## 4. 오류 유형
 
-- 기록된 실행 오류 없음
+| 오류 유형 | 개수 |
+|---|---:|
+| 기록된 오류 없음 | 0 |
 
-## 4. 개별 평가 결과
+## 5. 개별 테스트 결과
 
-| 번호 | Source ID | 결과 | 스키마 | 근거 | 처리 시간 | 오류 |
-|---:|---|---|---|---|---:|---|
-| 1 | src-basic-001 | PASS | PASS | PASS | 11.60s | - |
-| 2 | src-basic-002 | PASS | PASS | PASS | 6.24s | - |
-| 3 | src-basic-003 | PASS | PASS | PASS | 5.95s | - |
-| 4 | src-basic-004 | PASS | PASS | PASS | 7.16s | - |
-| 5 | src-basic-005 | PASS | PASS | PASS | 6.41s | - |
-| 6 | src-basic-006 | PASS | PASS | PASS | 6.34s | - |
-| 7 | src-basic-007 | PASS | PASS | PASS | 6.40s | - |
-| 8 | src-basic-008 | PASS | PASS | PASS | 6.24s | - |
-| 9 | src-basic-009 | PASS | PASS | PASS | 6.38s | - |
-| 10 | src-basic-010 | PASS | PASS | PASS | 6.43s | - |
-| 11 | src-basic-011 | PASS | PASS | PASS | 6.45s | - |
-| 12 | src-basic-012 | PASS | PASS | PASS | 6.29s | - |
-| 13 | src-basic-013 | PASS | PASS | PASS | 6.27s | - |
-| 14 | src-basic-014 | PASS | PASS | PASS | 6.02s | - |
-| 15 | src-basic-015 | PASS | PASS | PASS | 6.35s | - |
-| 16 | src-basic-016 | PASS | PASS | PASS | 6.22s | - |
-| 17 | src-basic-017 | PASS | PASS | PASS | 5.77s | - |
-| 18 | src-basic-018 | PASS | PASS | PASS | 6.74s | - |
-| 19 | src-basic-019 | PASS | PASS | PASS | 6.46s | - |
-| 20 | src-basic-020 | PASS | PASS | PASS | 6.23s | - |
-| 21 | src-split-001 | PASS | PASS | PASS | 12.70s | - |
-| 22 | src-split-002 | PASS | PASS | PASS | 12.10s | - |
-| 23 | src-split-003 | PASS | PASS | PASS | 12.32s | - |
-| 24 | src-split-004 | PASS | PASS | PASS | 12.00s | - |
-| 25 | src-split-005 | PASS | PASS | PASS | 17.92s | - |
-| 26 | src-split-006 | PASS | PASS | PASS | 12.23s | - |
-| 27 | src-split-007 | PASS | PASS | PASS | 6.80s | - |
-| 28 | src-split-008 | PASS | PASS | PASS | 12.23s | - |
-| 29 | src-split-009 | PASS | PASS | PASS | 6.41s | - |
-| 30 | src-split-010 | PASS | PASS | PASS | 12.02s | - |
-| 31 | src-split-011 | PASS | PASS | PASS | 6.85s | - |
-| 32 | src-split-012 | PASS | PASS | PASS | 12.19s | - |
-| 33 | src-split-013 | PASS | PASS | PASS | 6.40s | - |
-| 34 | src-split-014 | PASS | PASS | PASS | 12.43s | - |
-| 35 | src-split-015 | PASS | PASS | PASS | 6.83s | - |
-| 36 | src-split-016 | PASS | PASS | PASS | 12.59s | - |
-| 37 | src-split-017 | PASS | PASS | PASS | 6.43s | - |
-| 38 | src-split-018 | PASS | PASS | PASS | 12.79s | - |
-| 39 | src-split-019 | PASS | PASS | PASS | 6.33s | - |
-| 40 | src-split-020 | PASS | PASS | PASS | 12.69s | - |
-| 41 | src-entity-001 | PASS | PASS | PASS | 12.00s | - |
-| 42 | src-entity-002 | PASS | PASS | PASS | 11.91s | - |
-| 43 | src-entity-003 | PASS | PASS | PASS | 0.31s | - |
-| 44 | src-entity-004 | PASS | PASS | PASS | 11.78s | - |
-| 45 | src-entity-005 | PASS | PASS | PASS | 6.00s | - |
-| 46 | src-entity-006 | PASS | PASS | PASS | 5.97s | - |
-| 47 | src-entity-007 | PASS | PASS | PASS | 6.56s | - |
-| 48 | src-entity-008 | PASS | PASS | PASS | 6.33s | - |
-| 49 | src-entity-009 | PASS | PASS | PASS | 11.59s | - |
-| 50 | src-entity-010 | PASS | PASS | PASS | 6.09s | - |
-| 51 | src-entity-011 | PASS | PASS | PASS | 12.02s | - |
-| 52 | src-entity-012 | PASS | PASS | PASS | 6.03s | - |
-| 53 | src-entity-013 | PASS | PASS | PASS | 11.56s | - |
-| 54 | src-entity-014 | PASS | PASS | PASS | 5.91s | - |
-| 55 | src-entity-015 | PASS | PASS | PASS | 11.59s | - |
-| 56 | src-entity-016 | PASS | PASS | PASS | 6.13s | - |
-| 57 | src-entity-017 | PASS | PASS | PASS | 6.34s | - |
-| 58 | src-entity-018 | PASS | PASS | PASS | 12.67s | - |
-| 59 | src-entity-019 | PASS | PASS | PASS | 6.37s | - |
-| 60 | src-entity-020 | PASS | PASS | PASS | 12.29s | - |
-| 61 | src-time-001 | PASS | PASS | PASS | 6.03s | - |
-| 62 | src-time-002 | PASS | PASS | PASS | 5.93s | - |
-| 63 | src-time-003 | PASS | PASS | PASS | 5.86s | - |
-| 64 | src-time-004 | PASS | PASS | PASS | 6.96s | - |
-| 65 | src-time-005 | PASS | PASS | PASS | 6.98s | - |
-| 66 | src-time-006 | PASS | PASS | PASS | 6.05s | - |
-| 67 | src-time-007 | PASS | PASS | PASS | 6.73s | - |
-| 68 | src-time-008 | PASS | PASS | PASS | 6.25s | - |
-| 69 | src-time-009 | PASS | PASS | PASS | 6.25s | - |
-| 70 | src-time-010 | PASS | PASS | PASS | 5.95s | - |
-| 71 | src-time-011 | PASS | PASS | PASS | 6.65s | - |
-| 72 | src-time-012 | PASS | PASS | PASS | 5.93s | - |
-| 73 | src-time-013 | PASS | PASS | PASS | 0.29s | - |
-| 74 | src-time-014 | PASS | PASS | PASS | 0.29s | - |
-| 75 | src-time-015 | PASS | PASS | PASS | 6.08s | - |
-| 76 | src-time-016 | PASS | PASS | PASS | 6.28s | - |
-| 77 | src-time-017 | PASS | PASS | PASS | 6.74s | - |
-| 78 | src-time-018 | PASS | PASS | PASS | 6.10s | - |
-| 79 | src-time-019 | PASS | PASS | PASS | 6.33s | - |
-| 80 | src-time-020 | PASS | PASS | PASS | 6.10s | - |
-| 81 | src-rel-001 | PASS | PASS | PASS | 12.02s | - |
-| 82 | src-rel-002 | PASS | PASS | PASS | 5.87s | - |
-| 83 | src-rel-003 | PASS | PASS | PASS | 0.32s | - |
-| 84 | src-rel-004 | PASS | PASS | PASS | 11.70s | - |
-| 85 | src-rel-005 | PASS | PASS | PASS | 6.08s | - |
-| 86 | src-rel-006 | PASS | PASS | PASS | 11.67s | - |
-| 87 | src-rel-007 | PASS | PASS | PASS | 0.30s | - |
-| 88 | src-rel-008 | PASS | PASS | PASS | 0.31s | - |
-| 89 | src-rel-009 | PASS | PASS | PASS | 6.20s | - |
-| 90 | src-rel-010 | PASS | PASS | PASS | 12.65s | - |
-| 91 | src-rel-011 | PASS | PASS | PASS | 11.66s | - |
-| 92 | src-rel-012 | PASS | PASS | PASS | 11.77s | - |
-| 93 | src-rel-013 | PASS | PASS | PASS | 6.00s | - |
-| 94 | src-rel-014 | PASS | PASS | PASS | 6.39s | - |
-| 95 | src-rel-015 | PASS | PASS | PASS | 7.35s | - |
-| 96 | src-rel-016 | PASS | PASS | PASS | 11.99s | - |
-| 97 | src-rel-017 | PASS | PASS | PASS | 0.30s | - |
-| 98 | src-rel-018 | PASS | PASS | PASS | 6.19s | - |
-| 99 | src-rel-019 | PASS | PASS | PASS | 6.15s | - |
-| 100 | src-rel-020 | PASS | PASS | PASS | 6.42s | - |
-| 101 | src-noise-001 | PASS | PASS | PASS | 5.98s | - |
-| 102 | src-noise-002 | PASS | PASS | PASS | 5.95s | - |
-| 103 | src-noise-003 | PASS | PASS | PASS | 0.32s | - |
-| 104 | src-noise-004 | PASS | PASS | PASS | 0.29s | - |
-| 105 | src-noise-005 | PASS | PASS | PASS | 0.32s | - |
-| 106 | src-noise-006 | PASS | PASS | PASS | 0.29s | - |
-| 107 | src-noise-007 | PASS | PASS | PASS | 6.35s | - |
-| 108 | src-noise-008 | PASS | PASS | PASS | 0.31s | - |
-| 109 | src-noise-009 | FAIL | FAIL | PASS | 13.09s | - |
-| 110 | src-noise-010 | FAIL | FAIL | PASS | 6.26s | - |
-| 111 | src-noise-011 | PASS | PASS | PASS | 5.73s | - |
-| 112 | src-noise-012 | PASS | PASS | PASS | 6.43s | - |
-| 113 | src-noise-013 | PASS | PASS | PASS | 6.41s | - |
-| 114 | src-noise-014 | PASS | PASS | PASS | 6.93s | - |
-| 115 | src-noise-015 | PASS | PASS | PASS | 11.75s | - |
-| 116 | src-noise-016 | PASS | PASS | PASS | 6.25s | - |
-| 117 | src-noise-017 | PASS | PASS | PASS | 6.14s | - |
-| 118 | src-noise-018 | PASS | PASS | PASS | 6.15s | - |
-| 119 | src-noise-019 | PASS | PASS | PASS | 12.54s | - |
-| 120 | src-noise-020 | PASS | PASS | PASS | 0.32s | - |
-
-## 5. 해석 시 유의사항
-
-- 스키마 통과율은 출력 구조와 타입이 정의된 규칙을 만족하는지 나타낸다.
-- 근거 검사 통과율은 근거 문구가 원문에 포함되는지 검사한 결과다.
-- 근거 문구가 원문에 존재하더라도 의미적으로 주장을 뒷받침하는지는 별도 평가가 필요하다.
-- 최종 통과율만으로 기억 추출의 의미적 정확도 전체를 판단할 수는 없다.
+| 테스트 ID | 분류 | 최종 결과 | 스키마 | Evidence | 지연 시간 | 메모리 수 | Source ID | 오류 단계 |
+|---|---|---|---|---|---:|---:|---|---|
+| BASIC-001 | basic_facts_preferences | PASS | PASS | PASS | 5.96s | 1 | src-basic-001 | - |
+| BASIC-002 | basic_facts_preferences | PASS | PASS | PASS | 5.49s | 1 | src-basic-002 | - |
+| BASIC-003 | basic_facts_preferences | PASS | PASS | PASS | 5.57s | 1 | src-basic-003 | - |
+| BASIC-004 | basic_facts_preferences | PASS | PASS | PASS | 6.50s | 1 | src-basic-004 | - |
+| BASIC-005 | basic_facts_preferences | PASS | PASS | PASS | 5.85s | 1 | src-basic-005 | - |
+| BASIC-006 | basic_facts_preferences | PASS | PASS | PASS | 5.80s | 1 | src-basic-006 | - |
+| BASIC-007 | basic_facts_preferences | PASS | PASS | PASS | 5.70s | 1 | src-basic-007 | - |
+| BASIC-008 | basic_facts_preferences | PASS | PASS | PASS | 5.66s | 1 | src-basic-008 | - |
+| BASIC-009 | basic_facts_preferences | PASS | PASS | PASS | 5.85s | 1 | src-basic-009 | - |
+| BASIC-010 | basic_facts_preferences | PASS | PASS | PASS | 5.67s | 1 | src-basic-010 | - |
+| BASIC-011 | basic_facts_preferences | PASS | PASS | PASS | 6.05s | 1 | src-basic-011 | - |
+| BASIC-012 | basic_facts_preferences | PASS | PASS | PASS | 5.92s | 1 | src-basic-012 | - |
+| BASIC-013 | basic_facts_preferences | PASS | PASS | PASS | 5.84s | 1 | src-basic-013 | - |
+| BASIC-014 | basic_facts_preferences | PASS | PASS | PASS | 5.89s | 1 | src-basic-014 | - |
+| BASIC-015 | basic_facts_preferences | PASS | PASS | PASS | 6.17s | 1 | src-basic-015 | - |
+| BASIC-016 | basic_facts_preferences | PASS | PASS | PASS | 5.98s | 1 | src-basic-016 | - |
+| BASIC-017 | basic_facts_preferences | PASS | PASS | PASS | 5.85s | 1 | src-basic-017 | - |
+| BASIC-018 | basic_facts_preferences | PASS | PASS | PASS | 6.48s | 1 | src-basic-018 | - |
+| BASIC-019 | basic_facts_preferences | PASS | PASS | PASS | 6.46s | 1 | src-basic-019 | - |
+| BASIC-020 | basic_facts_preferences | PASS | PASS | PASS | 6.19s | 1 | src-basic-020 | - |
+| SPLIT-001 | multi_event_segmentation | PASS | PASS | PASS | 7.12s | 1 | src-split-001 | - |
+| SPLIT-002 | multi_event_segmentation | PASS | PASS | PASS | 11.99s | 2 | src-split-002 | - |
+| SPLIT-003 | multi_event_segmentation | PASS | PASS | PASS | 13.66s | 2 | src-split-003 | - |
+| SPLIT-004 | multi_event_segmentation | PASS | PASS | PASS | 13.83s | 2 | src-split-004 | - |
+| SPLIT-005 | multi_event_segmentation | PASS | PASS | PASS | 7.24s | 1 | src-split-005 | - |
+| SPLIT-006 | multi_event_segmentation | PASS | PASS | PASS | 12.26s | 2 | src-split-006 | - |
+| SPLIT-007 | multi_event_segmentation | PASS | PASS | PASS | 7.08s | 1 | src-split-007 | - |
+| SPLIT-008 | multi_event_segmentation | PASS | PASS | PASS | 12.23s | 2 | src-split-008 | - |
+| SPLIT-009 | multi_event_segmentation | PASS | PASS | PASS | 6.75s | 1 | src-split-009 | - |
+| SPLIT-010 | multi_event_segmentation | PASS | PASS | PASS | 11.65s | 2 | src-split-010 | - |
+| SPLIT-011 | multi_event_segmentation | PASS | PASS | PASS | 6.59s | 1 | src-split-011 | - |
+| SPLIT-012 | multi_event_segmentation | PASS | PASS | PASS | 6.43s | 1 | src-split-012 | - |
+| SPLIT-013 | multi_event_segmentation | PASS | PASS | PASS | 6.23s | 1 | src-split-013 | - |
+| SPLIT-014 | multi_event_segmentation | PASS | PASS | PASS | 8.51s | 1 | src-split-014 | - |
+| SPLIT-015 | multi_event_segmentation | PASS | PASS | PASS | 7.17s | 1 | src-split-015 | - |
+| SPLIT-016 | multi_event_segmentation | PASS | PASS | PASS | 6.77s | 1 | src-split-016 | - |
+| SPLIT-017 | multi_event_segmentation | PASS | PASS | PASS | 6.39s | 1 | src-split-017 | - |
+| SPLIT-018 | multi_event_segmentation | PASS | PASS | PASS | 8.78s | 1 | src-split-018 | - |
+| SPLIT-019 | multi_event_segmentation | PASS | PASS | PASS | 8.09s | 1 | src-split-019 | - |
+| SPLIT-020 | multi_event_segmentation | PASS | PASS | PASS | 12.42s | 2 | src-split-020 | - |
+| ENTITY-001 | entity_resolution | PASS | PASS | PASS | 11.65s | 2 | src-entity-001 | - |
+| ENTITY-002 | entity_resolution | PASS | PASS | PASS | 11.86s | 2 | src-entity-002 | - |
+| ENTITY-003 | entity_resolution | PASS | PASS | PASS | 8.04s | 1 | src-entity-003 | - |
+| ENTITY-004 | entity_resolution | PASS | PASS | PASS | 11.46s | 2 | src-entity-004 | - |
+| ENTITY-005 | entity_resolution | PASS | PASS | PASS | 5.86s | 1 | src-entity-005 | - |
+| ENTITY-006 | entity_resolution | PASS | PASS | PASS | 6.36s | 1 | src-entity-006 | - |
+| ENTITY-007 | entity_resolution | PASS | PASS | PASS | 6.34s | 1 | src-entity-007 | - |
+| ENTITY-008 | entity_resolution | PASS | PASS | PASS | 6.41s | 1 | src-entity-008 | - |
+| ENTITY-009 | entity_resolution | PASS | PASS | PASS | 11.33s | 2 | src-entity-009 | - |
+| ENTITY-010 | entity_resolution | PASS | PASS | PASS | 5.92s | 1 | src-entity-010 | - |
+| ENTITY-011 | entity_resolution | PASS | PASS | PASS | 8.47s | 1 | src-entity-011 | - |
+| ENTITY-012 | entity_resolution | PASS | PASS | PASS | 6.46s | 1 | src-entity-012 | - |
+| ENTITY-013 | entity_resolution | PASS | PASS | PASS | 8.38s | 1 | src-entity-013 | - |
+| ENTITY-014 | entity_resolution | PASS | PASS | PASS | 5.95s | 1 | src-entity-014 | - |
+| ENTITY-015 | entity_resolution | PASS | PASS | PASS | 11.40s | 2 | src-entity-015 | - |
+| ENTITY-016 | entity_resolution | PASS | PASS | PASS | 6.14s | 1 | src-entity-016 | - |
+| ENTITY-017 | entity_resolution | PASS | PASS | PASS | 6.26s | 1 | src-entity-017 | - |
+| ENTITY-018 | entity_resolution | PASS | PASS | PASS | 12.61s | 2 | src-entity-018 | - |
+| ENTITY-019 | entity_resolution | PASS | PASS | PASS | 6.28s | 1 | src-entity-019 | - |
+| ENTITY-020 | entity_resolution | PASS | PASS | PASS | 11.88s | 2 | src-entity-020 | - |
+| TIME-001 | time_negation_uncertainty | PASS | PASS | PASS | 5.96s | 1 | src-time-001 | - |
+| TIME-002 | time_negation_uncertainty | PASS | PASS | PASS | 5.98s | 1 | src-time-002 | - |
+| TIME-003 | time_negation_uncertainty | PASS | PASS | PASS | 5.75s | 1 | src-time-003 | - |
+| TIME-004 | time_negation_uncertainty | PASS | PASS | PASS | 11.72s | 2 | src-time-004 | - |
+| TIME-005 | time_negation_uncertainty | PASS | PASS | PASS | 6.60s | 1 | src-time-005 | - |
+| TIME-006 | time_negation_uncertainty | PASS | PASS | PASS | 5.87s | 1 | src-time-006 | - |
+| TIME-007 | time_negation_uncertainty | PASS | PASS | PASS | 6.39s | 1 | src-time-007 | - |
+| TIME-008 | time_negation_uncertainty | PASS | PASS | PASS | 6.25s | 1 | src-time-008 | - |
+| TIME-009 | time_negation_uncertainty | PASS | PASS | PASS | 6.07s | 1 | src-time-009 | - |
+| TIME-010 | time_negation_uncertainty | PASS | PASS | PASS | 5.87s | 1 | src-time-010 | - |
+| TIME-011 | time_negation_uncertainty | PASS | PASS | PASS | 5.71s | 1 | src-time-011 | - |
+| TIME-012 | time_negation_uncertainty | PASS | PASS | PASS | 6.11s | 1 | src-time-012 | - |
+| TIME-013 | time_negation_uncertainty | PASS | PASS | PASS | 5.91s | 1 | src-time-013 | - |
+| TIME-014 | time_negation_uncertainty | PASS | PASS | PASS | 5.89s | 1 | src-time-014 | - |
+| TIME-015 | time_negation_uncertainty | PASS | PASS | PASS | 6.00s | 1 | src-time-015 | - |
+| TIME-016 | time_negation_uncertainty | PASS | PASS | PASS | 5.95s | 1 | src-time-016 | - |
+| TIME-017 | time_negation_uncertainty | PASS | PASS | PASS | 6.49s | 1 | src-time-017 | - |
+| TIME-018 | time_negation_uncertainty | PASS | PASS | PASS | 5.89s | 1 | src-time-018 | - |
+| TIME-019 | time_negation_uncertainty | PASS | PASS | PASS | 6.03s | 1 | src-time-019 | - |
+| TIME-020 | time_negation_uncertainty | PASS | PASS | PASS | 5.92s | 1 | src-time-020 | - |
+| REL-001 | relations_and_updates | PASS | PASS | PASS | 8.37s | 1 | src-rel-001 | - |
+| REL-002 | relations_and_updates | PASS | PASS | PASS | 5.98s | 1 | src-rel-002 | - |
+| REL-003 | relations_and_updates | PASS | PASS | PASS | 7.81s | 1 | src-rel-003 | - |
+| REL-004 | relations_and_updates | PASS | PASS | PASS | 6.34s | 1 | src-rel-004 | - |
+| REL-005 | relations_and_updates | PASS | PASS | PASS | 6.21s | 1 | src-rel-005 | - |
+| REL-006 | relations_and_updates | PASS | PASS | PASS | 6.47s | 1 | src-rel-006 | - |
+| REL-007 | relations_and_updates | PASS | PASS | PASS | 6.03s | 1 | src-rel-007 | - |
+| REL-008 | relations_and_updates | PASS | PASS | PASS | 6.27s | 1 | src-rel-008 | - |
+| REL-009 | relations_and_updates | PASS | PASS | PASS | 6.09s | 1 | src-rel-009 | - |
+| REL-010 | relations_and_updates | PASS | PASS | PASS | 12.46s | 2 | src-rel-010 | - |
+| REL-011 | relations_and_updates | PASS | PASS | PASS | 11.29s | 2 | src-rel-011 | - |
+| REL-012 | relations_and_updates | PASS | PASS | PASS | 11.54s | 2 | src-rel-012 | - |
+| REL-013 | relations_and_updates | PASS | PASS | PASS | 6.06s | 1 | src-rel-013 | - |
+| REL-014 | relations_and_updates | PASS | PASS | PASS | 6.46s | 1 | src-rel-014 | - |
+| REL-015 | relations_and_updates | PASS | PASS | PASS | 7.18s | 1 | src-rel-015 | - |
+| REL-016 | relations_and_updates | PASS | PASS | PASS | 11.49s | 2 | src-rel-016 | - |
+| REL-017 | relations_and_updates | PASS | PASS | PASS | 0.21s | 0 | src-rel-017 | - |
+| REL-018 | relations_and_updates | PASS | PASS | PASS | 5.96s | 1 | src-rel-018 | - |
+| REL-019 | relations_and_updates | PASS | PASS | PASS | 6.18s | 1 | src-rel-019 | - |
+| REL-020 | relations_and_updates | PASS | PASS | PASS | 6.28s | 1 | src-rel-020 | - |
+| NOISE-001 | noise_duplicates_ambiguity | PASS | PASS | PASS | 5.78s | 1 | src-noise-001 | - |
+| NOISE-002 | noise_duplicates_ambiguity | PASS | PASS | PASS | 5.77s | 1 | src-noise-002 | - |
+| NOISE-003 | noise_duplicates_ambiguity | PASS | PASS | PASS | 5.83s | 1 | src-noise-003 | - |
+| NOISE-004 | noise_duplicates_ambiguity | PASS | PASS | PASS | 5.79s | 1 | src-noise-004 | - |
+| NOISE-005 | noise_duplicates_ambiguity | PASS | PASS | PASS | 0.30s | 0 | src-noise-005 | - |
+| NOISE-006 | noise_duplicates_ambiguity | PASS | PASS | PASS | 0.22s | 0 | src-noise-006 | - |
+| NOISE-007 | noise_duplicates_ambiguity | PASS | PASS | PASS | 6.03s | 1 | src-noise-007 | - |
+| NOISE-008 | noise_duplicates_ambiguity | PASS | PASS | PASS | 0.21s | 0 | src-noise-008 | - |
+| NOISE-009 | noise_duplicates_ambiguity | PASS | PASS | PASS | 6.11s | 1 | src-noise-009 | - |
+| NOISE-010 | noise_duplicates_ambiguity | PASS | PASS | PASS | 5.99s | 1 | src-noise-010 | - |
+| NOISE-011 | noise_duplicates_ambiguity | PASS | PASS | PASS | 5.65s | 1 | src-noise-011 | - |
+| NOISE-012 | noise_duplicates_ambiguity | PASS | PASS | PASS | 6.29s | 1 | src-noise-012 | - |
+| NOISE-013 | noise_duplicates_ambiguity | PASS | PASS | PASS | 5.91s | 1 | src-noise-013 | - |
+| NOISE-014 | noise_duplicates_ambiguity | PASS | PASS | PASS | 6.52s | 1 | src-noise-014 | - |
+| NOISE-015 | noise_duplicates_ambiguity | PASS | PASS | PASS | 11.49s | 2 | src-noise-015 | - |
+| NOISE-016 | noise_duplicates_ambiguity | PASS | PASS | PASS | 6.17s | 1 | src-noise-016 | - |
+| NOISE-017 | noise_duplicates_ambiguity | PASS | PASS | PASS | 5.86s | 1 | src-noise-017 | - |
+| NOISE-018 | noise_duplicates_ambiguity | PASS | PASS | PASS | 5.98s | 1 | src-noise-018 | - |
+| NOISE-019 | noise_duplicates_ambiguity | PASS | PASS | PASS | 12.15s | 2 | src-noise-019 | - |
+| NOISE-020 | noise_duplicates_ambiguity | PASS | PASS | PASS | 5.91s | 1 | src-noise-020 | - |
