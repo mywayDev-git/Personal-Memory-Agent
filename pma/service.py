@@ -1,0 +1,428 @@
+import calendar
+import logging
+import re
+import threading
+import time
+from contextlib import contextmanager
+from datetime import date, datetime, timezone
+
+import numpy as np
+import requests
+
+from scripts.memory_agent.diagnostics import failure
+from scripts.memory_agent.postprocess import make_source_context
+from scripts.memory_agent.validator import schema_errors
+
+from .errors import AppError
+from .facts import compatible, query_plan
+from .models import ANSWER_SCHEMA, QUERY_SCHEMA, normalized_vectors
+from .processing import extract_record
+
+log = logging.getLogger("pma")
+
+
+def temporal_bounds(value):
+    """Conservative interval for a known time; never invent an event date."""
+    if not value:
+        return None
+    try:
+        if len(value) == 4:
+            return date(int(value), 1, 1), date(int(value), 12, 31)
+        if len(value) == 7:
+            y, m = map(int, value.split("-"))
+            return date(y, m, 1), date(y, m, calendar.monthrange(y, m)[1])
+        d = date.fromisoformat(value[:10])
+        return d, d
+    except TypeError, ValueError:
+        return None
+
+
+class Service:
+    def __init__(self, store, models, settings):
+        self.store, self.models, self.settings = store, models, settings
+        self.gate = threading.Lock()
+        self.stop_event = threading.Event()
+        self.thread = None
+        self.processing_status = None
+        self.worker_paused = False
+
+    @contextmanager
+    def model_slot(self, wait=5):
+        if not self.gate.acquire(timeout=wait):
+            raise AppError(
+                "MODEL_BUSY", "AI가 다른 기록을 처리 중입니다. 잠시 후 다시 시도하세요.", 429, True
+            )
+        try:
+            yield
+        finally:
+            self.gate.release()
+
+    def start(self):
+        self.store.expire()
+        self.store.recover()
+        self.store.reindex_changed_model(self.settings.embedding_key)
+        self.thread = threading.Thread(target=self.loop, name="pma-worker", daemon=True)
+        self.thread.start()
+
+    def stop(self):
+        self.stop_event.set()
+        if self.thread:
+            self.thread.join(timeout=self.settings.llm.timeout * 3 + 5)
+
+    def loop(self):
+        maintenance = 0
+        while not self.stop_event.is_set():
+            try:
+                if self.worker_paused:
+                    health = self.models.health()
+                    if any(value != "ready" for value in health.values()):
+                        self.stop_event.wait(5)
+                        continue
+                    self.worker_paused = False
+                if time.monotonic() >= maintenance:
+                    self.store.expire()
+                    maintenance = time.monotonic() + 3600
+                self.run_one()
+            except Exception:
+                # Avoid traceback local values or source-containing exception messages.
+                log.error("worker_iteration_failed")
+            self.stop_event.wait(0.5)
+
+    def run_one(self):
+        with self.model_slot():
+            self.store.rebuild_facts()
+            job = self.store.claim()
+            if not job:
+                return False
+            started = time.monotonic()
+            self.processing_status = {"job_id": job["id"], "phase": "extract", "started": started}
+            try:
+                for attempt in range(2):
+                    try:
+                        context = make_source_context(job["record_id"], job["reference_time"])
+                        self.processing_status = dict(self.processing_status, phase="extract")
+                        result, metadata = extract_record(self, job, context)
+                        self.processing_status = dict(self.processing_status, phase="embed")
+                        vectors = self.models.embed([m["content"] for m in result["memories"]])
+                        if len(result["memories"]):
+                            vectors = normalized_vectors(
+                                vectors, len(result["memories"]), self.settings.embedding_dimensions
+                            )
+                        break
+                    except requests.ConnectionError, requests.Timeout:
+                        if attempt or self.stop_event.wait(1):
+                            raise
+                if self.stop_event.is_set():
+                    return False
+                self.processing_status = dict(self.processing_status, phase="save")
+                self.store.publish(
+                    job, result["memories"], vectors, self.settings.embedding_key, metadata
+                )
+                log.info(
+                    "job_finished job_id=%s elapsed=%.3f", job["id"], time.monotonic() - started
+                )
+            except Exception as exc:
+                code, diagnostic = failure(
+                    exc, (self.processing_status or {}).get("phase", "unknown")
+                )
+                diagnostic["elapsed_seconds"] = round(time.monotonic() - started, 3)
+                diagnostic["processing"] = {
+                    k: v
+                    for k, v in (self.processing_status or {}).items()
+                    if k not in {"started", "job_id"}
+                }
+                self.store.fail(job, code, diagnostic)
+                if code in {"MODEL_UNAVAILABLE", "MODEL_TIMEOUT", "MODEL_HTTP_ERROR"}:
+                    self.worker_paused = True
+                log.warning("job_failed job_id=%s code=%s", job["id"], code)
+            finally:
+                self.processing_status = None
+            return True
+
+    def _search(self, question, filters=None, today=None):
+        today = today or datetime.now(timezone.utc).astimezone().date().isoformat()
+        understood = self.models.understand(question, today)
+        if schema_errors(understood, QUERY_SCHEMA):
+            raise ValueError("INVALID_QUERY")
+        plan = query_plan(question, understood, today)
+        applied = dict(plan["filters"])
+        if re.search(r"기준|당시|까지|이전", question) and applied["date_to"]:
+            applied["date_from"] = None
+        if filters is not None:
+            applied.update(filters)
+            if applied.get("date_to"):
+                plan["needs_time_anchor"] = False
+        start = date.fromisoformat(applied["date_from"]) if applied["date_from"] else None
+        end = date.fromisoformat(applied["date_to"]) if applied["date_to"] else None
+        if start and end and start > end:
+            raise AppError("INVALID_DATE_RANGE", "시작일은 종료일보다 늦을 수 없습니다.")
+        generation, rows = self.store.snapshot(self.settings.embedding_key)
+        if understood["intent"] == "aggregate" and re.search(
+            r"총|몇\s*번|횟수|가장|최초|최후|제일|처음|마지막", question
+        ):
+            return generation, {"status": "unsupported_intent", "filters": applied, "results": []}
+        candidates = []
+        locations = re.findall(r"([가-힣A-Za-z]+?)(?:에서|(?:에\s*)?\s+가서)", question)
+        known_names = {
+            value
+            for r in rows
+            if r["fact"]
+            for value in (r["fact"]["actor"], r["fact"]["recipient"], r["fact"].get("counterparty"))
+            if value and value != "self" and value in question
+        }
+        pending = sum(r["fact"] is None for r in rows)
+        requested_objects = {
+            r["fact"]["object_key"]
+            for r in rows
+            if r["fact"]
+            and len(r["fact"]["object_key"]) >= 2
+            and r["fact"]["object_key"] in question
+        }
+        for row in rows:
+            fact = row["fact"]
+            if not fact or not compatible(fact, plan):
+                continue
+            if (
+                plan["relation"] == "visit"
+                and requested_objects
+                and fact["object_key"] not in requested_objects
+            ):
+                continue
+            if (
+                plan["kind"] == "change"
+                and re.search(r"취향|선호|좋아", question)
+                and fact["relation"] not in {"prefer", "desire", "give"}
+            ):
+                continue
+            if plan["kind"] == "activities" and fact["state"] in {
+                "planned",
+                "desire",
+                "preference",
+                "uncertain",
+            }:
+                continue
+            if locations:
+                parent = re.search(
+                    r"([가-힣A-Za-z]+?)(?:에\s*(?:갔|다녀|가서)|\s*여행)", row["text"]
+                )
+                if not any(
+                    loc in row["memory"]["content"] or (parent and loc == parent.group(1))
+                    for loc in locations
+                ):
+                    continue
+            if known_names:
+                roles = (
+                    {fact["actor"]}
+                    if plan["relation"] in {"desire", "prefer", "run"}
+                    else {fact["actor"], fact["recipient"]}
+                )
+                if plan["relation"] == "receive" and fact["relation"] == "give":
+                    roles = {fact["recipient"]}
+                if plan["kind"] in {"compare", "change"}:
+                    roles = {fact["actor"], fact["recipient"]}
+                if plan["relation"] not in {"desire", "prefer", "run"}:
+                    roles.add(fact.get("counterparty"))
+                if not known_names & roles:
+                    continue
+            t = fact["event_time"]
+            a, b = temporal_bounds(t.get("start")), temporal_bounds(t.get("end"))
+            if start or end:
+                if not a or t.get("certainty") == "uncertain":
+                    continue
+                low, high = a[0], b[1] if b else a[1]
+                if (start and low < start) or (end and high > end):
+                    continue
+            candidates.append(row)
+        candidates.sort(
+            key=lambda r: (
+                r["memory"]["content"],
+                r["fact"]["event_time"].get("start") or "",
+                r["text"],
+            )
+        )
+        if not candidates:
+            self.store.assert_generation(generation)
+            return generation, {
+                "status": "ok",
+                "filters": applied,
+                "results": [],
+                "query_plan": plan,
+                "facts_pending": pending,
+                "connections": [],
+            }
+        query = normalized_vectors(
+            self.models.embed([question]), 1, self.settings.embedding_dimensions
+        )[0]
+        matrix = np.stack([np.frombuffer(r["vector"], dtype="<f4") for r in candidates])
+        matrix = normalized_vectors(matrix, len(candidates), self.settings.embedding_dimensions)
+        scores = matrix @ query
+        vector_order = np.argsort(-scores, kind="stable")[:20].tolist()
+        terms = set(re.findall(r"[\w가-힣]+", question.casefold()))
+        keyword = [
+            sum(t in (r["memory"]["content"] + " " + r["text"]).casefold() for t in terms)
+            for r in candidates
+        ]
+        keyword_order = sorted(
+            (i for i, score in enumerate(keyword) if score),
+            key=lambda i: (-keyword[i], candidates[i]["id"]),
+        )[:20]
+        ranks = {}
+        for order in (vector_order, keyword_order):
+            for rank, i in enumerate(order, 1):
+                ranks[i] = ranks.get(i, 0) + 1 / (60 + rank)
+        results = []
+        # Structural matches are eligible independently of dense top-k. Stable ties
+        # use content/time, never newly generated UUIDs or insertion order.
+        if plan["relation"] != "other" or known_names:
+            for i in range(len(candidates)):
+                ranks[i] = ranks.get(i, 0) + 1 / 60
+        order = sorted(
+            ranks,
+            key=lambda i: (
+                -ranks[i],
+                candidates[i]["memory"]["content"],
+                candidates[i]["fact"]["event_time"].get("start") or "",
+            ),
+        )
+        for i in order[:24]:
+            row = candidates[i]
+            results.append(
+                {
+                    "id": row["id"],
+                    "record_id": row["record_id"],
+                    "version": row["version"],
+                    "content": row["memory"]["content"],
+                    "time": row["fact"]["event_time"],
+                    "evidence": row["evidence"],
+                    "fact": row["fact"],
+                    "subject": row["memory"]["subject"],
+                    "predicate": row["memory"]["predicate"],
+                    "object": row["memory"]["object"],
+                    "target": row["memory"]["target"],
+                    "memory_type": row["memory"]["memory_type"],
+                    "assertion_polarity": row["memory"]["assertion_polarity"],
+                    "source_text": row["text"],
+                    "reference_time": row["reference_time"],
+                    "recorded_at": row["created_at"],
+                    "score": ranks[i],
+                }
+            )
+        if plan["kind"] in {"current", "change", "compare"}:
+            results.sort(key=lambda r: (r["time"].get("start") or "", r["content"]), reverse=True)
+        elif (
+            plan["kind"] != "activities"
+            and not (
+                plan["relation"] == "visit"
+                and requested_objects
+                and all(r["fact"]["state"] in {"planned", "negated"} for r in results)
+            )
+            and plan["relation"]
+            not in {
+                "desire",
+                "give",
+                "receive",
+                "prefer",
+                "run",
+                "conflict",
+            }
+            and hasattr(self.models, "select")
+        ):
+            selected = self.models.select(question, results)
+            allowed = {r["id"] for r in results}
+            if not set(selected) <= allowed:
+                raise ValueError("INVALID_SELECTION")
+            results = [r for r in results if r["id"] in selected]
+        results = results[:8]
+        selected_ids = {r["id"] for r in results}
+        links = self.store.links(memory_ids=selected_ids)
+        self.store.assert_generation(generation)
+        return generation, {
+            "status": "ok",
+            "filters": applied,
+            "results": results,
+            "query_plan": plan,
+            "facts_pending": pending,
+            "connections": links,
+        }
+
+    def search(self, question, filters=None, today=None):
+        with self.model_slot():
+            return self._search(question, filters, today)[1]
+
+    def answer(self, question, filters=None, today=None):
+        with self.model_slot():
+            generation, found = self._search(question, filters, today)
+            if found.get("query_plan", {}).get("needs_time_anchor"):
+                return {
+                    **found,
+                    "status": "insufficient_evidence",
+                    "items": [],
+                    "clarification": "당시가 어느 날짜나 사건을 뜻하는지 알려주세요.",
+                    "validation": "unresolved_time_anchor",
+                }
+            if found["status"] == "unsupported_intent":
+                return {**found, "items": []}
+            if not found["results"]:
+                return {**found, "status": "insufficient_evidence", "items": []}
+            if found["query_plan"]["kind"] == "why" and not any(
+                re.search(r"때문|해서|라서|어서|탓|덕분", e["quote"])
+                for row in found["results"]
+                for e in row["evidence"]
+            ):
+                return {
+                    **found,
+                    "status": "insufficient_evidence",
+                    "items": [],
+                    "validation": "no_explicit_cause",
+                }
+            from .grounding import claims_supported, grounded_response
+
+            response = grounded_response(found)
+            structured_answer = response is not None
+            if response is None:
+                response = self.models.answer(question, found["results"])
+            if schema_errors(response, ANSWER_SCHEMA):
+                raise ValueError("INVALID_ANSWER")
+            allowed = {r["id"] for r in found["results"]}
+            if (response["status"] == "answered" and not response["items"]) or any(
+                cid not in allowed for item in response["items"] for cid in item["citations"]
+            ):
+                raise ValueError("INVALID_CITATION")
+            if response["status"] == "insufficient_evidence" and response["items"]:
+                raise ValueError("INVALID_ANSWER_STATE")
+            if response["status"] == "answered" and not claims_supported(
+                response["items"], found["results"], found["query_plan"]
+            ):
+                response = {
+                    "status": "insufficient_evidence",
+                    "items": [],
+                    "validation": "rejected_attributes",
+                }
+            if response["status"] == "answered" and not structured_answer:
+                if hasattr(self.models, "verify") and not self.models.verify(
+                    question, found["results"], response["items"]
+                ):
+                    response = {
+                        "status": "insufficient_evidence",
+                        "items": [],
+                        "validation": "rejected",
+                    }
+            # Extra fields are appended after the legacy answer schema validation.
+            for item in response["items"]:
+                item["claim_kind"] = "record"
+                item["relation_ids"] = []
+                if found["query_plan"]["kind"] == "compare":
+                    linked = [
+                        link["id"]
+                        for link in found["connections"]
+                        if link["kind"] == "desire_action"
+                        and set(link["citations"]) <= set(item["citations"])
+                    ]
+                    if linked:
+                        item["claim_kind"] = "inference"
+                        item["relation_ids"] = linked
+            response.setdefault(
+                "validation", "structured" if structured_answer else "model_checked"
+            )
+            self.store.assert_generation(generation)
+            return {**found, **response}

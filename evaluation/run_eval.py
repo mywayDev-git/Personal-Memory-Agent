@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python3
 
 import argparse
@@ -10,18 +9,20 @@ from pathlib import Path
 from typing import Any
 
 # 프로젝트 루트를 Python 모듈 검색 경로에 추가
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(PROJECT_ROOT))
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import requests
 
-from config.settings import paths, settings
-from scripts.memory_agent.extractor import extract_memories
+from config.settings import Settings, paths
 from scripts.memory_agent.postprocess import build_final_result
 from scripts.memory_agent.validator import (
     validate_extraction,
     validate_final_result,
 )
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+
 
 def read_jsonl(path: str | Path) -> list[dict[str, Any]]:
     """JSONL 파일을 읽어 레코드 목록으로 반환한다."""
@@ -35,15 +36,10 @@ def read_jsonl(path: str | Path) -> list[dict[str, Any]]:
             try:
                 record = json.loads(line)
             except json.JSONDecodeError as exc:
-                raise ValueError(
-                    f"JSONL 파싱 오류: {path}:{line_number}: {exc}"
-                ) from exc
+                raise ValueError(f"JSONL 파싱 오류: {path}:{line_number}: {exc}") from exc
 
             if not isinstance(record, dict):
-                raise ValueError(
-                    f"각 JSONL 레코드는 객체여야 한다: "
-                    f"{path}:{line_number}"
-                )
+                raise ValueError(f"각 JSONL 레코드는 객체여야 한다: {path}:{line_number}")
 
             records.append(record)
 
@@ -77,10 +73,7 @@ def get_source_text(record: dict[str, Any]) -> str:
         )
 
     if not text.strip():
-        raise ValueError(
-            f"원문이 비어 있다: "
-            f"{record.get('case_id', record.get('id', 'unknown'))}"
-        )
+        raise ValueError(f"원문이 비어 있다: {record.get('case_id', record.get('id', 'unknown'))}")
 
     return text
 
@@ -147,7 +140,6 @@ def extract_token_usage(metadata: dict) -> dict:
     }
 
 
-
 def evaluate_one(
     record: dict[str, Any],
     index: int,
@@ -159,11 +151,7 @@ def evaluate_one(
     started_clock = time.perf_counter()
     started_at = datetime.now(timezone.utc).isoformat()
 
-    case_id = str(
-        record.get("case_id")
-        or record.get("id")
-        or f"EVAL-{index:04d}"
-    )
+    case_id = str(record.get("case_id") or record.get("id") or f"EVAL-{index:04d}")
 
     result_record: dict[str, Any] = {
         # 실행 및 데이터 식별 정보
@@ -171,12 +159,10 @@ def evaluate_one(
         "category": record.get("category"),
         "severity": record.get("severity"),
         "started_at": started_at,
-
         # 입력 및 출력 길이
         "input_chars": None,
         "prompt_chars": len(prompt),
         "output_chars": None,
-
         # 모델 실행 정보
         "model": None,
         "latency_seconds": None,
@@ -185,7 +171,6 @@ def evaluate_one(
         "prompt_tokens": None,
         "completion_tokens": None,
         "total_tokens": None,
-
         # 검증 결과
         "valid": False,
         "raw_schema_valid": False,
@@ -194,12 +179,10 @@ def evaluate_one(
         "raw_schema_errors": [],
         "final_schema_errors": [],
         "evidence_errors": [],
-
         # 추출 결과
         "memory_count": 0,
         "memory_type_counts": {},
         "result": None,
-
         # 오류 정보
         "failure_stage": "input",
         "error": None,
@@ -215,20 +198,25 @@ def evaluate_one(
         # 1. LLM 호출 및 기억 추출
         result_record["failure_stage"] = "llm_request"
 
+        from scripts.memory_agent.pipeline import process_text
+
         with requests.Session() as session:
-            llm_output, metadata, latency = extract_memories(
-                session=session,
-                endpoint=settings.endpoint,
-                model=settings.model,
+            final_result, metadata = process_text(
+                source_text,
+                source_context,
                 prompt=prompt,
-                source_text=source_text,
-                source_context=source_context,
-                timeout=settings.timeout,
-                max_tokens=settings.max_tokens,
-                temperature=settings.temperature,
-                seed=settings.seed,
-                top_p=settings.top_p,
+                output_schema=raw_schema,
+                final_schema=final_schema,
+                session=session,
+                settings=Settings.from_env(),
             )
+        llm_output = {
+            "memories": [
+                {k: v for k, v in m.items() if k != "local_id"} for m in final_result["memories"]
+            ]
+        }
+        latency = metadata["latency_seconds"]
+        result_record["run_metadata"] = metadata
 
         if not isinstance(metadata, dict):
             metadata = {}
@@ -238,9 +226,7 @@ def evaluate_one(
         result_record["finish_reason"] = metadata.get("finish_reason")
 
         # 원본 JSON을 기준으로 출력 길이를 기록한다.
-        result_record["output_chars"] = len(
-            json.dumps(llm_output, ensure_ascii=False)
-        )
+        result_record["output_chars"] = len(json.dumps(llm_output, ensure_ascii=False))
 
         # 2. 토큰 사용량 기록
         result_record.update(extract_token_usage(metadata))
@@ -275,20 +261,13 @@ def evaluate_one(
             source_text,
         )
 
-        final_schema_valid = bool(
-            final_validation["schema_valid"]
-        )
-        evidence_valid = bool(
-            final_validation["evidence_valid"]
-        )
+        final_schema_valid = bool(final_validation["schema_valid"])
+        evidence_valid = bool(final_validation["evidence_valid"])
 
         finish_reason = metadata.get("finish_reason")
 
         valid = (
-            raw_schema_valid
-            and final_schema_valid
-            and evidence_valid
-            and finish_reason != "length"
+            raw_schema_valid and final_schema_valid and evidence_valid and finish_reason != "length"
         )
 
         final_schema_errors = final_validation.get(
@@ -314,70 +293,38 @@ def evaluate_one(
                     "unknown",
                 )
 
-            memory_type_counts[memory_type] = (
-                memory_type_counts.get(memory_type, 0) + 1
-            )
+            memory_type_counts[memory_type] = memory_type_counts.get(memory_type, 0) + 1
 
-        result_record.update({
-            "valid": valid,
-            "raw_schema_valid": raw_schema_valid,
-            "final_schema_valid": final_schema_valid,
-            "evidence_valid": evidence_valid,
-            "raw_schema_errors": raw_errors,
-            "final_schema_errors": final_schema_errors,
-            "evidence_errors": evidence_errors,
-            "memory_count": len(memories),
-            "memory_type_counts": memory_type_counts,
-            "result": final_result,
-            "failure_stage": None,
-            "status": "pass" if valid else "fail",
-        })
+        result_record.update(
+            {
+                "valid": valid,
+                "raw_schema_valid": raw_schema_valid,
+                "final_schema_valid": final_schema_valid,
+                "evidence_valid": evidence_valid,
+                "raw_schema_errors": raw_errors,
+                "final_schema_errors": final_schema_errors,
+                "evidence_errors": evidence_errors,
+                "memory_count": len(memories),
+                "memory_type_counts": memory_type_counts,
+                "result": final_result,
+                "failure_stage": None,
+                "status": "pass" if valid else "fail",
+            }
+        )
 
         # 검증 실패도 단계별로 추적할 수 있도록 구분한다.
         if not raw_schema_valid:
-            result_record["failure_stage"] = (
-                "raw_schema_validation"
-            )
+            result_record["failure_stage"] = "raw_schema_validation"
         elif not final_schema_valid:
-            result_record["failure_stage"] = (
-                "final_schema_validation"
-            )
+            result_record["failure_stage"] = "final_schema_validation"
         elif not evidence_valid:
-            result_record["failure_stage"] = (
-                "evidence_validation"
-            )
+            result_record["failure_stage"] = "evidence_validation"
         elif finish_reason == "length":
-            result_record["failure_stage"] = (
-                "generation_truncated"
-            )
-
-    except requests.HTTPError as exc:
-        response = exc.response
-
-        if response is not None:
-            try:
-                error_body = json.dumps(
-                    response.json(),
-                    ensure_ascii=False,
-                )
-            except ValueError:
-                error_body = response.text
-
-            result_record["error"] = (
-                f"HTTPError: status={response.status_code}, "
-                f"response={error_body[:2000]}"
-            )
-        else:
-            result_record["error"] = (
-                f"{type(exc).__name__}: {exc}"
-            )
-
-        result_record["status"] = "error"
+            result_record["failure_stage"] = "generation_truncated"
 
     except Exception as exc:
-        result_record["error"] = (
-            f"{type(exc).__name__}: {exc}"
-        )
+        # Never persist HTTP response bodies, source text or validation values.
+        result_record["error"] = type(exc).__name__
         result_record["status"] = "error"
 
     finally:
@@ -386,6 +333,11 @@ def evaluate_one(
             4,
         )
 
+    from evaluation.semantic import check_expected
+
+    result_record["expectation_checks"] = check_expected(
+        record.get("expected", {}), result_record.get("result")
+    )
     return result_record
 
 
@@ -413,30 +365,15 @@ def print_summary(records: list[dict[str, Any]]) -> None:
     """평가 결과의 핵심 통계를 출력한다."""
     total = len(records)
 
-    valid_count = sum(
-        bool(record.get("valid"))
-        for record in records
-    )
+    valid_count = sum(bool(record.get("valid")) for record in records)
 
-    raw_schema_valid_count = sum(
-        bool(record.get("raw_schema_valid"))
-        for record in records
-    )
+    raw_schema_valid_count = sum(bool(record.get("raw_schema_valid")) for record in records)
 
-    final_schema_valid_count = sum(
-        bool(record.get("final_schema_valid"))
-        for record in records
-    )
+    final_schema_valid_count = sum(bool(record.get("final_schema_valid")) for record in records)
 
-    evidence_valid_count = sum(
-        bool(record.get("evidence_valid"))
-        for record in records
-    )
+    evidence_valid_count = sum(bool(record.get("evidence_valid")) for record in records)
 
-    error_count = sum(
-        record.get("status") == "error"
-        for record in records
-    )
+    error_count = sum(record.get("status") == "error" for record in records)
 
     latencies = [
         record["latency_seconds"]
@@ -468,40 +405,22 @@ def print_summary(records: list[dict[str, Any]]) -> None:
     print("\n========== Evaluation Summary ==========")
     print(f"Total cases:         {total}")
     print(f"Valid:               {valid_count}/{total}")
-    print(
-        f"Raw schema valid:    "
-        f"{raw_schema_valid_count}/{total}"
-    )
-    print(
-        f"Final schema valid:  "
-        f"{final_schema_valid_count}/{total}"
-    )
-    print(
-        f"Evidence valid:      "
-        f"{evidence_valid_count}/{total}"
-    )
+    print(f"Raw schema valid:    {raw_schema_valid_count}/{total}")
+    print(f"Final schema valid:  {final_schema_valid_count}/{total}")
+    print(f"Evidence valid:      {evidence_valid_count}/{total}")
     print(f"Errors:              {error_count}/{total}")
 
     if total:
-        print(
-            f"Valid rate:           "
-            f"{valid_count / total * 100:.2f}%"
-        )
+        print(f"Valid rate:           {valid_count / total * 100:.2f}%")
 
     if latencies:
-        print(
-            f"Average latency:      "
-            f"{sum(latencies) / len(latencies):.3f}s"
-        )
+        print(f"Average latency:      {sum(latencies) / len(latencies):.3f}s")
 
     if prompt_tokens:
         print(f"Prompt tokens:        {sum(prompt_tokens)}")
 
     if completion_tokens:
-        print(
-            f"Completion tokens:    "
-            f"{sum(completion_tokens)}"
-        )
+        print(f"Completion tokens:    {sum(completion_tokens)}")
 
     if not prompt_tokens and not completion_tokens:
         print("Token usage:          Not provided by model server")
@@ -510,9 +429,7 @@ def print_summary(records: list[dict[str, Any]]) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(
-        description="Personal Memory Agent evaluation runner"
-    )
+    parser = argparse.ArgumentParser(description="Personal Memory Agent evaluation runner")
 
     parser.add_argument(
         "--dataset",
@@ -539,7 +456,6 @@ def main() -> None:
         default=str(paths.results_dir / "eval_results.jsonl"),
         help="결과 JSONL 저장 경로",
     )
-
 
     args = parser.parse_args()
 
@@ -569,11 +485,7 @@ def main() -> None:
     results: list[dict[str, Any]] = []
 
     for index, record in enumerate(dataset, start=1):
-        case_id = (
-            record.get("case_id")
-            or record.get("id")
-            or f"EVAL-{index:04d}"
-        )
+        case_id = record.get("case_id") or record.get("id") or f"EVAL-{index:04d}"
 
         print(f"\n[{index}/{len(dataset)}] {case_id}")
 
@@ -590,46 +502,36 @@ def main() -> None:
             print(f"{type(exc).__name__}: {exc}")
             raise
 
+        result["dataset"] = str(dataset_path)
         results.append(result)
 
         print(
-            f'  Status={result["status"]} | '
-            f'Valid={result["valid"]} | '
-            f'Memories={result["memory_count"]} | '
-            f'Latency={result["latency_seconds"]}s'
+            f"  Status={result['status']} | "
+            f"Valid={result['valid']} | "
+            f"Memories={result['memory_count']} | "
+            f"Latency={result['latency_seconds']}s"
         )
 
         print(
-            f'  Schema: raw={result["raw_schema_valid"]}, '
-            f'final={result["final_schema_valid"]}, '
-            f'evidence={result["evidence_valid"]}'
+            f"  Schema: raw={result['raw_schema_valid']}, "
+            f"final={result['final_schema_valid']}, "
+            f"evidence={result['evidence_valid']}"
         )
 
         if result["failure_stage"]:
-            print(
-                f'  Failure stage: {result["failure_stage"]}'
-            )
+            print(f"  Failure stage: {result['failure_stage']}")
 
         if result["error"]:
-            print(f'  Error: {result["error"]}')
+            print(f"  Error: {result['error']}")
 
         if result["raw_schema_errors"]:
-            print(
-                f'  Raw schema errors: '
-                f'{result["raw_schema_errors"]}'
-            )
+            print(f"  Raw schema errors: {result['raw_schema_errors']}")
 
         if result["final_schema_errors"]:
-            print(
-                f'  Final schema errors: '
-                f'{result["final_schema_errors"]}'
-            )
+            print(f"  Final schema errors: {result['final_schema_errors']}")
 
         if result["evidence_errors"]:
-            print(
-                f'  Evidence errors: '
-                f'{result["evidence_errors"]}'
-            )
+            print(f"  Evidence errors: {result['evidence_errors']}")
 
         # 중간 결과를 저장해 중단 시에도 진행 상황을 보존한다.
         write_jsonl(output_path, results)

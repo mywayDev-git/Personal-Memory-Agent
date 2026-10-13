@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ko">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>기억의 서랍 · Personal Memory Agent</title><link rel="stylesheet" href="/static/style.css"><script type="module" src="/static/app.js"></script></head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <a class="brand" href="/">기억의 서랍<span>PERSONAL MEMORY AGENT</span></a>
+    <p class="intro">지나간 경험을,<br>오늘의 단서로.</p>
+    <nav aria-label="주 메뉴">
+      <button data-tab="records" class="nav active" aria-current="page">01 <span>나의 기록</span></button>
+      <button data-tab="questions" class="nav">02 <span>기억에 질문하기</span></button>
+      <button data-tab="trash" class="nav">03 <span>휴지통</span></button>
+    <button id="test-nav" data-tab="playground" class="nav" hidden>04 <span>생활 기록 테스트</span></button><button data-tab="failures" class="nav">05 <span>처리 실패 목록</span></button></nav>
+    <div class="privacy"><span class="dot"></span> 이 PC 안에 머무는 기록<p>기록은 로컬 모델로만 처리합니다.</p></div>
+    <button id="check-health" class="link">연결 상태 확인</button>
+    <p id="health" class="muted" aria-live="polite">연결을 확인하고 있습니다.</p>
+    <section class="processing-panel" aria-label="AI 기록 처리 현황">
+      <h2>AI 처리 현황</h2><button id="show-failures" class="link">실패 목록·재처리</button><p id="processing-count" role="status">작업 수를 확인하고 있습니다.</p>
+      <progress id="processing-bar" max="1" value="0" aria-label="처리 시도 완료 비율"></progress>
+      <p id="processing-summary" class="muted"></p>
+      <p id="processing-current"></p>
+      <details open><summary>최근 처리 로그</summary><ol id="processing-log"></ol></details>
+      <p id="processing-updated" class="muted">3초마다 자동 갱신</p>
+    </section>
+  </aside>
+  <main>
+    <header><div><span class="eyebrow">YOUR PERSONAL ARCHIVE</span><h1 id="heading">나의 기록</h1></div><span id="today" class="date"></span></header>
+    <div id="notice" role="status" aria-live="polite" hidden></div>
+    <section id="records" class="tab">
+      <div class="grid">
+        <article class="card editor"><div class="card-head"><h2 id="editor-title">오늘, 무엇을 기억할까요?</h2><button id="new-record" class="link">새 기록</button></div>
+          <p class="muted">경험과 생각을 자유롭게 남기세요. AI가 검색할 수 있는 기억으로 정리합니다.</p>
+          <form id="record-form">
+            <label for="record-text">기록 내용</label><textarea id="record-text" required maxlength="4000" rows="10" placeholder="어떤 일이 있었고, 무엇을 결정했나요?"></textarea>
+            <div class="field-row"><label for="reference-time">기준 시각 <span class="muted">‘오늘’, ‘어제’ 해석에 사용</span></label><input id="reference-time" type="datetime-local"></div>
+            <div class="form-footer"><span id="char-count" class="muted">0 / 4,000</span><button type="submit" class="primary" id="save">기록 저장</button></div>
+          </form>
+          <p class="hint">저장한 원문은 AI 처리에 실패해도 보존됩니다.</p>
+        </article>
+        <article class="card"><div class="card-head"><h2>기록 목록</h2><button id="refresh" class="link">새로고침</button></div><div id="record-list" class="record-list"></div><button id="more" class="secondary" hidden>더 보기</button></article>
+      </div>
+      <article id="detail" class="card detail" hidden><div class="card-head"><h2>원문과 기억</h2><button id="close-detail" class="link">닫기</button></div><div id="detail-content"></div></article>
+    </section>
+    <section id="questions" class="tab" hidden>
+      <article class="card question-card"><span class="eyebrow">CONNECT THE DOTS</span><h2>지금 필요한 과거의 경험은?</h2><p class="muted">기록에서 단서를 찾고, 답변에 사용한 원문까지 확인하세요.</p>
+        <form id="question-form"><label for="question">질문</label><textarea id="question" maxlength="1000" rows="3" required placeholder="예전에 역할 분담 문제를 어떻게 해결했지?"></textarea>
+          <details><summary>기간 직접 지정</summary><div class="dates"><label>시작일<input id="date-from" type="date"></label><label>종료일<input id="date-to" type="date"></label></div></details>
+          <div class="form-footer"><span class="muted">질문과 답변은 저장하지 않습니다.</span><button class="primary" id="ask" type="submit">기억 찾아보기</button></div>
+        </form>
+      </article><article id="answer" class="card" hidden aria-live="polite"></article>
+    </section>
+    <section id="trash" class="tab" hidden><article class="card"><h2>잠시 보관한 기록</h2><p class="muted">30일 동안 복원할 수 있습니다. 만료된 기록은 앱 실행 중 또는 다음 실행 때 영구 삭제됩니다.</p><div id="trash-list" class="record-list"></div><button id="trash-more" class="secondary" hidden>더 보기</button></article></section>
+    <section id="playground" class="tab" hidden><article class="card">
+      <h2>가상 사용자 · 6개월 생활 기록</h2><p>개인 기록과 분리된 테스트 공간입니다. AI 처리 전인 기록은 검색되지 않습니다. 기대 결과는 답변 생성에 전달하지 않습니다.</p>
+      <p id="test-progress" role="status"></p>
+      <label for="test-kind">둘러보기</label><select id="test-kind"><option value="records">기록 300개</option><option value="questions">질문 600개</option></select>
+      <label for="test-search">사건·이름·내용 검색</label><input id="test-search" type="search" placeholder="예: E01, 지연, 부산">
+      <label for="test-category">분류</label><select id="test-category"><option value="">전체</option></select>
+      <button id="test-refresh" class="secondary">처리 상태 새로고침</button>
+      <p id="test-count" class="muted"></p><div id="test-list"></div><button id="test-more" class="secondary">더 보기</button>
+    </article></section>
+    <section id="failures" class="tab" hidden><article class="card">
+      <h2>처리 실패 목록</h2><p class="muted">원문은 보존되어 있습니다. 재처리는 대기열에 추가되며, 같은 원인으로 다시 실패할 수 있습니다.</p>
+      <p id="failure-summary" role="status"></p><div id="failure-groups" class="actions"></div>
+      <label for="failure-filter">실패 원인</label><select id="failure-filter"><option value="">전체 원인</option></select>
+      <div class="actions"><button id="failure-refresh" class="secondary">새로고침</button><button id="failure-retry" class="primary" disabled>표시된 실패 전체 재처리</button></div>
+      <p id="failure-notice" role="status"></p><div id="failure-list"></div>
+    </article></section>
+    <footer>기억은 원문에서 시작합니다. 중요한 판단 전에는 답변의 근거를 확인하세요.</footer>
+  </main>
+</div>
+</body></html>

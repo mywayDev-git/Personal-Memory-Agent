@@ -1,0 +1,1482 @@
+{
+  "today": "2026-10-13",
+  "synthetic": true,
+  "records": [
+    {
+      "id": "fight",
+      "text": "어제 친구랑 다퉜어.",
+      "reference_time": "2026-10-13T20:00:00+09:00"
+    },
+    {
+      "id": "run5",
+      "text": "2026년 10월 4일 한강공원에서 나는 5km를 달렸다.",
+      "reference_time": "2026-10-04T20:00:00+09:00"
+    },
+    {
+      "id": "busan",
+      "text": "2026년 10월 5일 부산에 갔다. 해운대에서 바다를 보고 자갈치시장에서 회를 먹었다.",
+      "reference_time": "2026-10-05T20:00:00+09:00"
+    },
+    {
+      "id": "run_plan",
+      "text": "다음 주에 나는 4km를 달릴 계획이다. 아직 실행하지 않았다.",
+      "reference_time": "2026-10-13T20:00:00+09:00"
+    },
+    {
+      "id": "friend_run",
+      "text": "2026년 10월 6일 친구 민수가 4km를 달렸다. 나는 옆에서 응원만 했다.",
+      "reference_time": "2026-10-06T20:00:00+09:00"
+    },
+    {
+      "id": "jeju_cancel",
+      "text": "2026년 10월 7일 제주도 여행을 취소했다. 제주도에는 가지 않았다.",
+      "reference_time": "2026-10-07T20:00:00+09:00"
+    },
+    {
+      "id": "busan_plan",
+      "text": "2026년 11월에 부산에 가면 태종대를 방문할 계획이다.",
+      "reference_time": "2026-10-13T20:00:00+09:00"
+    },
+    {
+      "id": "cafe",
+      "text": "2026년 10월 8일 서울 성수동 카페에서 지수와 커피를 마셨다.",
+      "reference_time": "2026-10-08T20:00:00+09:00"
+    },
+    {
+      "id": "movie",
+      "text": "2026년 9월 20일 민수와 영화 인터스텔라를 봤다.",
+      "reference_time": "2026-09-20T20:00:00+09:00"
+    },
+    {
+      "id": "unknown_date",
+      "text": "예전에 형과 말다툼을 했다. 정확한 날짜는 기억나지 않는다.",
+      "reference_time": null
+    },
+    {
+      "id": "units",
+      "text": "2026년 10월 9일 나는 운동장에서 3000m를 달렸다.",
+      "reference_time": "2026-10-09T20:00:00+09:00"
+    },
+    {
+      "id": "dinner",
+      "text": "2026년 10월 10일 서울에서 동료와 저녁으로 초밥을 먹었다.",
+      "reference_time": "2026-10-10T20:00:00+09:00"
+    },
+    {
+      "id": "wish",
+      "text": "지연은 생일 선물로 파란색 머그컵을 받고 싶다고 말했다.",
+      "reference_time": "2026-10-03T20:00:00+09:00"
+    },
+    {
+      "id": "gift",
+      "text": "나는 지연이한테 생일선물로 빨간색 머그컵을 줬다.",
+      "reference_time": "2026-10-07T20:00:00+09:00"
+    },
+    {
+      "id": "pref_old",
+      "text": "2026년 10월 1일 지연은 파란색 머그컵을 좋아한다고 말했다.",
+      "reference_time": "2026-10-01T20:00:00+09:00"
+    },
+    {
+      "id": "pref_new",
+      "text": "2026년 10월 10일 지연은 이제 빨간색 머그컵을 더 좋아한다고 말했다.",
+      "reference_time": "2026-10-10T20:00:00+09:00"
+    },
+    {
+      "id": "gift_other",
+      "text": "2026년 10월 8일 나는 민수에게 노란색 머그컵을 줬다.",
+      "reference_time": "2026-10-08T20:00:00+09:00"
+    },
+    {
+      "id": "wish_other",
+      "text": "민수는 검은색 머그컵을 받고 싶다고 말했다.",
+      "reference_time": "2026-10-03T20:00:00+09:00"
+    }
+  ],
+  "questions": [
+    {
+      "id": "synonym_when",
+      "question": "나 친구랑 싸웠었는데 언제였지",
+      "relevant": [
+        "fight"
+      ],
+      "expected": "2026-10-12. 싸웠다와 다퉜다를 같은 경험으로 연결한다.",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "2026-10-12"
+        ],
+        "citations": [
+          "fight"
+        ],
+        "exclude_citations": []
+      }
+    },
+    {
+      "id": "literal_when",
+      "question": "친구랑 다툰 게 언제야?",
+      "relevant": [
+        "fight"
+      ],
+      "expected": "2026-10-12",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "2026-10-12"
+        ],
+        "citations": [
+          "fight"
+        ],
+        "exclude_citations": []
+      }
+    },
+    {
+      "id": "relative_filter",
+      "question": "어제 친구랑 무슨 일이 있었지?",
+      "relevant": [
+        "fight"
+      ],
+      "expected": "2026-10-12 친구와 다툼. 다른 날짜 제외.",
+      "date_filter": true,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "다퉜"
+        ],
+        "citations": [
+          "fight"
+        ],
+        "exclude_citations": []
+      }
+    },
+    {
+      "id": "relative_recall",
+      "question": "친구랑 싸운 적 있어?",
+      "relevant": [
+        "fight"
+      ],
+      "expected": "친구와 다툰 기록에 근거해 긍정",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "다퉜"
+        ],
+        "citations": [
+          "fight"
+        ],
+        "exclude_citations": []
+      }
+    },
+    {
+      "id": "number_mismatch",
+      "question": "나 4km 달린적 있나",
+      "relevant": [
+        "run5",
+        "run_plan",
+        "friend_run"
+      ],
+      "expected": "사용자가 4km를 실제 달린 기록은 확인되지 않음. 5km 기록, 4km 계획, 친구의 달리기를 긍정 근거로 쓰면 실패.",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "insufficient_evidence"
+        ]
+      }
+    },
+    {
+      "id": "number_exact",
+      "question": "나 5km 달린 적 있어?",
+      "relevant": [
+        "run5"
+      ],
+      "expected": "2026-10-04 한강공원에서 5km 달림",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "5km"
+        ],
+        "citations": [
+          "run5"
+        ],
+        "exclude_citations": []
+      }
+    },
+    {
+      "id": "number_threshold",
+      "question": "내가 4km 이상 달린 적 있어?",
+      "relevant": [
+        "run5"
+      ],
+      "expected": "5km는 4km 이상 조건을 충족",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "5km"
+        ],
+        "citations": [
+          "run5"
+        ],
+        "exclude_citations": [
+          "units",
+          "friend_run",
+          "run_plan"
+        ]
+      }
+    },
+    {
+      "id": "number_less",
+      "question": "내가 4km 미만 달린 적 있어?",
+      "relevant": [
+        "units"
+      ],
+      "expected": "3000m=3km 기록. 5km는 제외",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "3000m"
+        ],
+        "citations": [
+          "units"
+        ],
+        "exclude_citations": [
+          "run5",
+          "friend_run"
+        ]
+      }
+    },
+    {
+      "id": "unit_conversion",
+      "question": "나 3km 달린 적 있어?",
+      "relevant": [
+        "units"
+      ],
+      "expected": "3000m와 3km가 동등함",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "3000m"
+        ],
+        "citations": [
+          "units"
+        ],
+        "exclude_citations": [
+          "run5"
+        ]
+      }
+    },
+    {
+      "id": "other_person",
+      "question": "민수는 몇 km 달렸어?",
+      "relevant": [
+        "friend_run"
+      ],
+      "expected": "민수 4km. 사용자 5km와 구분",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "4km"
+        ],
+        "citations": [
+          "friend_run"
+        ],
+        "exclude_citations": [
+          "run5"
+        ]
+      }
+    },
+    {
+      "id": "plan",
+      "question": "나는 몇 km 달릴 계획이야?",
+      "relevant": [
+        "run_plan"
+      ],
+      "expected": "4km 계획. 완료로 바꾸지 않음",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "4km"
+        ],
+        "citations": [
+          "run_plan"
+        ],
+        "exclude_citations": [
+          "run5"
+        ]
+      }
+    },
+    {
+      "id": "place_activities",
+      "question": "부산 가서 뭐했지",
+      "relevant": [
+        "busan"
+      ],
+      "expected": "해운대에서 바다를 보고 자갈치시장에서 회를 먹음. 태종대 계획 제외",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "바다",
+          "회"
+        ],
+        "citations": [
+          "busan"
+        ],
+        "exclude_citations": [
+          "busan_plan",
+          "dinner"
+        ]
+      }
+    },
+    {
+      "id": "place_food",
+      "question": "부산에서 뭘 먹었지?",
+      "relevant": [
+        "busan"
+      ],
+      "expected": "자갈치시장 회. 서울 초밥 제외",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "회"
+        ],
+        "citations": [
+          "busan"
+        ],
+        "exclude_citations": [
+          "dinner"
+        ]
+      }
+    },
+    {
+      "id": "place_reverse",
+      "question": "회 먹었던 곳이 어디야?",
+      "relevant": [
+        "busan"
+      ],
+      "expected": "부산 자갈치시장",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "자갈치"
+        ],
+        "citations": [
+          "busan"
+        ],
+        "exclude_citations": []
+      }
+    },
+    {
+      "id": "place_explicit",
+      "question": "해운대에서 뭘 했어?",
+      "relevant": [
+        "busan"
+      ],
+      "expected": "바다를 봄",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "바다"
+        ],
+        "citations": [
+          "busan"
+        ],
+        "exclude_citations": []
+      }
+    },
+    {
+      "id": "plan_not_visit",
+      "question": "태종대 다녀왔어?",
+      "relevant": [
+        "busan_plan"
+      ],
+      "expected": "방문 계획만 있음. 방문 완료를 긍정하면 실패",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "계획"
+        ],
+        "citations": [
+          "busan_plan"
+        ],
+        "exclude_citations": [
+          "busan"
+        ]
+      }
+    },
+    {
+      "id": "negated_visit",
+      "question": "제주도에 가서 뭐했어?",
+      "relevant": [
+        "jeju_cancel"
+      ],
+      "expected": "여행 취소/방문하지 않음. 활동을 만들면 실패",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "취소"
+        ],
+        "citations": [
+          "jeju_cancel"
+        ],
+        "exclude_citations": [
+          "busan"
+        ]
+      }
+    },
+    {
+      "id": "missing",
+      "question": "부산 숙소 예약번호가 뭐였지?",
+      "relevant": [],
+      "expected": "근거 부족. 번호 생성 금지",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "insufficient_evidence"
+        ]
+      }
+    },
+    {
+      "id": "last_month",
+      "question": "지난달에 무슨 영화 봤지?",
+      "relevant": [
+        "movie"
+      ],
+      "expected": "9월 20일 인터스텔라",
+      "date_filter": true,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "인터스텔라"
+        ],
+        "citations": [
+          "movie"
+        ],
+        "exclude_citations": []
+      }
+    },
+    {
+      "id": "date_explicit",
+      "question": "10월 8일 누구랑 커피 마셨지?",
+      "relevant": [
+        "cafe"
+      ],
+      "expected": "지수. 날짜 조건 2026-10-08",
+      "date_filter": true,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "지수"
+        ],
+        "citations": [
+          "cafe"
+        ],
+        "exclude_citations": []
+      }
+    },
+    {
+      "id": "unknown_when",
+      "question": "형과 말다툼한 날짜가 언제야?",
+      "relevant": [
+        "unknown_date"
+      ],
+      "expected": "정확한 날짜를 모른다고 설명. 작성일이나 오늘로 추측 금지",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "확인되지"
+        ],
+        "citations": [
+          "unknown_date"
+        ],
+        "exclude_citations": [
+          "fight"
+        ]
+      }
+    },
+    {
+      "id": "where_run",
+      "question": "5km 달린 곳이 어디였지?",
+      "relevant": [
+        "run5"
+      ],
+      "expected": "한강공원",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "한강공원"
+        ],
+        "citations": [
+          "run5"
+        ],
+        "exclude_citations": []
+      }
+    },
+    {
+      "id": "why_fight",
+      "question": "친구랑 왜 싸웠지?",
+      "relevant": [
+        "fight"
+      ],
+      "expected": "다툰 원인은 기록에 없음. 원인 생성 금지",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "insufficient_evidence"
+        ]
+      }
+    },
+    {
+      "id": "aggregate",
+      "question": "내가 달리기를 총 몇 번 했지?",
+      "relevant": [],
+      "expected": "현재 제품 정책에 따라 unsupported_intent. 상위 검색 결과 수를 전체 횟수로 답하지 않음",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "unsupported_intent"
+        ]
+      }
+    },
+    {
+      "id": "rel_wish_1",
+      "question": "지연이가 받고 싶다고 한거",
+      "relevant": [
+        "wish"
+      ],
+      "expected": "파란색 머그컵. 실제 준 빨간색을 희망으로 답하지 않음.",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "파란색"
+        ],
+        "excludes": [
+          "빨간색"
+        ],
+        "citations": [
+          "wish"
+        ]
+      }
+    },
+    {
+      "id": "rel_wish_2",
+      "question": "지연이 원했던 선물은?",
+      "relevant": [
+        "wish"
+      ],
+      "expected": "파란색 머그컵. 실제 준 빨간색을 희망으로 답하지 않음.",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "파란색"
+        ],
+        "excludes": [
+          "빨간색"
+        ],
+        "citations": [
+          "wish"
+        ]
+      }
+    },
+    {
+      "id": "rel_wish_3",
+      "question": "지연은 어떤 컵을 원했지?",
+      "relevant": [
+        "wish"
+      ],
+      "expected": "파란색 머그컵. 실제 준 빨간색을 희망으로 답하지 않음.",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "파란색"
+        ],
+        "excludes": [
+          "빨간색"
+        ],
+        "citations": [
+          "wish"
+        ]
+      }
+    },
+    {
+      "id": "rel_wish_4",
+      "question": "지연이 갖고 싶다고 한 머그컵은?",
+      "relevant": [
+        "wish"
+      ],
+      "expected": "파란색 머그컵. 실제 준 빨간색을 희망으로 답하지 않음.",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "파란색"
+        ],
+        "excludes": [
+          "빨간색"
+        ],
+        "citations": [
+          "wish"
+        ]
+      }
+    },
+    {
+      "id": "rel_given_1",
+      "question": "내가 지연이한테 준 선물은?",
+      "relevant": [
+        "gift"
+      ],
+      "expected": "빨간색 머그컵. 원했던 파란색과 구분.",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "빨간색"
+        ],
+        "excludes": [
+          "파란색"
+        ],
+        "citations": [
+          "gift"
+        ]
+      }
+    },
+    {
+      "id": "rel_given_2",
+      "question": "나는 지연에게 무슨 색 컵을 줬어?",
+      "relevant": [
+        "gift"
+      ],
+      "expected": "빨간색 머그컵. 원했던 파란색과 구분.",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "빨간색"
+        ],
+        "excludes": [
+          "파란색"
+        ],
+        "citations": [
+          "gift"
+        ]
+      }
+    },
+    {
+      "id": "rel_given_3",
+      "question": "내가 지연에게 선물한 것은?",
+      "relevant": [
+        "gift"
+      ],
+      "expected": "빨간색 머그컵. 원했던 파란색과 구분.",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "빨간색"
+        ],
+        "excludes": [
+          "파란색"
+        ],
+        "citations": [
+          "gift"
+        ]
+      }
+    },
+    {
+      "id": "rel_given_4",
+      "question": "지연이한테 내가 줬던 머그컵은?",
+      "relevant": [
+        "gift"
+      ],
+      "expected": "빨간색 머그컵. 원했던 파란색과 구분.",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "빨간색"
+        ],
+        "excludes": [
+          "파란색"
+        ],
+        "citations": [
+          "gift"
+        ]
+      }
+    },
+    {
+      "id": "rel_received_1",
+      "question": "지연이가 받은 선물은?",
+      "relevant": [
+        "gift"
+      ],
+      "expected": "빨간색 머그컵. 행위자와 수신자 방향을 구분.",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "빨간색"
+        ],
+        "excludes": [
+          "파란색"
+        ],
+        "citations": [
+          "gift"
+        ]
+      }
+    },
+    {
+      "id": "rel_received_2",
+      "question": "지연이 받은 컵은 무슨 색이야?",
+      "relevant": [
+        "gift"
+      ],
+      "expected": "빨간색 머그컵. 행위자와 수신자 방향을 구분.",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "빨간색"
+        ],
+        "excludes": [
+          "파란색"
+        ],
+        "citations": [
+          "gift"
+        ]
+      }
+    },
+    {
+      "id": "rel_received_3",
+      "question": "지연은 어떤 머그컵을 받았어?",
+      "relevant": [
+        "gift"
+      ],
+      "expected": "빨간색 머그컵. 행위자와 수신자 방향을 구분.",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "빨간색"
+        ],
+        "excludes": [
+          "파란색"
+        ],
+        "citations": [
+          "gift"
+        ]
+      }
+    },
+    {
+      "id": "rel_received_4",
+      "question": "내가 준 것 중 지연이 받은 것은?",
+      "relevant": [
+        "gift"
+      ],
+      "expected": "빨간색 머그컵. 행위자와 수신자 방향을 구분.",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "빨간색"
+        ],
+        "excludes": [
+          "파란색"
+        ],
+        "citations": [
+          "gift"
+        ]
+      }
+    },
+    {
+      "id": "rel_compare_1",
+      "question": "지연이 원한 것과 내가 준 것이 같아?",
+      "relevant": [
+        "wish",
+        "gift"
+      ],
+      "expected": "파란색 희망/빨간색 실제, 색상 차이를 양쪽 근거로 설명.",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "파란색",
+          "빨간색",
+          "다릅니다"
+        ],
+        "citations": [
+          "wish",
+          "gift"
+        ]
+      }
+    },
+    {
+      "id": "rel_compare_2",
+      "question": "지연 선물의 희망과 실제 색상 차이는?",
+      "relevant": [
+        "wish",
+        "gift"
+      ],
+      "expected": "파란색 희망/빨간색 실제, 색상 차이를 양쪽 근거로 설명.",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "파란색",
+          "빨간색",
+          "다릅니다"
+        ],
+        "citations": [
+          "wish",
+          "gift"
+        ]
+      }
+    },
+    {
+      "id": "rel_compare_3",
+      "question": "지연이 원했던 컵과 내가 선물한 컵을 비교해줘",
+      "relevant": [
+        "wish",
+        "gift"
+      ],
+      "expected": "파란색 희망/빨간색 실제, 색상 차이를 양쪽 근거로 설명.",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "파란색",
+          "빨간색",
+          "다릅니다"
+        ],
+        "citations": [
+          "wish",
+          "gift"
+        ]
+      }
+    },
+    {
+      "id": "rel_compare_4",
+      "question": "지연이 갖고 싶던 선물과 받은 선물이 달라?",
+      "relevant": [
+        "wish",
+        "gift"
+      ],
+      "expected": "파란색 희망/빨간색 실제, 색상 차이를 양쪽 근거로 설명.",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "파란색",
+          "빨간색",
+          "다릅니다"
+        ],
+        "citations": [
+          "wish",
+          "gift"
+        ]
+      }
+    },
+    {
+      "id": "rel_current_1",
+      "question": "지금 지연이 좋아하는 컵은?",
+      "relevant": [
+        "pref_old",
+        "pref_new"
+      ],
+      "expected": "10월1일 파란색/10월10일 빨간색 선호. 사건시각을 구분하고 현재 상태에 대한 기록의 한계를 표시.",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "2026-10-10",
+          "빨간색"
+        ],
+        "citations": [
+          "pref_new"
+        ]
+      }
+    },
+    {
+      "id": "rel_current_2",
+      "question": "현재 지연이 선호하는 머그컵은?",
+      "relevant": [
+        "pref_old",
+        "pref_new"
+      ],
+      "expected": "10월1일 파란색/10월10일 빨간색 선호. 사건시각을 구분하고 현재 상태에 대한 기록의 한계를 표시.",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "2026-10-10",
+          "빨간색"
+        ],
+        "citations": [
+          "pref_new"
+        ]
+      }
+    },
+    {
+      "id": "rel_current_3",
+      "question": "요즘 지연이가 좋아한다고 한 색은?",
+      "relevant": [
+        "pref_old",
+        "pref_new"
+      ],
+      "expected": "10월1일 파란색/10월10일 빨간색 선호. 사건시각을 구분하고 현재 상태에 대한 기록의 한계를 표시.",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "2026-10-10",
+          "빨간색"
+        ],
+        "citations": [
+          "pref_new"
+        ]
+      }
+    },
+    {
+      "id": "rel_current_4",
+      "question": "현재 지연의 컵 선호 기록을 보여줘",
+      "relevant": [
+        "pref_old",
+        "pref_new"
+      ],
+      "expected": "10월1일 파란색/10월10일 빨간색 선호. 사건시각을 구분하고 현재 상태에 대한 기록의 한계를 표시.",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "2026-10-10",
+          "빨간색"
+        ],
+        "citations": [
+          "pref_new"
+        ]
+      }
+    },
+    {
+      "id": "rel_change_1",
+      "question": "지연의 취향이 바뀌었어?",
+      "relevant": [
+        "pref_old",
+        "pref_new"
+      ],
+      "expected": "선호 진술끼리 비교하며 선물 행동 자체를 취향 변경 근거로 쓰지 않음. 관계는 추론 표시.",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "2026-10-10",
+          "빨간색"
+        ],
+        "citations": [
+          "pref_new"
+        ]
+      }
+    },
+    {
+      "id": "rel_change_2",
+      "question": "지연이가 좋아하는 컵이 변했어?",
+      "relevant": [
+        "pref_old",
+        "pref_new"
+      ],
+      "expected": "선호 진술끼리 비교하며 선물 행동 자체를 취향 변경 근거로 쓰지 않음. 관계는 추론 표시.",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "2026-10-10",
+          "빨간색"
+        ],
+        "citations": [
+          "pref_new"
+        ]
+      }
+    },
+    {
+      "id": "rel_change_3",
+      "question": "지연 선호의 변화는?",
+      "relevant": [
+        "pref_old",
+        "pref_new"
+      ],
+      "expected": "선호 진술끼리 비교하며 선물 행동 자체를 취향 변경 근거로 쓰지 않음. 관계는 추론 표시.",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "2026-10-10",
+          "빨간색"
+        ],
+        "citations": [
+          "pref_new"
+        ]
+      }
+    },
+    {
+      "id": "rel_change_4",
+      "question": "지연이 좋아하는 색상이 어떻게 바뀌었어?",
+      "relevant": [
+        "pref_old",
+        "pref_new"
+      ],
+      "expected": "선호 진술끼리 비교하며 선물 행동 자체를 취향 변경 근거로 쓰지 않음. 관계는 추론 표시.",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "2026-10-10",
+          "빨간색"
+        ],
+        "citations": [
+          "pref_new"
+        ]
+      }
+    },
+    {
+      "id": "rel_asof_1",
+      "question": "10월 5일 기준 지연이 좋아한 컵은?",
+      "relevant": [
+        "pref_old"
+      ],
+      "expected": "그 시점 이전 파란색 선호. 10월10일 빨간색을 과거 상태로 답하지 않음.",
+      "date_filter": true,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "파란색"
+        ],
+        "excludes": [
+          "빨간색"
+        ],
+        "citations": [
+          "pref_old"
+        ]
+      }
+    },
+    {
+      "id": "rel_asof_2",
+      "question": "2026-10-05 당시 지연이 선호한 것은?",
+      "relevant": [
+        "pref_old"
+      ],
+      "expected": "그 시점 이전 파란색 선호. 10월10일 빨간색을 과거 상태로 답하지 않음.",
+      "date_filter": true,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "파란색"
+        ],
+        "excludes": [
+          "빨간색"
+        ],
+        "citations": [
+          "pref_old"
+        ]
+      }
+    },
+    {
+      "id": "rel_asof_3",
+      "question": "10월 5일까지 지연이 좋아한다고 한 색은?",
+      "relevant": [
+        "pref_old"
+      ],
+      "expected": "그 시점 이전 파란색 선호. 10월10일 빨간색을 과거 상태로 답하지 않음.",
+      "date_filter": true,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "파란색"
+        ],
+        "excludes": [
+          "빨간색"
+        ],
+        "citations": [
+          "pref_old"
+        ]
+      }
+    },
+    {
+      "id": "rel_asof_4",
+      "question": "2026년 10월 5일 기준 지연의 컵 선호는?",
+      "relevant": [
+        "pref_old"
+      ],
+      "expected": "그 시점 이전 파란색 선호. 10월10일 빨간색을 과거 상태로 답하지 않음.",
+      "date_filter": true,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "파란색"
+        ],
+        "excludes": [
+          "빨간색"
+        ],
+        "citations": [
+          "pref_old"
+        ]
+      }
+    },
+    {
+      "id": "rel_other_1",
+      "question": "민수가 원했던 컵은?",
+      "relevant": [
+        "wish_other",
+        "gift_other"
+      ],
+      "expected": "질문에 따라 검은색 희망/노란색 실제. 지연 기록을 혼동하지 않음.",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "검은색"
+        ],
+        "citations": [
+          "wish_other"
+        ],
+        "excludes": [
+          "지연"
+        ]
+      }
+    },
+    {
+      "id": "rel_other_2",
+      "question": "민수는 어떤 머그컵을 받고 싶어 했지?",
+      "relevant": [
+        "wish_other",
+        "gift_other"
+      ],
+      "expected": "질문에 따라 검은색 희망/노란색 실제. 지연 기록을 혼동하지 않음.",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "검은색"
+        ],
+        "citations": [
+          "wish_other"
+        ],
+        "excludes": [
+          "지연"
+        ]
+      }
+    },
+    {
+      "id": "rel_other_3",
+      "question": "민수에게 내가 준 컵은?",
+      "relevant": [
+        "wish_other",
+        "gift_other"
+      ],
+      "expected": "질문에 따라 검은색 희망/노란색 실제. 지연 기록을 혼동하지 않음.",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "노란색"
+        ],
+        "citations": [
+          "gift_other"
+        ],
+        "excludes": [
+          "지연"
+        ]
+      }
+    },
+    {
+      "id": "rel_other_4",
+      "question": "민수가 받은 컵은 무슨 색이지?",
+      "relevant": [
+        "wish_other",
+        "gift_other"
+      ],
+      "expected": "질문에 따라 검은색 희망/노란색 실제. 지연 기록을 혼동하지 않음.",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "노란색"
+        ],
+        "citations": [
+          "gift_other"
+        ],
+        "excludes": [
+          "지연"
+        ]
+      }
+    },
+    {
+      "id": "rel_when_1",
+      "question": "지연에게 선물 준 날짜는?",
+      "relevant": [
+        "gift",
+        "wish",
+        "pref_new",
+        "gift_other"
+      ],
+      "expected": "명시된 사건 날짜만 사용. 작성일뿐인 wish/gift는 사건일 미상으로 답하고 임의 작성일 대입 금지.",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "확인되지"
+        ],
+        "excludes": [
+          "2026-10-03",
+          "2026-10-07"
+        ],
+        "citations": [
+          "gift"
+        ]
+      }
+    },
+    {
+      "id": "rel_when_2",
+      "question": "지연이 파란 컵을 원한 게 언제였지?",
+      "relevant": [
+        "gift",
+        "wish",
+        "pref_new",
+        "gift_other"
+      ],
+      "expected": "명시된 사건 날짜만 사용. 작성일뿐인 wish/gift는 사건일 미상으로 답하고 임의 작성일 대입 금지.",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "확인되지"
+        ],
+        "excludes": [
+          "2026-10-03",
+          "2026-10-07"
+        ],
+        "citations": [
+          "wish"
+        ]
+      }
+    },
+    {
+      "id": "rel_when_3",
+      "question": "빨간 컵으로 취향이 바뀐 시점은?",
+      "relevant": [
+        "gift",
+        "wish",
+        "pref_new",
+        "gift_other"
+      ],
+      "expected": "명시된 사건 날짜만 사용. 작성일뿐인 wish/gift는 사건일 미상으로 답하고 임의 작성일 대입 금지.",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "2026-10-10"
+        ],
+        "citations": [
+          "pref_new"
+        ],
+        "exclude_citations": [
+          "gift_other",
+          "unknown_date",
+          "busan"
+        ]
+      }
+    },
+    {
+      "id": "rel_when_4",
+      "question": "민수에게 선물한 날짜가 언제야?",
+      "relevant": [
+        "gift",
+        "wish",
+        "pref_new",
+        "gift_other"
+      ],
+      "expected": "명시된 사건 날짜만 사용. 작성일뿐인 wish/gift는 사건일 미상으로 답하고 임의 작성일 대입 금지.",
+      "date_filter": false,
+      "checks": {
+        "statuses": [
+          "answered"
+        ],
+        "contains": [
+          "2026-10-08"
+        ],
+        "citations": [
+          "gift_other"
+        ]
+      }
+    }
+  ],
+  "scenarios": [
+    {
+      "name": "wish_then_gift",
+      "stages": [
+        [
+          "wish"
+        ],
+        [
+          "wish",
+          "gift"
+        ],
+        [
+          "wish",
+          "gift",
+          "gift_other",
+          "wish_other"
+        ]
+      ],
+      "question": "지연이가 받고 싶다고 한거",
+      "expected": "파란색 유지"
+    },
+    {
+      "name": "reverse_order",
+      "stages": [
+        [
+          "gift",
+          "wish"
+        ]
+      ],
+      "question": "지연이가 받고 싶다고 한거",
+      "expected": "파란색 유지"
+    },
+    {
+      "name": "no_change_from_giving",
+      "stages": [
+        [
+          "wish",
+          "gift"
+        ]
+      ],
+      "question": "지연의 취향이 바뀌었어?",
+      "expected": "선물만으로 판단 불가"
+    }
+  ]
+}

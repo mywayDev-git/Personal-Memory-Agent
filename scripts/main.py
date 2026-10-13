@@ -1,4 +1,3 @@
-
 """Command-line entry point for the Personal Memory Agent."""
 
 import argparse
@@ -9,18 +8,18 @@ from typing import Any
 
 import requests
 
-from config.settings import paths, settings
-from .exceptions import (
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+from config.settings import Settings, paths
+from scripts.memory_agent.exceptions import (
     ExtractionError,
     MemoryAgentError,
     SchemaValidationError,
 )
-from .extractor import extract_memories
-from .postprocess import build_final_result, make_source_context
-from .validator import (
+from scripts.memory_agent.postprocess import make_source_context
+from scripts.memory_agent.validator import (
     load_schema,
-    validate_extraction,
-    validate_final_result,
 )
 
 
@@ -29,9 +28,7 @@ def read_prompt(path: Path) -> str:
     try:
         prompt = path.read_text(encoding="utf-8").strip()
     except OSError as exc:
-        raise MemoryAgentError(
-            f"Could not read prompt file: {path}"
-        ) from exc
+        raise MemoryAgentError(f"Could not read prompt file: {path}") from exc
 
     if not prompt:
         raise MemoryAgentError(f"Prompt file is empty: {path}")
@@ -44,13 +41,9 @@ def read_json_input(path: Path) -> dict[str, Any]:
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
     except OSError as exc:
-        raise MemoryAgentError(
-            f"Could not read input file: {path}"
-        ) from exc
+        raise MemoryAgentError(f"Could not read input file: {path}") from exc
     except json.JSONDecodeError as exc:
-        raise MemoryAgentError(
-            f"Input file is not valid JSON: {path}: {exc}"
-        ) from exc
+        raise MemoryAgentError(f"Input file is not valid JSON: {path}: {exc}") from exc
 
     if not isinstance(data, dict):
         raise MemoryAgentError("Input JSON must be an object.")
@@ -78,64 +71,18 @@ def extract_source_text(data: dict[str, Any]) -> str:
     )
 
 
-def process_text(
-    source_text: str,
-    source_context: dict[str, Any],
-    *,
-    prompt: str,
-    output_schema: dict[str, Any],
-    final_schema: dict[str, Any],
-    session: requests.Session,
-) -> tuple[dict[str, Any], dict[str, Any]]:
-    """Extract and validate memories from a single source."""
-    if not isinstance(source_text, str) or not source_text.strip():
-        raise MemoryAgentError("Source text must not be empty.")
+def process_text(source_text, source_context, *, prompt, output_schema, final_schema, session):
+    from scripts.memory_agent.pipeline import process_text as process
 
-    extraction, llm_metadata, latency = extract_memories(
-        session=session,
-        endpoint=settings.endpoint,
-        model=settings.model,
+    return process(
+        source_text,
+        source_context,
         prompt=prompt,
-        source_text=source_text,
-        source_context=source_context,
-        timeout=settings.timeout,
-        max_tokens=settings.max_tokens,
-        temperature=settings.temperature,
-        seed=settings.seed,
-        top_p=settings.top_p,
-    )
-
-    output_errors = validate_extraction(extraction, output_schema)
-    if output_errors:
-        raise SchemaValidationError(
-            "LLM output failed schema validation:\n"
-            + "\n".join(output_errors)
-        )
-
-    final_result = build_final_result(extraction, source_context)
-
-    report = validate_final_result(
-        result=final_result,
+        output_schema=output_schema,
         final_schema=final_schema,
-        source_text=source_text,
+        session=session,
+        settings=Settings.from_env(),
     )
-
-    if not report["valid"]:
-        raise SchemaValidationError(
-            "Final result validation failed:\n"
-            + json.dumps(report, ensure_ascii=False, indent=2)
-        )
-
-    metadata = {
-        **llm_metadata,
-        "latency_seconds": round(latency, 4),
-        "memory_count": len(final_result["memories"]),
-        "output_schema_valid": True,
-        "final_schema_valid": report["schema_valid"],
-        "evidence_valid": report["evidence_valid"],
-    }
-
-    return final_result, metadata
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -165,7 +112,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--language",
-        default=settings.language,
+        default=Settings.from_env().language,
         help="Source language.",
     )
     parser.add_argument(
@@ -209,10 +156,7 @@ def main() -> int:
             source_text = extract_source_text(input_data)
 
             nested_input = input_data.get("input")
-            input_metadata = (
-                nested_input if isinstance(nested_input, dict)
-                else input_data
-            )
+            input_metadata = nested_input if isinstance(nested_input, dict) else input_data
 
             source_id = input_metadata.get(
                 "source_id",

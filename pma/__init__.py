@@ -1,0 +1,1 @@
+"""Local personal memory application."""

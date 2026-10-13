@@ -17,41 +17,35 @@ def calculate_metrics(records: list[dict[str, Any]]) -> dict[str, Any]:
             "invalid_count": 0,
             "valid_rate": 0.0,
             "schema_valid_rate": 0.0,
+            "schema_valid_count": 0,
+            "evidence_valid_count": 0,
             "evidence_valid_rate": 0.0,
             "avg_latency_seconds": None,
             "error_types": {},
             "finish_reasons": {},
         }
 
-    completed_records = [
-        record for record in records
-        if not record.get("error")
-    ]
+    completed_records = [record for record in records if not record.get("error")]
 
-    valid_count = sum(
-        record.get("valid") is True
-        for record in records
-    )
+    valid_count = sum(record.get("valid") is True for record in records)
     schema_valid_count = sum(
-        record.get("schema_valid") is True
-        for record in records
+        record.get("final_schema_valid", record.get("schema_valid")) is True for record in records
     )
-    evidence_valid_count = sum(
-        record.get("evidence_valid") is True
-        for record in records
-    )
+    evidence_valid_count = sum(record.get("evidence_valid") is True for record in records)
 
     latencies = [
         float(record["latency_seconds"])
         for record in records
         if isinstance(record.get("latency_seconds"), (int, float))
+        and not isinstance(record.get("latency_seconds"), bool)
+        and record["latency_seconds"] >= 0
     ]
 
     error_types = Counter()
     finish_reasons = Counter()
 
     for record in records:
-        error = record.get("error")
+        error = record.get("failure_stage") or record.get("error")
         if error:
             error_types[str(error)] += 1
 
@@ -66,10 +60,10 @@ def calculate_metrics(records: list[dict[str, Any]]) -> dict[str, Any]:
         "invalid_count": total - valid_count,
         "valid_rate": valid_count / total,
         "schema_valid_rate": schema_valid_count / total,
+        "schema_valid_count": schema_valid_count,
+        "evidence_valid_count": evidence_valid_count,
         "evidence_valid_rate": evidence_valid_count / total,
-        "avg_latency_seconds": (
-            mean(latencies) if latencies else None
-        ),
+        "avg_latency_seconds": (mean(latencies) if latencies else None),
         "error_types": dict(error_types),
         "finish_reasons": dict(finish_reasons),
     }

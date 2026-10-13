@@ -1,10 +1,8 @@
-
 """Central configuration for the Personal Memory Agent."""
 
 import os
 from dataclasses import dataclass
 from pathlib import Path
-
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
@@ -17,9 +15,7 @@ def _env_int(name: str, default: int) -> int:
     try:
         return int(value)
     except ValueError as exc:
-        raise ValueError(
-            f"Environment variable {name} must be an integer."
-        ) from exc
+        raise ValueError(f"Environment variable {name} must be an integer.") from exc
 
 
 def _env_float(name: str, default: float) -> float:
@@ -30,9 +26,7 @@ def _env_float(name: str, default: float) -> float:
     try:
         return float(value)
     except ValueError as exc:
-        raise ValueError(
-            f"Environment variable {name} must be a number."
-        ) from exc
+        raise ValueError(f"Environment variable {name} must be a number.") from exc
 
 
 @dataclass(frozen=True)
@@ -101,5 +95,4 @@ class Paths:
         return self.root / "results"
 
 
-settings = Settings.from_env()
 paths = Paths()

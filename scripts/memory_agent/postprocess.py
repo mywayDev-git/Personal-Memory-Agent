@@ -1,8 +1,6 @@
-
 """Postprocessing utilities for extracted memories."""
 
 from typing import Any
-
 
 SCHEMA_VERSION = "4.0"
 
@@ -21,9 +19,7 @@ def build_final_result(
 
     for index, memory in enumerate(memories, start=1):
         if not isinstance(memory, dict):
-            raise ValueError(
-                f"memories[{index - 1}] must be an object"
-            )
+            raise ValueError(f"memories[{index - 1}] must be an object")
 
         item = dict(memory)
 

@@ -1,25 +1,23 @@
-
 """Memory extraction orchestration and LLM response parsing."""
 
 import json
 import re
+from pathlib import Path
 from typing import Any
 
 import requests
 
-from .llm_client import call_llm
 from .exceptions import ExtractionError
-import json
-from pathlib import Path
+from .llm_client import call_llm
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-OUTPUT_SCHEMA_PATH = (
-    PROJECT_ROOT / "schema" / "memory_extraction_output.schema.json"
-)
+OUTPUT_SCHEMA_PATH = PROJECT_ROOT / "schema" / "memory_extraction_output.schema.json"
+
 
 def load_output_schema() -> dict:
     with OUTPUT_SCHEMA_PATH.open("r", encoding="utf-8") as f:
         return json.load(f)
+
 
 def extract_json(text: str) -> dict[str, Any]:
     """Parse a JSON object, including one wrapped in a Markdown code fence."""
@@ -48,23 +46,20 @@ def extract_json(text: str) -> dict[str, Any]:
         try:
             result, _ = json.JSONDecoder().raw_decode(candidate[start:])
         except json.JSONDecodeError as exc:
-            raise ExtractionError(
-                f"Could not parse JSON response: {exc}"
-            ) from exc
+            raise ExtractionError(f"Could not parse JSON response: {exc}") from exc
 
     if not isinstance(result, dict):
         raise ExtractionError("Extraction output must be a JSON object.")
 
     return result
 
+
 def validate_extraction_shape(
     result: dict[str, Any],
 ) -> dict[str, Any]:
     """LLM 원본 출력의 기본 구조를 검증한다."""
     if not isinstance(result, dict):
-        raise ExtractionError(
-            "Invalid extraction output: expected a JSON object"
-        )
+        raise ExtractionError("Invalid extraction output: expected a JSON object")
 
     expected_keys = {"memories"}
     actual_keys = set(result.keys())
@@ -80,9 +75,7 @@ def validate_extraction_shape(
         )
 
     if not isinstance(result["memories"], list):
-        raise ExtractionError(
-            "Invalid extraction output: 'memories' must be a list"
-        )
+        raise ExtractionError("Invalid extraction output: 'memories' must be a list")
 
     return result
 
@@ -99,9 +92,11 @@ def extract_memories(
     temperature: float = 0.0,
     seed: int = 42,
     top_p: float = 1.0,
+    output_schema: dict[str, Any] | None = None,
 ) -> tuple[dict[str, Any], dict[str, Any], float]:
     """Call the LLM and return parsed extraction data and request metadata."""
-    output_schema = load_output_schema()
+    if output_schema is None:
+        output_schema = load_output_schema()
 
     content, metadata, latency = call_llm(
         session=session,

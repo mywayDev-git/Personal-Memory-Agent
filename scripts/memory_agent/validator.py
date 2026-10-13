@@ -1,4 +1,3 @@
-
 """JSON Schema and evidence validation for memory extraction."""
 
 from pathlib import Path
@@ -16,9 +15,7 @@ def load_schema(path: str | Path) -> dict[str, Any]:
 
         schema = json.loads(schema_path.read_text(encoding="utf-8"))
     except (OSError, ValueError) as exc:
-        raise ValueError(
-            f"Failed to load JSON Schema: {schema_path}"
-        ) from exc
+        raise ValueError(f"Failed to load JSON Schema: {schema_path}") from exc
 
     if not isinstance(schema, dict):
         raise ValueError(f"JSON Schema must be an object: {schema_path}")
@@ -45,10 +42,7 @@ def schema_errors(
         ),
     )
 
-    return [
-        f"{format_path(error.absolute_path)}: {error.message}"
-        for error in errors
-    ]
+    return [f"{format_path(error.absolute_path)}: {error.message}" for error in errors]
 
 
 def format_path(path: Any) -> str:
@@ -114,15 +108,12 @@ def evidence_checks(
             quote = item.get("quote")
 
             if not isinstance(quote, str) or not quote.strip():
-                errors.append(
-                    f"{item_path}.quote: expected a non-empty string"
-                )
+                errors.append(f"{item_path}.quote: expected a non-empty string")
                 continue
 
             if quote not in source_text:
                 errors.append(
-                    f"{item_path}.quote: quote does not occur verbatim "
-                    "in the source text"
+                    f"{item_path}.quote: quote does not occur verbatim in the source text"
                 )
 
     return errors
@@ -134,7 +125,6 @@ def validate_extraction(
 ) -> list[str]:
     """Validate the raw LLM extraction output."""
     return schema_errors(result, output_schema)
-
 
 
 def validate_final_result(
@@ -149,11 +139,7 @@ def validate_final_result(
     """
     final_errors = schema_errors(result, final_schema)
 
-    evidence_errors = (
-        []
-        if skip_evidence_check
-        else evidence_checks(result, source_text)
-    )
+    evidence_errors = [] if skip_evidence_check else evidence_checks(result, source_text)
 
     return {
         "valid": not final_errors and not evidence_errors,
