@@ -1,6 +1,6 @@
 """Conservative per-memory normalization; never default events to writing time."""
 import re
-from datetime import date, datetime
+from datetime import date, datetime, timezone, timedelta
 
 import timeparse
 
@@ -11,7 +11,8 @@ def reference_date(value):
     try:
         return date.fromisoformat(value)
     except ValueError:
-        return datetime.fromisoformat(value.replace('Z', '+00:00')).date()
+        instant = datetime.fromisoformat(value.replace('Z', '+00:00'))
+        return instant.astimezone(timezone(timedelta(hours=9))).date()
 
 
 def normalize_time(memory, reference_time):

@@ -188,7 +188,9 @@ class HTTPTests(unittest.TestCase):
         class Handler(BaseHTTPRequestHandler):
             def do_POST(self):
                 captured.append(json.loads(self.rfile.read(int(self.headers['Content-Length']))))
-                body = json.dumps({'choices': [{'message': {'content': json.dumps({'memories': [memory()]})},
+                item = memory()
+                item['evidence'] = [{'sentence_id': 's0'}]
+                body = json.dumps({'choices': [{'message': {'content': json.dumps({'memories': [item]})},
                                                  'finish_reason': 'stop'}], 'model': 'Qwen3-8B-Q4_K_M'}).encode()
                 self.send_response(200)
                 self.send_header('Content-Type', 'application/json')
