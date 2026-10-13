@@ -1,6 +1,6 @@
 """test.json 대량 테스트: 일기 40편을 연달아 돌려서 꼬임(편 사이 오염)과 오류를 찾는다.
 
-필요한 파일(같은 폴더): pma_extract.py, timeparse.py, test.json
+기존 카드 형식 평가용: legacy_pma_extract.py, timeparse.py, test.json
 실행 순서
   1) python run_test.py              # 정방향 (약 12~15분)
   2) python run_test.py --reverse    # 역방향
@@ -32,7 +32,7 @@ def not_in_diary(unit: dict, diary: str) -> list[str]:
 
 
 def run(path: str, reverse: bool, limit: int | None):
-    import pma_extract  # Ollama가 필요하므로 --compare에서는 불러오지 않는다
+    import legacy_pma_extract as pma_extract  # Legacy card-format evaluation only.
 
     rows = json.load(open(path, encoding="utf-8"))
     if limit:

@@ -1,6 +1,6 @@
 # check_order.py  (gold_diaries.json, pma_extract.py와 같은 폴더)
 import json
-import pma_extract
+import legacy_pma_extract as pma_extract
 
 gold = json.load(open("gold_diaries.json", encoding="utf-8"))[:10]
 

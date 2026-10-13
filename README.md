@@ -1,122 +1,123 @@
-# Personal Memory Agent (PMA) - 모델(LLM) 파트
+# Personal Memory Agent — 기억 추출 v4
 
-> 캡스톤디자인 D팀 / 모델 담당: 이건우
-> 일기·메모를 **내 컴퓨터 안에서만** 돌아가는 로컬 LLM(Qwen)으로 읽어, DB에 저장할 수 있는 **기억 카드(Memory Unit)** 로 만드는 파트입니다. 개인정보가 밖으로 나가지 않는 것이 로컬로 만든 이유입니다.
+일기·메모 한 편에서 여러 기억을 추출합니다. 팀원 브랜치의 JSON Schema v4.0,
+추출 프롬프트, llama.cpp 클라이언트와 검증기를 기반으로 기억별 시간 정규화와
+긴 원문 분할을 추가했습니다. Python 3.13에서 자동 테스트했습니다.
 
-## 한눈에 보기
-
-```
-일기 + 작성일
-     │
-     ▼
- pma_extract.py ──(의미 파악)──► Qwen: 제목·요약·사람·장소·감정·문제·결정·할 일·결과
-     │
-     └──(날짜 계산)──► timeparse.py: "어제" → 2026-10-09
-     │
-     ▼
-  Memory Unit (기억 카드 1장, JSON)  →  DB 파트로 전달
-```
-
-- **의미를 이해하는 일은 LLM**, **날짜 계산은 코드**가 맡습니다. 작은 모델은 날짜 계산을 자주 틀리기 때문입니다.
-- 모델은 따로 학습시키지 않습니다. 기억은 DB에 쌓이고, 질문할 때 관련 기억을 찾아 모델에 보여 주는 방식(RAG)입니다. 그래서 일기가 쌓여도 모델 성능이 저절로 오르지는 않고, 검색할 자료가 늘어납니다.
-
-## 현재 구현 상태
-
-| 기능(보고서 번호) | 상태 | 담당 파일 |
-|---|---|---|
-| F-02 기억 추출 | 완료 (6편 시연 정상) | `pma_extract.py` |
-| F-03 Memory Unit 생성 | 완료 | `pma_extract.py` |
-| F-08 시간 처리 | 완료 (자체 테스트 통과) | `timeparse.py` |
-| F-05 질문 이해 | 예정 | - |
-| F-06 근거 기반 답변 | 예정 | - |
-| F-04, F-07, F-09, F-10 | 2~3차 개발 예정 | - |
-
-## 파일 설명
-
-| 파일 | 역할 |
-|---|---|
-| `pma_extract.py` | **실제 파이프라인.** 일기 한 편 → Memory Unit 한 장. LLM 호출, 출력 검증, 재시도, 검색용 텍스트(`embed_text`) 생성 |
-| `timeparse.py` | **한국어 시간 표현 → 날짜 범위.** LLM 없이 규칙(코드)만 사용. 저장할 때(사건 날짜)와 질문받을 때(질문 속 기간) 모두 쓰임 |
-| `extract_memory.py` | 처음 만든 8칸짜리 추출기. baseline 평가용으로 보존 |
-| `eval_extract.py` | baseline 평가(`extract_memory` 기준) |
-| `eval_pma.py` | `pma_extract` 기준 20편 평가 |
-| `gold_diaries.json` | 정답 키워드가 달린 가상 일기 20편 |
-| `check_context.py`, `check_cache.py` | 문맥 길이, 앞부분 재사용(prefix cache) 측정용 |
-| `test_ollama.py` | Ollama 연결·속도 확인용 |
-
-## Memory Unit (기억 카드)
-
-| 칸 | 채우는 주체 | 설명 |
-|---|---|---|
-| title, summary | LLM | 사건 제목, 한 문장 요약(60자 이내) |
-| people, place | LLM | 일기에 나온 사람(호칭 포함), 직접 나온 장소 |
-| topic, emotion | LLM | 주제, 일기에 드러난 감정 |
-| problem, decision, next_action, result | LLM | 분명히 적힌 경우에만 채움(없으면 빈 값) |
-| written_at | 코드 | 작성일 |
-| event_start, event_end, event_precision | 코드(`timeparse`) | 사건 날짜 범위와 단위(day/week/month/year/range) |
-| event_expr | 코드 | 날짜를 정한 근거 표현("어제"). 없으면 작성일 사용 |
-
-날짜 변환 예시 (작성일 2026-10-10 기준)
-
-| 일기 속 표현 | 결과 |
-|---|---|
-| 어제 | 2026-10-09 (day) |
-| 지난주 화요일 | 2026-09-29 (day) |
-| 3월 | 2026-03-01 ~ 2026-03-31 (month) |
-
-## 실행 방법
-
-환경: Windows, Python 3.13, [Ollama](https://ollama.com), GPU 없이 CPU로 동작 확인
+## 실행
 
 ```powershell
-# 1) 모델 받기 (추론 전용 qwen3:4b가 아니라 Instruct 버전을 사용)
-ollama pull qwen3:4b-instruct
-
-# 2) 라이브러리 설치
-python -m pip install ollama pydantic
-
-# 3) Ollama 서버가 켜져 있는지 확인한 뒤 실행
-python timeparse.py        # 날짜 변환 자체 테스트
-python pma_extract.py      # 일기 6편 시연
-python eval_pma.py         # 20편 평가 (약 6~7분)
+python -m pip install -r requirements.txt
 ```
 
-## 설계 결정과 이유
+팀원과 동일한 **Qwen3-8B-Q4_K_M GGUF 파일**을 llama.cpp 서버로 실행합니다.
+모델 이름 설정만으로 모델 파일이 다운로드되거나 교체되지는 않습니다.
+서버 빌드, GGUF 체크섬, chat template와 thinking 설정도 팀원 환경에 맞춰야 합니다.
+다음은 모델 파일과 실행 파일을 준비한 환경에서의 실행 예시입니다.
 
-- **Instruct 모델 사용**: 같은 이름의 추론 전용 `qwen3:4b`는 답하기 전에 긴 추론을 해서 224.8초가 걸렸고, `qwen3:4b-instruct`는 10.8초였습니다. 8B 모델은 평가에서 이득이 없었습니다.
-- **`format="json"` 사용**: 스키마 강제(`format=schema`)보다 안정적이었습니다(5편 비교에서 4편 대 1편 정확, 표본이 작아 잠정 결론).
-- **출력 검증과 재시도**: 작은 모델의 깨진 출력을 `looks_broken`으로 잡고 최대 2번 재시도합니다.
-- **규칙은 코드로, 프롬프트는 짧게**: 날짜 규칙과 후처리를 코드로 옮겨 입력 토큰 증가를 막았습니다. 프롬프트 규칙을 더 늘려도 과잉 추출이 개선되지 않았습니다.
-- **고정 부분을 앞에, 바뀌는 부분을 맨 뒤에**: 규칙과 예시를 앞에 두면 Ollama가 앞부분을 재사용해서 처음 읽는 시간이 줄어듭니다(토큰 수는 그대로, 시간만 감소). `NUM_CTX=4096`, `KEEP_ALIVE=30m`을 고정해 모델이 다시 올라가는 일도 막았습니다.
-- **기억 간 연결은 저장할 때 미리 생성**(예정): 질문 때마다 기억 전체를 넣으면 길이가 폭발하므로, 기억 쌍을 한 번만 판정해 연결(엣지)을 DB에 저장하는 방식으로 설계했습니다.
+```powershell
+llama-server -m "C:\models\Qwen3-8B-Q4_K_M.gguf" --alias Qwen3-8B-Q4_K_M --port 8081 -c 32768
+```
 
-## 측정 결과
+현재 서버 빌드가 최상위 `json_schema` 요청을 지원해야 합니다. 실제 빌드의
+옵션과 메모리 용량을 확인하고, `--context-tokens`를 서버에서 요청당 사용 가능한
+컨텍스트 크기에 맞추세요. 동시 처리 슬롯으로 컨텍스트가 나뉘는 설정도 확인해야 합니다.
 
-- 속도(CPU, i5-12450H / RAM 16GB): 일기 한 편 약 18초(첫 편은 모델 로딩 포함 약 60초)
-- 사건 날짜: 시연 6편 중 6편 정확
-- baseline 평가(20편, 키워드 채점): 칸별 대략 80~95%. 정답이 빈 칸인데 채우는 "지어낸 값"도 따로 집계함
-- `pma_extract` 기준 20편 평가(`eval_pma.py`)는 아직 결과를 기록하지 않았음
+```powershell
+$env:PMA_ENDPOINT = 'http://127.0.0.1:8081/v1/chat/completions'
+$env:PMA_MODEL = 'Qwen3-8B-Q4_K_M'
+python pma_extract.py --text '어제 팀원들과 회의했다. 다음 주에 모델을 결정하기로 했다.' --source-id diary-001 --reference-time '2026-10-10T12:00:00+09:00' --output results/local_sample.json
+python pma_extract.py --input diary.txt --source-id diary-002 --context-tokens 32768 --chunk-bytes 6000 --output results/local_long.json
+```
 
-> 일기 20편 기준이라 한 건이 5%p입니다. 한두 건 차이는 노이즈로 봐야 합니다. 키워드 채점은 유의어에 약합니다.
+`--input`은 UTF-8 텍스트 파일입니다. 기준 시간이 없으면 `--reference-time`을 생략합니다.
+공통 스키마가 date-time을 요구하므로 날짜만 있는 문자열은 받지 않습니다.
+작성 시각을 모르는 경우 임의의 자정을 넣지 마세요.
 
-## 알려진 한계
+기본 요청 설정은 temperature=0, seed=42, top_p=1, max_tokens=4096, timeout=180초입니다.
+`PMA_MAX_TOKENS`, `PMA_TIMEOUT`, `PMA_TEMPERATURE`, `PMA_TOP_P`, `PMA_SEED`로 조정할 수 있습니다.
+서버와 GPU/CPU 설정에 따라 재현성과 지연 시간이 달라질 수 있습니다.
 
-- `result`, `decision`을 과하게 채우는 경향이 있습니다(4B 모델의 한계로 보이며 프롬프트로는 개선되지 않았음).
-- "11월 둘째 주에 제주도" 같은 **미래 계획 날짜**는 사건 날짜로 잡히지 않고 작성일로 처리됩니다. 별도 칸에 저장할지 DB 파트와 합의가 필요합니다.
-- `problem`에 장소가 섞이는 경우가 있습니다.
-- CPU만 쓰므로 질문 한 번에 약 40~50초로 추정됩니다(데모용으로는 느림, GPU PC 사용을 검토 중).
+## 공통 출력과 Python 사용
 
-## DB 파트와 합의할 것
+```python
+from pma_extract import extract_document, embed_text
 
-- 사건 날짜는 `event_start`, `event_end`, `event_precision` **세 값**으로 전달합니다.
-- 계획 날짜(미래 일정)를 따로 저장할지 결정합니다.
-- Memory Unit 전달 형식(JSON 칸 이름)을 확정합니다.
+result, metadata = extract_document(
+    '어제 회의했다. 다음 주에 결정한다.',
+    source_id='diary-001',
+    reference_time='2026-10-10T12:00:00+09:00',
+)
+for memory in result['memories']:
+    print(memory['local_id'], embed_text(memory))
+```
 
-## 다음 계획
+CLI 출력은 `{"result": ..., "metadata": ...}`입니다. DB에 전달할 공통 객체는
+`result`이며 `schema_version`, `source_context`, `memories`만 포함합니다.
+각 기억에는 팀원 스키마의 content, memory_type, subject/predicate/object,
+target, time, assertion_polarity, polarity, content_certainty, evidence와 local_id가 있습니다.
+`local_id`는 원문 내부 ID입니다. DB의 영구 ID로 단독 사용하지 마세요.
+요청 상태·원문 구간 위치·검증 결과는 스키마 바깥 `metadata`에 둡니다.
+구간 위치는 원문 Python 문자열의 문자 인덱스이며 end는 포함하지 않습니다.
 
-1. `pma_extract` 기준 20편 평가로 baseline 대비 점수 유지 확인
-2. F-05 질문 이해: 사람·주제·의도는 LLM, 기간은 `timeparse.query_range()`
-3. F-06 근거 기반 답변: 근거 기억 ID와 함께 답하고, 근거가 없으면 "기록에 없음"
-4. 처음 보는 새 일기 20편으로 최종 정확도 재측정, 정답 라벨 일부 검수
-5. 질의 분석과 답변 프롬프트를 번갈아 호출할 때 캐시가 유지되는지 확인
-6. 2~3차: 중요도·신뢰도(F-04), 기억 간 관계 생성(F-07), 변화 추적(F-09)
+## 기억별 시간
+
+LLM은 각 기억에 연결된 `time.raw`와 이를 포함하는 원문 근거를 추출합니다.
+Python은 이 표현만 정규화하며 LLM이 계산한 날짜를 그대로 저장하지 않습니다.
+
+| 입력 표현 / 기준일 2026-10-10 | 정규화 |
+|---|---|
+| 어제 | 2026-10-09, day |
+| 다음 주 | 2026-10-12 ~ 2026-10-18, range |
+| 지난달 | 2026-09, month |
+| 작년 | 2025, year |
+| 2024년 2월 29일 / 2024-02-29 | 기준 시간 없이도 2024-02-29 |
+| 표현 없음 | raw/start/end=null, unknown |
+| 기준 시간 없는 내일 | raw 보존, start/end=null, relative |
+
+주는 월요일 시작입니다. 작성일을 사건 날짜로 자동 대입하지 않습니다.
+시각만 있는 표현, 연도 없는 월·일, '그다음 날', 지속 시간, 여러 대안,
+날짜와 시각이 혼합된 아직 지원하지 않는 표현은 raw를 보존하고 start/end를 null로 둡니다.
+정규화하지 못한 표현을 조용히 확정 날짜로 바꾸지 않습니다.
+시간 표현이 해당 기억의 근거 인용에 없으면 문서 전체 처리를 실패시킵니다.
+LLM이 다른 사건의 시간을 잘못 연결하는 의미 오류까지 자동 검증하는 것은 아닙니다.
+
+## 긴 원문
+
+- UTF-8 바이트 한도로 분할하고 가능한 한 문단·문장 경계를 선택합니다.
+- 기본 한도는 구간당 6000바이트, 앞 구간과 최대 160문자 겹침입니다.
+- 프롬프트·스키마·메타데이터·출력 한도·메시지 여유분도 컨텍스트 예산에 포함합니다.
+- 정확한 토크나이저 계수 대신 Qwen의 byte-fallback에 대한 보수적인 바이트 상한을 사용합니다.
+- 모든 원문 문자가 적어도 한 구간에 포함됩니다. 요약으로 원문을 대체하지 않습니다.
+- `finish_reason=length`이면 해당 구간을 더 작게 나눠 최대 3단계까지 재처리합니다.
+- 중복은 정규화한 기억 필드가 같고 동일한 원문 인용 위치를 공유할 때만 합칩니다.
+- 구간 하나라도 스키마·근거 검증이나 분할 재시도에 실패하면 성공한 일부만 반환하지 않습니다.
+
+연결 문맥이 겹침 범위를 넘는 대명사/시간 표현, 패러프레이즈 중복, 의미 누락은 남을 수 있습니다.
+모든 문자 전달과 JSON 유효성은 기억 내용의 완전성을 보장하지 않습니다.
+추론 오류를 평가하려면 실제 모델로 긴 일기와 여러 날짜·인물이 섞인 자료를 별도 채점해야 합니다.
+
+## 테스트
+
+```powershell
+python -m unittest discover -s tests -v
+python timeparse.py
+```
+
+자동 테스트는 날짜 분리·누락 날짜·월/연도 정밀도·윤년·연말 경계,
+한글/이모지 분할·원문 범위 보존·중복 판정·출력 잘림 재분할,
+스키마/근거 실패와 실제 로컬 모의 HTTP 서버 요청을 검증합니다.
+모의 서버 테스트는 모델 품질 평가가 아닙니다.
+
+## 기존 코드와 범위
+
+- `pma_extract.py`: 새 v4 진입점. 기존 extract_unit/MemoryUnit API는 교체되었습니다.
+- `scripts/memory_agent/`: 클라이언트, 분할, 시간 정규화, 파이프라인, 검증.
+- `schema/`: 팀원 원본 스키마 두 개를 변경 없이 사용.
+- `prompts/extraction.txt`: 팀원 원본. 실행 시 시간 계산/분할 지침을 덧붙임.
+- `legacy_pma_extract.py`: 기존 Ollama 카드 추출기 보존.
+- `run_test.py`, `check_order.py`: 기존 카드 형식을 평가하므로 legacy 추출기 사용.
+- `extract_memory.py`, `eval_extract.py`: 기존 baseline. Ollama와 pydantic 별도 설치 필요.
+- `timeparse.py`: 기존 규칙 파서 보존. 새 시간 모듈은 표현 전체가 일치하는 규칙만 사용.
+
+DB 저장·과거 기억 검색·질의응답·기억 간 모순 해결은 이번 변경 범위에 포함하지 않습니다.

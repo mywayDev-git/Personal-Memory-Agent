@@ -1,0 +1,10 @@
+{
+  "repository": "mywayDev-git/Personal-Memory-Agent",
+  "branch": "7-ai-메모리-유닛-추출-불완전-문제-해결",
+  "commit": "8a118fb5bdb8401672567167ef7a94628fc8ca28",
+  "blobs": {
+    "prompts/extraction.txt": "d184131208b2429408b9b70dd5f0adb7d8b3ffdb",
+    "schema/memory_extraction.schema.json": "0b527454f022db63442d9788c560e7693b5d6841",
+    "schema/memory_extraction_output.schema.json": "b6ac9eb676529942414d5c83ab1a8b0876d1b3da"
+  }
+}
