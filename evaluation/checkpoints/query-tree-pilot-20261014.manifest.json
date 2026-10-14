@@ -1,0 +1,7 @@
+{
+  "archive": "evaluation/checkpoints/query-tree-pilot-20261014.zip",
+  "sha256": "67d6d9c81633a9cd8ac154090d98d5a7bdbb8c787ba202b13140c286346ad0c9",
+  "files": 154,
+  "bytes": 3277685,
+  "scope": "개발 24개, 방해 기록 100/1000개 실행, 분해 보완 전 2개 답변 시험. DB와 모델 파일 제외."
+}

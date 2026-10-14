@@ -1,6 +1,6 @@
 {
   "title": "질문 분해·주제 트리 검색의 독립 비교 실험",
-  "status": "implemented_initial_validation_in_progress",
+  "status": "implemented_development_pilot_complete_full_evaluation_pending",
   "baseline_branch": "codex/answer-validation-checkpoint-20261014",
   "development_branch": "codex/query-tree-experiment",
   "output": "output/query-tree-v1/",

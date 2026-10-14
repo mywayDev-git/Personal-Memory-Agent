@@ -56,6 +56,11 @@ analysis_gold는 제한적인 검토 보조값이며 완전한 분석 정답이 
 답변 비교는 모든 조건에 같은 기존 LLM 답변·verify 프롬프트를 사용한다.
 운영의 코드 생성 답변까지 그대로 재현하는 전체 앱 종단 평가는 아니다.
 답변 생성 또는 검증 통과를 정확도로 세지 않고 needs_review로 남긴다.
+수동 검토는 tag 디렉터리의 reviews.json 배열에 case, scale, condition,
+response_hash(digest(response)), judgment, reason을 기록한다. 지원 판정은
+correct/wrong/appropriate_abstention/excessive_abstention/needs_review다.
+답변 해시가 맞고 사유가 있는 검토만 report 단계가 반영한다.
+현재 포함된 초기 답변 검토는 보조자의 원문 대조이며 독립 평가자 합의가 아니다.
 현재 데이터에 사용자 명시 필터 조건은 없다. 새 검색군의 명시 필터 동작은
 운영 적용 전에 별도 구현·검증해야 한다.
 
