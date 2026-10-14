@@ -78,6 +78,21 @@ ANALYSIS_PROMPT = (
     "관계는 units의 0부터 시작하는 인덱스를 연결한다. 공부하면서 먹었다면 during이다. "
     "단순 나열을 인과로 만들지 않는다. 인용의 발화와 실행을 구분한다. "
     "의사 민수와 교사 민수의 수식어를 보존한다. 정답은 생성하지 않는다."
+    "각 text는 그 역할을 나타내는 최소한의 연속 구절이어야 한다. 질문 전체를 여러 역할에 복사하지 않는다. "
+    "음식은? 같은 질문의 미지 값은 target으로 확정하지 말고 requested로 표현한다. "
+    "relations는 행동/시간/범위 구절끼리만 연결한다. 인물과 대상을 during/before 같은 관계로 연결하지 않는다. "
+    "관계의 text도 질문에 실제 있는 연결 표현을 그대로 복사한다. '하면서'를 원문에 없는 '동안'으로 바꾸지 않는다. "
+    "예: 질문 수진이 회의 전에 누구에게 연락했어? → "
+    '{"units":[{"text":"수진","field":"actor","value":"수진"},'
+    '{"text":"회의","field":"action","value":"회의"},'
+    '{"text":"연락했어","field":"action","value":"연락"},'
+    '{"text":"누구에게","field":"requested","value":"수신자"}],'
+    '"relations":[{"left":2,"right":1,"kind":"before","text":"전에"}],"unknown":[]}. '
+    "예: 질문 진우는 여행 계획을 취소했어? → "
+    '{"units":[{"text":"진우","field":"actor","value":"진우"},'
+    '{"text":"여행","field":"target","value":"여행"},'
+    '{"text":"계획","field":"scope","value":"계획"},'
+    '{"text":"취소했어","field":"action","value":"취소"}],"relations":[],"unknown":[]}. '
 )
 
 
@@ -88,6 +103,7 @@ def digest(value):
 
 
 def analyze(models, question):
+    result = None
     try:
         result = models.structured(
             ANALYSIS_PROMPT, {"question": question}, ANALYSIS_SCHEMA, max_tokens=1024
@@ -95,6 +111,8 @@ def analyze(models, question):
         if schema_errors(result, ANALYSIS_SCHEMA):
             raise ValueError("analysis_schema")
         result = copy.deepcopy(result)
+        if len(result["units"]) > 1 and all(u["text"] == question for u in result["units"]):
+            raise ValueError("analysis_not_decomposed")
         for item in result["units"]:
             if item["text"] not in question:
                 raise ValueError("analysis_span")
@@ -105,12 +123,25 @@ def analyze(models, question):
                 edge["left"] >= len(result["units"])
                 or edge["right"] >= len(result["units"])
                 or edge["text"] not in question
+                or edge["left"] == edge["right"]
+                or any(
+                    result["units"][edge[side]]["field"] not in {"action", "scope", "time"}
+                    for side in ["left", "right"]
+                )
             ):
                 raise ValueError("analysis_relation")
         return dict(result, status="ok", provenance_only=True)
     except Exception as exc:
         # Model/transport failure is visible and never invents a replacement actor.
-        return dict(status="fallback", units=[], relations=[], unknown=[], error=type(exc).__name__)
+        return dict(
+            status="fallback",
+            units=[],
+            relations=[],
+            unknown=[],
+            error=type(exc).__name__,
+            reason=str(exc),
+            rejected_result=result,
+        )
 
 
 def query_texts(question, analysis):

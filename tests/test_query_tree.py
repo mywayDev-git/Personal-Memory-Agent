@@ -60,7 +60,9 @@ def test_question_expansion_preserves_original_and_negation():
     assert result["provenance_only"] is True
 
 
-@pytest.mark.parametrize("malformed", ["span", "reference", "schema"])
+@pytest.mark.parametrize(
+    "malformed", ["span", "reference", "schema", "whole_question", "role_edge"]
+)
 def test_bad_analysis_falls_back_without_invented_roles(malformed):
     model = Models()
     model.analysis = dict(
@@ -72,6 +74,13 @@ def test_bad_analysis_falls_back_without_invented_roles(malformed):
         model.analysis["relations"] = [dict(left=0, right=3, kind="and", text="민수")]
     if malformed == "schema":
         model.analysis = {}
+    if malformed == "whole_question":
+        model.analysis["units"] = [
+            dict(text="민수는?", field=field, value="민수") for field in ["actor", "action"]
+        ]
+    if malformed == "role_edge":
+        model.analysis["units"].append(dict(text="민수", field="target", value="민수"))
+        model.analysis["relations"] = [dict(left=0, right=1, kind="during", text="민수")]
     result = analyze(model, "민수는?")
     assert result["status"] == "fallback"
     assert query_texts("민수는?", result) == ["민수는?"]
