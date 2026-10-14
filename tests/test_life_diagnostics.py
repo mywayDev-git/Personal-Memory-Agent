@@ -209,7 +209,9 @@ def test_lifecycle_runner_records_unexercised_links_and_stale_evidence(
     run.cache = {
         sid: {
             "status": "ready",
-            "memories": [memory(run.records[sid]["text"])] if with_links else [],
+            "memories": [dict(memory(run.records[sid]["text"]), memory_type="event")]
+            if with_links
+            else [],
             "vectors": [[1, 0, 0]] if with_links else [],
         }
         for sid in event["record_ids"]

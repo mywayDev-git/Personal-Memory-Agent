@@ -20,6 +20,7 @@ class AppSettings:
     embedding_model: str = "bge-m3"
     embedding_revision: str = "unconfigured"
     embedding_dimensions: int = 1024
+    answer_validation: bool = False
     context_tokens: int = 16384
     llm: Settings = field(default_factory=Settings)
 
@@ -55,6 +56,7 @@ class AppSettings:
             embedding_model=os.getenv("PMA_EMBEDDING_MODEL", default.embedding_model),
             embedding_revision=os.getenv("PMA_EMBEDDING_REVISION", "unconfigured"),
             embedding_dimensions=int(os.getenv("PMA_EMBEDDING_DIMENSIONS", "1024")),
+            answer_validation=os.getenv("PMA_ANSWER_VALIDATION", "0") == "1",
             context_tokens=int(os.getenv("PMA_CONTEXT_TOKENS", "16384")),
             llm=Settings.from_env(),
         )

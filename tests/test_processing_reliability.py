@@ -31,7 +31,9 @@ def test_role_direction_and_unresolved_anchor():
     p = query_plan("당시 지연에게 선물을 이미 줬나?", {"intent": "recall"}, "2026-10-13")
     assert p["needs_time_anchor"]
     f = dict(relation="give", actor="지연", recipient=None, state="observed", distance_m=[])
-    assert not compatible(f, p)
+    # Unverified question roles no longer exclude candidates. Final semantic
+    # verification handles direction; an unresolved anchor still blocks answers.
+    assert compatible(f, p)
     f.update(actor="self", recipient="지연")
     assert compatible(f, p)
     assert (
@@ -147,6 +149,20 @@ def test_role_constraints_apply_to_final_answer(store, settings, models):
         "지연은 빨간색 컵을 선물했다. 받은 사람은 내가 아니라 동생이다.",
         actor="지연",
         when="2026-06-05",
+    )
+
+    def answer_roles(question, evidence):
+        relevant = next(r for r in evidence if r["fact"]["recipient"] == "지연")
+        return {
+            "status": "answered",
+            "items": [{"text": "사용자가 지연에게 줬습니다.", "citations": [relevant["id"]]}],
+        }
+
+    models.answer = answer_roles
+    models.verify = lambda question, evidence, items: all(
+        next(r for r in evidence if r["id"] == cid)["fact"]["recipient"] == "지연"
+        for item in items
+        for cid in item["citations"]
     )
     service = Service(store, models, settings)
     answer = service.answer("지연에게 선물을 줬나?")

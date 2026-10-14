@@ -1,5 +1,6 @@
 """Extractive answers for supported constraints; open questions require model verification."""
 
+import re
 from decimal import Decimal
 
 from .facts import COLORS, compatible, distance_values
@@ -10,6 +11,15 @@ def claims_supported(items, evidence, plan=None):
     by_id = {r["id"]: r for r in evidence}
     for item in items:
         cited = [by_id[c] for c in item["citations"] if c in by_id]
+        if plan and re.search(r"누가|누구|준\s*사람|주는\s*사람", plan.get("question", "")):
+            # A second-person quotation without a stated addressee cannot certify
+            # a named actor. Keep it searchable, but don't promote it to a role fact.
+            if cited and all(
+                {"unresolved_quoted_addressee", "actor_needs_context"}
+                & set(r.get("fact", {}).get("review_reasons", []))
+                for r in cited
+            ):
+                return False
         if plan and any(not compatible(r["fact"], plan) for r in cited):
             return False
         distances = {Decimal(n) for r in cited for n in r.get("fact", {}).get("distance_m", [])}
@@ -27,10 +37,30 @@ def claims_supported(items, evidence, plan=None):
     return True
 
 
-def grounded_response(found):
+def grounded_response(found, *, semantic_current=False):
     plan, rows = found.get("query_plan", {}), found["results"]
     kind, rel = plan.get("kind"), plan.get("relation")
-    if kind == "why":
+    if rel in {"give", "receive"} and kind not in {"compare", "change"}:
+        directions = {(r["fact"].get("actor"), r["fact"].get("recipient")) for r in rows}
+        if len(directions) > 1:
+            return None
+    if plan.get("execution_check") or any(
+        r["fact"].get("review_reasons")
+        or (
+            r["fact"]["relation"] in {"give", "receive"}
+            and r["fact"]["state"] != "observed"
+            and kind != "compare"
+        )
+        for r in rows
+    ):
+        return None
+    if any(
+        hint["value"] != row["fact"].get(role)
+        for role, hint in plan.get("role_hints", {}).items()
+        for row in rows
+    ):
+        return None
+    if kind == "why" or (kind == "current" and semantic_current):
         return None
     if kind == "change":
         changes = [r for r in rows if r["fact"]["relation"] == "prefer"]
@@ -51,8 +81,12 @@ def grounded_response(found):
             # Do not promote recording order to event order; unknown time remains visible.
             rows = preferences
     if kind == "compare":
-        wishes = [r for r in rows if r["fact"]["relation"] == "desire"]
-        gifts = [r for r in rows if r["fact"]["relation"] == "give"]
+        wishes = [
+            r for r in rows if r["fact"]["relation"] == "desire" and r["fact"]["state"] == "desire"
+        ]
+        gifts = [
+            r for r in rows if r["fact"]["relation"] == "give" and r["fact"]["state"] == "observed"
+        ]
         if wishes and gifts:
             w, g = wishes[0], gifts[0]
             active = [
@@ -101,7 +135,7 @@ def grounded_response(found):
         else:
             prefix = "정확한 사건 날짜는 기록에서 확인되지 않습니다"
         text = row["content"]
-        if row["fact"]["relation"] == "give":
+        if row["fact"]["relation"] == "give" and row["fact"]["state"] == "observed":
             actor = row["fact"].get("actor")
             recipient = row["fact"].get("recipient")
             text = (

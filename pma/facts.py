@@ -13,7 +13,7 @@ from decimal import Decimal
 
 from scripts.memory_agent.provenance import normalize_time, sentences
 
-FACT_VERSION = 4
+FACT_VERSION = 6
 RELATIONS = (
     "desire",
     "give",
@@ -28,7 +28,7 @@ RELATIONS = (
 )
 PATTERNS = {
     "desire": r"받고\s*싶|(?:^|\s)원(?:하|했|한)|갖고\s*싶|희망",
-    "give": r"선물했|선물한|선물하|줬|주었|주다|(?<![가-힣])준(?:\s|거|건|것|선물)|주기로|전달했",
+    "give": r"선물했|선물한|선물하|줬|주었|주다|주지|주려|(?<![가-힣])준(?:\s|거|건|것|선물)|주기로|전달했",
     "receive": r"받았|받은|받다",
     "prefer": r"좋아|선호|싫어",
     "run": r"달리|달렸|달린|달릴|달렸다|달려|달림|뛰었|뛰기|런닝|러닝",
@@ -78,7 +78,7 @@ def relation(text):
     return "other"
 
 
-def project(memory, source, reference_time, recorded_at):
+def project(memory, source, reference_time, recorded_at, evidence=None):
     content = memory["content"]
     quotes = [e["quote"] for e in memory["evidence"]]
     # A broad quote can contain multiple events; use the focused triple/content for relation.
@@ -87,12 +87,37 @@ def project(memory, source, reference_time, recorded_at):
     subject = memory.get("subject", {})
     actor = "self" if subject.get("kind") == "self" else name(subject.get("value"))
     quote_text = " ".join(quotes)
+    review = []
+    if rel in {"give", "receive"} and actor and actor != "self" and actor not in quote_text:
+        review.append("actor_needs_context")
+    if re.search(r'["“”「」]', quote_text) or (
+        rel not in {"desire", "prefer"}
+        and re.search(r"(?:라고|다고)\s*(?:말|대답|전했)", quote_text)
+    ):
+        review.append("reported_scope")
+    quoted = re.search(r'["“「]([^"”」]+)["”」]', quote_text)
+    if quoted and re.search(r"(?:^|\s)(?:네가|너가|당신이)\s", quoted[1]):
+        before_quote = quote_text[: quoted.start()]
+        if not re.search(r"[가-힣A-Za-z]+(?:에게|한테|께)\s*$", before_quote):
+            review.append("unresolved_quoted_addressee")
+    if re.search(r"답하라|대답해|명령|규칙을\s*무시|(?:라고|다고)\s*해", quote_text):
+        review.append("command_scope")
+    if re.search(r"(?:오면|하면|라면|다면|으면)|경우에는", quote_text):
+        review.append("conditional_scope")
+    if re.search(r"않기로|기로\s*(?:하지|않)|취소", quote_text):
+        review.append("decision_scope")
+    if re.search(r"않|못|안\s", quote_text) and re.search(
+        r"지만|는데|(?:해서|져서|와서)", quote_text
+    ):
+        review.append("mixed_negation_scope")
     role_conflict = (
         rel == "receive"
         and actor == "self"
         and bool(re.search(r"내가\s*아니라|나는\s*아니", quote_text))
     )
-    participant_match = re.search(r"([가-힣A-Za-z]+?)(?:이한테|이에게|한테|에게|께)", quote_text)
+    participant_match = re.search(
+        r"([가-힣A-Za-z]+?)(?:이한테|이에게|한테|에게|께)(?!서)", quote_text
+    )
     recipient = name(participant_match.group(1)) if participant_match else None
     if rel == "give":
         explicit_actors = {
@@ -124,6 +149,10 @@ def project(memory, source, reference_time, recorded_at):
     obj = str((memory.get("object") or {}).get("value") or "")
     core = "머그컵" if "머그컵" in focused + obj else re.sub(r"\s+", "", obj)
     counterparty = None
+    if rel == "receive":
+        recipient = actor or None
+        from_match = re.search(r"([가-힣A-Za-z]+?)(?:에게서|한테서)", quote_text)
+        counterparty = name(from_match[1]) if from_match else None
     if rel == "conflict":
         match = re.search(r"([가-힣A-Za-z]+?)(?:랑|와|과)\s", content)
         counterparty = name(match.group(1)) if match else name(obj)
@@ -149,6 +178,10 @@ def project(memory, source, reference_time, recorded_at):
         if memory["memory_type"] in {"plan", "decision"}
         else "observed"
     )
+    if review or role_conflict:
+        state = "review_required"
+    if role_conflict:
+        review.append("role_conflict")
     event_time = dict(memory["time"])
     time_in_source = bool(
         re.search(
@@ -171,20 +204,39 @@ def project(memory, source, reference_time, recorded_at):
             certainty="inferred",
         )
     source_units = sentences(source)
+    if evidence is None:
+        evidence = [
+            {"quote": q, "start": source.find(q), "end": source.find(q) + len(q)} for q in quotes
+        ]
+    # Repeated sentences may belong to different date headers. Match persisted
+    # evidence positions rather than every occurrence of the same quote.
     selected_units = [
         u
         for u in source_units
-        if any(q.strip() in u["text"] or u["text"].strip() in q for q in quotes)
+        if any(e["start"] < u["end"] and e["end"] > u["start"] for e in evidence)
     ]
     checked = {"time": event_time}
     time_validation = normalize_time(checked, selected_units, reference_time)
     event_time = checked["time"]
+    if "reported_scope" in review and re.search(r"어제|오늘|그제|그저께|내일", quote_text):
+        event_time.update(start=None, end=None, precision="unknown", certainty="uncertain")
+        review.append("quoted_time_anchor")
+        time_validation = {"status": "review_required", "reason": "quoted_time_anchor"}
     return {
         "projection_version": FACT_VERSION,
         "actor": actor,
         "recipient": recipient,
         "counterparty": counterparty,
-        "speaker": actor if re.search(r"말했|말했다|말하", quote_text) else None,
+        "speaker": None,
+        "review_reasons": review,
+        "action_relation": next(
+            (
+                key
+                for key in ("give", "receive", "run", "visit")
+                if re.search(PATTERNS[key], focused)
+            ),
+            rel,
+        ),
         "relation": rel,
         "object": obj,
         "object_key": core,
@@ -199,19 +251,46 @@ def project(memory, source, reference_time, recorded_at):
         "reference_time": reference_time,
         "identity": "self" if actor == "self" else "name_only",
         "explicit_change": bool(re.search(r"이제|더\s*좋|바뀌|바꿨|변했|대신", focused)),
-        "evidence": [
-            {"quote": q, "start": source.find(q), "end": source.find(q) + len(q)} for q in quotes
-        ],
+        "evidence": evidence,
     }
 
 
 def explicit_dates(question, today):
     """Only locally parsed, explicit date phrases can impose a hard filter."""
     base = date.fromisoformat(today)
-    for word, delta in (("그저께", -2), ("그제", -2), ("어제", -1), ("오늘", 0), ("내일", 1)):
-        if word in question:
-            d = (base + timedelta(days=delta)).isoformat()
-            return {"date_from": d, "date_to": d}
+    # Resolve the most specific expression before broad year/month phrases.
+    matches = list(
+        re.finditer(
+            r"(?<!\d)(?:(\d{4})(?:년\s*|-))?(\d{1,2})(?:월\s*|-)(\d{1,2})(?:일)?(?!\d)", question
+        )
+    )
+    if matches:
+        dates = []
+        for m in matches:
+            try:
+                year = int(m[1]) if m[1] else base.year - int("작년" in question)
+                dates.append(date(year, int(m[2]), int(m[3])).isoformat())
+            except ValueError:
+                return {"date_from": None, "date_to": None}
+        if dates[0] > dates[-1]:
+            return {"date_from": None, "date_to": None}
+        return {"date_from": dates[0], "date_to": dates[-1]}
+    relative = list(re.finditer(r"그저께|그제|어제|오늘|내일", question))
+    if relative:
+        offsets = {"그저께": -2, "그제": -2, "어제": -1, "오늘": 0, "내일": 1}
+        dates = [(base + timedelta(days=offsets[m[0]])).isoformat() for m in relative]
+        return {"date_from": min(dates), "date_to": max(dates)}
+    month = re.search(r"(?:(\d{4})년\s*)?(\d{1,2})월", question)
+    if month:
+        year = int(month[1]) if month[1] else base.year - int("작년" in question)
+        try:
+            d = date(year, int(month[2]), 1)
+        except ValueError:
+            return {"date_from": None, "date_to": None}
+        return {
+            "date_from": d.isoformat(),
+            "date_to": d.replace(day=calendar.monthrange(d.year, d.month)[1]).isoformat(),
+        }
     if "지난달" in question or "이번 달" in question or "이번달" in question:
         d = base.replace(day=1)
         if "지난달" in question:
@@ -223,25 +302,26 @@ def explicit_dates(question, today):
     if "작년" in question or "올해" in question:
         year = base.year - int("작년" in question)
         return {"date_from": f"{year}-01-01", "date_to": f"{year}-12-31"}
-    matches = list(
-        re.finditer(r"(?:(\d{4})(?:년\s*|-))?(\d{1,2})(?:월\s*|-)(\d{1,2})(?:일)?", question)
-    )
-    if matches:
-        dates = []
-        for m in matches:
-            try:
-                dates.append(date(int(m[1] or base.year), int(m[2]), int(m[3])).isoformat())
-            except ValueError:
-                return {"date_from": None, "date_to": None}
-        return {"date_from": dates[0], "date_to": dates[-1]}
     return {"date_from": None, "date_to": None}
 
 
 def query_plan(question, understood, today):
-    recipient_match = re.search(r"([가-힣A-Za-z]+?)(?:이에게|이한테|에게|한테|께)", question)
-    actor_match = re.search(r"(?:^|\s)([가-힣A-Za-z]+?)(?:이가|이는|이|가|은|는)\s", question)
-    if actor_match and actor_match[1] in {"누", "누구", "뭐", "무엇", "선물", "기록", "사람", "것"}:
-        actor_match = None
+    # Model roles remain hints. A source substring proves provenance, not semantics.
+    hints = {}
+    for role in ("actor", "recipient"):
+        candidate = understood.get(role) or {}
+        value, evidence = candidate.get("value"), candidate.get("evidence")
+        if (
+            isinstance(value, str)
+            and isinstance(evidence, str)
+            and value
+            and evidence
+            and value in evidence
+            and evidence in question
+            and value not in {"누가", "누구", "언제", "주는", "주", "받은", "받", "날짜", "감정"}
+            and not re.search(r"누구|누가|언제", evidence)
+        ):
+            hints[role] = {"value": name(value), "evidence": evidence, "verified": False}
     rel = relation(question)
     if re.search(r"달린|달렸|달려|달리", question):
         rel = "run"
@@ -273,8 +353,17 @@ def query_plan(question, understood, today):
         else "eq"
     )
     return {
-        "recipient": name(recipient_match[1]) if recipient_match else None,
-        "actor": name(actor_match[1]) if actor_match else None,
+        "recipient": None,
+        "actor": None,
+        "role_hints": hints,
+        "requested_slots": understood.get("requested_slots", []),
+        "execution_check": bool(
+            re.search(r"(?:줬|주었|받았|달렸|실행|완료).*\?|(?:했어|했나|했니)\?", question)
+        )
+        and not re.search(r"누구|누가|언제|날짜|몇\s*km|얼마|왜|이유", question),
+        "event_listing": bool(
+            re.search(r"달린.*(?:기록|날짜)|(?:준|받은).*목록|실행.*목록", question)
+        ),
         "needs_time_anchor": bool(re.search(r"당시|그때", question))
         and not explicit_dates(question, today)["date_to"],
         "relation": rel,
@@ -307,13 +396,12 @@ def quantity_matches(fact, plan):
 
 
 def compatible(fact, plan):
-    if plan.get("recipient") and fact.get("recipient") != plan["recipient"]:
-        return False
-    if "role_conflict" in fact.get("warnings", []):
-        return False
+    review = bool(fact.get("review_reasons"))
     if plan["relation"] != "other" and plan["kind"] not in {"compare", "change"}:
-        if fact["relation"] != plan["relation"] and not (
-            plan["relation"] == "receive" and fact["relation"] == "give"
+        if (
+            fact["relation"] != plan["relation"]
+            and not (plan["relation"] == "receive" and fact["relation"] == "give")
+            and fact.get("action_relation") != plan["relation"]
         ):
             return False
     actor = (
@@ -321,15 +409,16 @@ def compatible(fact, plan):
         if plan["relation"] == "receive" and fact["relation"] == "give"
         else fact["actor"]
     )
-    if plan["self"] and plan["relation"] in {"run", "give", "receive"} and actor != "self":
+    if (
+        not review
+        and plan["self"]
+        and plan["relation"] in {"run", "give", "receive"}
+        and actor != "self"
+    ):
         return False
-    if plan.get("actor") and plan["kind"] not in {"compare", "change"} and actor != plan["actor"]:
+    if plan.get("event_listing") and fact["state"] != "observed" and not review:
         return False
-    if plan["relation"] in {"give", "receive"} and plan["kind"] not in {"compare", "change"}:
-        wants_negative = bool(re.search(r"안\s*줬|주지\s*않|못\s*받|받지\s*않", plan["question"]))
-        if not plan["planned"] and not wants_negative and fact["state"] != "observed":
-            return False
-    if plan["relation"] == "run":
+    if plan["relation"] == "run" and not plan.get("execution_check") and not review:
         if (fact["state"] == "planned") != plan["planned"] or fact["state"] in {
             "negated",
             "uncertain",
@@ -342,10 +431,21 @@ def connection(a, b):
     """Conservative candidate links. No inferred edge changes the truth of a fact."""
     if not a["object_key"] or a["object_key"] != b["object_key"]:
         return None
+    if any(
+        fact.get("review_reasons") or "role_conflict" in fact.get("warnings", []) for fact in (a, b)
+    ):
+        return None
+    if a["state"] == "uncertain" or b["state"] == "uncertain":
+        return None
     if a["relation"] == "give" and b["relation"] == "desire":
         a, b = b, a
     if a["relation"] == "desire" and b["relation"] == "give":
-        if a["actor"] and a["actor"] == b["recipient"]:
+        if (
+            a["state"] == "desire"
+            and b["state"] == "observed"
+            and a["actor"]
+            and a["actor"] == b["recipient"]
+        ):
             return {
                 "kind": "desire_action",
                 "basis": "inferred",

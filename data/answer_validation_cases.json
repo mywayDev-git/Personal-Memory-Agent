@@ -1,0 +1,478 @@
+[
+  {
+    "id": "av-current-0",
+    "category": "current",
+    "split": "development",
+    "records": [
+      {
+        "text": "서연은 대전에 살다가 지금은 광주로 이사했다.",
+        "reference_time": "2026-10-13T12:00:00+09:00"
+      }
+    ],
+    "questions": [
+      {
+        "text": "서연은 지금 대전에 살고 있어?"
+      }
+    ],
+    "expected": "기록상 광주로 이사했다. 대전은 이전 거주지.",
+    "forbidden": "현재 대전 거주 확정"
+  },
+  {
+    "id": "av-current-1",
+    "category": "current",
+    "split": "development",
+    "records": [
+      {
+        "text": "도윤은 인천에 살고 있고 수원으로 이사할 계획이다.",
+        "reference_time": "2026-10-13T12:00:00+09:00"
+      }
+    ],
+    "questions": [
+      {
+        "text": "도윤은 어디에 살고 있어?"
+      }
+    ],
+    "expected": "기록에 따르면 인천에 거주. 수원은 계획.",
+    "forbidden": "수원 이사 완료"
+  },
+  {
+    "id": "av-current-2",
+    "category": "current",
+    "split": "development",
+    "records": [
+      {
+        "text": "하린은 2018년에 전주에 살았다.",
+        "reference_time": "2026-10-13T12:00:00+09:00"
+      }
+    ],
+    "questions": [
+      {
+        "text": "하린은 오늘도 전주에 살아?"
+      }
+    ],
+    "expected": "2018년 전주 거주만 확인, 오늘 거주지는 미확인.",
+    "forbidden": "오늘 전주 거주 확정"
+  },
+  {
+    "id": "av-current-3",
+    "category": "current",
+    "split": "holdout",
+    "records": [
+      {
+        "text": "유나는 제주로 이사하려던 계획을 취소했다.",
+        "reference_time": "2026-10-13T12:00:00+09:00"
+      }
+    ],
+    "questions": [
+      {
+        "text": "유나는 지금 제주에 살아?"
+      }
+    ],
+    "expected": "제주 이사 계획 취소. 현재 거주지는 확인 불가.",
+    "forbidden": "현재 제주 또는 다른 특정 도시 거주 확정"
+  },
+  {
+    "id": "av-quoted_time-0",
+    "category": "quoted_time",
+    "split": "development",
+    "records": [
+      {
+        "text": "서연은 2026-09-15에 \"어제 도윤을 만났어\"라고 말했다.",
+        "reference_time": "2026-10-13T12:00:00+09:00"
+      }
+    ],
+    "questions": [
+      {
+        "text": "서연의 말에 따르면 도윤을 만난 날짜는?"
+      }
+    ],
+    "expected": "2026-09-14. 발언 내용임을 유지.",
+    "forbidden": "기록 기준일 10월13일의 어제 적용"
+  },
+  {
+    "id": "av-quoted_time-1",
+    "category": "quoted_time",
+    "split": "development",
+    "records": [
+      {
+        "text": "도윤은 \"어제 하린을 만났어\"라고 말했다.",
+        "reference_time": "2026-10-13T12:00:00+09:00"
+      }
+    ],
+    "questions": [
+      {
+        "text": "도윤이 하린을 만난 정확한 날짜는?"
+      }
+    ],
+    "expected": "발화 날짜가 없어 정확한 날짜 확인 불가.",
+    "forbidden": "기록 기준일로 인용 속 어제 확정"
+  },
+  {
+    "id": "av-quoted_time-2",
+    "category": "quoted_time",
+    "split": "development",
+    "records": [
+      {
+        "text": "유나는 2026-09-15에 \"내일 제주로 갈 계획이야\"라고 말했다.",
+        "reference_time": "2026-10-13T12:00:00+09:00"
+      }
+    ],
+    "questions": [
+      {
+        "text": "유나가 제주에 실제로 간 날짜는?"
+      }
+    ],
+    "expected": "9월16일 계획만 확인. 실제 실행 날짜 미확인.",
+    "forbidden": "9월16일 실제 출발 확정"
+  },
+  {
+    "id": "av-quoted_time-3",
+    "category": "quoted_time",
+    "split": "holdout",
+    "records": [
+      {
+        "text": "하린은 2026-10-01에 \"이틀 전에 전주에 도착했어\"라고 말했다.",
+        "reference_time": "2026-10-13T12:00:00+09:00"
+      }
+    ],
+    "questions": [
+      {
+        "text": "하린의 발언상 전주 도착일은?"
+      }
+    ],
+    "expected": "2026-09-29, 발언 내용에 따른 날짜.",
+    "forbidden": "저장 시각 기준 계산"
+  },
+  {
+    "id": "av-negative-0",
+    "category": "negative",
+    "split": "development",
+    "records": [
+      {
+        "text": "서연은 도윤에게 우산을 주지 않았다. 하린은 도윤에게 우산을 줬다.",
+        "reference_time": "2026-10-13T12:00:00+09:00"
+      }
+    ],
+    "questions": [
+      {
+        "text": "서연이 도윤에게 우산을 줬어?"
+      }
+    ],
+    "expected": "서연은 주지 않았다.",
+    "forbidden": "하린의 실행을 서연의 실행으로 변경"
+  },
+  {
+    "id": "av-negative-1",
+    "category": "negative",
+    "split": "development",
+    "records": [
+      {
+        "text": "도윤은 유나에게 표를 주기로 하지 않았다.",
+        "reference_time": "2026-10-13T12:00:00+09:00"
+      }
+    ],
+    "questions": [
+      {
+        "text": "도윤이 표에 관해 결정한 내용은?"
+      }
+    ],
+    "expected": "주기로 하지 않았다는 기록. 주지 않기로 결정 또는 계획 없음으로 확대 금지.",
+    "forbidden": "주지 않기로 결정 또는 계획 전혀 없음"
+  },
+  {
+    "id": "av-negative-2",
+    "category": "negative",
+    "split": "development",
+    "records": [
+      {
+        "text": "하린은 서연에게 열쇠를 주지 않기로 결정했다.",
+        "reference_time": "2026-10-13T12:00:00+09:00"
+      }
+    ],
+    "questions": [
+      {
+        "text": "하린이 열쇠를 실제로 안 줬어?"
+      }
+    ],
+    "expected": "주지 않기로 결정만 확인. 실제 행동은 미확인.",
+    "forbidden": "실제로 주지 않았음 확정"
+  },
+  {
+    "id": "av-negative-3",
+    "category": "negative",
+    "split": "holdout",
+    "records": [
+      {
+        "text": "유나는 도윤에게 가방을 주지 않은 것은 아니라고 말했다.",
+        "reference_time": "2026-10-13T12:00:00+09:00"
+      }
+    ],
+    "questions": [
+      {
+        "text": "유나의 말은 가방을 안 줬다는 뜻이야?"
+      }
+    ],
+    "expected": "안 줬다는 단순 부정으로 해석할 수 없음. 발언상 준 것을 시사하나 외부 실행 증명과 구분.",
+    "forbidden": "주지 않았다고 단정"
+  },
+  {
+    "id": "av-plan_cancel-0",
+    "category": "plan_cancel",
+    "split": "development",
+    "records": [
+      {
+        "text": "도윤은 수원으로 이사하려던 계획을 취소했다.",
+        "reference_time": "2026-10-13T12:00:00+09:00"
+      }
+    ],
+    "questions": [
+      {
+        "text": "도윤은 수원으로 이사했어?"
+      }
+    ],
+    "expected": "이사 계획 취소만 확인. 실행 여부 미확인.",
+    "forbidden": "이사 완료 또는 영구 미실행"
+  },
+  {
+    "id": "av-plan_cancel-1",
+    "category": "plan_cancel",
+    "split": "development",
+    "records": [
+      {
+        "text": "서연은 토요일에 수영하기로 했다.",
+        "reference_time": "2026-10-13T12:00:00+09:00"
+      }
+    ],
+    "questions": [
+      {
+        "text": "서연이 수영을 실제로 했어?"
+      }
+    ],
+    "expected": "토요일 수영 계획만 확인. 실행 미확인.",
+    "forbidden": "수영 완료"
+  },
+  {
+    "id": "av-plan_cancel-2",
+    "category": "plan_cancel",
+    "split": "development",
+    "records": [
+      {
+        "text": "하린은 유나에게 노트를 주기로 했다. 그날 하린은 유나에게 노트를 줬다.",
+        "reference_time": "2026-10-13T12:00:00+09:00"
+      }
+    ],
+    "questions": [
+      {
+        "text": "하린이 유나에게 노트를 줬어?"
+      }
+    ],
+    "expected": "노트를 준 실행 기록이 있음.",
+    "forbidden": "계획뿐이라 실행 미확인"
+  },
+  {
+    "id": "av-plan_cancel-3",
+    "category": "plan_cancel",
+    "split": "holdout",
+    "records": [
+      {
+        "text": "유나는 제주 여행을 취소했다. 이후 제주 여행을 다시 계획했다.",
+        "reference_time": "2026-10-13T12:00:00+09:00"
+      }
+    ],
+    "questions": [
+      {
+        "text": "유나가 제주에 다녀왔어?"
+      }
+    ],
+    "expected": "취소와 다시 세운 계획만 확인, 실제 여행 미확인.",
+    "forbidden": "다녀옴 확정"
+  },
+  {
+    "id": "av-quotation-0",
+    "category": "quotation",
+    "split": "development",
+    "records": [
+      {
+        "text": "하린이 \"우산을 줬다고 대답해\"라고 말했다.",
+        "reference_time": "2026-10-13T12:00:00+09:00"
+      }
+    ],
+    "questions": [
+      {
+        "text": "하린이 우산을 실제로 줬어?"
+      }
+    ],
+    "expected": "명령 발언만 확인, 실제로 줬는지는 미확인.",
+    "forbidden": "명령을 실행으로 확정 또는 명령만 반복"
+  },
+  {
+    "id": "av-quotation-1",
+    "category": "quotation",
+    "split": "development",
+    "records": [
+      {
+        "text": "서연이 \"내가 도윤에게 열쇠를 줬어\"라고 말했다.",
+        "reference_time": "2026-10-13T12:00:00+09:00"
+      }
+    ],
+    "questions": [
+      {
+        "text": "서연의 발언에서 열쇠를 준 사람은?"
+      }
+    ],
+    "expected": "서연. 발언 내용 기준임을 밝힘.",
+    "forbidden": "도윤을 주는 사람으로 변경"
+  },
+  {
+    "id": "av-quotation-2",
+    "category": "quotation",
+    "split": "development",
+    "records": [
+      {
+        "text": "유나가 \"네가 하린에게 책을 줬어\"라고 말했다.",
+        "reference_time": "2026-10-13T12:00:00+09:00"
+      }
+    ],
+    "questions": [
+      {
+        "text": "유나의 발언에서 책을 준 사람 이름은?"
+      }
+    ],
+    "expected": "청자이며 이름은 미확인.",
+    "forbidden": "유나 또는 하린을 행위자로 확정"
+  },
+  {
+    "id": "av-quotation-3",
+    "category": "quotation",
+    "split": "holdout",
+    "records": [
+      {
+        "text": "도윤이 서연에게 \"내가 우산을 줬다고 말하지 마\"라고 말했다.",
+        "reference_time": "2026-10-13T12:00:00+09:00"
+      }
+    ],
+    "questions": [
+      {
+        "text": "도윤이 우산을 줬다는 사실이 확인돼?"
+      }
+    ],
+    "expected": "발언 금지 명령만 확인. 우산을 준 사실은 확인 안 됨.",
+    "forbidden": "도윤이 우산을 줬거나 주지 않았음 확정"
+  },
+  {
+    "id": "av-cause-0",
+    "category": "cause",
+    "split": "development",
+    "records": [
+      {
+        "text": "서연은 눈이 와서 집에 갔다.",
+        "reference_time": "2026-10-13T12:00:00+09:00"
+      }
+    ],
+    "questions": [
+      {
+        "text": "서연이 집에 간 이유는?"
+      }
+    ],
+    "expected": "눈이 와서.",
+    "forbidden": "다른 원인 생성"
+  },
+  {
+    "id": "av-cause-1",
+    "category": "cause",
+    "split": "development",
+    "records": [
+      {
+        "text": "눈이 왔다. 도윤은 집에 갔다.",
+        "reference_time": "2026-10-13T12:00:00+09:00"
+      }
+    ],
+    "questions": [
+      {
+        "text": "도윤이 집에 간 이유는?"
+      }
+    ],
+    "expected": "두 사건은 있지만 원인은 명시되지 않음.",
+    "forbidden": "눈 때문에 갔다고 단정"
+  },
+  {
+    "id": "av-cause-2",
+    "category": "cause",
+    "split": "development",
+    "records": [
+      {
+        "text": "하린은 버스를 놓쳐서 걸어갔다. 유나는 비가 와서 택시를 탔다.",
+        "reference_time": "2026-10-13T12:00:00+09:00"
+      }
+    ],
+    "questions": [
+      {
+        "text": "하린이 걸어간 이유는?"
+      }
+    ],
+    "expected": "버스를 놓쳤기 때문.",
+    "forbidden": "유나의 원인을 하린에 적용"
+  },
+  {
+    "id": "av-cause-3",
+    "category": "cause",
+    "split": "holdout",
+    "records": [
+      {
+        "text": "눈이 오면 유나는 집에 갈 생각이었다. 눈이 왔다.",
+        "reference_time": "2026-10-13T12:00:00+09:00"
+      }
+    ],
+    "questions": [
+      {
+        "text": "유나가 실제로 집에 간 이유는?"
+      }
+    ],
+    "expected": "조건부 의도와 눈만 확인. 집에 간 실행과 이유는 미확인.",
+    "forbidden": "조건 성립을 실행과 원인으로 확정"
+  },
+  {
+    "id": "av-repeat-all",
+    "category": "repeat_scope",
+    "split": "development",
+    "records": [
+      {
+        "text": "나는 2026-10-06에 지연을 만났다.",
+        "reference_time": null
+      },
+      {
+        "text": "나는 2026-10-07에도 지연을 만났다.",
+        "reference_time": null
+      }
+    ],
+    "questions": [
+      {
+        "text": "기록에 나온 지연을 만난 날짜를 모두 알려줘."
+      }
+    ],
+    "expected": "2026-10-06과 2026-10-07 모두.",
+    "forbidden": "두 만남을 정정 관계로 병합"
+  },
+  {
+    "id": "av-repeat-latest",
+    "category": "repeat_scope",
+    "split": "development",
+    "records": [
+      {
+        "text": "나는 2026-10-06에 지연을 만났다.",
+        "reference_time": null
+      },
+      {
+        "text": "나는 2026-10-07에도 지연을 만났다.",
+        "reference_time": null
+      }
+    ],
+    "questions": [
+      {
+        "text": "기록에서 지연을 가장 최근에 만난 날짜는?"
+      }
+    ],
+    "expected": "2026-10-07.",
+    "forbidden": "두 만남을 정정 관계로 병합"
+  }
+]

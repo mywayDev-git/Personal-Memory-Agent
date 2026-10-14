@@ -87,6 +87,11 @@ DB 기본 위치는 `%LOCALAPPDATA%\PersonalMemoryAgent\memory.db`입니다. rec
 
 ## 검증
 
+Kiwi + LLM의 독립 비교 평가 도구는 [실험 실행 안내](evaluation/KIWI_EXPERIMENT.md)를 참고하세요.
+`evaluation` 의존성 그룹으로 Kiwi 0.24.0을 선택 설치하며, 기본 앱 의존성에는 포함하지 않습니다.
+합성 개발 24개·평가 72개, A~H 조합과 현재 앱 L, 별도 임시 DB, 재개 검사와 CSV/HTML 보고서를 제공합니다.
+자동 근거/별칭 검사는 의미 정확도와 구분하며 검토 전 의미 정확도는 미평가로 남깁니다.
+
 ```powershell
 ./.venv/Scripts/python.exe -B -m pytest -q
 ./.venv/Scripts/ruff.exe check pma scripts config evaluation tests
@@ -130,6 +135,9 @@ DB 기본 위치는 `%LOCALAPPDATA%\PersonalMemoryAgent\memory.db`입니다. rec
 
 
 ## 관계·시간 검색
+
+- 반복되는 동일 문장도 저장된 인용 위치로 구분하여 각 날짜 제목에 연결합니다. 파생 사실 버전 5는 기존 원문을 보존하고 근거 위치와 관계 규칙을 다시 적용합니다.
+- `작년 10월 3일`, `2024년 2월`, `어제부터 오늘까지`처럼 구체적인 날짜와 기간을 우선 해석합니다. 희망과 실제 선물의 연결·비교에는 완료 행동만 사용하며 계획·부정·불확실한 행동은 제외합니다.
 
 - 기존 추출 v4 결과와 별도로 주체·수신자·발화자·관계·대상 속성·상태·사건 시각을 파생 색인에 저장합니다. 추출기가 기준 시각을 사건 시각으로 잘못 복사하면, 원문에 시간 표현이 없는 경우 파생 색인에서 제거합니다.
 - 알려진 한국어 관계 표현은 코드로 정규화합니다. 희망/선물/수신/선호/달리기/방문/식사/다툼/취소를 구분하며, 미인식 표현은 로컬 모델의 후보 선별과 답변 검증 경로를 사용합니다. 모든 자연어 표현을 해석하는 완전한 의미 체계는 아닙니다.
@@ -247,3 +255,52 @@ pwsh -File scripts/run_life_evaluation.ps1 -RunDirectory output/life-baseline
 필드 타입 등 스키마 오류는 원문과 검증 경로를 전달해 1회만 재추출합니다. 재실패하면 실패로 남기며, 성공해도 최초 진단을 보존합니다.
 날짜 정규화는 현재 문장·날짜 제목·일부 앞 문장 지시어를 지원하는 보수적인 규칙입니다. 모든 한국어 절의 시간 범위나 명시된 시각을 완전히 해석하는 기능은 아니며, 확정할 수 없는 시간은 비워 둡니다.
 평가 재개 시 고정된 `sources.json`과 성공 구간을 재사용합니다. 실행별 코드 해시와 모델 설정은 `manifest-*.json`에 남기며, 의미 검토가 끝나지 않은 결과는 `pending`으로 구분합니다.
+
+### 질문·후처리 회귀 평가
+
+`evaluation.downstream_regression`은 개인 DB를 열지 않고 합성 임시 DB에서 실행한다. Kiwi 설치는 필요 없다.
+기존 `output/kiwi-focused-v1`의 36개 사례·추출 결과가 필요하며, 로컬 생성·임베딩 서버를 사용한다.
+
+```powershell
+./.venv/Scripts/python.exe -X utf8 -m evaluation.downstream_regression --output output/downstream-new-frozen
+./.venv/Scripts/python.exe -X utf8 -m evaluation.downstream_regression --mode live --output output/downstream-new-live
+./.venv/Scripts/python.exe -X utf8 -m evaluation.downstream_regression --mode diagnostic --output output/downstream-new-diagnostic
+./.venv/Scripts/python.exe -X utf8 -m evaluation.downstream_regression --mode live --case-file data/downstream_distractors.json --output output/downstream-new-distractors
+```
+
+기본 모드는 추출 기억과 근거 위치를 고정하고 질문 이해·검색·답변을 다시 실행한다. `live`는 추출도 새로 실행한다.
+`diagnostic`은 대표 12개에서 선택된 기억, 전체 기억과 근거, 전체 원문을 동일한 답변 프롬프트로 비교한다.
+질문 기준 날짜는 실험 정의의 2026-10-13으로 고정한다. 정답은 모델 입력에 포함하지 않는다.
+입력·모델·코드·설정 해시가 일치하는 완료 결과만 재사용하며, 변경 후에는 새로운 출력 경로를 사용한다.
+출력의 `executed_source`에는 실행 소스, 사례별 JSON에는 단계별 진단과 서버 호출·토큰이 저장된다.
+`evaluation.downstream_report`는 명시적인 `review.json` 판정으로 CSV·HTML을 생성한다. 판정이 없으면 검토 대기로 남긴다.
+답변 생성 수를 정확도로 계산하지 않으며 `correction-2`는 모순 판정에서 제외한다.
+
+검색용 사실 버전은 6이다. 작업자의 기존 `rebuild_facts()` 경로에서 구버전 파생 사실만 배치 갱신한다.
+최초 갱신 전에 DB 옆에 `<DB파일명>.before-facts-v6.bak`를 SQLite 백업 API로 생성한다.
+원문·추출 payload·근거 위치·임베딩은 재작성하지 않고, 추출·임베딩 모델 호출도 하지 않는다.
+백업 실패 시 갱신을 진행하지 않는다. 백업은 원문을 포함하므로 기존 DB와 같은 접근 권한 및 보존 정책으로 관리해야 한다.
+이 변경을 검증하는 실험은 개인 DB를 갱신하지 않는다. 기본 UI에는 새 진단을 표시하지 않는다.
+개발용 진단은 `Service(..., diagnostic_sink=events.append)`로 켜며, 원문·질문을 포함할 수 있으므로 명시적으로 켠 경우에만 수집한다.
+
+## 답변·검증 비교 실험
+
+**실험 결과 채택 보류이며, 기본 앱은 기존 답변 경로를 유지합니다.** `PMA_ANSWER_VALIDATION=1`을 설정하면 실험 후보를 켤 수 있습니다. 후보에서는 현재 상태 질문을 원문 기반 답변·검증 경로로 전달합니다. 답변 검증은 항목별 근거 일치와 질문 충족 여부를 구분하며, 의미상의 실패에는 동일 근거로 수정 생성 1회와 재검증 1회만 허용합니다. 검증 형식 오류·시간 초과에는 수정 루프를 실행하지 않습니다. 추출·저장·검색 후보 선택과 외부 응답 형식은 유지합니다.
+
+평가 실행기는 후보 옵션을 명시적으로 켭니다. 로컬 Qwen/BGE 서버가 준비된 상태에서 아래 명령을 실행합니다. `output/answer-validation-v1/baseline-code/`는 변경 전 코드 보존본입니다. 원본 개인 DB 대신 임시 합성 DB만 사용합니다.
+
+```powershell
+.venv/Scripts/python.exe -m evaluation.answer_validation --phase prepare --split all --tag candidate-rerun
+.venv/Scripts/python.exe -m evaluation.answer_validation --phase fixed --split all --tag candidate-rerun
+.venv/Scripts/python.exe -m evaluation.answer_validation --phase application --split all --tag candidate-rerun
+.venv/Scripts/python.exe -m evaluation.answer_validation --phase live --split all --tag candidate-rerun
+.venv/Scripts/python.exe -m evaluation.answer_validation --phase repeat --split all --tag candidate-rerun
+.venv/Scripts/python.exe -m evaluation.answer_validation_report --tag candidate-rerun
+```
+
+`fixed`는 동일한 검색 결과·근거 ID로 기준선/답변 개선/검증 개선/1회 수정 조건을 비교합니다. `application`은 보존된 추출로 검색부터 다시 실행하고, `live`는 새 추출까지 포함합니다. `repeat`는 핵심 8개를 두 번 더 실행합니다. 결과·설정·실행 코드·근거 해시를 보존하며 코드·설정·데이터가 달라지면 동일 경로 재개를 거절합니다. 데이터는 `data/answer_validation_cases.json`에 고정되어 있습니다.
+
+보고서 정확도는 모델 검증 통과율이 아닙니다. `review.json`에 결과 파일 SHA-256, `label`, 원문 대조 `reason`을 기록해야 판정에 반영됩니다. 미검토 결과는 성공으로 계산하지 않습니다. 기존 실험 결과와 개인 DB는 변경하지 않습니다.
+
+
+최초 평가 결과는 `output/answer-validation-v1/report.html`에 보존했습니다. `final-1` 실행은 당시 코드와 함께 동결되어 있으며, 기본 경로 보호 설정을 추가한 현재 코드로 다시 실행할 때는 새 태그를 사용합니다. 평가기 예외가 발생했던 한 사례의 네 조건은 `harness-retry`로 재실행하고 `replacements.json`에 대체 경로를 기록했습니다. 원래 결과는 삭제하지 않았습니다. 원문 대조 판정은 Codex의 검토이며 독립적인 사람 평가가 아닙니다.

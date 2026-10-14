@@ -56,8 +56,9 @@ def test_invalid_input_never_saved(client, data):
 def test_no_model_error_body_leaks(client, models):
     models.understand = lambda *a: (_ for _ in ()).throw(ValueError("PRIVATE SECRET"))
     response = client.post("/api/v1/answers", json={"question": "PRIVATE QUESTION"})
-    assert response.status_code == 503
-    assert "PRIVATE" not in response.text
+    assert response.status_code == 200
+    assert response.json()["status"] == "insufficient_evidence"
+    assert "PRIVATE SECRET" not in response.text
 
 
 def test_source_deleted_during_answer_rejected(store, models, settings):

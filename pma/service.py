@@ -4,6 +4,7 @@ import re
 import threading
 import time
 from contextlib import contextmanager
+from copy import deepcopy
 from datetime import date, datetime, timezone
 
 import numpy as np
@@ -38,13 +39,18 @@ def temporal_bounds(value):
 
 
 class Service:
-    def __init__(self, store, models, settings):
+    def __init__(self, store, models, settings, diagnostic_sink=None):
         self.store, self.models, self.settings = store, models, settings
         self.gate = threading.Lock()
         self.stop_event = threading.Event()
         self.thread = None
         self.processing_status = None
         self.worker_paused = False
+        self.diagnostic_sink = diagnostic_sink
+
+    def trace(self, stage, **data):
+        if self.diagnostic_sink is not None:
+            self.diagnostic_sink(deepcopy({"stage": stage, **data}))
 
     @contextmanager
     def model_slot(self, wait=5):
@@ -141,10 +147,15 @@ class Service:
 
     def _search(self, question, filters=None, today=None):
         today = today or datetime.now(timezone.utc).astimezone().date().isoformat()
-        understood = self.models.understand(question, today)
-        if schema_errors(understood, QUERY_SCHEMA):
-            raise ValueError("INVALID_QUERY")
+        try:
+            understood = self.models.understand(question, today)
+            if schema_errors(understood, QUERY_SCHEMA):
+                raise ValueError("INVALID_QUERY")
+        except (ValueError, requests.RequestException, AppError) as exc:
+            understood = {"intent": "recall", "date_from": None, "date_to": None}
+            self.trace("understand_fallback", error=type(exc).__name__)
         plan = query_plan(question, understood, today)
+        self.trace("question", question=question, understood=understood, plan=plan)
         applied = dict(plan["filters"])
         if re.search(r"기준|당시|까지|이전", question) and applied["date_to"]:
             applied["date_from"] = None
@@ -181,18 +192,25 @@ class Service:
         for row in rows:
             fact = row["fact"]
             if not fact or not compatible(fact, plan):
+                self.trace(
+                    "excluded",
+                    id=row["id"],
+                    reason="facts_pending" if not fact else "relation_state_or_quantity",
+                )
                 continue
             if (
                 plan["relation"] == "visit"
                 and requested_objects
                 and fact["object_key"] not in requested_objects
             ):
+                self.trace("excluded", id=row["id"], reason="requested_object")
                 continue
             if (
                 plan["kind"] == "change"
                 and re.search(r"취향|선호|좋아", question)
                 and fact["relation"] not in {"prefer", "desire", "give"}
             ):
+                self.trace("excluded", id=row["id"], reason="preference_change")
                 continue
             if plan["kind"] == "activities" and fact["state"] in {
                 "planned",
@@ -200,6 +218,7 @@ class Service:
                 "preference",
                 "uncertain",
             }:
+                self.trace("excluded", id=row["id"], reason="activity_state")
                 continue
             if locations:
                 parent = re.search(
@@ -209,6 +228,7 @@ class Service:
                     loc in row["memory"]["content"] or (parent and loc == parent.group(1))
                     for loc in locations
                 ):
+                    self.trace("excluded", id=row["id"], reason="location")
                     continue
             if known_names:
                 roles = (
@@ -216,21 +236,25 @@ class Service:
                     if plan["relation"] in {"desire", "prefer", "run"}
                     else {fact["actor"], fact["recipient"]}
                 )
-                if plan["relation"] == "receive" and fact["relation"] == "give":
-                    roles = {fact["recipient"]}
                 if plan["kind"] in {"compare", "change"}:
                     roles = {fact["actor"], fact["recipient"]}
                 if plan["relation"] not in {"desire", "prefer", "run"}:
                     roles.add(fact.get("counterparty"))
-                if not known_names & roles:
+                source_review = fact.get("review_reasons") and any(
+                    n in row["text"] for n in known_names
+                )
+                if not known_names & roles and not source_review:
+                    self.trace("excluded", id=row["id"], reason="explicit_named_person")
                     continue
             t = fact["event_time"]
             a, b = temporal_bounds(t.get("start")), temporal_bounds(t.get("end"))
             if start or end:
                 if not a or t.get("certainty") == "uncertain":
+                    self.trace("excluded", id=row["id"], reason="unknown_filtered_date")
                     continue
                 low, high = a[0], b[1] if b else a[1]
                 if (start and low < start) or (end and high > end):
+                    self.trace("excluded", id=row["id"], reason="date_range")
                     continue
             candidates.append(row)
         candidates.sort(
@@ -270,6 +294,12 @@ class Service:
         for order in (vector_order, keyword_order):
             for rank, i in enumerate(order, 1):
                 ranks[i] = ranks.get(i, 0) + 1 / (60 + rank)
+        for i in ranks:
+            ranks[i] += sum(
+                1 / 600
+                for role, hint in plan["role_hints"].items()
+                if candidates[i]["fact"].get(role) == hint["value"]
+            )
         results = []
         # Structural matches are eligible independently of dense top-k. Stable ties
         # use content/time, never newly generated UUIDs or insertion order.
@@ -332,8 +362,12 @@ class Service:
             if not set(selected) <= allowed:
                 raise ValueError("INVALID_SELECTION")
             results = [r for r in results if r["id"] in selected]
+            self.trace(
+                "selection", selected_ids=selected, excluded_ids=sorted(allowed - set(selected))
+            )
         results = results[:8]
         selected_ids = {r["id"] for r in results}
+        self.trace("evidence", ids=sorted(selected_ids))
         links = self.store.links(memory_ids=selected_ids)
         self.store.assert_generation(generation)
         return generation, {
@@ -350,6 +384,11 @@ class Service:
             return self._search(question, filters, today)[1]
 
     def answer(self, question, filters=None, today=None):
+        response = self._answer(question, filters, today)
+        self.trace("result", response=response)
+        return response
+
+    def _answer(self, question, filters=None, today=None):
         with self.model_slot():
             generation, found = self._search(question, filters, today)
             if found.get("query_plan", {}).get("needs_time_anchor"):
@@ -364,49 +403,58 @@ class Service:
                 return {**found, "items": []}
             if not found["results"]:
                 return {**found, "status": "insufficient_evidence", "items": []}
-            if found["query_plan"]["kind"] == "why" and not any(
-                re.search(r"때문|해서|라서|어서|탓|덕분", e["quote"])
-                for row in found["results"]
-                for e in row["evidence"]
-            ):
-                return {
-                    **found,
-                    "status": "insufficient_evidence",
-                    "items": [],
-                    "validation": "no_explicit_cause",
-                }
             from .grounding import claims_supported, grounded_response
 
-            response = grounded_response(found)
-            structured_answer = response is not None
-            if response is None:
-                response = self.models.answer(question, found["results"])
-            if schema_errors(response, ANSWER_SCHEMA):
-                raise ValueError("INVALID_ANSWER")
-            allowed = {r["id"] for r in found["results"]}
-            if (response["status"] == "answered" and not response["items"]) or any(
-                cid not in allowed for item in response["items"] for cid in item["citations"]
-            ):
-                raise ValueError("INVALID_CITATION")
-            if response["status"] == "insufficient_evidence" and response["items"]:
-                raise ValueError("INVALID_ANSWER_STATE")
-            if response["status"] == "answered" and not claims_supported(
-                response["items"], found["results"], found["query_plan"]
-            ):
-                response = {
-                    "status": "insufficient_evidence",
-                    "items": [],
-                    "validation": "rejected_attributes",
-                }
-            if response["status"] == "answered" and not structured_answer:
-                if hasattr(self.models, "verify") and not self.models.verify(
-                    question, found["results"], response["items"]
+            if hasattr(self.models, "review") and self.settings.answer_validation:
+                from .answer_review import answer_found
+
+                response = answer_found(self.models, question, found, self.trace)
+                structured_answer = response.get("validation") == "structured"
+            else:
+                # Compatibility with existing injected gateways using verify()->bool.
+                response = grounded_response(found)
+                structured_answer = response is not None
+                if response is None:
+                    response = self.models.answer(question, found["results"])
+                self.trace("answer", structured=structured_answer, response=response)
+                if schema_errors(response, ANSWER_SCHEMA):
+                    raise ValueError("INVALID_ANSWER")
+                allowed = {r["id"] for r in found["results"]}
+                if (response["status"] == "answered" and not response["items"]) or any(
+                    cid not in allowed for item in response["items"] for cid in item["citations"]
+                ):
+                    raise ValueError("INVALID_CITATION")
+                if response["status"] == "insufficient_evidence" and response["items"]:
+                    raise ValueError("INVALID_ANSWER_STATE")
+                if response["status"] == "answered" and not claims_supported(
+                    response["items"], found["results"], found["query_plan"]
                 ):
                     response = {
                         "status": "insufficient_evidence",
                         "items": [],
-                        "validation": "rejected",
+                        "validation": "rejected_attributes",
                     }
+                if response["status"] == "answered" and not structured_answer:
+                    try:
+                        verified = hasattr(self.models, "verify") and self.models.verify(
+                            question, found["results"], response["items"]
+                        )
+                    except (ValueError, requests.RequestException, AppError) as exc:
+                        verified = False
+                        self.trace(
+                            "verification_error",
+                            error=type(exc).__name__,
+                            code=getattr(exc, "code", None),
+                        )
+                    self.trace("verification", supported=verified)
+                    if not verified and (
+                        hasattr(self.models, "verify") or found["query_plan"]["kind"] == "why"
+                    ):
+                        response = {
+                            "status": "insufficient_evidence",
+                            "items": [],
+                            "validation": "rejected",
+                        }
             # Extra fields are appended after the legacy answer schema validation.
             for item in response["items"]:
                 item["claim_kind"] = "record"

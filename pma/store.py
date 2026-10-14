@@ -2,7 +2,7 @@
 
 import json
 import sqlite3
-from contextlib import contextmanager
+from contextlib import closing, contextmanager
 from datetime import datetime, timedelta, timezone
 from uuid import uuid4
 
@@ -500,7 +500,13 @@ class Store:
             return generation, result
 
     def project_memory(self, db, mid, memory, source, reference_time, recorded_at, revision_id):
-        fact = project(memory, source, reference_time, recorded_at)
+        evidence = [
+            dict(row)
+            for row in db.execute(
+                "SELECT quote,start,end FROM evidence WHERE memory_id=? ORDER BY position", (mid,)
+            )
+        ]
+        fact = project(memory, source, reference_time, recorded_at, evidence=evidence)
         source_record = db.execute(
             "SELECT record_id FROM revisions WHERE id=?", (revision_id,)
         ).fetchone()[0]
@@ -557,6 +563,21 @@ class Store:
                 "SELECT m.id,m.payload,m.revision_id,v.text,v.reference_time,v.created_at FROM memories m JOIN revisions v ON v.id=m.revision_id LEFT JOIN facts f ON f.memory_id=m.id WHERE f.memory_id IS NULL OR f.projection_version<>? ORDER BY m.id LIMIT ?",
                 (FACT_VERSION, limit),
             ).fetchall()
+            if rows:
+                backup = self.path.with_name(f"{self.path.name}.before-facts-v{FACT_VERSION}.bak")
+                if not backup.exists():
+                    temporary = backup.with_name(backup.name + "." + identifier() + ".tmp")
+                    try:
+                        # Read the last committed WAL snapshot through another connection;
+                        # never back up the active write transaction itself.
+                        with (
+                            closing(sqlite3.connect(self.path)) as source,
+                            closing(sqlite3.connect(temporary)) as target,
+                        ):
+                            source.backup(target)
+                        temporary.rename(backup)
+                    finally:
+                        temporary.unlink(missing_ok=True)
             for row in rows:
                 self.project_memory(
                     db,
