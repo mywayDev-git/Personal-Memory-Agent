@@ -1,6 +1,6 @@
 {
   "title": "질문 분해·주제 트리 검색의 독립 비교 실험",
-  "status": "implemented_development_pilot_complete_full_evaluation_pending",
+  "status": "development_and_24_holdout_answer_audit_complete_broader_evaluation_pending",
   "baseline_branch": "codex/answer-validation-checkpoint-20261014",
   "development_branch": "codex/query-tree-experiment",
   "output": "output/query-tree-v1/",
@@ -95,5 +95,17 @@
     "신규 48개는 두 합성 원문과 병렬 질문 틀을 공유하므로 일반화 평가가 아니다.",
     "답변 평가는 공통 LLM 경로이며 운영 코드 생성 답변까지 포함한 전체 앱 평가는 별도다.",
     "질문 분석 의미 정확도와 최종 답변은 원문 대조 수동 검토가 필요하다."
-  ]
+  ],
+  "completed_evaluation": {
+    "heldout_cases": 24,
+    "conditions": 6,
+    "reviewed_responses": 144,
+    "report": "output/query-tree-v1/holdout-final-1/answer-audit.html",
+    "pending": [
+      "기존 70개 회귀 전체 재실행",
+      "보류 평가 대표 6개의 방해 기록 100·1000개 실험",
+      "반복 실행 안정성",
+      "독립 평가자 검토 및 운영 전체 경로 평가"
+    ]
+  }
 }

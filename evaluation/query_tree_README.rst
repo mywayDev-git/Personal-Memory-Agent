@@ -82,3 +82,22 @@ vectors.sqlite와 extractions/는 합성 실험 재개 캐시다.
 
 채택은 D 대 C의 필수 근거 포함 개선과 수동 답변 평가를 함께 확인한 뒤 결정한다.
 동률이면 단순한 방식을 우선하고, 운영 기본값은 자동 변경하지 않는다.
+
+보류 평가의 답변 검토 보고서
+---------------------------
+
+``holdout-final-1``은 개발 시 고정한 코드·데이터·모델 설정을 유지한 24개 × 6조건
+답변 실행이다. 실행 전에 ``review-protocol.json``에 판정 기준을 기록하고,
+원문 및 실제 전달된 인용 구간과 대조한 ``reviews.json``을 별도로 저장한다.
+질문의 필수 부분을 누락한 미완답은 사실·근거 오류와 구분한다.
+인용 주변 문맥이 뒷받침하더라도 직접 인용 구절이 다른 사건인 경우도 표시한다.
+
+모든 결과와 수동 판정이 준비되면 다음 명령으로 검토 보고서를 만든다::
+
+    .venv\Scripts\python.exe -m evaluation.query_tree_run --phase report --tag holdout-final-1
+    .venv\Scripts\python.exe -m evaluation.retrieval_audit --tag holdout-final-1 --strict
+
+strict 검사는 동결 파일 해시, 24개 사례·6조건의 완료, 판정 중복·누락,
+답변 해시와 검토 사유를 확인한다. 검토 필요로 남긴 사례는 성공으로 계산하지 않는다.
+이 보고서 도구는 모델을 호출하거나 답변을 수정하지 않는다. ``answer-audit.html``,
+``answer-audit.csv``, ``answer-audit.json``에 판정·종료 단계·비용을 출력한다.
