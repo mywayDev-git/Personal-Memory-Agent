@@ -20,6 +20,7 @@ import numpy as np
 
 from evaluation.kiwi_compare import model_identity
 from evaluation.kiwi_runtime import Meter
+from evaluation.query_paired import ARMS, PairedIndex
 from evaluation.query_tree import Index, analyze, coverage, digest, instrumented_service, pack
 from pma.grounding import claims_supported
 from pma.models import ANSWER_SCHEMA, LocalModels
@@ -71,7 +72,9 @@ class Embeddings:
         return np.stack([np.frombuffer(cached[k], dtype="<f4") for k in keys])
 
 
-def prepare(case, models, settings, cache):
+def prepare(case, models, settings, cache, memory_source="extracted", trace_extraction=False):
+    if memory_source == "reference":
+        return copy.deepcopy(case["reference_memories"])
     old = Path("output/answer-validation-v1/prepared") / f"{case['id']}.json"
     if case["cohort"] == "regression":
         prior = read(old)
@@ -94,7 +97,24 @@ def prepare(case, models, settings, cache):
         with tempfile.TemporaryDirectory(dir=cache) as tmp:
             store = Store(Path(tmp) / "extract.db")
             item = store.create(record["text"], record["reference_time"])
-            Service(store, models, settings).run_one()
+            if trace_extraction:
+                from evaluation.validation_trace import ExtractionTrace
+
+                with ExtractionTrace(models) as trace:
+                    try:
+                        Service(store, models, settings).run_one()
+                    finally:
+                        trace_path = cache / f"{key}.trace.json"
+                        previous = read(trace_path).get("events", []) if trace_path.exists() else []
+                        write(
+                            trace_path,
+                            dict(
+                                record=record,
+                                events=previous + [dict(stage="attempt")] + trace.events,
+                            ),
+                        )
+            else:
+                Service(store, models, settings).run_one()
             if store.get(item["record_id"])["status"] not in {"ready", "ready_empty"}:
                 raise ValueError("EXTRACTION_FAILED")
             _, rows = store.snapshot(settings.embedding_key)
@@ -255,7 +275,11 @@ def report(out):
                 seconds=arm["seconds"],
                 candidate_all_required=arm["metrics"]["candidates"]["all_required"],
                 selected_all_required=arm["metrics"]["selected"]["all_required"],
-                analysis_status=d["analysis"]["status"],
+                analysis_status=(
+                    "not_applied"
+                    if d.get("suite") == "paired-v1" and label[1] == "0"
+                    else d["analysis"]["status"]
+                ),
                 answer_judgment=reviewed["judgment"]
                 if reviewed
                 else "needs_review"
@@ -311,7 +335,7 @@ def report(out):
                 all_required=sum(v["all_required"] for v in values),
                 candidate_all_required=sum(v["candidate_all_required"] for v in values),
                 selected_all_required=sum(v["selected_all_required"] for v in values),
-                analysis_fallback=sum(v["analysis_status"] != "ok" for v in values),
+                analysis_fallback=sum(v["analysis_status"] == "fallback" for v in values),
                 answer_judgments={
                     judgment: sum(v["answer_judgment"] == judgment for v in values)
                     for judgment in sorted({v["answer_judgment"] for v in values})
@@ -357,6 +381,17 @@ def report(out):
     table += "</table><p>A 기존 검색 · B 의미 제외 제거 · C 질문 분해 · D 주제 트리 · E 원문 검색 · F 원문+문맥 확장</p>"
     table += f"<p>실행 실패 {len(failures)}건. 호출·토큰은 costs.csv, 원문 대조는 각 사례 진단을 확인하세요. 새 48개는 두 합성 원문을 공유하는 병렬 질문입니다. 답변 정확도와 질문 분석 의미 정확도는 아직 수동 검토가 필요합니다.</p>"
     page = page.replace("<pre>", table + "<pre>", 1)
+    if (out / "manifest.json").exists() and read(out / "manifest.json").get("suite") == "paired-v1":
+        page = page.replace("질문 분해·트리 검색 실험", "전체 질문 분해 8조건 비교")
+        page = page.replace(
+            "A 기존 검색 · B 의미 제외 제거 · C 질문 분해 · D 주제 트리 · E 원문 검색 · F 원문+문맥 확장",
+            "V 벡터·키워드 · M 사실별 다중 벡터 · G 사건 그래프 단독 · H 혼합. "
+            "0은 분해 미적용, 1은 모든 질문에 분해 시도. "
+            "그래프는 이름·대상의 후보 연결이며 동일 인물·사건의 확정이나 완전한 그래프 패턴 매칭이 아닙니다. "
+            "질문 분석 비용은 공통 단계로 측정하고 분해 적용 조건에만 귀속합니다. "
+            "동일 질문·동일 답변 입력은 조건 사이에서 답변을 공유하며 재사용 출처를 기록합니다. "
+            "벡터 캐시가 있는 실측 시간이며 검색 시간만으로 전체 지연을 비교하지 마세요.",
+        )
     (out / "report.html").write_text(page, encoding="utf-8")
     print(json.dumps(summaries, ensure_ascii=False))
 
@@ -372,6 +407,13 @@ def main():
     parser.add_argument("--limit", type=int)
     parser.add_argument("--scale", type=int, choices=[0, 100, 1000], default=0)
     parser.add_argument("--answers", action="store_true")
+    parser.add_argument("--paired", action="store_true", help="Eight retrieval/decomposition pairs")
+    parser.add_argument("--data", type=Path, default=DATA)
+    parser.add_argument("--memory-source", choices=["extracted", "reference"], default="extracted")
+    parser.add_argument("--trace-extraction", action="store_true")
+    parser.add_argument(
+        "--freeze-from", type=Path, help="Completed development run for new holdout"
+    )
     args = parser.parse_args()
     if not re_safe_tag(args.tag):
         raise ValueError("INVALID_TAG")
@@ -381,12 +423,15 @@ def main():
         return
     cases = [
         c
-        for c in read(DATA)
+        for c in read(args.data)
         if (not args.ids or c["id"] in args.ids)
         and (args.split == "all" or c["split"] == args.split)
     ]
     if not cases or (args.limit is not None and args.limit < 1):
         parser.error("No matching cases, or invalid limit; check --split and --ids.")
+    validation = any(c.get("cohort") == "validation-v1" for c in cases)
+    if validation and (not args.paired or args.scale or args.answers or args.split == "all"):
+        parser.error("Validation requires --paired, one split, scale 0 and selective answers.")
     out.mkdir(parents=True, exist_ok=True)
     settings = AppSettings.from_env()
     settings = replace(
@@ -408,7 +453,11 @@ def main():
         for p in Path(folder).rglob("*")
         if p.is_file() and p.suffix in {".py", ".json", ".txt"}
     ]
-    files += list(Path("evaluation").glob("query_tree*.py")) + [DATA]
+    files += list(Path("evaluation").glob("query_tree*.py")) + [args.data]
+    if validation:
+        files += list(Path("evaluation").glob("*.py"))
+    if args.paired:
+        files += [Path("evaluation/query_paired.py")]
     files += list(Path("output/answer-validation-v1/prepared").glob("*.json"))
     identity = dict(
         files={p.as_posix(): hashlib.sha256(p.read_bytes()).hexdigest() for p in files},
@@ -416,6 +465,24 @@ def main():
         models=model_identity(settings),
         answers=args.answers,
     )
+    if args.paired:
+        identity["suite"] = "paired-v1"
+        identity["arms"] = ARMS
+    if validation or args.data != DATA or args.memory_source != "extracted":
+        identity["validation"] = dict(
+            data=str(args.data),
+            memory_source=args.memory_source,
+            split=args.split,
+            case_ids=[c["id"] for c in cases],
+            trace_extraction=args.trace_extraction,
+            interpretation="reference upper bound"
+            if args.memory_source == "reference"
+            else "extracted baseline",
+        )
+    if validation and args.split == "holdout":
+        from evaluation.validation_audit import freeze_holdout
+
+        freeze_holdout(args.freeze_from, out, identity, read(args.data))
     if (out / "manifest.json").exists() and read(out / "manifest.json") != identity:
         raise ValueError("RESUME_IDENTITY_MISMATCH")
     write(out / "manifest.json", identity)
@@ -433,6 +500,11 @@ def main():
         dest = out / "results" / f"{case['id']}--{args.scale}.json"
         if dest.exists() and read(dest).get("status") == "complete":
             continue
+        if dest.exists():
+            previous = read(dest)
+            write(
+                out / "attempts" / f"{case['id']}--{args.scale}--{digest(previous)}.json", previous
+            )
         meter = Meter(models)
         started = time.perf_counter()
         entry = dict(
@@ -448,7 +520,9 @@ def main():
         try:
             with meter, patch.object(models, "embed", embeddings):
                 meter.stage = "preparation"
-                memories = prepare(case, models, settings, cache)
+                memories = prepare(
+                    case, models, settings, cache, args.memory_source, args.trace_extraction
+                )
                 records = copy.deepcopy(case["records"])
                 if args.scale:
                     extra_records, extra_memories = distractors(args.scale)
@@ -462,21 +536,45 @@ def main():
                     rows = populate(store, records, memories, embeddings, settings)
                     meter.stage = "index"
                     index_start = time.perf_counter()
+                    index_type = PairedIndex if args.paired else Index
                     index = stack.enter_context(
-                        closing(Index(Path(tmp) / "tree.sqlite", models, rows, records, embeddings))
+                        closing(
+                            index_type(Path(tmp) / "tree.sqlite", models, rows, records, embeddings)
+                        )
                     )
                     entry["index_seconds"] = time.perf_counter() - index_start
-                    entry["index_bytes"] = (Path(tmp) / "tree.sqlite").stat().st_size
+                    if args.paired:
+                        entry["suite"] = "paired-v1"
+                        entry["graph"] = {
+                            "features": index.features,
+                            "buckets": [
+                                dict(kind=k[0], value=k[1], members=sorted(v))
+                                for k, v in sorted(index.buckets.items())
+                            ],
+                            "identity_verified": False,
+                        }
+                        entry["multi_vector_fragments"] = index.fragments
+                        meter.stage = "dense_index"
+                        dense_start = time.perf_counter()
+                        index.prepare_dense()
+                        entry["dense_index_seconds"] = time.perf_counter() - dense_start
+                        entry["vector_count"] = sum(len(v) for v in index.vectors.values())
+                        entry["vector_bytes"] = sum(v.nbytes for v in index.vectors.values())
+                    else:
+                        entry["index_bytes"] = (Path(tmp) / "tree.sqlite").stat().st_size
                     entry["records"] = records
                     entry["frozen_memories"] = memories
                     entry["membership"] = index.membership
                     question = entry["question"]
                     meter.stage = "question_analysis"
+                    analysis_start = time.perf_counter()
                     analysis = analyze(models, question)
                     entry["analysis"] = analysis
-                    arm_order = list("ABCDEF")
+                    entry["analysis_seconds"] = time.perf_counter() - analysis_start
+                    arm_order = list(ARMS) if args.paired else list("ABCDEF")
                     random.Random(42 + int(digest(case["id"])[:8], 16)).shuffle(arm_order)
                     entry["arm_order"] = arm_order
+                    answer_cache = {}
                     for label in arm_order:
                         meter.stage = f"search-{label}"
                         arm_start = time.perf_counter()
@@ -507,6 +605,7 @@ def main():
                             trace=trace,
                             context_dropped=dropped,
                             selected=packed,
+                            direct_selected=copy.deepcopy(nodes),
                             metrics=dict(
                                 candidates=candidate_metrics,
                                 selected=selected_metrics,
@@ -514,9 +613,37 @@ def main():
                             ),
                             seconds=time.perf_counter() - arm_start,
                         )
+                        if args.paired:
+                            arm["analysis_seconds"] = (
+                                entry["analysis_seconds"] if label[1] == "1" else 0
+                            )
+                            arm["search_with_analysis_seconds"] = (
+                                arm["seconds"] + arm["analysis_seconds"]
+                            )
                         if args.answers:
                             meter.stage = f"answer-{label}"
-                            arm["response"], arm["answer_trace"] = answer(models, question, packed)
+                            answer_key = digest([question, models.compact_evidence(packed)])
+                            if args.paired and answer_key in answer_cache:
+                                cached = answer_cache[answer_key]
+                                arm["response"] = copy.deepcopy(cached["response"])
+                                arm["answer_trace"] = copy.deepcopy(cached["trace"])
+                                arm["answer_reused_from"] = cached["label"]
+                                arm["answer_seconds"] = cached["seconds"]
+                            else:
+                                answer_start = time.perf_counter()
+                                arm["response"], arm["answer_trace"] = answer(
+                                    models, question, packed
+                                )
+                                arm["answer_seconds"] = time.perf_counter() - answer_start
+                                if args.paired and not any(
+                                    t["stage"] == "error" for t in arm["answer_trace"]
+                                ):
+                                    answer_cache[answer_key] = dict(
+                                        response=arm["response"],
+                                        trace=arm["answer_trace"],
+                                        label=label,
+                                        seconds=arm["answer_seconds"],
+                                    )
                             arm["answer_judgment"] = "needs_review"
                         arm["total_seconds"] = time.perf_counter() - arm_start
                         entry["arms"][label] = arm

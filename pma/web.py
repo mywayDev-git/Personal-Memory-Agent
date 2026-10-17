@@ -159,6 +159,10 @@ def create_app(settings=None, models=None, run_worker=True, test_dataset=None):
     app.state.bootstrap_token = bootstrap
     app.state.settings = settings
 
+    from .evaluation_api import install
+
+    install(app, settings, STATIC)
+
     @app.middleware("http")
     async def security(request, call_next):
         rid = identifier()
@@ -302,7 +306,7 @@ def create_app(settings=None, models=None, run_worker=True, test_dataset=None):
 
     @app.get("/api/v1/session")
     def current_session():
-        return {"csrf": auth["csrf"]}
+        return {"csrf": auth["csrf"], "evaluation_enabled": settings.evaluation_enabled}
 
     @app.get("/api/v1/health")
     def health():

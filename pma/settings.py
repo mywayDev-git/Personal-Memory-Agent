@@ -21,6 +21,8 @@ class AppSettings:
     embedding_revision: str = "unconfigured"
     embedding_dimensions: int = 1024
     answer_validation: bool = False
+    evaluation_enabled: bool = False
+    evaluation_details: bool = False
     context_tokens: int = 16384
     llm: Settings = field(default_factory=Settings)
 
@@ -57,6 +59,8 @@ class AppSettings:
             embedding_revision=os.getenv("PMA_EMBEDDING_REVISION", "unconfigured"),
             embedding_dimensions=int(os.getenv("PMA_EMBEDDING_DIMENSIONS", "1024")),
             answer_validation=os.getenv("PMA_ANSWER_VALIDATION", "0") == "1",
+            evaluation_enabled=os.getenv("PMA_EVALUATION", "0") == "1",
+            evaluation_details=os.getenv("PMA_EVALUATION_DETAILS", "0") == "1",
             context_tokens=int(os.getenv("PMA_CONTEXT_TOKENS", "16384")),
             llm=Settings.from_env(),
         )

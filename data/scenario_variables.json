@@ -1,0 +1,5820 @@
+[
+  {
+    "id": "R01",
+    "domain": "record",
+    "name": "입력 유형",
+    "definition": "입력 유형의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "텍스트",
+      "음성전사",
+      "가져오기"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R02",
+    "domain": "record",
+    "name": "기록 길이",
+    "definition": "기록 길이의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "한 문장",
+      "여러 문단"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R03",
+    "domain": "record",
+    "name": "사건 개수",
+    "definition": "사건 개수의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "단일 사건",
+      "복수 사건"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T09",
+      "T43"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R04",
+    "domain": "record",
+    "name": "문장 완성도",
+    "definition": "문장 완성도의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "완결문",
+      "문장 파편"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R05",
+    "domain": "record",
+    "name": "문장 형태",
+    "definition": "문장 형태의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "서술",
+      "질문",
+      "명령",
+      "인용"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T41"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R06",
+    "domain": "record",
+    "name": "언어 표현",
+    "definition": "언어 표현의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "표준어",
+      "구어체",
+      "혼합언어"
+    ],
+    "risk_level": "P1",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T35"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R07",
+    "domain": "record",
+    "name": "원문 구조",
+    "definition": "원문 구조의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "평문",
+      "목록",
+      "표"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R08",
+    "domain": "record",
+    "name": "문장 순서",
+    "definition": "문장 순서의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "시간순",
+      "역순"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R09",
+    "domain": "record",
+    "name": "정보 밀도",
+    "definition": "정보 밀도의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "단일 사실",
+      "고밀도 복합"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R10",
+    "domain": "record",
+    "name": "반복",
+    "definition": "반복의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "없음",
+      "문장 반복"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R11",
+    "domain": "record",
+    "name": "원문 품질",
+    "definition": "원문 품질의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "정상",
+      "오타",
+      "전사 오류"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R12",
+    "domain": "record",
+    "name": "출처 유형",
+    "definition": "출처 유형의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "본인",
+      "전언",
+      "외부 문서"
+    ],
+    "risk_level": "P1",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T40"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R13",
+    "domain": "record",
+    "name": "기록 목적",
+    "definition": "기록 목적의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "일기",
+      "계획",
+      "교정"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R14",
+    "domain": "record",
+    "name": "여러 기록 연결",
+    "definition": "여러 기록 연결의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "독립",
+      "동일 사건 분산"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T10",
+      "T29",
+      "T42"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R15",
+    "domain": "record",
+    "name": "처리 결과",
+    "definition": "처리 결과의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "성공",
+      "부분 성공",
+      "실패"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T39"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R16",
+    "domain": "record",
+    "name": "주체",
+    "definition": "주체의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "본인",
+      "타인"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R17",
+    "domain": "record",
+    "name": "사람 식별",
+    "definition": "사람 식별의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "실명",
+      "별명"
+    ],
+    "risk_level": "P1",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T47"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R18",
+    "domain": "record",
+    "name": "동명이인",
+    "definition": "동명이인의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "한 명",
+      "동명이인"
+    ],
+    "risk_level": "P1",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T07"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R19",
+    "domain": "record",
+    "name": "주체 생략",
+    "definition": "주체 생략의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "명시",
+      "생략"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R20",
+    "domain": "record",
+    "name": "행동 방향",
+    "definition": "행동 방향의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "나에서 타인",
+      "타인에서 나"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T01",
+      "T02"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R21",
+    "domain": "record",
+    "name": "참여자 역할",
+    "definition": "참여자 역할의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "행위자",
+      "수신자",
+      "관찰자"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T01",
+      "T06"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R22",
+    "domain": "record",
+    "name": "사람 수",
+    "definition": "사람 수의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "한 명",
+      "여러 명"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T06"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R23",
+    "domain": "record",
+    "name": "인물 관계",
+    "definition": "인물 관계의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "가족",
+      "동료",
+      "미상"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R24",
+    "domain": "record",
+    "name": "지칭 표현",
+    "definition": "지칭 표현의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "이름",
+      "대명사",
+      "별명"
+    ],
+    "risk_level": "P1",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T47"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R25",
+    "domain": "record",
+    "name": "발언과 행동",
+    "definition": "발언과 행동의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "직접 행동",
+      "전언"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T08"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R26",
+    "domain": "record",
+    "name": "인용 안의 대명사",
+    "definition": "인용 안의 대명사의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "발화자 나",
+      "작성자 나"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T08",
+      "T16"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R27",
+    "domain": "record",
+    "name": "시간 종류",
+    "definition": "시간 종류의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "사건시각",
+      "기록시각",
+      "발언시각"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R28",
+    "domain": "record",
+    "name": "시간 표현",
+    "definition": "시간 표현의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "절대",
+      "상대"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R29",
+    "domain": "record",
+    "name": "상대 시간",
+    "definition": "상대 시간의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "어제",
+      "오늘",
+      "내일"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T16"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R30",
+    "domain": "record",
+    "name": "시간 확실성",
+    "definition": "시간 확실성의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "확정",
+      "추정",
+      "미상"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R31",
+    "domain": "record",
+    "name": "시간 관계",
+    "definition": "시간 관계의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "이전",
+      "이후",
+      "동시"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T12",
+      "T25"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R32",
+    "domain": "record",
+    "name": "기간",
+    "definition": "기간의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "단일 시점",
+      "범위"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R33",
+    "domain": "record",
+    "name": "시간 변화",
+    "definition": "시간 변화의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "과거",
+      "현재",
+      "변경"
+    ],
+    "risk_level": "P1",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T11"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R34",
+    "domain": "record",
+    "name": "시간 충돌",
+    "definition": "시간 충돌의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "일치",
+      "상충"
+    ],
+    "risk_level": "P1",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T15"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R35",
+    "domain": "record",
+    "name": "미래 표현",
+    "definition": "미래 표현의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "계획",
+      "희망",
+      "확정 일정"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T13"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R36",
+    "domain": "record",
+    "name": "시간 기준",
+    "definition": "시간 기준의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "작성일",
+      "발언일"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T16"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R37",
+    "domain": "record",
+    "name": "날짜 정확도",
+    "definition": "날짜 정확도의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "일",
+      "월",
+      "연도",
+      "미상"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R38",
+    "domain": "record",
+    "name": "반복 주기",
+    "definition": "반복 주기의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "매일",
+      "매주",
+      "불규칙"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R39",
+    "domain": "record",
+    "name": "사실 여부",
+    "definition": "사실 여부의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "사실",
+      "가정",
+      "미상"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T46"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R40",
+    "domain": "record",
+    "name": "긍정·부정",
+    "definition": "긍정·부정의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "긍정",
+      "부정"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T04"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R41",
+    "domain": "record",
+    "name": "행동 단계",
+    "definition": "행동 단계의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "희망",
+      "계획",
+      "결정",
+      "시도",
+      "실행",
+      "완료",
+      "취소",
+      "실패"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T03"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R42",
+    "domain": "record",
+    "name": "계획과 결과",
+    "definition": "계획과 결과의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "계획만",
+      "실행만",
+      "연결 확인"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T03",
+      "T13"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R43",
+    "domain": "record",
+    "name": "확신도",
+    "definition": "확신도의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "확정",
+      "추정",
+      "불확실"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R44",
+    "domain": "record",
+    "name": "감정",
+    "definition": "감정의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "긍정",
+      "부정",
+      "혼합"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R45",
+    "domain": "record",
+    "name": "감정 대상",
+    "definition": "감정 대상의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "사람",
+      "사건",
+      "대상 미상"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R46",
+    "domain": "record",
+    "name": "평가·의견",
+    "definition": "평가·의견의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "사실",
+      "의견"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R47",
+    "domain": "record",
+    "name": "선호",
+    "definition": "선호의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "좋아함",
+      "싫어함",
+      "변화"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R48",
+    "domain": "record",
+    "name": "결과",
+    "definition": "결과의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "성공",
+      "실패",
+      "미기록"
+    ],
+    "risk_level": "P1",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T17",
+      "T24"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R49",
+    "domain": "record",
+    "name": "결정",
+    "definition": "결정의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "결정",
+      "미결정",
+      "철회"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T05",
+      "T21",
+      "T30"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R50",
+    "domain": "record",
+    "name": "조건",
+    "definition": "조건의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "충족",
+      "불충족",
+      "미확인"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R51",
+    "domain": "record",
+    "name": "가능성",
+    "definition": "가능성의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "가능",
+      "불가능",
+      "미상"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R52",
+    "domain": "record",
+    "name": "부정 범위",
+    "definition": "부정 범위의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "행동 부정",
+      "결정 부정"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T05"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R53",
+    "domain": "record",
+    "name": "원인 진술",
+    "definition": "원인 진술의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "명시 원인",
+      "동시 발생"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T19",
+      "T20"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R54",
+    "domain": "record",
+    "name": "변화",
+    "definition": "변화의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "유지",
+      "변경"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R55",
+    "domain": "record",
+    "name": "기록 상태",
+    "definition": "기록 상태의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "활성",
+      "삭제",
+      "복원"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T37",
+      "T38"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R56",
+    "domain": "record",
+    "name": "수정",
+    "definition": "수정의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "원문 수정",
+      "정정 메모"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T14",
+      "T37"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R57",
+    "domain": "record",
+    "name": "버전",
+    "definition": "버전의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "현재",
+      "과거"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T37"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R58",
+    "domain": "record",
+    "name": "추출 상태",
+    "definition": "추출 상태의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "성공",
+      "실패",
+      "부분"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T39"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R59",
+    "domain": "record",
+    "name": "출처 일치",
+    "definition": "출처 일치의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "일치",
+      "불일치"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T41"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R60",
+    "domain": "record",
+    "name": "근거 범위",
+    "definition": "근거 범위의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "문장",
+      "부분구간",
+      "다중구간"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R61",
+    "domain": "record",
+    "name": "데이터 신뢰성",
+    "definition": "데이터 신뢰성의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "직접",
+      "전언",
+      "상충"
+    ],
+    "risk_level": "P1",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T40"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R62",
+    "domain": "record",
+    "name": "중복 처리",
+    "definition": "중복 처리의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "완전 중복",
+      "부분 중복"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R63",
+    "domain": "record",
+    "name": "충돌",
+    "definition": "충돌의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "해결",
+      "미해결"
+    ],
+    "risk_level": "P1",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T15",
+      "T40"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R64",
+    "domain": "record",
+    "name": "추출 검증",
+    "definition": "추출 검증의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "유효",
+      "원문 불일치"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R65",
+    "domain": "record",
+    "name": "처리 중 변경",
+    "definition": "처리 중 변경의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "검색 중 변경",
+      "답변 중 변경"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T48"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R66",
+    "domain": "record",
+    "name": "기억 보존",
+    "definition": "기억 보존의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "보존",
+      "유실"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T39"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R67",
+    "domain": "record",
+    "name": "개인정보 범위",
+    "definition": "개인정보 범위의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "본인",
+      "제삼자"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "R68",
+    "domain": "record",
+    "name": "사용자 교정",
+    "definition": "사용자 교정의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "정정 수용",
+      "상충 교정"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/store.py",
+      "pma/facts.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T48"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S01",
+    "domain": "search",
+    "name": "단일 사실",
+    "definition": "단일 사실의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "직접 사실",
+      "미기록"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S02",
+    "domain": "search",
+    "name": "사람 찾기",
+    "definition": "사람 찾기의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "실명",
+      "동명이인"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T31"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S03",
+    "domain": "search",
+    "name": "사건 찾기",
+    "definition": "사건 찾기의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "단일 사건",
+      "복수 사건"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S04",
+    "domain": "search",
+    "name": "장소 찾기",
+    "definition": "장소 찾기의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "명시 장소",
+      "미상"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S05",
+    "domain": "search",
+    "name": "시간 찾기",
+    "definition": "시간 찾기의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "날짜",
+      "기간"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S06",
+    "domain": "search",
+    "name": "행동 확인",
+    "definition": "행동 확인의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "실행",
+      "계획"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S07",
+    "domain": "search",
+    "name": "부정 확인",
+    "definition": "부정 확인의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "명시 부정",
+      "정보 부재"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T04",
+      "T46"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S08",
+    "domain": "search",
+    "name": "목록",
+    "definition": "목록의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "전체 목록",
+      "부분 목록"
+    ],
+    "risk_level": "P1",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T45"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S09",
+    "domain": "search",
+    "name": "횟수",
+    "definition": "횟수의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "단일",
+      "반복"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S10",
+    "domain": "search",
+    "name": "집계",
+    "definition": "집계의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "합계",
+      "평균"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S11",
+    "domain": "search",
+    "name": "최초·최후",
+    "definition": "최초·최후의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "최초",
+      "최후"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S12",
+    "domain": "search",
+    "name": "최근·최신",
+    "definition": "최근·최신의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "최근 사건",
+      "최근 기록"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S13",
+    "domain": "search",
+    "name": "비교",
+    "definition": "비교의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "동일 사건",
+      "다른 사건"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S14",
+    "domain": "search",
+    "name": "변화 추적",
+    "definition": "변화 추적의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "선호 변화",
+      "상태 변화"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S15",
+    "domain": "search",
+    "name": "원인",
+    "definition": "원인의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "명시 원인",
+      "미확인"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T30"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S16",
+    "domain": "search",
+    "name": "결과",
+    "definition": "결과의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "확인 결과",
+      "미기록"
+    ],
+    "risk_level": "P1",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T24"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S17",
+    "domain": "search",
+    "name": "유사 경험",
+    "definition": "유사 경험의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "같은 문제",
+      "유사 해결"
+    ],
+    "risk_level": "P1",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T22"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S18",
+    "domain": "search",
+    "name": "관계 탐색",
+    "definition": "관계 탐색의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "직접 연결",
+      "추정 연결"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S19",
+    "domain": "search",
+    "name": "요약",
+    "definition": "요약의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "단일 사건",
+      "다중 사건"
+    ],
+    "risk_level": "P1",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T25"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S20",
+    "domain": "search",
+    "name": "판단 지원",
+    "definition": "판단 지원의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "근거 충분",
+      "불충분"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S21",
+    "domain": "search",
+    "name": "사실 검증",
+    "definition": "사실 검증의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "일치",
+      "모순"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S22",
+    "domain": "search",
+    "name": "추출 근거 확인",
+    "definition": "추출 근거 확인의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "유효 인용",
+      "무효 인용"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S23",
+    "domain": "search",
+    "name": "질문 길이",
+    "definition": "질문 길이의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "짧음",
+      "복합 장문"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S24",
+    "domain": "search",
+    "name": "문장 품질",
+    "definition": "문장 품질의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "정상",
+      "오타",
+      "문장 파편"
+    ],
+    "risk_level": "P1",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T35"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S25",
+    "domain": "search",
+    "name": "동의어",
+    "definition": "동의어의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "동일 단어",
+      "동의어"
+    ],
+    "risk_level": "P1",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T35"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S26",
+    "domain": "search",
+    "name": "형태 변화",
+    "definition": "형태 변화의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "기본형",
+      "활용형"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S27",
+    "domain": "search",
+    "name": "이름 표현",
+    "definition": "이름 표현의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "실명",
+      "약칭"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S28",
+    "domain": "search",
+    "name": "대명사",
+    "definition": "대명사의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "해결 가능",
+      "미해결"
+    ],
+    "risk_level": "P1",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T28"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S29",
+    "domain": "search",
+    "name": "사건 지칭",
+    "definition": "사건 지칭의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "단일 지칭",
+      "복수 지칭"
+    ],
+    "risk_level": "P1",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T09",
+      "T27"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S30",
+    "domain": "search",
+    "name": "주체 생략",
+    "definition": "주체 생략의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "명시",
+      "생략"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S31",
+    "domain": "search",
+    "name": "목적어 생략",
+    "definition": "목적어 생략의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "명시",
+      "생략"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S32",
+    "domain": "search",
+    "name": "시간 생략",
+    "definition": "시간 생략의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "명시",
+      "생략"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S33",
+    "domain": "search",
+    "name": "복수 해석",
+    "definition": "복수 해석의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "단일 정답",
+      "상이한 정답"
+    ],
+    "risk_level": "P1",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T09",
+      "T28"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S34",
+    "domain": "search",
+    "name": "맥락 연결",
+    "definition": "맥락 연결의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "맥락 있음",
+      "없음"
+    ],
+    "risk_level": "P1",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T27"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S35",
+    "domain": "search",
+    "name": "잘못된 전제",
+    "definition": "잘못된 전제의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "사실 전제",
+      "거짓 전제"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S36",
+    "domain": "search",
+    "name": "비교 대상 생략",
+    "definition": "비교 대상 생략의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "명시",
+      "생략"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S37",
+    "domain": "search",
+    "name": "포괄적 질문",
+    "definition": "포괄적 질문의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "전체",
+      "주제 한정"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S38",
+    "domain": "search",
+    "name": "복합 질문",
+    "definition": "복합 질문의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "단일 요구",
+      "다중 요구"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S39",
+    "domain": "search",
+    "name": "모순된 조건",
+    "definition": "모순된 조건의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "양립",
+      "모순"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S40",
+    "domain": "search",
+    "name": "가능한 해석 없음",
+    "definition": "가능한 해석 없음의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "일치 후보",
+      "후보 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S41",
+    "domain": "search",
+    "name": "사람 조건",
+    "definition": "사람 조건의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "행위자",
+      "참석자"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S42",
+    "domain": "search",
+    "name": "역할 조건",
+    "definition": "역할 조건의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "행위자",
+      "수신자"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T01",
+      "T02",
+      "T06"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S43",
+    "domain": "search",
+    "name": "사건 조건",
+    "definition": "사건 조건의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "동일 사건",
+      "다른 사건"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T23",
+      "T43"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S44",
+    "domain": "search",
+    "name": "장소 조건",
+    "definition": "장소 조건의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "동일 장소",
+      "다른 장소"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S45",
+    "domain": "search",
+    "name": "시간 조건",
+    "definition": "시간 조건의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "날짜",
+      "범위",
+      "미상"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T11",
+      "T12"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S46",
+    "domain": "search",
+    "name": "상태 조건",
+    "definition": "상태 조건의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "계획",
+      "실행",
+      "취소"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T03"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S47",
+    "domain": "search",
+    "name": "감정 조건",
+    "definition": "감정 조건의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "긍정",
+      "부정"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S48",
+    "domain": "search",
+    "name": "주제 조건",
+    "definition": "주제 조건의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "동일 주제",
+      "다른 주제"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S49",
+    "domain": "search",
+    "name": "속성 조건",
+    "definition": "속성 조건의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "색상",
+      "소유"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S50",
+    "domain": "search",
+    "name": "단위 조건",
+    "definition": "단위 조건의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "km",
+      "m"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S51",
+    "domain": "search",
+    "name": "조건 결합",
+    "definition": "조건 결합의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "AND",
+      "OR"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T44",
+      "T45"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S52",
+    "domain": "search",
+    "name": "조건 범위",
+    "definition": "조건 범위의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "동일 사건",
+      "교차 사건"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T44",
+      "T45"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S53",
+    "domain": "search",
+    "name": "부분 일치",
+    "definition": "부분 일치의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "완전 일치",
+      "일부 일치"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S54",
+    "domain": "search",
+    "name": "검색 후보 수",
+    "definition": "검색 후보 수의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "8개 이하",
+      "24개 초과"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T32",
+      "T33"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S55",
+    "domain": "search",
+    "name": "검색 순위",
+    "definition": "검색 순위의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "상위",
+      "후순위"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T32",
+      "T33"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S56",
+    "domain": "search",
+    "name": "여러 근거 필요",
+    "definition": "여러 근거 필요의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "단일 근거",
+      "분산 근거"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T10",
+      "T42"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S57",
+    "domain": "search",
+    "name": "후보 간 충돌",
+    "definition": "후보 간 충돌의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "일치",
+      "상충"
+    ],
+    "risk_level": "P1",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T40"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S58",
+    "domain": "search",
+    "name": "필터 누락",
+    "definition": "필터 누락의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "조건 적용",
+      "누락"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T32"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S59",
+    "domain": "search",
+    "name": "필터 오적용",
+    "definition": "필터 오적용의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "정상 포함",
+      "오제외"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S60",
+    "domain": "search",
+    "name": "출처 조건",
+    "definition": "출처 조건의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "직접 출처",
+      "전언"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S61",
+    "domain": "search",
+    "name": "정보 부재",
+    "definition": "정보 부재의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "없음",
+      "명시 부정"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T31",
+      "T36",
+      "T46"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "S62",
+    "domain": "search",
+    "name": "모델·시스템 오류",
+    "definition": "모델·시스템 오류의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "정상",
+      "시간 초과",
+      "잘못된 출력"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/models.py",
+      "pma/service.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T39"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L01",
+    "domain": "relation",
+    "name": "동일 인물",
+    "definition": "동일 인물의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "동일 인물의 명시적 근거 있음",
+      "동일 인물은 추정만 가능",
+      "동일 인물의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L02",
+    "domain": "relation",
+    "name": "동명이인",
+    "definition": "동명이인의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "동명이인의 명시적 근거 있음",
+      "동명이인은 추정만 가능",
+      "동명이인의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P1",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T07"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L03",
+    "domain": "relation",
+    "name": "별명 연결",
+    "definition": "별명 연결의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "별명 연결의 명시적 근거 있음",
+      "별명 연결은 추정만 가능",
+      "별명 연결의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P1",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T47"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L04",
+    "domain": "relation",
+    "name": "동일 사건",
+    "definition": "동일 사건의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "동일 사건의 명시적 근거 있음",
+      "동일 사건은 추정만 가능",
+      "동일 사건의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P1",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T10",
+      "T29"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L05",
+    "domain": "relation",
+    "name": "다른 사건",
+    "definition": "다른 사건의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "다른 사건의 명시적 근거 있음",
+      "다른 사건은 추정만 가능",
+      "다른 사건의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T18",
+      "T23",
+      "T44"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L06",
+    "domain": "relation",
+    "name": "동일 프로젝트",
+    "definition": "동일 프로젝트의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "동일 프로젝트의 명시적 근거 있음",
+      "동일 프로젝트은 추정만 가능",
+      "동일 프로젝트의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P1",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T22"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L07",
+    "domain": "relation",
+    "name": "동일 장소",
+    "definition": "동일 장소의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "동일 장소의 명시적 근거 있음",
+      "동일 장소은 추정만 가능",
+      "동일 장소의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P1",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T23"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L08",
+    "domain": "relation",
+    "name": "동일 주제",
+    "definition": "동일 주제의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "동일 주제의 명시적 근거 있음",
+      "동일 주제은 추정만 가능",
+      "동일 주제의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L09",
+    "domain": "relation",
+    "name": "공동 참여",
+    "definition": "공동 참여의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "공동 참여의 명시적 근거 있음",
+      "공동 참여은 추정만 가능",
+      "공동 참여의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L10",
+    "domain": "relation",
+    "name": "행위자·수신자",
+    "definition": "행위자·수신자의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "행위자·수신자의 명시적 근거 있음",
+      "행위자·수신자은 추정만 가능",
+      "행위자·수신자의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L11",
+    "domain": "relation",
+    "name": "소유 관계",
+    "definition": "소유 관계의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "소유 관계의 명시적 근거 있음",
+      "소유 관계은 추정만 가능",
+      "소유 관계의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L12",
+    "domain": "relation",
+    "name": "발화 관계",
+    "definition": "발화 관계의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "발화 관계의 명시적 근거 있음",
+      "발화 관계은 추정만 가능",
+      "발화 관계의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T08"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L13",
+    "domain": "relation",
+    "name": "부분·전체",
+    "definition": "부분·전체의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "부분·전체의 명시적 근거 있음",
+      "부분·전체은 추정만 가능",
+      "부분·전체의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L14",
+    "domain": "relation",
+    "name": "상위·하위 범주",
+    "definition": "상위·하위 범주의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "상위·하위 범주의 명시적 근거 있음",
+      "상위·하위 범주은 추정만 가능",
+      "상위·하위 범주의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L15",
+    "domain": "relation",
+    "name": "관련 없는 우연",
+    "definition": "관련 없는 우연의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "관련 없는 우연의 명시적 근거 있음",
+      "관련 없는 우연은 추정만 가능",
+      "관련 없는 우연의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L16",
+    "domain": "relation",
+    "name": "PRECEDES",
+    "definition": "PRECEDES의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "PRECEDES의 명시적 근거 있음",
+      "PRECEDES은 추정만 가능",
+      "PRECEDES의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P1",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T25"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L17",
+    "domain": "relation",
+    "name": "FOLLOWS",
+    "definition": "FOLLOWS의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "FOLLOWS의 명시적 근거 있음",
+      "FOLLOWS은 추정만 가능",
+      "FOLLOWS의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P1",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T25"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L18",
+    "domain": "relation",
+    "name": "OVERLAPS",
+    "definition": "OVERLAPS의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "OVERLAPS의 명시적 근거 있음",
+      "OVERLAPS은 추정만 가능",
+      "OVERLAPS의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L19",
+    "domain": "relation",
+    "name": "SAME_TIME",
+    "definition": "SAME_TIME의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "SAME_TIME의 명시적 근거 있음",
+      "SAME_TIME은 추정만 가능",
+      "SAME_TIME의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L20",
+    "domain": "relation",
+    "name": "PLAN_FOR",
+    "definition": "PLAN_FOR의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "PLAN_FOR의 명시적 근거 있음",
+      "PLAN_FOR은 추정만 가능",
+      "PLAN_FOR의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L21",
+    "domain": "relation",
+    "name": "PLAN_ACTION",
+    "definition": "PLAN_ACTION의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "PLAN_ACTION의 명시적 근거 있음",
+      "PLAN_ACTION은 추정만 가능",
+      "PLAN_ACTION의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T17",
+      "T18"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L22",
+    "domain": "relation",
+    "name": "DECISION_ACTION",
+    "definition": "DECISION_ACTION의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "DECISION_ACTION의 명시적 근거 있음",
+      "DECISION_ACTION은 추정만 가능",
+      "DECISION_ACTION의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P1",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T21"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L23",
+    "domain": "relation",
+    "name": "ACTION_RESULT",
+    "definition": "ACTION_RESULT의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "ACTION_RESULT의 명시적 근거 있음",
+      "ACTION_RESULT은 추정만 가능",
+      "ACTION_RESULT의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P1",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T21"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L24",
+    "domain": "relation",
+    "name": "GOAL_PROGRESS",
+    "definition": "GOAL_PROGRESS의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "GOAL_PROGRESS의 명시적 근거 있음",
+      "GOAL_PROGRESS은 추정만 가능",
+      "GOAL_PROGRESS의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L25",
+    "domain": "relation",
+    "name": "GOAL_ACHIEVED",
+    "definition": "GOAL_ACHIEVED의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "GOAL_ACHIEVED의 명시적 근거 있음",
+      "GOAL_ACHIEVED은 추정만 가능",
+      "GOAL_ACHIEVED의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P1",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T17",
+      "T26"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L26",
+    "domain": "relation",
+    "name": "CANCELS",
+    "definition": "CANCELS의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "CANCELS의 명시적 근거 있음",
+      "CANCELS은 추정만 가능",
+      "CANCELS의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L27",
+    "domain": "relation",
+    "name": "RETRIES",
+    "definition": "RETRIES의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "RETRIES의 명시적 근거 있음",
+      "RETRIES은 추정만 가능",
+      "RETRIES의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L28",
+    "domain": "relation",
+    "name": "RESUMES",
+    "definition": "RESUMES의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "RESUMES의 명시적 근거 있음",
+      "RESUMES은 추정만 가능",
+      "RESUMES의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L29",
+    "domain": "relation",
+    "name": "REPLACES",
+    "definition": "REPLACES의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "REPLACES의 명시적 근거 있음",
+      "REPLACES은 추정만 가능",
+      "REPLACES의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L30",
+    "domain": "relation",
+    "name": "BEFORE_AFTER",
+    "definition": "BEFORE_AFTER의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "BEFORE_AFTER의 명시적 근거 있음",
+      "BEFORE_AFTER은 추정만 가능",
+      "BEFORE_AFTER의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L31",
+    "domain": "relation",
+    "name": "CURRENT_PAST",
+    "definition": "CURRENT_PAST의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "CURRENT_PAST의 명시적 근거 있음",
+      "CURRENT_PAST은 추정만 가능",
+      "CURRENT_PAST의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T12"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L32",
+    "domain": "relation",
+    "name": "SAME_PREFERENCE",
+    "definition": "SAME_PREFERENCE의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "SAME_PREFERENCE의 명시적 근거 있음",
+      "SAME_PREFERENCE은 추정만 가능",
+      "SAME_PREFERENCE의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L33",
+    "domain": "relation",
+    "name": "PREFERENCE_CHANGE",
+    "definition": "PREFERENCE_CHANGE의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "PREFERENCE_CHANGE의 명시적 근거 있음",
+      "PREFERENCE_CHANGE은 추정만 가능",
+      "PREFERENCE_CHANGE의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P1",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T11"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L34",
+    "domain": "relation",
+    "name": "DIFFERENT_PREFERENCES",
+    "definition": "DIFFERENT_PREFERENCES의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "DIFFERENT_PREFERENCES의 명시적 근거 있음",
+      "DIFFERENT_PREFERENCES은 추정만 가능",
+      "DIFFERENT_PREFERENCES의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L35",
+    "domain": "relation",
+    "name": "REPEATED_BEHAVIOR",
+    "definition": "REPEATED_BEHAVIOR의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "REPEATED_BEHAVIOR의 명시적 근거 있음",
+      "REPEATED_BEHAVIOR은 추정만 가능",
+      "REPEATED_BEHAVIOR의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L36",
+    "domain": "relation",
+    "name": "SIMILAR_EXPERIENCE",
+    "definition": "SIMILAR_EXPERIENCE의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "SIMILAR_EXPERIENCE의 명시적 근거 있음",
+      "SIMILAR_EXPERIENCE은 추정만 가능",
+      "SIMILAR_EXPERIENCE의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P1",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T22"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L37",
+    "domain": "relation",
+    "name": "SAME_PROBLEM",
+    "definition": "SAME_PROBLEM의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "SAME_PROBLEM의 명시적 근거 있음",
+      "SAME_PROBLEM은 추정만 가능",
+      "SAME_PROBLEM의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P1",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T22"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L38",
+    "domain": "relation",
+    "name": "SIMILAR_SOLUTION",
+    "definition": "SIMILAR_SOLUTION의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "SIMILAR_SOLUTION의 명시적 근거 있음",
+      "SIMILAR_SOLUTION은 추정만 가능",
+      "SIMILAR_SOLUTION의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P1",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T24"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L39",
+    "domain": "relation",
+    "name": "EMOTION_ABOUT",
+    "definition": "EMOTION_ABOUT의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "EMOTION_ABOUT의 명시적 근거 있음",
+      "EMOTION_ABOUT은 추정만 가능",
+      "EMOTION_ABOUT의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L40",
+    "domain": "relation",
+    "name": "EMOTION_CHANGE",
+    "definition": "EMOTION_CHANGE의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "EMOTION_CHANGE의 명시적 근거 있음",
+      "EMOTION_CHANGE은 추정만 가능",
+      "EMOTION_CHANGE의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L41",
+    "domain": "relation",
+    "name": "OPINION_CHANGE",
+    "definition": "OPINION_CHANGE의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "OPINION_CHANGE의 명시적 근거 있음",
+      "OPINION_CHANGE은 추정만 가능",
+      "OPINION_CHANGE의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L42",
+    "domain": "relation",
+    "name": "CONTRASTS_WITH",
+    "definition": "CONTRASTS_WITH의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "CONTRASTS_WITH의 명시적 근거 있음",
+      "CONTRASTS_WITH은 추정만 가능",
+      "CONTRASTS_WITH의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L43",
+    "domain": "relation",
+    "name": "SUPPORTS_PATTERN",
+    "definition": "SUPPORTS_PATTERN의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "SUPPORTS_PATTERN의 명시적 근거 있음",
+      "SUPPORTS_PATTERN은 추정만 가능",
+      "SUPPORTS_PATTERN의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L44",
+    "domain": "relation",
+    "name": "EXCEPTION_TO",
+    "definition": "EXCEPTION_TO의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "EXCEPTION_TO의 명시적 근거 있음",
+      "EXCEPTION_TO은 추정만 가능",
+      "EXCEPTION_TO의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L45",
+    "domain": "relation",
+    "name": "ASSOCIATED_WITH",
+    "definition": "ASSOCIATED_WITH의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "ASSOCIATED_WITH의 명시적 근거 있음",
+      "ASSOCIATED_WITH은 추정만 가능",
+      "ASSOCIATED_WITH의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L46",
+    "domain": "relation",
+    "name": "CONTRADICTS",
+    "definition": "CONTRADICTS의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "CONTRADICTS의 명시적 근거 있음",
+      "CONTRADICTS은 추정만 가능",
+      "CONTRADICTS의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L47",
+    "domain": "relation",
+    "name": "CORRECTS",
+    "definition": "CORRECTS의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "CORRECTS의 명시적 근거 있음",
+      "CORRECTS은 추정만 가능",
+      "CORRECTS의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T14"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L48",
+    "domain": "relation",
+    "name": "SUPERSEDES",
+    "definition": "SUPERSEDES의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "SUPERSEDES의 명시적 근거 있음",
+      "SUPERSEDES은 추정만 가능",
+      "SUPERSEDES의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L49",
+    "domain": "relation",
+    "name": "SUPPORTS",
+    "definition": "SUPPORTS의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "SUPPORTS의 명시적 근거 있음",
+      "SUPPORTS은 추정만 가능",
+      "SUPPORTS의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L50",
+    "domain": "relation",
+    "name": "DUPLICATES",
+    "definition": "DUPLICATES의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "DUPLICATES의 명시적 근거 있음",
+      "DUPLICATES은 추정만 가능",
+      "DUPLICATES의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P1",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T29"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L51",
+    "domain": "relation",
+    "name": "PARTIALLY_SUPPORTS",
+    "definition": "PARTIALLY_SUPPORTS의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "PARTIALLY_SUPPORTS의 명시적 근거 있음",
+      "PARTIALLY_SUPPORTS은 추정만 가능",
+      "PARTIALLY_SUPPORTS의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L52",
+    "domain": "relation",
+    "name": "UNKNOWN_RELATION",
+    "definition": "UNKNOWN_RELATION의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "UNKNOWN_RELATION의 명시적 근거 있음",
+      "UNKNOWN_RELATION은 추정만 가능",
+      "UNKNOWN_RELATION의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L53",
+    "domain": "relation",
+    "name": "ALLEGED_RELATION",
+    "definition": "ALLEGED_RELATION의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "ALLEGED_RELATION의 명시적 근거 있음",
+      "ALLEGED_RELATION은 추정만 가능",
+      "ALLEGED_RELATION의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P1",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T26"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L54",
+    "domain": "relation",
+    "name": "SOURCE_OF",
+    "definition": "SOURCE_OF의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "SOURCE_OF의 명시적 근거 있음",
+      "SOURCE_OF은 추정만 가능",
+      "SOURCE_OF의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L55",
+    "domain": "relation",
+    "name": "QUOTES",
+    "definition": "QUOTES의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "QUOTES의 명시적 근거 있음",
+      "QUOTES은 추정만 가능",
+      "QUOTES의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L56",
+    "domain": "relation",
+    "name": "DERIVED_FROM",
+    "definition": "DERIVED_FROM의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "DERIVED_FROM의 명시적 근거 있음",
+      "DERIVED_FROM은 추정만 가능",
+      "DERIVED_FROM의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L57",
+    "domain": "relation",
+    "name": "REJECTED_LINK",
+    "definition": "REJECTED_LINK의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "REJECTED_LINK의 명시적 근거 있음",
+      "REJECTED_LINK은 추정만 가능",
+      "REJECTED_LINK의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L58",
+    "domain": "relation",
+    "name": "IDENTITY_UNCERTAIN",
+    "definition": "IDENTITY_UNCERTAIN의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "IDENTITY_UNCERTAIN의 명시적 근거 있음",
+      "IDENTITY_UNCERTAIN은 추정만 가능",
+      "IDENTITY_UNCERTAIN의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P1",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T47"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L59",
+    "domain": "relation",
+    "name": "TEMPORALLY_UNCERTAIN",
+    "definition": "TEMPORALLY_UNCERTAIN의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "TEMPORALLY_UNCERTAIN의 명시적 근거 있음",
+      "TEMPORALLY_UNCERTAIN은 추정만 가능",
+      "TEMPORALLY_UNCERTAIN의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L60",
+    "domain": "relation",
+    "name": "CONFLICT_UNRESOLVED",
+    "definition": "CONFLICT_UNRESOLVED의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "CONFLICT_UNRESOLVED의 명시적 근거 있음",
+      "CONFLICT_UNRESOLVED은 추정만 가능",
+      "CONFLICT_UNRESOLVED의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P1",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T15"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L61",
+    "domain": "relation",
+    "name": "CAUSES",
+    "definition": "CAUSES의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "CAUSES의 명시적 근거 있음",
+      "CAUSES은 추정만 가능",
+      "CAUSES의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T20"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L62",
+    "domain": "relation",
+    "name": "CONTRIBUTES_TO",
+    "definition": "CONTRIBUTES_TO의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "CONTRIBUTES_TO의 명시적 근거 있음",
+      "CONTRIBUTES_TO은 추정만 가능",
+      "CONTRIBUTES_TO의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L63",
+    "domain": "relation",
+    "name": "RESULTED_IN",
+    "definition": "RESULTED_IN의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "RESULTED_IN의 명시적 근거 있음",
+      "RESULTED_IN은 추정만 가능",
+      "RESULTED_IN의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L64",
+    "domain": "relation",
+    "name": "MOTIVATED_BY",
+    "definition": "MOTIVATED_BY의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "MOTIVATED_BY의 명시적 근거 있음",
+      "MOTIVATED_BY은 추정만 가능",
+      "MOTIVATED_BY의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L65",
+    "domain": "relation",
+    "name": "ENABLES",
+    "definition": "ENABLES의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "ENABLES의 명시적 근거 있음",
+      "ENABLES은 추정만 가능",
+      "ENABLES의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L66",
+    "domain": "relation",
+    "name": "PREVENTS",
+    "definition": "PREVENTS의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "PREVENTS의 명시적 근거 있음",
+      "PREVENTS은 추정만 가능",
+      "PREVENTS의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L67",
+    "domain": "relation",
+    "name": "CORRELATED_WITH",
+    "definition": "CORRELATED_WITH의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "CORRELATED_WITH의 명시적 근거 있음",
+      "CORRELATED_WITH은 추정만 가능",
+      "CORRELATED_WITH의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T19"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L68",
+    "domain": "relation",
+    "name": "POSSIBLE_CAUSE",
+    "definition": "POSSIBLE_CAUSE의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "POSSIBLE_CAUSE의 명시적 근거 있음",
+      "POSSIBLE_CAUSE은 추정만 가능",
+      "POSSIBLE_CAUSE의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L69",
+    "domain": "relation",
+    "name": "UNKNOWN_CAUSE",
+    "definition": "UNKNOWN_CAUSE의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "UNKNOWN_CAUSE의 명시적 근거 있음",
+      "UNKNOWN_CAUSE은 추정만 가능",
+      "UNKNOWN_CAUSE의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T19"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L70",
+    "domain": "relation",
+    "name": "연결 근거",
+    "definition": "연결 근거의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "연결 근거의 명시적 근거 있음",
+      "연결 근거은 추정만 가능",
+      "연결 근거의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L71",
+    "domain": "relation",
+    "name": "연결 확실성",
+    "definition": "연결 확실성의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "연결 확실성의 명시적 근거 있음",
+      "연결 확실성은 추정만 가능",
+      "연결 확실성의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P1",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T26"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L72",
+    "domain": "relation",
+    "name": "관계 방향",
+    "definition": "관계 방향의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "관계 방향의 명시적 근거 있음",
+      "관계 방향은 추정만 가능",
+      "관계 방향의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L73",
+    "domain": "relation",
+    "name": "관계 개수",
+    "definition": "관계 개수의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "관계 개수의 명시적 근거 있음",
+      "관계 개수은 추정만 가능",
+      "관계 개수의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L74",
+    "domain": "relation",
+    "name": "관계 시점",
+    "definition": "관계 시점의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "관계 시점의 명시적 근거 있음",
+      "관계 시점은 추정만 가능",
+      "관계 시점의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L75",
+    "domain": "relation",
+    "name": "연결 거리",
+    "definition": "연결 거리의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "연결 거리의 명시적 근거 있음",
+      "연결 거리은 추정만 가능",
+      "연결 거리의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L76",
+    "domain": "relation",
+    "name": "전이 가능성",
+    "definition": "전이 가능성의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "전이 가능성의 명시적 근거 있음",
+      "전이 가능성은 추정만 가능",
+      "전이 가능성의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T18"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L77",
+    "domain": "relation",
+    "name": "연결 증거 수",
+    "definition": "연결 증거 수의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "연결 증거 수의 명시적 근거 있음",
+      "연결 증거 수은 추정만 가능",
+      "연결 증거 수의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L78",
+    "domain": "relation",
+    "name": "연결 중복",
+    "definition": "연결 중복의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "연결 중복의 명시적 근거 있음",
+      "연결 중복은 추정만 가능",
+      "연결 중복의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L79",
+    "domain": "relation",
+    "name": "관계 정정",
+    "definition": "관계 정정의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "관계 정정의 명시적 근거 있음",
+      "관계 정정은 추정만 가능",
+      "관계 정정의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T38"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "L80",
+    "domain": "relation",
+    "name": "연관성 충돌",
+    "definition": "연관성 충돌의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "연관성 충돌의 명시적 근거 있음",
+      "연관성 충돌은 추정만 가능",
+      "연관성 충돌의 반례 또는 근거 없음"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/facts.py",
+      "pma/store.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "D01",
+    "domain": "answer",
+    "name": "근거 존재",
+    "definition": "근거 존재의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "있음",
+      "없음"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/grounding.py",
+      "pma/answer_review.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T36"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "D02",
+    "domain": "answer",
+    "name": "근거 관련성",
+    "definition": "근거 관련성의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "관련",
+      "무관"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/grounding.py",
+      "pma/answer_review.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "D03",
+    "domain": "answer",
+    "name": "근거 충분성",
+    "definition": "근거 충분성의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "충분",
+      "일부"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/grounding.py",
+      "pma/answer_review.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T33",
+      "T42"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "D04",
+    "domain": "answer",
+    "name": "원문 일치",
+    "definition": "원문 일치의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "일치",
+      "불일치"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/grounding.py",
+      "pma/answer_review.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T34",
+      "T41"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "D05",
+    "domain": "answer",
+    "name": "질문 일치",
+    "definition": "질문 일치의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "직접 답변",
+      "질문 이탈"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/grounding.py",
+      "pma/answer_review.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T43"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "D06",
+    "domain": "answer",
+    "name": "주체 일치",
+    "definition": "주체 일치의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "동일",
+      "역방향"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/grounding.py",
+      "pma/answer_review.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T01",
+      "T02"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "D07",
+    "domain": "answer",
+    "name": "상태 일치",
+    "definition": "상태 일치의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "계획",
+      "실행",
+      "부정"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/grounding.py",
+      "pma/answer_review.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T03",
+      "T05",
+      "T13"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "D08",
+    "domain": "answer",
+    "name": "시간 일치",
+    "definition": "시간 일치의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "사건시각",
+      "작성시각"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/grounding.py",
+      "pma/answer_review.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T11",
+      "T16"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "D09",
+    "domain": "answer",
+    "name": "출처 최신성",
+    "definition": "출처 최신성의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "현재 버전",
+      "폐기 버전"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/grounding.py",
+      "pma/answer_review.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T14",
+      "T37"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "D10",
+    "domain": "answer",
+    "name": "근거 간 관계",
+    "definition": "근거 간 관계의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "동일 사건",
+      "상이 사건"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/grounding.py",
+      "pma/answer_review.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T10",
+      "T44"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "D11",
+    "domain": "answer",
+    "name": "인용 범위",
+    "definition": "인용 범위의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "정확 구간",
+      "과도한 인용"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/grounding.py",
+      "pma/answer_review.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T34"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "D12",
+    "domain": "answer",
+    "name": "주장 수",
+    "definition": "주장 수의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "단일",
+      "다중"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/grounding.py",
+      "pma/answer_review.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T34"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "D13",
+    "domain": "answer",
+    "name": "근거 수",
+    "definition": "근거 수의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "단일",
+      "분산"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/grounding.py",
+      "pma/answer_review.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T42"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "D14",
+    "domain": "answer",
+    "name": "직접·추론 답변",
+    "definition": "직접·추론 답변의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "직접",
+      "추론"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/grounding.py",
+      "pma/answer_review.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "D15",
+    "domain": "answer",
+    "name": "정답 후보",
+    "definition": "정답 후보의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "없음",
+      "하나",
+      "복수"
+    ],
+    "risk_level": "P1",
+    "owner_modules": [
+      "pma/grounding.py",
+      "pma/answer_review.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T28"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "D16",
+    "domain": "answer",
+    "name": "정답 없음",
+    "definition": "정답 없음의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "정보 부재",
+      "모순"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/grounding.py",
+      "pma/answer_review.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T30",
+      "T31",
+      "T36"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "D17",
+    "domain": "answer",
+    "name": "인과 주장",
+    "definition": "인과 주장의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "명시",
+      "추정"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/grounding.py",
+      "pma/answer_review.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T19",
+      "T20",
+      "T30"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "D18",
+    "domain": "answer",
+    "name": "숫자·단위",
+    "definition": "숫자·단위의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "단위 일치",
+      "변환",
+      "불일치"
+    ],
+    "risk_level": "P1",
+    "owner_modules": [
+      "pma/grounding.py",
+      "pma/answer_review.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T17"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "D19",
+    "domain": "answer",
+    "name": "부정 답변",
+    "definition": "부정 답변의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "명시 부정",
+      "무기록"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/grounding.py",
+      "pma/answer_review.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T04",
+      "T46"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "D20",
+    "domain": "answer",
+    "name": "답변 범위",
+    "definition": "답변 범위의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "일치",
+      "과장"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/grounding.py",
+      "pma/answer_review.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "D21",
+    "domain": "answer",
+    "name": "답변 생성 오류",
+    "definition": "답변 생성 오류의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "정상",
+      "환각",
+      "형식 오류"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/grounding.py",
+      "pma/answer_review.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T34"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "D22",
+    "domain": "answer",
+    "name": "검증기 오류",
+    "definition": "검증기 오류의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "정상",
+      "오승인",
+      "오거부"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/grounding.py",
+      "pma/answer_review.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "D23",
+    "domain": "answer",
+    "name": "처리 중 변경",
+    "definition": "처리 중 변경의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "변경 없음",
+      "수정",
+      "삭제"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/grounding.py",
+      "pma/answer_review.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T37",
+      "T38",
+      "T48"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "D24",
+    "domain": "answer",
+    "name": "모호성 처리",
+    "definition": "모호성 처리의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "직답",
+      "필요 확인",
+      "불필요 확인"
+    ],
+    "risk_level": "P0",
+    "owner_modules": [
+      "pma/grounding.py",
+      "pma/answer_review.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [
+      "T07",
+      "T09",
+      "T27",
+      "T28",
+      "T29",
+      "T48"
+    ],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  },
+  {
+    "id": "D25",
+    "domain": "answer",
+    "name": "응답 형식",
+    "definition": "응답 형식의 값에 따라 검색·관계·답변의 근거가 달라지는지 검증한다.",
+    "variants": [
+      "정상",
+      "누락 필드",
+      "무효 인용"
+    ],
+    "risk_level": "P2",
+    "owner_modules": [
+      "pma/grounding.py",
+      "pma/answer_review.py"
+    ],
+    "current_support": "unassessed",
+    "case_ids": [],
+    "acceptance_rules": [
+      "원문 구간과 버전이 일치해야 한다.",
+      "명세 등록만으로 검증 완료를 표시하지 않는다.",
+      "변수 값별 실행과 의미 검토가 완료된 범위만 verified로 표시한다."
+    ],
+    "review_status": "fixture_author_reviewed_not_independent"
+  }
+]

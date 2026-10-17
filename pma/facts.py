@@ -13,7 +13,7 @@ from decimal import Decimal
 
 from scripts.memory_agent.provenance import normalize_time, sentences
 
-FACT_VERSION = 6
+FACT_VERSION = 7
 RELATIONS = (
     "desire",
     "give",
@@ -176,6 +176,11 @@ def project(memory, source, reference_time, recorded_at, evidence=None):
         if rel == "prefer"
         else "planned"
         if memory["memory_type"] in {"plan", "decision"}
+        or (
+            rel == "give"
+            and re.search(r"주려고\s*했다[.!?]?\s*$", content)
+            and re.search(r"주려고\s*했다[.!?]?\s*$", quote_text)
+        )
         else "observed"
     )
     if review or role_conflict:

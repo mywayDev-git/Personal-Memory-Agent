@@ -50,7 +50,10 @@ class Service:
 
     def trace(self, stage, **data):
         if self.diagnostic_sink is not None:
-            self.diagnostic_sink(deepcopy({"stage": stage, **data}))
+            try:
+                self.diagnostic_sink(deepcopy({"stage": stage, **data}))
+            except Exception:
+                log.warning("diagnostic_sink_failed stage=%s", stage)
 
     @contextmanager
     def model_slot(self, wait=5):
@@ -337,6 +340,14 @@ class Service:
                     "score": ranks[i],
                 }
             )
+        if self.diagnostic_sink is not None:
+            self.trace(
+                "retrieval_merge",
+                candidates=[
+                    {"id": r["id"], "rank": i + 1, "score": r["score"]}
+                    for i, r in enumerate(results)
+                ],
+            )
         if plan["kind"] in {"current", "change", "compare"}:
             results.sort(key=lambda r: (r["time"].get("start") or "", r["content"]), reverse=True)
         elif (
@@ -404,6 +415,8 @@ class Service:
             if not found["results"]:
                 return {**found, "status": "insufficient_evidence", "items": []}
             from .grounding import claims_supported, grounded_response
+
+            self.trace("generation_start", status="running")
 
             if hasattr(self.models, "review") and self.settings.answer_validation:
                 from .answer_review import answer_found
