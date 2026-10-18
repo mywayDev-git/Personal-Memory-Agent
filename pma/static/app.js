@@ -98,6 +98,7 @@ async function processingProgress(){
 }
 let failedItems=[], retryBusy=false;
 const failureReasons={
+  RELATION_VALIDATION_FAILED:['인물·대상 관계 확인 실패','재추출 후에도 행동 주체나 대상이 원문과 맞지 않아 기억 등록을 보류했습니다. 원문은 보존되어 있습니다.'],
   MODEL_UNAVAILABLE:['모델 통신 오류','기억 AI 또는 검색 AI와 통신하지 못했습니다. 서버가 연결된 상태에서 재처리하세요.'],
   MODEL_TIMEOUT:['응답 시간 초과','정해진 시간 안에 모델 응답을 받지 못했습니다. 모델 부하를 확인하고 재처리하세요.'],
   EXTRACTION_INVALID:['처리 결과 오류 · 상세 미확인','기존 코드는 추출 검증·응답 잘림·벡터 오류 등 여러 예외를 이 코드로 저장했습니다. 이 기록의 정확한 원인은 저장된 코드만으로 확정할 수 없습니다.'],

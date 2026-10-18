@@ -11,3 +11,4 @@ __pycache__/
 .local/
 output/
 .test-tmp*/
+results/local_*

@@ -4,13 +4,14 @@ import hashlib
 import json
 import os
 
+from scripts.memory_agent.accuracy import POLICY_VERSION, RULES
 from scripts.memory_agent.diagnostics import ProcessingError
 from scripts.memory_agent.pipeline import fingerprint
 from scripts.memory_agent.provenance import sentences
 
 from .errors import AppError
 
-PROCESSING_VERSION = 2
+PROCESSING_VERSION = 3
 
 
 def extract_record(service, job, context):
@@ -21,6 +22,8 @@ def extract_record(service, job, context):
     identity = fingerprint(
         dict(
             version=PROCESSING_VERSION,
+            accuracy_policy=POLICY_VERSION,
+            accuracy_rules=RULES,
             prompt=model.prompt,
             schema=model.raw_schema,
             settings=vars(service.settings.llm),
@@ -39,7 +42,7 @@ def extract_record(service, job, context):
         group.append(unit)
     if group:
         groups.append(group)
-    all_memories, provenance, diagnostics = [], [], []
+    all_memories, provenance, diagnostics, warnings = [], [], [], []
     completed = 0
     total = len(groups)
 
@@ -124,6 +127,9 @@ def extract_record(service, job, context):
             dict(item, chunk=group[0]["id"])
             for item in cached["metadata"].get("repair_attempts", [])
         )
+        warnings.extend(
+            dict(item, chunk=group[0]["id"]) for item in cached["metadata"].get("warnings", [])
+        )
         for m, p in zip(cached["memories"], cached["metadata"].get("provenance", [])):
             signature = hashlib.sha256(
                 json.dumps(
@@ -152,5 +158,6 @@ def extract_record(service, job, context):
         chunks_completed=completed,
         chunks_total=total,
         recovered_diagnostics=diagnostics,
+        warnings=warnings,
         settings_hash=identity,
     )

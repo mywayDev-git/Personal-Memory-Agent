@@ -8,6 +8,7 @@ import numpy as np
 import requests
 
 from config.settings import paths
+from scripts.memory_agent.accuracy import RULES
 from scripts.memory_agent.extractor import extract_json
 from scripts.memory_agent.llm_client import chat, local_session, post_json
 from scripts.memory_agent.pipeline import process_text
@@ -121,7 +122,12 @@ class LocalModels:
             )
             self.budget(
                 session,
-                self.prompt + json.dumps(context, ensure_ascii=False) + budget_text,
+                self.prompt
+                + RULES
+                + json.dumps(self.raw_schema, ensure_ascii=False)
+                + json.dumps(context, ensure_ascii=False)
+                + budget_text
+                + (" " * 512),
                 self.settings.llm.max_tokens,
             )
             return process_text(

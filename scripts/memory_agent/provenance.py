@@ -3,6 +3,8 @@
 import re
 from datetime import datetime, timedelta, timezone
 
+from .temporal import normalize_time as normalize_expression
+
 DATE = re.compile(
     r"(?<!\d)(\d{4})(?:[-.]\s*|년\s*)(\d{1,2})(?:[-.]\s*|월\s*)(\d{1,2})(?:일)?(?!\d)"
 )
@@ -41,6 +43,33 @@ def normalize_time(memory, units, reference_time):
     raw = prior.get("raw") or ""
     # Evidence is selected by sentence ID; only its own temporal expression applies.
     text = " ".join(u["text"] for u in units)
+    if raw and raw not in text:
+        memory["time"] = result
+        return dict(
+            status="unresolved",
+            rule="unsupported_time_raw",
+            source_ids=[u["id"] for u in units],
+            changed=prior != result,
+        )
+    if raw:
+        # Existing Korean week/month/year rules apply only to the exact selected
+        # expression. Keep the team's date-header and next-day logic below.
+        normalized = normalize_expression(
+            dict(time=prior, evidence=[{"quote": u["text"]} for u in units]), reference_time
+        )
+        if (
+            normalized["start"]
+            and not DATE.search(raw)
+            and len(list(DATE.finditer(text))) + len(list(REL.finditer(text))) <= 1
+            and not re.search(r"그날|다음\s*날", raw)
+        ):
+            memory["time"] = normalized
+            return dict(
+                status="verified",
+                rule="explicit_expression",
+                source_ids=[u["id"] for u in units],
+                changed=prior != normalized,
+            )
     dates = list(DATE.finditer(text))
     relative = list(REL.finditer(text))
     inherited = False
