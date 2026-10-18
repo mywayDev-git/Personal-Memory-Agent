@@ -9,6 +9,7 @@
     <nav aria-label="주 메뉴">
       <button data-tab="records" class="nav active" aria-current="page">01 <span>나의 기록</span></button>
       <button data-tab="questions" class="nav">02 <span>기억에 질문하기</span></button>
+      <button data-tab="chat" class="nav">07 <span>AI 대화</span></button>
       <button data-tab="trash" class="nav">03 <span>휴지통</span></button>
     <button id="test-nav" data-tab="playground" class="nav" hidden>04 <span>생활 기록 테스트</span></button><button data-tab="failures" class="nav">05 <span>처리 실패 목록</span></button></nav>
     <a id="evaluation-link" class="nav" href="/evaluation" hidden>06 <span>평가 관제실</span></a>
@@ -50,6 +51,20 @@
           <div class="form-footer"><span class="muted">질문과 답변은 저장하지 않습니다.</span><button class="primary" id="ask" type="submit">기억 찾아보기</button></div>
         </form>
       </article><article id="answer" class="card" hidden aria-live="polite"></article>
+    </section>
+    <section id="chat" class="tab" hidden>
+      <article class="card"><h2>기록을 선택해 대화하기</h2><p>선택한 근거와 대화 이력을 이 PC에 저장합니다. 원본 수정 시 읽기 전용이 되며, 원본 삭제 시 관련 대화도 삭제됩니다.</p>
+        <form id="chat-search-form"><label for="chat-search-question">찾을 기억</label><textarea id="chat-search-question" required maxlength="1000" rows="2"></textarea>
+          <div class="dates"><label>시작일<input id="chat-date-from" type="date"></label><label>종료일<input id="chat-date-to" type="date"></label></div>
+          <button id="chat-search-button" class="primary">근거 검색</button></form>
+        <div id="chat-results"></div><button id="chat-start" class="secondary" disabled>선택한 기억으로 대화 시작</button>
+      </article>
+      <article class="card"><h2>저장된 대화</h2><button id="chat-refresh" class="link">대화 새로고침</button><div id="chat-list" class="actions"></div></article>
+      <article id="chat-conversation" class="card" hidden><div class="card-head"><h2 id="chat-title"></h2><button id="chat-delete" class="link">대화 삭제</button></div>
+        <p id="chat-state" class="muted"></p><details><summary>고정된 대화 근거</summary><div id="chat-evidence"></div></details>
+        <div id="chat-messages" aria-live="polite"></div>
+        <form id="chat-form"><label for="chat-question">선택한 기록에 질문하기</label><textarea id="chat-question" required maxlength="1000" rows="3"></textarea><button id="chat-send" class="primary">보내기</button></form>
+      </article>
     </section>
     <section id="trash" class="tab" hidden><article class="card"><h2>잠시 보관한 기록</h2><p class="muted">30일 동안 복원할 수 있습니다. 만료된 기록은 앱 실행 중 또는 다음 실행 때 영구 삭제됩니다.</p><div id="trash-list" class="record-list"></div><button id="trash-more" class="secondary" hidden>더 보기</button></article></section>
     <section id="playground" class="tab" hidden><article class="card">

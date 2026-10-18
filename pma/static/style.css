@@ -9,3 +9,5 @@ main{padding:44px 5vw 28px;max-width:1500px;width:100%}header{display:flex;justi
 .processing-panel{border-top:1px solid var(--border);margin-top:12px;padding-top:16px;font-size:12px}.processing-panel h2{font-size:14px}.processing-panel progress{width:100%;accent-color:var(--green)}#processing-count{font-weight:700;font-size:17px;margin:8px 0}#processing-current{white-space:pre-wrap;overflow-wrap:anywhere}#processing-log{list-style:none;padding:0;max-height:260px;overflow:auto}#processing-log li{border-bottom:1px solid var(--border);padding:8px 0;font-size:11px}#processing-log p{margin:3px 0;overflow-wrap:anywhere}.processing-error{color:#963e33}
 
 #failure-list pre,#detail-content pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:340px;overflow:auto}
+
+.chat-source{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;max-height:24rem;overflow:auto}.chat-turn{border-top:1px solid #d9ddd4;padding:1rem 0}.chat-turn input[type=checkbox]{width:auto;display:inline}.chat-turn p{white-space:pre-wrap}#chat-list{display:flex;flex-wrap:wrap;gap:.5rem}

@@ -153,9 +153,11 @@ class Store:
             initial.close()
         with self.connect() as db:
             version = db.execute("PRAGMA user_version").fetchone()[0]
-            if version not in (0, 1, 2):
+            if version not in (0, 1, 2, 3):
                 raise RuntimeError("UNSUPPORTED_DATABASE_VERSION")
-            db.executescript("BEGIN IMMEDIATE;\n" + DDL + "\nCOMMIT;")
+            from .chat.schema import DDL as CHAT_DDL
+
+            db.executescript("BEGIN IMMEDIATE;\n" + DDL + CHAT_DDL + "\nCOMMIT;")
 
     @contextmanager
     def connect(self, write=False):
@@ -338,6 +340,11 @@ class Store:
 
     def expire(self):
         with self.connect(True) as db:
+            cutoff = (datetime.fromisoformat(self.clock()) - timedelta(hours=24)).isoformat()
+            db.execute(
+                "DELETE FROM chat_searches WHERE created_at<=? AND NOT EXISTS "
+                "(SELECT 1 FROM chat_sessions WHERE search_id=chat_searches.id)", (cutoff,)
+            )
             count = db.execute(
                 "DELETE FROM records WHERE state='trash' AND purge_at<=?", (self.clock(),)
             ).rowcount

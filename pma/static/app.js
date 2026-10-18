@@ -1,3 +1,4 @@
+import {setupChat} from './chat.js';
 const $ = id => document.getElementById(id);
 let csrf = '', editing = null, tab = 'records', cursor = null, trashCursor = null, authorized = false;
 const statuses = {queued:'기억 정리 대기',processing:'기억 정리 중',ready:'검색 가능',ready_empty:'추출된 기억 없음',failed:'처리 실패',trashed:'휴지통'};
@@ -54,7 +55,7 @@ function renderConnections(host, links) {
   host.append(section);
 }
 function clearAnswer(){ $('answer').replaceChildren();$('answer').hidden=true; }
-function setTab(name){tab=name;for(const el of document.querySelectorAll('.tab'))el.hidden=el.id!==name;for(const b of document.querySelectorAll('[data-tab]')){b.classList.toggle('active',b.dataset.tab===name);if(b.dataset.tab===name)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');}$('heading').textContent={records:'나의 기록',questions:'기억에 질문하기',trash:'휴지통',playground:'생활 기록 테스트',failures:'처리 실패 목록'}[name];if(authorized&&name==='failures')loadFailures().catch(e=>notice(e.message,true));if(authorized&&['records','trash'].includes(name))loadList(name==='trash').catch(e=>notice(e.message,true));}
+function setTab(name){tab=name;for(const el of document.querySelectorAll('.tab'))el.hidden=el.id!==name;for(const b of document.querySelectorAll('[data-tab]')){b.classList.toggle('active',b.dataset.tab===name);if(b.dataset.tab===name)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');}$('heading').textContent={chat:'AI 대화',records:'나의 기록',questions:'기억에 질문하기',trash:'휴지통',playground:'생활 기록 테스트',failures:'처리 실패 목록'}[name];if(authorized&&name==='failures')loadFailures().catch(e=>notice(e.message,true));if(authorized&&['records','trash'].includes(name))loadList(name==='trash').catch(e=>notice(e.message,true));}
 function resetEditor(){editing=null;$('editor-title').textContent='오늘, 무엇을 기억할까요?';$('save').textContent='기록 저장';$('record-text').value='';const d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());$('reference-time').value=d.toISOString().slice(0,16);$('char-count').textContent='0 / 4,000';}
 async function loadList(trash=false, append=false){
   const c=trash?trashCursor:cursor;const data=await api('/records?state='+(trash?'trash':'active')+(append&&c?'&cursor='+encodeURIComponent(c):''));
@@ -62,7 +63,7 @@ async function loadList(trash=false, append=false){
   if(!data.items.length&&!append)target.append(node('p',trash?'휴지통이 비어 있습니다.':'첫 기록을 남겨 보세요. 당신의 경험이 이곳에 쌓입니다.','empty'));
   for(const r of data.items){const row=node('div',undefined,'record');const meta=node('div',undefined,'meta');meta.append(node('span',new Date(r.updated_at).toLocaleString('ko-KR')),node('span',statuses[r.status]||r.status,'badge '+(r.status==='failed'?'failed':'')));row.append(meta,node('p',r.preview,'preview'));const buttons=node('div',undefined,'actions');
     if(trash){row.append(node('p',new Date(r.purge_at).toLocaleDateString('ko-KR')+'까지 복원 가능','muted'));buttons.append(action('복원',async()=>{await api('/records/'+r.id+'/restore','POST',{});clearAnswer();await loadList(true);notice('복원했습니다. 기억을 다시 정리합니다.');}),action('영구 삭제',async()=>{if(!confirm('원문과 수정 이력을 영구 삭제할까요? 복원할 수 없습니다.'))return;await api('/records/'+r.id+'/purge','DELETE');clearAnswer();$('detail').hidden=true;await loadList(true);notice('영구 삭제했습니다.');},'danger'));}
-    else {buttons.append(action('열기',()=>openRecord(r.id)),action('수정',()=>edit(r.id)),action('삭제',async()=>{await api('/records/'+r.id,'DELETE');clearAnswer();$('detail').hidden=true;if(editing?.id===r.id)resetEditor();await loadList();notice('휴지통으로 옮겼습니다. 30일 안에 복원할 수 있습니다.');},'link'));if(r.status==='failed')buttons.append(action('재시도',async()=>{await api('/records/'+r.id+'/retry','POST',{});await loadList();}));}
+    else {buttons.append(action('열기',()=>openRecord(r.id)),action('수정',()=>edit(r.id)),action('삭제',async()=>{if(!confirm('기록을 삭제하면 이 기록을 근거로 쓴 대화도 영구 삭제됩니다. 계속할까요?'))return;await api('/records/'+r.id,'DELETE');clearAnswer();$('detail').hidden=true;if(editing?.id===r.id)resetEditor();await loadList();notice('휴지통으로 옮겼습니다. 30일 안에 복원할 수 있습니다.');},'link'));if(r.status==='failed')buttons.append(action('재시도',async()=>{await api('/records/'+r.id+'/retry','POST',{});await loadList();}));}
     row.append(buttons);target.append(row);
   }if(trash)trashCursor=data.next_cursor;else cursor=data.next_cursor;$(trash?'trash-more':'more').hidden=!data.next_cursor;
 }
@@ -197,3 +198,5 @@ setInterval(()=>{if(authorized&&tab==='records'&&!cursor)loadList().catch(()=>{}
 
 setInterval(()=>{if(authorized&&!document.hidden)processingProgress();},3000);
 document.addEventListener("visibilitychange",()=>{if(authorized&&!document.hidden)processingProgress();});
+
+setupChat({api,node,action,notice,today:()=>{const d=new Date();return lifeData?.today||[d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');}});

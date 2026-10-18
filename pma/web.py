@@ -144,6 +144,10 @@ def create_app(settings=None, models=None, run_worker=True, test_dataset=None, c
                 sink.intro(settings.data_dir / "memory.db")
             service = Service(store, models or LocalModels(settings), settings, diagnostic_sink=sink)
             app.state.store, app.state.service = store, service
+            from .chat.engine import ChatEngine
+
+            app.state.chat = ChatEngine(service)
+            app.state.chat.store.recover()
             if run_worker:
                 service.start()
             else:
@@ -413,6 +417,10 @@ def create_app(settings=None, models=None, run_worker=True, test_dataset=None, c
         return app.state.service.search(
             data.question, data.filters.model_dump() if data.filters else None, data.today
         )
+
+    from .chat.api import router as chat_router
+
+    app.include_router(chat_router(Input, QueryInput))
 
     @app.post("/api/v1/answers")
     def answer(data: QueryInput):

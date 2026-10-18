@@ -29,7 +29,8 @@ class ConsoleTrace:
             "저장: 원문·버전 저장 → AI 기억 추출·원문 검증 → 의미 벡터 생성 → 검색 가능",
             "검색: 질문 해석 → 날짜·인물·행동 조건 → 의미+키워드 순위 결합 → 근거 선택 → 답변",
             "예시 질문: ‘지난주에 누구를 만났지?’, ‘지연이가 받고 싶다고 한 선물은?’",
-            "질문과 답변 이력은 DB에 저장하지 않습니다. 검색 점수는 정확도 확률이 아닙니다.",
+            "기존 단일 질문은 저장하지 않습니다. AI 대화 탭의 이력과 근거는 로컬 DB에 저장합니다.",
+            "검색 점수는 정확도 확률이 아닙니다.",
         ])
 
     def __call__(self, event):
@@ -96,6 +97,18 @@ class ConsoleTrace:
                      f"{len(event['excluded_ids'])}개 제외"]
         elif stage == "generation_start":
             lines = ["선택한 기억을 바탕으로 답변 작성 및 근거 검증 중…"]
+        elif stage == "chat_verification":
+            title = "AI 대화 · 근거 검증"
+            lines = ["검증 통과" if event["supported"] else "검증 미통과 · 수정 또는 답변 보류"]
+        elif stage == "chat_result":
+            title = "AI 대화 · 답변 완료"
+            response = event["response"]
+            lines = ["질문: " + readable(event["question"])]
+            lines += [readable(item["text"], 1000) for item in response.get("items", [])]
+            if response.get("clarification"):
+                lines.append(readable(response["clarification"]))
+            if response["status"] == "insufficient_evidence":
+                lines.append("선택된 기록에서 충분한 근거를 확인하지 못했습니다.")
         elif stage == "result":
             title = "검색 결과"
             response = event['response']
