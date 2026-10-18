@@ -16,12 +16,14 @@ from pma.web import create_app
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--no-browser', action='store_true')
+    parser.add_argument("-test", "--test", action="store_true",
+                        help="메인 실행 창에 저장·검색 과정을 한국어로 표시")
     args = parser.parse_args()
     dataset = LifeDataset(ROOT / 'data/life_diagnostics.json',
                           ROOT / 'output/life-evaluation-20261013')
     settings = replace(AppSettings.from_env(), data_dir=ROOT / '.local/life-web', port=8766,
                        embedding_revision=dataset.revision, llm=replace(Settings.from_env(), model='qwen3'))
-    app = create_app(settings, test_dataset=dataset)
+    app = create_app(settings, test_dataset=dataset, console_test=args.test)
     server = uvicorn.Server(uvicorn.Config(app, host='127.0.0.1', port=settings.port,
                                           access_log=False))
     def open_browser():

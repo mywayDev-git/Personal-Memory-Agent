@@ -48,6 +48,7 @@ class Service:
         self.thread = None
         self.processing_status = None
         self.worker_paused = False
+        self.worker_phase = "idle"
         self.diagnostic_sink = diagnostic_sink
 
     def trace(self, stage, **data):
@@ -86,26 +87,39 @@ class Service:
         while not self.stop_event.is_set():
             try:
                 if self.worker_paused:
+                    self.worker_phase = "health"
                     health = self.models.health()
                     if any(value != "ready" for value in health.values()):
                         self.stop_event.wait(5)
                         continue
                     self.worker_paused = False
                 if time.monotonic() >= maintenance:
+                    self.worker_phase = "maintenance"
                     self.store.expire()
                     maintenance = time.monotonic() + 3600
                 self.run_one()
-            except Exception:
-                # Avoid traceback local values or source-containing exception messages.
-                log.error("worker_iteration_failed")
+            except Exception as exc:
+                # Contention is normal: leave queued work intact and try next iteration.
+                if not (isinstance(exc, AppError) and exc.code == "MODEL_BUSY"
+                        and self.worker_phase == "model_wait"):
+                    from .worker_errors import describe_failure
+
+                    details = describe_failure(exc, self.worker_phase)
+                    log.error("worker_iteration_failed phase=%s code=%s type=%s",
+                              self.worker_phase, details["code"], details["exception_type"])
+                    self.trace("worker_failed", **details)
             self.stop_event.wait(0.5)
 
     def run_one(self):
-        with self.model_slot():
+        self.worker_phase = "model_wait"
+        with self.model_slot(wait=0):
+            self.worker_phase = "rebuild"
             self.store.rebuild_facts()
+            self.worker_phase = "claim"
             job = self.store.claim()
             if not job:
                 return False
+            self.trace("processing_start", record_id=job["record_id"], text=job["text"])
             started = time.monotonic()
             self.processing_status = {"job_id": job["id"], "phase": "extract", "started": started}
             try:
@@ -115,6 +129,7 @@ class Service:
                         self.processing_status = dict(self.processing_status, phase="extract")
                         result, metadata = extract_record(self, job, context)
                         self.processing_status = dict(self.processing_status, phase="embed")
+                        self.trace("embedding_start", memories=result["memories"])
                         vectors = self.models.embed([m["content"] for m in result["memories"]])
                         if len(result["memories"]):
                             vectors = normalized_vectors(
@@ -130,6 +145,8 @@ class Service:
                 self.store.publish(
                     job, result["memories"], vectors, self.settings.embedding_key, metadata
                 )
+                self.trace("processing_done", count=len(result["memories"]),
+                           record_id=job["record_id"])
                 log.info(
                     "job_finished job_id=%s elapsed=%.3f", job["id"], time.monotonic() - started
                 )
@@ -143,7 +160,12 @@ class Service:
                     for k, v in (self.processing_status or {}).items()
                     if k not in {"started", "job_id"}
                 }
+                self.worker_phase = "failure_save"
                 self.store.fail(job, code, diagnostic)
+                from .worker_errors import describe_failure
+
+                self.trace("processing_failed", record_id=job["record_id"],
+                           **describe_failure(exc, diagnostic["stage"]))
                 if code in {"MODEL_UNAVAILABLE", "MODEL_TIMEOUT", "MODEL_HTTP_ERROR"}:
                     self.worker_paused = True
                 log.warning("job_failed job_id=%s code=%s", job["id"], code)
@@ -281,6 +303,7 @@ class Service:
                 r["text"],
             )
         )
+        self.trace("search_scope", total=len(rows), count=len(candidates), filters=applied)
         capture("filtered", rows, candidates, locations, known_names)
         if not candidates:
             capture("begin", Stage.SOURCE_VALIDATION)
@@ -312,6 +335,8 @@ class Service:
             (i for i, score in enumerate(keyword) if score),
             key=lambda i: (-keyword[i], candidates[i]["id"]),
         )[:20]
+        self.trace("search_methods", terms=sorted(terms), vectors=len(vector_order),
+                   keywords=len(keyword_order))
         capture("retrieval", Stage.KEYWORD_RETRIEVAL, candidates, keyword_order, keyword)
         capture("begin", Stage.RANK_FUSION)
         ranks = {}
@@ -427,7 +452,9 @@ class Service:
     @traced_request
     def search(self, question, filters=None, today=None):
         with self.model_slot():
-            return self._search(question, filters, today)[1]
+            response = self._search(question, filters, today)[1]
+            self.trace("result", response=response)
+            return response
 
     @traced_request
     def answer(self, question, filters=None, today=None):

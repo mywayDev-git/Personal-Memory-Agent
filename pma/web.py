@@ -123,7 +123,7 @@ def error_response(code, message, status, request_id, retryable=False):
     )
 
 
-def create_app(settings=None, models=None, run_worker=True, test_dataset=None):
+def create_app(settings=None, models=None, run_worker=True, test_dataset=None, console_test=False):
     settings = settings or AppSettings.from_env()
     settings.validate()
     bootstrap = secrets.token_urlsafe(32)
@@ -136,7 +136,13 @@ def create_app(settings=None, models=None, run_worker=True, test_dataset=None):
             store = Store(settings.data_dir / "memory.db")
             if test_dataset is not None:
                 test_dataset.prepare(store, settings)
-            service = Service(store, models or LocalModels(settings), settings)
+            sink = None
+            if console_test:
+                from .console_trace import ConsoleTrace
+
+                sink = ConsoleTrace()
+                sink.intro(settings.data_dir / "memory.db")
+            service = Service(store, models or LocalModels(settings), settings, diagnostic_sink=sink)
             app.state.store, app.state.service = store, service
             if run_worker:
                 service.start()
@@ -352,7 +358,9 @@ def create_app(settings=None, models=None, run_worker=True, test_dataset=None):
 
     @app.post("/api/v1/records", status_code=202)
     def create(data: RecordInput):
-        return app.state.store.create(data.text, data.reference_time)
+        result = app.state.store.create(data.text, data.reference_time)
+        app.state.service.trace("record_saved", text=data.text, **result)
+        return result
 
     @app.get("/api/v1/records/{rid}")
     def get(rid: str):

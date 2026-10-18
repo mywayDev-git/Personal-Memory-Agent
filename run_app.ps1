@@ -5,7 +5,8 @@ param(
     [switch]$NoBrowser,
     [switch]$ExternalServers,
     [switch]$LifeTest,
-    [switch]$Evaluation
+    [switch]$Evaluation,
+    [switch]$Test
 )
 $ErrorActionPreference = 'Stop'
 if ($PSVersionTable.PSVersion.Major -lt 7) {
@@ -77,6 +78,7 @@ try {
     $appArguments = @('-u', '-B', '-m', 'pma')
     if ($LifeTest) { $appArguments = @('-u', '-B', '-m', 'scripts.run_life_web') }
     if ($NoBrowser) { $appArguments += '--no-browser' }
+    if ($Test) { $appArguments += '--test' }
     & './.venv/Scripts/python.exe' @appArguments
     $appExitCode = $LASTEXITCODE
 } finally {
