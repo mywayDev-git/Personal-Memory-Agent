@@ -55,7 +55,7 @@ function renderConnections(host, links) {
   host.append(section);
 }
 function clearAnswer(){ $('answer').replaceChildren();$('answer').hidden=true; }
-function setTab(name){tab=name;for(const el of document.querySelectorAll('.tab'))el.hidden=el.id!==name;for(const b of document.querySelectorAll('[data-tab]')){b.classList.toggle('active',b.dataset.tab===name);if(b.dataset.tab===name)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');}$('heading').textContent={chat:'AI 대화',records:'나의 기록',questions:'기억에 질문하기',trash:'휴지통',playground:'생활 기록 테스트',failures:'처리 실패 목록'}[name];if(authorized&&name==='failures')loadFailures().catch(e=>notice(e.message,true));if(authorized&&['records','trash'].includes(name))loadList(name==='trash').catch(e=>notice(e.message,true));}
+function setTab(name){tab=name;for(const el of document.querySelectorAll('.tab'))el.hidden=el.id!==name;for(const b of document.querySelectorAll('[data-tab]')){b.classList.toggle('active',b.dataset.tab===name);if(b.dataset.tab===name)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');}$('heading').textContent={chat:'AI 대화',records:'나의 기록',questions:'기억에 질문하기',trash:'휴지통',failures:'처리 실패 목록'}[name];if(authorized&&name==='failures')loadFailures().catch(e=>notice(e.message,true));if(authorized&&['records','trash'].includes(name))loadList(name==='trash').catch(e=>notice(e.message,true));}
 function resetEditor(){editing=null;$('editor-title').textContent='오늘, 무엇을 기억할까요?';$('save').textContent='기록 저장';$('record-text').value='';const d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());$('reference-time').value=d.toISOString().slice(0,16);$('char-count').textContent='0 / 4,000';}
 async function loadList(trash=false, append=false){
   const c=trash?trashCursor:cursor;const data=await api('/records?state='+(trash?'trash':'active')+(append&&c?'&cursor='+encodeURIComponent(c):''));
@@ -70,45 +70,6 @@ async function loadList(trash=false, append=false){
 async function edit(id){const r=await api('/records/'+id);editing=r;setTab('records');$('editor-title').textContent='기록 수정 · 버전 '+r.version;$('save').textContent='수정 저장';$('record-text').value=r.text;let t='';if(r.reference_time){const d=new Date(r.reference_time);d.setMinutes(d.getMinutes()-d.getTimezoneOffset());t=d.toISOString().slice(0,16);}$('reference-time').value=t;$('char-count').textContent=r.text.length+' / 4,000';$('record-text').focus();}
 async function openRecord(id){const r=await api('/records/'+id);setTab('records');const box=$('detail-content');box.replaceChildren(node('p',statuses[r.status]+' · 버전 '+r.version,'muted'),node('p',r.text,'source'));if(r.status==='failed')box.append(node('p','원문은 보존되어 있습니다. '+reason(r.error_code)[0]+' · '+reason(r.error_code)[1],'muted'));for(const m of r.memories){const item=node('div',undefined,'memory');item.append(node('p',m.content));for(const e of m.evidence)item.append(node('blockquote',e.quote));box.append(item);}if(r.processing_details?.provenance){const audit=node('details');audit.append(node('summary','날짜 근거·구간 처리 정보'),node('pre',JSON.stringify(r.processing_details,null,2)));box.append(audit);}const history=node('details');history.append(node('summary','수정 이력 보기'));history.addEventListener('toggle',async()=>{if(!history.open||history.dataset.loaded)return;try{const data=await api('/records/'+id+'/revisions');for(const v of data.items){const entry=node('div',undefined,'memory');entry.append(node('p','버전 '+v.version+' · '+new Date(v.created_at).toLocaleString('ko-KR'),'muted'),node('p',v.text,'source'));if(v.version!==r.version&&r.state==='active')entry.append(action('이 내용으로 되돌리기',async()=>{await api('/records/'+id+'/revert','POST',{version:v.version,expected_version:r.version});clearAnswer();await openRecord(id);await loadList();notice('새 버전으로 되돌렸습니다. 기억을 다시 정리합니다.');}));history.append(entry);}history.dataset.loaded='1';}catch(e){notice(e.message,true);}});box.append(history);if(r.facts_status==='pending')box.append(node('p','관계 검색 정보를 구축 중입니다.','muted'));const connections=await api('/relations?record_id='+encodeURIComponent(id));renderConnections(box,connections.items);$('detail').hidden=false;$('detail').scrollIntoView({behavior:'smooth',block:'start'});}
 async function health(){const h=await api('/health');const generation=h.models.generation==='ready'?'연결됨':'준비 필요';const embedding=h.models.embedding==='ready'?'연결됨':'준비 필요';$('health').textContent=`기억 AI ${generation} · 검색 AI ${embedding}`;}
-let lifeData=null, lifeLimit=30;
-const categoryNames={direct:'직접 회상',colloquial:'구어체·생략·오타',indirect:'간접 단서',connection:'연결·비교',constraints:'시간·수량·상태',ambiguity:'모호함·잘못된 전제',gift:'선물',travel:'여행',exercise:'운동',appointment:'약속',school:'학교',food:'식사',purchase:'구매',social:'인간관계',daily:'일상'};
-async function loadLife(){
-  const data=await api('/test-dataset');if(!data.enabled)return;
-  const firstLoad=!lifeData;lifeData=data;$('test-nav').hidden=false;if(firstLoad)setTab('playground');
-  const counts={};for(const r of data.records)counts[r.status]=(counts[r.status]||0)+1;
-  $('test-progress').textContent='가상 기록 '+data.records.length+'개 · '+Object.entries(counts).map(([k,v])=>(statuses[k]||k)+' '+v+'개').join(' / ')+' · 질문 기준일 '+data.today;
-  updateLifeCategories();renderLife();
-}
-function updateLifeCategories(){
-  if(!lifeData)return;const old=$('test-category').value;
-  const kind=$('test-kind').value;
-  $('test-category').replaceChildren(new Option('전체',''));
-  for(const value of [...new Set(lifeData[kind].map(r=>r.category||r.domain))])$('test-category').append(new Option(categoryNames[value]||value,value));
-  if([...$('test-category').options].some(o=>o.value===old))$('test-category').value=old;
-}
-function renderLife(){
-  if(!lifeData)return;const kind=$('test-kind').value, term=$('test-search').value.trim().toLowerCase(), category=$('test-category').value;
-  const rows=lifeData[kind].filter(r=>(!category||(r.category||r.domain)===category)&&(!term||[r.id,r.event_id,r.text||r.question].join(' ').toLowerCase().includes(term)));
-  $('test-count').textContent=rows.length+'개 중 '+Math.min(lifeLimit,rows.length)+'개 표시';$('test-list').replaceChildren();
-  for(const r of rows.slice(0,lifeLimit)){
-    const box=node('article',undefined,'record');box.append(node('p',r.id+' · '+(r.event_id||'일상')+' · '+(categoryNames[r.category||r.domain]||r.domain)+' · '+r.split,'muted'),node('p',r.text||r.question,'source'));
-    if(kind==='records'){
-      box.append(node('p','사건 시점: '+(r.event_time||'불명')+' · 기록 시점: '+r.recorded_at+' · '+(statuses[r.status]||r.status),'muted'),action('원문·추출된 기억 열기',()=>openRecord(r.record_id)));
-    }else{
-      if(r.needs_conversation_context)box.append(node('p','대화 이력이 필요한 질문: 독립 질문에서는 판단 보류를 확인하세요.','muted'));
-      box.append(action('이 질문으로 테스트',()=>{$('question').value=r.question;$('date-from').value='';$('date-to').value='';clearAnswer();setTab('questions');$('question').focus();notice('질문을 불러왔습니다. 기억 찾아보기를 눌러 실행하세요.');}));
-      const detail=node('details');detail.append(node('summary','기대 결과와 관련 원문 확인'),node('pre',JSON.stringify(r.expected,null,2)));
-      for(const id of r.relevant||[]){const source=lifeData.records.find(s=>s.id===id);if(source)detail.append(node('p',id+' · '+source.text));}
-      box.append(detail);
-    }
-    $('test-list').append(box);
-  }
-  $('test-more').hidden=rows.length<=lifeLimit;
-}
-$('test-kind').addEventListener('change',()=>{lifeLimit=30;$('test-category').value='';updateLifeCategories();renderLife();});
-for(const id of ['test-search','test-category'])$(id).addEventListener('input',()=>{lifeLimit=30;renderLife();});
-$('test-more').addEventListener('click',()=>{lifeLimit+=30;renderLife();});
-$('test-refresh').addEventListener('click',()=>loadLife().catch(e=>notice(e.message,true)));
 let processingBusy=false;
 async function processingProgress(){
   if(processingBusy)return;processingBusy=true;
@@ -189,14 +150,14 @@ $('failure-filter').addEventListener('change',renderFailures);
 $('failure-refresh').addEventListener('click',()=>loadFailures().catch(e=>notice(e.message,true)));
 $('failure-retry').addEventListener('click',()=>retryFailures(visibleFailures().map(r=>r.job_id)).catch(e=>notice(e.message,true)));
 $('record-form').addEventListener('submit',async e=>{e.preventDefault();$('save').disabled=true;try{const data={text:$('record-text').value,reference_time:$('reference-time').value?new Date($('reference-time').value).toISOString():null};if(editing){data.expected_version=editing.version;await api('/records/'+editing.id,'PATCH',data);}else await api('/records','POST',data);resetEditor();clearAnswer();$('detail').hidden=true;await loadList();notice('원문을 저장했습니다. AI가 기억을 정리합니다.');}catch(err){notice(err.message,true);}finally{$('save').disabled=false;}});
-$('question-form').addEventListener('submit',async e=>{e.preventDefault();$('ask').disabled=true;clearAnswer();notice('관련 기억을 찾고 답변을 정리하고 있습니다.');try{const d=new Date();const today=[d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');const data={question:$('question').value,today:lifeData?.today||today};if($('date-from').value||$('date-to').value)data.filters={date_from:$('date-from').value||null,date_to:$('date-to').value||null};const result=await api('/answers','POST',data);const box=$('answer');box.hidden=false;box.append(node('h2','기록에 근거한 답변'));if(result.clarification)box.append(node('p',result.clarification));if(result.facts_pending)box.append(node('p','일부 기록의 검색 정보를 구축 중이므로 결과가 완전하지 않을 수 있습니다.','muted'));if(result.status==='unsupported_intent')box.append(node('p','전체 횟수나 순위를 집계하는 질문은 아직 지원하지 않습니다. 특정 경험을 질문해 주세요.'));else if(result.status==='insufficient_evidence')box.append(node('p','답변을 뒷받침할 충분한 기록을 찾지 못했습니다.'));for(const item of result.items){const p=node('p',undefined,'answer-item');p.append(node('span',item.claim_kind==='inference'?'추정되는 연결 · ':'기록의 사실 · ','badge'));p.append(document.createTextNode(' '+item.text));for(const cid of item.citations){const source=result.results.find(r=>r.id===cid);if(source)p.append(action('원문 확인',()=>openRecord(source.record_id),'citation'));}box.append(p);}if(result.filters.date_from||result.filters.date_to)box.append(node('p',`적용 기간: ${result.filters.date_from||'제한 없음'} ~ ${result.filters.date_to||'제한 없음'}`,'muted'));renderAnswerSources(box,result);renderConnections(box,result.connections);notice('');}catch(err){notice(err.message,true);}finally{$('ask').disabled=false;}});
+$('question-form').addEventListener('submit',async e=>{e.preventDefault();$('ask').disabled=true;clearAnswer();notice('관련 기억을 찾고 답변을 정리하고 있습니다.');try{const d=new Date();const today=[d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');const data={question:$('question').value,today:today};if($('date-from').value||$('date-to').value)data.filters={date_from:$('date-from').value||null,date_to:$('date-to').value||null};const result=await api('/answers','POST',data);const box=$('answer');box.hidden=false;box.append(node('h2','기록에 근거한 답변'));if(result.clarification)box.append(node('p',result.clarification));if(result.facts_pending)box.append(node('p','일부 기록의 검색 정보를 구축 중이므로 결과가 완전하지 않을 수 있습니다.','muted'));if(result.status==='unsupported_intent')box.append(node('p','전체 횟수나 순위를 집계하는 질문은 아직 지원하지 않습니다. 특정 경험을 질문해 주세요.'));else if(result.status==='insufficient_evidence')box.append(node('p','답변을 뒷받침할 충분한 기록을 찾지 못했습니다.'));for(const item of result.items){const p=node('p',undefined,'answer-item');p.append(node('span',item.claim_kind==='inference'?'추정되는 연결 · ':'기록의 사실 · ','badge'));p.append(document.createTextNode(' '+item.text));for(const cid of item.citations){const source=result.results.find(r=>r.id===cid);if(source)p.append(action('원문 확인',()=>openRecord(source.record_id),'citation'));}box.append(p);}if(result.filters.date_from||result.filters.date_to)box.append(node('p',`적용 기간: ${result.filters.date_from||'제한 없음'} ~ ${result.filters.date_to||'제한 없음'}`,'muted'));renderAnswerSources(box,result);renderConnections(box,result.connections);notice('');}catch(err){notice(err.message,true);}finally{$('ask').disabled=false;}});
 for(const b of document.querySelectorAll('[data-tab]'))b.addEventListener('click',()=>setTab(b.dataset.tab));
 $('new-record').addEventListener('click',resetEditor);$('refresh').addEventListener('click',()=>loadList().catch(e=>notice(e.message,true)));$('more').addEventListener('click',()=>loadList(false,true).catch(e=>notice(e.message,true)));$('trash-more').addEventListener('click',()=>loadList(true,true).catch(e=>notice(e.message,true)));$('close-detail').addEventListener('click',()=>{$('detail').hidden=true;});$('check-health').addEventListener('click',()=>health().catch(e=>notice(e.message,true)));$('record-text').addEventListener('input',()=>{$('char-count').textContent=$('record-text').value.length+' / 4,000';});
 $('today').textContent=new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'});resetEditor();
-try{const token=new URLSearchParams(location.hash.slice(1)).get('token');history.replaceState(null,'',location.pathname);const session=token?await api('/session','POST',{token}):await api('/session');csrf=session.csrf;authorized=true;await Promise.all([loadList(),health(),loadLife(),processingProgress()]);}catch(e){notice(e.message,true);}
+try{const token=new URLSearchParams(location.hash.slice(1)).get('token');history.replaceState(null,'',location.pathname);const session=token?await api('/session','POST',{token}):await api('/session');csrf=session.csrf;authorized=true;await Promise.all([loadList(),health(),processingProgress()]);}catch(e){notice(e.message,true);}
 setInterval(()=>{if(authorized&&tab==='records'&&!cursor)loadList().catch(()=>{});},5000);
 
 setInterval(()=>{if(authorized&&!document.hidden)processingProgress();},3000);
 document.addEventListener("visibilitychange",()=>{if(authorized&&!document.hidden)processingProgress();});
 
-setupChat({api,node,action,notice,today:()=>{const d=new Date();return lifeData?.today||[d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');}});
+setupChat({api,node,action,notice,today:()=>{const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');}});

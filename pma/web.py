@@ -123,7 +123,7 @@ def error_response(code, message, status, request_id, retryable=False):
     )
 
 
-def create_app(settings=None, models=None, run_worker=True, test_dataset=None, console_test=False):
+def create_app(settings=None, models=None, run_worker=True, console_test=False):
     settings = settings or AppSettings.from_env()
     settings.validate()
     bootstrap = secrets.token_urlsafe(32)
@@ -134,8 +134,6 @@ def create_app(settings=None, models=None, run_worker=True, test_dataset=None, c
     async def lifespan(app):
         with DataLock(settings.data_dir / "app.lock"):
             store = Store(settings.data_dir / "memory.db")
-            if test_dataset is not None:
-                test_dataset.prepare(store, settings)
             sink = None
             if console_test:
                 from .console_trace import ConsoleTrace
@@ -427,12 +425,6 @@ def create_app(settings=None, models=None, run_worker=True, test_dataset=None, c
         return app.state.service.answer(
             data.question, data.filters.model_dump() if data.filters else None, data.today
         )
-
-    @app.get("/api/v1/test-dataset")
-    def dataset():
-        if test_dataset is None:
-            return {"enabled": False}
-        return test_dataset.view(app.state.store)
 
     from .web_diagnostics import DiagnosticMiddleware
 

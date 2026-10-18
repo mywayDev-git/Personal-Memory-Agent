@@ -4,7 +4,6 @@ param(
     [string]$EmbeddingModel = 'C:\models\bge-m3-Q8_0.gguf',
     [switch]$NoBrowser,
     [switch]$ExternalServers,
-    [switch]$LifeTest,
     [switch]$Evaluation,
     [switch]$Test
 )
@@ -76,7 +75,6 @@ try {
     }
     Write-Host '[PMA] Starting web app. Keep this terminal open; press Ctrl+C to stop.'
     $appArguments = @('-u', '-B', '-m', 'pma')
-    if ($LifeTest) { $appArguments = @('-u', '-B', '-m', 'scripts.run_life_web') }
     if ($NoBrowser) { $appArguments += '--no-browser' }
     if ($Test) { $appArguments += '--test' }
     & './.venv/Scripts/python.exe' @appArguments

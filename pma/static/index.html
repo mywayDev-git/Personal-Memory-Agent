@@ -11,8 +11,8 @@
       <button data-tab="questions" class="nav">02 <span>기억에 질문하기</span></button>
       <button data-tab="chat" class="nav">07 <span>AI 대화</span></button>
       <button data-tab="trash" class="nav">03 <span>휴지통</span></button>
-    <button id="test-nav" data-tab="playground" class="nav" hidden>04 <span>생활 기록 테스트</span></button><button data-tab="failures" class="nav">05 <span>처리 실패 목록</span></button></nav>
-    <a id="evaluation-link" class="nav" href="/evaluation" hidden>06 <span>평가 관제실</span></a>
+    <button data-tab="failures" class="nav">04 <span>처리 실패 목록</span></button></nav>
+    <a id="evaluation-link" class="nav" href="/evaluation" hidden>05 <span>평가 관제실</span></a>
     <script type="module" src="/static/evaluation-link.js"></script>
     <div class="privacy"><span class="dot"></span> 이 PC 안에 머무는 기록<p>기록은 로컬 모델로만 처리합니다.</p></div>
     <button id="check-health" class="link">연결 상태 확인</button>
@@ -70,15 +70,6 @@
       </div>
     </section>
     <section id="trash" class="tab" hidden><article class="card"><h2>잠시 보관한 기록</h2><p class="muted">30일 동안 복원할 수 있습니다. 만료된 기록은 앱 실행 중 또는 다음 실행 때 영구 삭제됩니다.</p><div id="trash-list" class="record-list"></div><button id="trash-more" class="secondary" hidden>더 보기</button></article></section>
-    <section id="playground" class="tab" hidden><article class="card">
-      <h2>가상 사용자 · 6개월 생활 기록</h2><p>개인 기록과 분리된 테스트 공간입니다. AI 처리 전인 기록은 검색되지 않습니다. 기대 결과는 답변 생성에 전달하지 않습니다.</p>
-      <p id="test-progress" role="status"></p>
-      <label for="test-kind">둘러보기</label><select id="test-kind"><option value="records">기록 300개</option><option value="questions">질문 600개</option></select>
-      <label for="test-search">사건·이름·내용 검색</label><input id="test-search" type="search" placeholder="예: E01, 지연, 부산">
-      <label for="test-category">분류</label><select id="test-category"><option value="">전체</option></select>
-      <button id="test-refresh" class="secondary">처리 상태 새로고침</button>
-      <p id="test-count" class="muted"></p><div id="test-list"></div><button id="test-more" class="secondary">더 보기</button>
-    </article></section>
     <section id="failures" class="tab" hidden><article class="card">
       <h2>처리 실패 목록</h2><p class="muted">원문은 보존되어 있습니다. 재처리는 대기열에 추가되며, 같은 원인으로 다시 실패할 수 있습니다.</p>
       <p id="failure-summary" role="status"></p><div id="failure-groups" class="actions"></div>

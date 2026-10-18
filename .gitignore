@@ -10,3 +10,4 @@ __pycache__/
 *.gguf
 .local/
 output/
+.test-tmp*/

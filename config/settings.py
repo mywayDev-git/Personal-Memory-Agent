@@ -86,13 +86,5 @@ class Paths:
     def final_schema(self) -> Path:
         return self.root / "schema" / "memory_extraction.schema.json"
 
-    @property
-    def datasets_dir(self) -> Path:
-        return self.root / "datasets"
-
-    @property
-    def results_dir(self) -> Path:
-        return self.root / "results"
-
 
 paths = Paths()
