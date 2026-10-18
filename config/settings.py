@@ -1,10 +1,8 @@
-
 """Central configuration for the Personal Memory Agent."""
 
 import os
 from dataclasses import dataclass
 from pathlib import Path
-
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
@@ -17,9 +15,7 @@ def _env_int(name: str, default: int) -> int:
     try:
         return int(value)
     except ValueError as exc:
-        raise ValueError(
-            f"Environment variable {name} must be an integer."
-        ) from exc
+        raise ValueError(f"Environment variable {name} must be an integer.") from exc
 
 
 def _env_float(name: str, default: float) -> float:
@@ -30,9 +26,7 @@ def _env_float(name: str, default: float) -> float:
     try:
         return float(value)
     except ValueError as exc:
-        raise ValueError(
-            f"Environment variable {name} must be a number."
-        ) from exc
+        raise ValueError(f"Environment variable {name} must be a number.") from exc
 
 
 @dataclass(frozen=True)
@@ -40,7 +34,7 @@ class Settings:
     """Application configuration."""
 
     endpoint: str = "http://127.0.0.1:8081/v1/chat/completions"
-    model: str | None = "Qwen3-8B-Q4_K_M"
+    model: str | None = None
 
     timeout: float = 180.0
     max_tokens: int = 4096
@@ -59,7 +53,7 @@ class Settings:
                 "PMA_ENDPOINT",
                 cls.endpoint,
             ),
-            model=os.getenv("PMA_MODEL", cls.model) or None,
+            model=os.getenv("PMA_MODEL") or None,
             timeout=_env_float("PMA_TIMEOUT", 180.0),
             max_tokens=_env_int("PMA_MAX_TOKENS", 4096),
             temperature=_env_float("PMA_TEMPERATURE", 0.0),
@@ -92,14 +86,5 @@ class Paths:
     def final_schema(self) -> Path:
         return self.root / "schema" / "memory_extraction.schema.json"
 
-    @property
-    def datasets_dir(self) -> Path:
-        return self.root / "datasets"
 
-    @property
-    def results_dir(self) -> Path:
-        return self.root / "results"
-
-
-settings = Settings.from_env()
 paths = Paths()

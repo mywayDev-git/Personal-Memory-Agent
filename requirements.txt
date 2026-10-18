@@ -1,2 +1,0 @@
-requests>=2.31,<3
-jsonschema>=4.21,<5

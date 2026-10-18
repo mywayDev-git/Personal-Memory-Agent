@@ -1,1 +1,1 @@
-"""PMA command-line tools."""
+"""Command-line adapters and reusable memory extraction core."""

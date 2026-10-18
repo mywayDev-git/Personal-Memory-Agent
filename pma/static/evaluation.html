@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>평가 관제실 · Personal Memory Agent</title><link rel="stylesheet" href="/static/evaluation.css">
+<script type="module" src="/static/evaluation.js"></script></head>
+<body><aside><a class="brand" href="/">기억의 서랍<small>PERSONAL MEMORY AGENT</small></a>
+<p>테스트의 결과부터<br>근거가 선택되는 과정까지.</p>
+<nav aria-label="평가 탐색"><a href="/evaluation">01 · 평가 개요</a><a href="/evaluation/cases">02 · 테스트 사례</a><a href="/evaluation/scenarios">03 · 시나리오 분석</a><a href="/evaluation/compare">04 · 버전 비교</a><a href="/evaluation/regression">05 · 회귀 보고서</a></nav>
+<a href="/">← 기억 관리로 돌아가기</a><small>로컬 평가 저장소 · 읽기 전용<br>실제 수집된 결과만 표시합니다.</small></aside>
+<main><header><div><span class="eyebrow">EVALUATION WORKSPACE</span><h1>평가 관제실</h1><p>점수와 실패 원인을 같은 실행 기준으로 확인하세요.</p></div><button id="refresh">새로고침</button></header>
+<div id="message" role="status" aria-live="polite">평가 실행을 불러오는 중입니다.</div>
+<section class="toolbar" aria-label="실행 선택"><label>데이터셋<select id="dataset"><option value="">전체 데이터셋</option></select></label><label>평가 실행<select id="run"><option value="">실행 선택</option></select></label><button id="older" hidden>이전 실행 더 보기</button><span id="updated"></span></section>
+<section class="panel" aria-label="실행 진행 상황"><div class="row"><h2>실행 진행 상황</h2><strong id="status">대기</strong></div><progress id="progress" max="1" value="0" aria-label="평가 완료 질문 비율"></progress><p id="counts">실행을 선택하면 진행 상황이 표시됩니다.</p><p id="current-stage" aria-live="polite"></p><small>실행 중에는 3초마다 갱신합니다. 점수는 현재까지 기록된 사례 기준입니다.</small></section>
+<section id="overview"><div id="metrics" class="metrics"></div><section class="panel"><h2>실패 유형</h2><div id="failures"></div></section></section>
+<section id="explorer" class="panel"><h2>테스트 사례</h2><form id="filters" class="toolbar"><label>질문 검색<input id="q" placeholder="상세 조회 허용 시 사용"></label><label>판정<select id="verdict"><option value="">전체 판정</option><option value="fail">실패</option><option value="pass">통과</option><option value="pending_review">검토 대기</option><option value="error">실행 오류</option><option value="not_applicable">평가 불가</option></select></label><label>실패 유형<input id="error-type" placeholder="evidence_selection_miss"></label><label>질문 유형<input id="question-type" placeholder="temporal_relation"></label><label>모호성<select id="ambiguity"><option value="">전체</option><option value="clear">명확</option><option value="context_resolvable">맥락으로 해결</option><option value="genuinely_ambiguous">확인 필요</option></select></label><button>적용</button></form>
+<div class="table-wrap"><table><caption>질문별 평가 결과 · 행의 ID를 선택하면 상세 과정이 열립니다.</caption><thead><tr><th>ID / 질문</th><th>판정</th><th>예상 → 실제 동작</th><th>실패 유형</th><th>응답 시간</th></tr></thead><tbody id="cases"></tbody></table></div><div class="row"><button id="prev">이전</button><span id="page-count"></span><button id="next">다음</button></div></section>
+<section id="inspector" hidden><div class="row"><h2>질문 · 근거 · 처리 과정</h2><a id="back" href="/evaluation/cases">목록으로</a></div><div class="inspect-grid"><article class="panel" id="answer-detail"></article><article class="panel"><h2>검색 단계</h2><div id="trace"></div></article><article class="panel" id="evidence"></article></div></section>
+<section id="scenario" class="panel" hidden><h2>시나리오별 결과</h2><p>질문 유형별 확정 판정 분포입니다. 답변 정확도와 종합 통과율은 다를 수 있습니다.</p><div id="scenario-data"></div></section>
+<section id="comparison" class="panel" hidden><h2>버전 비교 · 회귀 확인</h2><label>비교할 실행<select id="right-run"></select></label><button id="compare">비교하기</button><div id="comparison-data" aria-live="polite"></div></section>
+</main></body></html>

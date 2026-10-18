@@ -1,1 +1,1 @@
-"""PMA configuration."""
+"""Runtime configuration."""

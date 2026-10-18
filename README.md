@@ -1,204 +1,134 @@
-# Personal Memory Agent — 기억 추출 v4
+# Personal Memory Agent · 기억의 서랍
 
-일기·메모 한 편에서 여러 기억을 추출합니다. 팀원 브랜치의 JSON Schema v4.0,
-추출 프롬프트, llama.cpp 클라이언트와 검증기를 기반으로 기억별 시간 정규화와
-긴 원문 분할, 문장 근거 검증과 정확도 검증용 웹 UI를 추가했습니다.
-모델 가중치 학습이 아니라 추출 프롬프트·검증·후처리를 개선하는 프로젝트입니다.
-Python 3.13에서 자동 테스트 35개를 통과했습니다.
+Windows PC에서 개인 기록을 저장하고, 로컬 AI가 추출한 기억을 검색해 근거와 함께 답하는 단일 사용자 앱입니다. 기존 추출 스키마 v4와 CLI를 함께 유지합니다.
 
-## 실행
+## 평가 관제실
 
-```powershell
-python -m pip install -r requirements.txt
-```
+`pwsh -File ./run_app.ps1 -Evaluation`으로 실행하면 모델 서버와 웹 앱이 함께 시작되고
+기존 화면에 **평가 관제실** 메뉴가 나타납니다. `python -m pma`는 모델 서버를 시작하지 않습니다.
+평가 진행률·현재 처리 단계, 정확도·근거 지표, 질문별 실패 분석, 시나리오별 결과,
+동일 조건 버전 비교를 확인할 수 있습니다. 기본값은 비활성화이며 평가 DB는 개인 기억 DB와 분리됩니다.
+질문·답변 원문과 상세 진단은 `PMA_EVALUATION_DETAILS=1`을 별도로 설정해야 조회됩니다.
+이 실행용 저장소에는 관제실 조회 기능만 포함하며, 평가 실행기와 테스트 데이터는 포함하지 않습니다.
 
-팀원과 동일한 **Qwen3-8B-Q4_K_M GGUF 파일**을 llama.cpp 서버로 실행합니다.
-모델 이름 설정만으로 모델 파일이 다운로드되거나 교체되지는 않습니다.
-서버 빌드, GGUF 체크섬, chat template와 thinking 설정도 팀원 환경에 맞춰야 합니다.
-다음은 모델 파일과 실행 파일을 준비한 환경에서의 실행 예시입니다.
+## 빠른 시작
+
+PowerShell 7, Python 3.14, uv가 필요합니다. 최초 의존성/모델 준비에만 인터넷을 사용합니다.
 
 ```powershell
-llama-server -m "C:\models\Qwen3-8B-Q4_K_M.gguf" --alias Qwen3-8B-Q4_K_M --port 8081 -c 32768
+uv sync --frozen --python 3.14
+./run_app.ps1
 ```
 
-현재 서버 빌드가 최상위 `json_schema` 요청을 지원해야 합니다. 실제 빌드의
-옵션과 메모리 용량을 확인하고, `--context-tokens`를 서버에서 요청당 사용 가능한
-컨텍스트 크기에 맞추세요. 동시 처리 슬롯으로 컨텍스트가 나뉘는 설정도 확인해야 합니다.
+실행 직후 시작 메시지와 모델 파일 검사 단계가 표시됩니다. 모델을 로딩하는 동안 10초마다 대기 시간이 표시되며, 각 모델의 준비 제한 시간은 5분입니다. 웹 앱이 준비되면 터미널에 일회용 접속 주소가 표시됩니다. 브라우저가 자동으로 열리지 않으면 이 주소를 직접 여세요. Windows PowerShell 5에서 실행했다면 PowerShell 7에서 `pwsh -File ./run_app.ps1`로 실행하세요.
+
+기본 모델 경로:
+
+- 생성 서버: `C:\llama.cpp\llama-server.exe`
+- 생성 모델: `C:\models\Qwen3-8B-Q4_K_M.gguf`
+- 검색 모델: `C:\models\bge-m3-Q8_0.gguf`
+
+실행기는 127.0.0.1:8081(Qwen), :8082(BGE-M3), :8765(웹 앱)를 사용합니다. 준비되면 브라우저가 열립니다. 실행한 PowerShell에서 Ctrl+C로 종료하면 실행기가 시작한 모델 프로세스도 정리합니다. 모델 경로는 `-Server`, `-GenerationModel`, `-EmbeddingModel`로 지정할 수 있습니다. 이미 호환 모델 서버가 실행 중이면 `-ExternalServers`를 사용하세요. `-NoBrowser`는 일회용 접속 주소를 터미널에 표시합니다. 이 주소는 공유하지 마세요.
+
+BGE-M3 파일은 [GPUStack GGUF 저장소](https://huggingface.co/gpustack/bge-m3-GGUF/tree/2d48f1737679ad900d5c26c5aad5410e9c70fdca)에서 받습니다. 원본 모델은 [BAAI/bge-m3](https://huggingface.co/BAAI/bge-m3)입니다.
+
+- 파일: `bge-m3-Q8_0.gguf` (634,553,760 bytes)
+- 저장소 revision: `2d48f1737679ad900d5c26c5aad5410e9c70fdca`
+- SHA-256: `950f4a8e5e19477a6d3c26d2f162233c20002c601f75e4b002e3239997821167`
+
+실행기는 임베딩 파일 SHA-256을 계산해 색인 버전을 구분합니다. 임베딩 모델 변경 시 기존 검색 데이터를 무효화하고 원문에서 다시 추출합니다. `-ExternalServers` 사용 시 실제 서버에 로드된 모델과 지정 파일이 같은지 직접 확인해야 합니다.
+
+## 포트 한 번에 종료
 
 ```powershell
-$env:PMA_ENDPOINT = 'http://127.0.0.1:8081/v1/chat/completions'
-$env:PMA_MODEL = 'Qwen3-8B-Q4_K_M'
-python pma_extract.py --text '어제 팀원들과 회의했다. 다음 주에 모델을 결정하기로 했다.' --source-id diary-001 --reference-time '2026-10-10T12:00:00+09:00' --output results/local_sample.json
-python pma_extract.py --input diary.txt --source-id diary-002 --context-tokens 32768 --chunk-bytes 6000 --output results/local_long.json
+./stop_app.ps1
 ```
 
-`--input`은 UTF-8 텍스트 파일입니다. 기준 시간이 없으면 `--reference-time`을 생략합니다.
-공통 스키마가 date-time을 요구하므로 날짜만 있는 문자열은 받지 않습니다.
-작성 시각을 모르는 경우 임의의 자정을 넣지 마세요.
+앱 포트 8765·8766과 모델 서버 포트 8081·8082를 사용하는 프로세스를 강제 종료합니다.
+처리 중인 작업도 중단되므로 평소에는 실행 창의 Ctrl+C를 사용하고, 남아 있는 서버 정리에 사용하세요.
+해당 포트를 다른 프로그램이 사용 중이어도 종료 대상입니다.
+`./stop_app.ps1 -WhatIf`로 대상을 미리 확인하거나,
+`./stop_app.ps1 -Ports 8765,8766`으로 지정한 포트만 종료할 수 있습니다.
 
-기본 요청 설정은 temperature=0, seed=42, top_p=1, max_tokens=4096, timeout=180초입니다.
-`PMA_MAX_TOKENS`, `PMA_TIMEOUT`, `PMA_TEMPERATURE`, `PMA_TOP_P`, `PMA_SEED`로 조정할 수 있습니다.
-서버와 GPU/CPU 설정에 따라 재현성과 지연 시간이 달라질 수 있습니다.
+## 메인 실행 창에서 처리 과정 보기
 
-## 공통 출력과 Python 사용
-
-```python
-from pma_extract import extract_document, embed_text
-
-result, metadata = extract_document(
-    '어제 회의했다. 다음 주에 결정한다.',
-    source_id='diary-001',
-    reference_time='2026-10-10T12:00:00+09:00',
-)
-for memory in result['memories']:
-    print(memory['local_id'], embed_text(memory))
+```powershell
+./run_app.ps1 -Test
+# 이미 모델 서버를 실행한 경우
+./.venv/Scripts/python.exe -m pma --test
 ```
 
-CLI 출력은 `{"result": ..., "metadata": ...}`입니다. DB에 전달할 공통 객체는
-`result`이며 `schema_version`, `source_context`, `memories`만 포함합니다.
-각 기억에는 팀원 스키마의 content, memory_type, subject/predicate/object,
-target, time, assertion_polarity, polarity, content_certainty, evidence와 local_id가 있습니다.
-`local_id`는 원문 내부 ID입니다. DB의 영구 ID로 단독 사용하지 마세요.
-요청 상태·원문 구간 위치·검증 결과는 스키마 바깥 `metadata`에 둡니다.
-구간 위치는 원문 Python 문자열의 문자 인덱스이며 end는 포함하지 않습니다.
+브라우저에서 평소처럼 기록을 저장하거나 검색하면 실행한 PowerShell 창에 한국어로
+원문 저장, 기억 추출·검증, 검색 벡터 저장, 날짜 조건, 후보 수, 실제 검색 키워드,
+선택된 기억과 원문, 최종 답변을 표시합니다. JSON을 열 필요가 없습니다.
+`-Test`는 자동 평가가 아니라 실제 작업 과정을 보는 옵션이며 일반 실행과 같은 DB를 사용합니다.
+기록·질문·답변이 콘솔에 노출되므로 화면 공유에 유의하세요. 별도 로그 파일이나 질문 이력을
+저장하지 않습니다. 긴 원문은 일부만 표시하며 전체 내용은 앱에서 확인합니다.
+옵션 없이 실행하면 기존처럼 상세 내용을 표시하지 않습니다.
+AI가 검색·답변에 사용 중일 때 백그라운드 작업은 오류 없이 다음 주기에 재시도합니다.
+실제 실패는 `-Test` 창에 실패 단계, 원인, 해결 방법, 오류 코드·종류를 표시합니다.
+예외 메시지나 모델 오류 응답 원문은 출력하지 않으며, 알 수 없는 오류는 원인 미확정으로 안내합니다.
 
-## 기억별 시간
+## 사용 흐름
 
-LLM은 각 기억에 연결된 `time.raw`와 이를 포함하는 원문 근거를 추출합니다.
-Python은 이 표현만 정규화하며 LLM이 계산한 날짜를 그대로 저장하지 않습니다.
+### 기록 저장과 검색
 
-| 입력 표현 / 기준일 2026-10-10 | 정규화 |
+1. 기록과 기준 시각을 입력하면 원문을 먼저 저장합니다.
+2. 백그라운드 작업이 Qwen으로 기억을 추출하고 스키마·원문 인용을 검증합니다. BGE-M3 임베딩까지 성공한 기록만 검색 가능합니다.
+3. 질문의 시간 조건을 해석하고 벡터·키워드 검색 결과를 결합합니다. Qwen이 찾은 기억으로 답하며 각 답변에서 원문을 열 수 있습니다.
+4. 수정·이전 버전 복귀 시 새 버전을 만들고 다시 처리합니다. 처리 실패 시 원문은 남으며 재시도할 수 있습니다.
+5. 삭제한 기록은 즉시 검색에서 제외합니다. 휴지통에서 30일간 복원할 수 있고, 만료 시 앱 시작 또는 실행 중 정리 작업에서 영구 삭제합니다.
+
+기존 단일 질문·답변 이력은 저장하지 않습니다. 별도 AI 대화 탭은 이력과 답변별 근거를 로컬 DB에 저장합니다. 전체 횟수·최초/최후·순위 집계는 지원하지 않습니다. 기간 필터가 있으면 시점이 불명확한 기억을 제외합니다. 기록당 4,000자, 질문당 1,000자로 제한하며 모델 문맥 길이도 검사합니다. 계획을 실행 결과로 오해하는 등 의미 오류는 여전히 가능하므로 근거를 확인하세요.
+
+## 구성과 데이터
+
+| 경로 | 역할 |
 |---|---|
-| 어제 | 2026-10-09, day |
-| 다음 주 | 2026-10-12 ~ 2026-10-18, range |
-| 지난달 | 2026-09, month |
-| 작년 | 2025, year |
-| 2024년 2월 29일 / 2024-02-29 | 기준 시간 없이도 2024-02-29 |
-| 표현 없음 | raw/start/end=null, unknown |
-| 기준 시간 없는 내일 | raw 보존, start/end=null, relative |
+| `pma/web.py`, `pma/static/` | 로컬 API, 세션/CSRF, 한국어 웹 UI |
+| `pma/service.py` | 작업 실행, 검색·답변, 동시 모델 사용 제한 |
+| `pma/store.py`, `pma/lock.py` | SQLite 트랜잭션·버전·휴지통·단일 실행 잠금 |
+| `pma/models.py` | 로컬 생성·임베딩·질문 분석 |
+| `scripts/memory_agent/` | CLI·앱이 공유하는 추출/검증 파이프라인 |
+| `schema/`, `prompts/` | 기존 v4 스키마와 추출 지침 |
+| `evaluation/` | 평가 관제실 조회에 필요한 저장소·계약·지표·마이그레이션 |
 
-주는 월요일 시작입니다. 작성일을 사건 날짜로 자동 대입하지 않습니다.
-시각만 있는 표현, 연도 없는 월·일, '그다음 날', 지속 시간, 여러 대안,
-날짜와 시각이 혼합된 아직 지원하지 않는 표현은 raw를 보존하고 start/end를 null로 둡니다.
-정규화하지 못한 표현을 조용히 확정 날짜로 바꾸지 않습니다.
-시간 표현이 해당 기억의 근거 인용에 없으면 그 표현을 제거하고 날짜를 미확정으로 유지합니다.
-제외한 표현과 이유는 `metadata.warnings`의 `unsupported_time_raw`로 확인할 수 있습니다.
-LLM이 다른 사건의 시간을 잘못 연결하는 의미 오류까지 자동 검증하는 것은 아닙니다.
+DB 기본 위치는 `%LOCALAPPDATA%\PersonalMemoryAgent\memory.db`입니다. records, revisions, jobs, memories, evidence, embeddings와 파생 facts, memory_links, dismissed_links 테이블을 사용합니다. SQLite user_version은 5이며 기존 DB는 다음 앱 시작 시 원문과 이력을 유지하면서 확장합니다. 저장된 기억의 파생 사실은 50개씩 재구축하며, 완료 전에는 구축 중 상태와 불완전한 검색 범위를 표시합니다. 수정 이력은 기록 영구 삭제 때 함께 삭제됩니다. DB는 암호화되지 않으며 Windows 사용자 계정/디스크 보호가 필요합니다. 백업은 앱을 정상 종료한 후 데이터 디렉터리를 복사하세요. 영구 삭제는 앱 DB에서 제거하지만 OS 백업·SSD 잔존 데이터까지 지우는 기능은 아닙니다.
 
-## 긴 원문
+모델 통신은 loopback HTTP만 허용하고 프록시·리다이렉트를 사용하지 않습니다. 앱은 Host/Origin, 일회용 로그인, HttpOnly SameSite 쿠키, CSRF, CSP를 검사합니다. 원문·질문·답변·모델 오류 본문을 서버 로그에 출력하지 않습니다. 같은 Windows 계정의 악성 프로그램으로부터 보호하는 보안 경계는 아닙니다.
 
-- UTF-8 바이트 한도로 분할하고 가능한 한 문단·문장 경계를 선택합니다.
-- 기본 한도는 구간당 6000바이트, 앞 구간과 최대 160문자 겹침입니다.
-- 프롬프트·스키마·메타데이터·출력 한도·메시지 여유분도 컨텍스트 예산에 포함합니다.
-- 정확한 토크나이저 계수 대신 Qwen의 byte-fallback에 대한 보수적인 바이트 상한을 사용합니다.
-- 모든 원문 문자가 적어도 한 구간에 포함됩니다. 요약으로 원문을 대체하지 않습니다.
-- `finish_reason=length`이면 해당 구간을 더 작게 나눠 최대 3단계까지 재처리합니다.
-- 번호를 붙인 원문과 동적 스키마까지 포함한 요청이 컨텍스트 예산을 넘으면 호출 전에 분할합니다.
-- 중복은 정규화한 기억 필드가 같고 동일한 원문 인용 위치를 공유할 때만 합칩니다.
-- 구간 하나라도 스키마·근거 검증이나 분할 재시도에 실패하면 성공한 일부만 반환하지 않습니다.
+## API
 
-연결 문맥이 겹침 범위를 넘는 대명사/시간 표현, 패러프레이즈 중복, 의미 누락은 남을 수 있습니다.
-모든 문자 전달과 JSON 유효성은 기억 내용의 완전성을 보장하지 않습니다.
-추론 오류를 평가하려면 실제 모델로 긴 일기와 여러 날짜·인물이 섞인 자료를 별도 채점해야 합니다.
+인증 후 `/api/v1` 아래 API를 호출합니다. 변경 요청은 동일 Origin과 X-CSRF-Token이 필요합니다.
 
-## 테스트
+- `POST /session`: 일회용 로그인 / `GET /session`: 세션 확인
+- `GET, POST /records`: 목록·등록
+- `GET, PATCH, DELETE /records/{id}`: 조회·버전 지정 수정·휴지통 이동
+- `GET /records/{id}/revisions`, `POST /records/{id}/revert`
+- `POST /records/{id}/retry`, `POST /records/{id}/restore`
+- `DELETE /records/{id}/purge`: 영구 삭제
+- `GET /jobs/{id}`, `GET /health`
+- `POST /search`, `POST /answers`: question, 선택적 filters(date_from/date_to), today
 
-### 브라우저에서 직접 추출 테스트
+등록은 202와 record_id/job_id를 반환합니다. 수정·되돌리기는 expected_version으로 충돌을 검사합니다. 오류는 error.code/message/retryable와 request_id를 포함합니다. 답변의 items[].citations는 results[].id를 참조합니다. 답변 생성 중 원문이 바뀌면 SOURCE_CHANGED로 결과를 거부합니다.
 
-llama.cpp 서버를 `127.0.0.1:8081`, 컨텍스트 32768로 실행한 후 프로젝트 폴더에서:
+## AI 대화
 
-```powershell
-python pma_web.py
-```
+**AI 대화 → 새 대화**에서 바로 대화할 수 있습니다. 자동 모드는 질문과 최근 맥락에 따라 일반 답변, 개인 기억 검색 또는 혼합 답변을 선택합니다. 일반 대화 모드는 개인 기록을 검색하지 않으며, 내 기억 사용 모드는 검색한 원문을 근거로 답합니다.
 
-`http://127.0.0.1:8766`에 접속해 원문을 입력하고 **기억 추출하기**를 누릅니다.
-짧은/긴 예시, 한국 시간 기준 시각, 분할 크기를 선택할 수 있습니다.
-긴 예시는 작은 조각(1,500 바이트)을 선택하면 여러 조각으로 처리됩니다.
-기억 카드, 날짜, 원문 근거 강조, 최종 JSON, 검증 결과, 호출 정보와 원본 응답을 확인합니다.
-실패 시에도 오류와 수신한 모델 응답을 확인하고 JSON으로 내려받을 수 있습니다.
-**이번 정확도 테스트 결과** 버튼은 로컬에 저장된 재검증/이어 실행 보고서를 표시합니다.
-저장 응답을 활용한 결과는 새 모델 호출과 구분해서 표시하며, 사례별 미통과 항목도 함께 보여줍니다.
-보고서는 `results/local_*`로 Git에서 제외되므로 새로 받은 저장소에는 포함되지 않습니다.
-보고서가 없는 환경에서는 직접 입력하거나 아래 실제 모델 평가를 실행하세요.
+검증된 개인 사실과 일반적인 제안·추론은 구분해서 표시합니다. 인용에서 실제 사용한 원문 버전을 확인할 수 있습니다. 원문 수정 시 관련 답변에 변경 상태가 표시되며, 원문 삭제 시 관련 답변과 근거가 제거됩니다. 대화 내용은 개인 기억으로 자동 저장하지 않습니다.
 
-기존 CLI와 동일한 추출기를 호출하며 추출 규칙이나 스키마를 변경하지 않습니다.
-스키마 통과는 의미 정확성·누락 없음을 보장하지 않습니다.
-웹 요청은 백그라운드에서 한 번에 하나씩 실행하며 페이지 새로고침 후 작업 상태를 복구합니다.
-서버 메모리에 최근 20개 작업만 유지하고, 서버 종료 시 삭제합니다.
-브라우저에는 마지막 작업 ID만 저장합니다. 결과 파일은 저장 버튼을 눌렀을 때만 다운로드합니다.
-모델 응답 제한 시간은 호출별 30분입니다. CPU에서는 긴 입력에 많은 시간이 걸릴 수 있습니다.
-웹 서버는 로컬 주소에만 바인딩됩니다. 이 화면은 입력별 추출 실험용이며 대화 이력 검색 기능은 없습니다.
+대화 이력과 질문별 근거는 로컬 DB에 저장됩니다. 대화를 다시 열어 이어갈 수 있고, 실패한 요청을 같은 모드로 재시도할 수 있습니다. 코드 블록과 간단한 Markdown 표를 표시하며 HTML은 실행하지 않습니다.
 
-`PMA_ENDPOINT`, `PMA_MODEL` 등 기존 모델 환경변수를 사용할 수 있습니다.
-웹 서버 종료는 실행한 터미널에서 Ctrl+C입니다.
+- `POST /api/v1/chat/sessions`: 빈 요청으로 새 대화 생성. 기존 검색 결과를 선택해 시작할 수도 있습니다.
+- `GET /api/v1/chat/sessions`, `GET /api/v1/chat/sessions/{id}`, `DELETE /api/v1/chat/sessions/{id}`: 대화 목록·조회·삭제.
+- `POST /api/v1/chat/sessions/{id}/messages`: `request_id`, `question`, 선택적 `today`, `context_message_id`, `mode`.
+- `mode`: `auto`(기본), `general`, `memory`, `hybrid`. 같은 요청 ID에서 모드를 바꾸면 409 충돌을 반환합니다.
+- `GET /api/v1/chat/sessions/{id}/requests/{request_id}`: 진행 상태 조회.
+- `POST /api/v1/chat/sessions/{id}/requests/{request_id}/cancel`: 진행 중 요청 취소.
 
-```powershell
-python -B -m unittest discover -s tests -v
-python timeparse.py
-```
+`PMA_CHAT_TIMEOUT`은 대화 요청 전체의 시간 제한이며 기본 300초, 최대 3,600초입니다. `PMA_DIAGNOSTICS=1`이면 검색·검증·소요 시간 진단을 표시합니다.
 
-자동 테스트는 날짜 분리·누락 날짜·월/연도 정밀도·윤년·연말 경계,
-한글/이모지 분할·원문 범위 보존·중복 판정·출력 잘림 재분할,
-스키마/근거 실패, 문장 ID 복원, 근거 재연결, 잘못 연결된 시간 제거,
-한국 시간대 날짜 경계와 로컬 모의 HTTP 서버·웹 API 요청을 검증합니다.
-모의 서버 테스트는 모델 품질 평가가 아닙니다.
+## CLI
 
-## 기존 코드와 범위
-
-- `pma_extract.py`: 새 v4 진입점. 기존 extract_unit/MemoryUnit API는 교체되었습니다.
-- `scripts/memory_agent/`: 클라이언트, 분할, 시간 정규화, 파이프라인, 검증.
-- `pma_web.py`, `web_test.html`: 로컬 추출 테스트 API와 브라우저 화면.
-- `scripts/eval_accuracy.py`: 실제 모델을 호출하는 소수 사례 회귀 평가.
-- `scripts/replay_accuracy.py`: 저장한 모델 응답으로 후처리 변경을 재검증.
-- `schema/`: 팀원 원본 스키마 두 개를 변경 없이 사용.
-- `prompts/extraction.txt`: 팀원 원본. 실행 시 시간 계산/분할 지침을 덧붙임.
-- `legacy_pma_extract.py`: 기존 Ollama 카드 추출기 보존.
-- `run_test.py`, `check_order.py`: 기존 카드 형식을 평가하므로 legacy 추출기 사용.
-- `extract_memory.py`, `eval_extract.py`: 기존 baseline. Ollama와 pydantic 별도 설치 필요.
-- `timeparse.py`: 기존 규칙 파서 보존. 새 시간 모듈은 표현 전체가 일치하는 규칙만 사용.
-
-DB 저장·과거 기억 검색·질의응답·기억 간 모순 해결은 이번 변경 범위에 포함하지 않습니다.
-
-## 정확도 개선: 문장 근거와 날짜 계산
-
-- 모델 호출 시에만 사용하는 스키마에서 근거를 `sentence_id`로 제한합니다.
-  코드가 선택된 ID를 원문의 문장으로 복원하며, 저장용 v4 스키마는 동일합니다.
-- 잘못 선택된 근거는 기억 내용 전체가 원문 한 문장에 그대로 일치하고 명시된 대상도 그 문장에 있는
-  경우에만 다시 연결합니다. 반복 문장처럼 후보가 여러 개이거나 패러프레이즈이면 추측해 연결하지 않습니다.
-  이 보정도 `metadata.warnings`에 원래 근거와 새 근거를 함께 기록합니다.
-- 생성 스키마는 `time.start/end=null`을 강제합니다. 상대 날짜 계산은 코드가 담당하며,
-  한국 시간대 기준 날짜를 사용합니다. 기억에 연결된 근거에 없는 시간 표현은 제거하고 미확정으로 유지하며,
-  제외한 원래 값과 이유를 `metadata.warnings`에 기록합니다.
-- 원문 구조 검증 후 날짜를 정규화하고, 최종 v4 스키마와 원문 근거를 검증합니다.
-- 같은 사건의 참여자·장소·대상을 별도 사건으로 반복하지 않는 예시와,
-  독립 행동·부정·주고받는 인물 관계를 보존하는 예시를 실행 프롬프트에 추가했습니다.
-- 문장 ID와 동적 스키마 크기도 보수적인 컨텍스트 예산에 포함합니다.
-
-원본 공통 프롬프트와 스키마 파일은 유지합니다. 문장 근거 일치는 의미 정확성의 보장이 아니며,
-유사한 기억을 문자열 유사도만으로 삭제하지 않습니다. 긴 글의 경계 문맥과 모호한 대명사는 여전히 검토가 필요합니다.
-
-실제 모델 회귀 확인: `python -B scripts/eval_accuracy.py`
-결과는 `results/local_accuracy_report.json`에 저장되며 Git에서 제외됩니다.
-짧은 사건, 관계·부정·계획, 이전 긴 입력(로컬 파일이 없으면 짧은 분할 예제)을 실행합니다.
-`checks`는 이 소수 사례의 명시적 기대값만 검사하며 일반 정확도 점수로 해석하면 안 됩니다.
-
-저장 응답 재검증: `python -B scripts/replay_accuracy.py`
-기존 `results/local_accuracy_report.json`을 읽고 `results/local_accuracy_replay.json`을 만듭니다.
-생성 프롬프트·요청 스키마·원문·분할 설정이 동일하고 후처리만 변경했을 때 사용하세요.
-새 모델 추론이나 속도 측정이 아니며, 응답 기록이 부족하거나 남으면 오류로 표시합니다.
-
-### 현재 확인한 결과와 남은 문제
-
-Qwen3 8B Q4_K_M의 실제 응답을 최종 후처리로 재검증한 소수 사례 결과입니다.
-마지막 근거 재연결 수정 후 전체 모델 추론을 새로 실행한 결과는 아닙니다.
-
-| 사례 | 기대값 검사 | 확인 내용 |
-|---|---|---|
-| 단일 사건 | 4/4 | 사건 1개, 참여자·장소·대상과 날짜 보존 |
-| 인물 관계·부정·계획 | 6/7 | 주고받는 인물, 부정, 계획 날짜와 시간 혼입 방지 확인 |
-| 긴 글 2,630자 | 핵심 사건 3/3 | 처음·중간·끝 사건과 각각의 날짜 확인 |
-
-계획 기억에서 동행인을 `object`로 잘못 분류한 사례가 남았습니다.
-긴 글은 총 13개 기억을 생성하여 배경 문장까지 과다 추출했습니다.
-이 결과는 전체 정확도나 팀원 모델보다 우수하다는 근거가 아닙니다.
-다음 개선 대상은 인물 역할 분류, 배경 문장 필터링, 분할 경계 문맥과 누락 평가입니다.
+`python -m scripts.main --help`로 추출 CLI 옵션을 확인할 수 있습니다. `config/`, `prompts/`, `schema/`와 `scripts/memory_agent/`는 웹 앱과 CLI가 사용하는 실행 파일입니다.

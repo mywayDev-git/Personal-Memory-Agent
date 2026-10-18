@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ko">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>기억의 서랍 · Personal Memory Agent</title><link rel="stylesheet" href="/static/style.css"><script type="module" src="/static/app.js"></script></head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <a class="brand" href="/">기억의 서랍<span>PERSONAL MEMORY AGENT</span></a>
+    <p class="intro">지나간 경험을,<br>오늘의 단서로.</p>
+    <nav aria-label="주 메뉴">
+      <button data-tab="records" class="nav active" aria-current="page">01 <span>나의 기록</span></button>
+      <button data-tab="questions" class="nav">02 <span>기억에 질문하기</span></button>
+      <button data-tab="chat" class="nav">07 <span>AI 대화</span></button>
+      <button data-tab="trash" class="nav">03 <span>휴지통</span></button>
+    <button data-tab="failures" class="nav">04 <span>처리 실패 목록</span></button></nav>
+    <a id="evaluation-link" class="nav" href="/evaluation" hidden>05 <span>평가 관제실</span></a>
+    <script type="module" src="/static/evaluation-link.js"></script>
+    <div class="privacy"><span class="dot"></span> 이 PC 안에 머무는 기록<p>기록은 로컬 모델로만 처리합니다.</p></div>
+    <button id="check-health" class="link">연결 상태 확인</button>
+    <p id="health" class="muted" aria-live="polite">연결을 확인하고 있습니다.</p>
+    <section class="processing-panel" aria-label="AI 기록 처리 현황">
+      <h2>AI 처리 현황</h2><button id="show-failures" class="link">실패 목록·재처리</button><p id="processing-count" role="status">작업 수를 확인하고 있습니다.</p>
+      <progress id="processing-bar" max="1" value="0" aria-label="처리 시도 완료 비율"></progress>
+      <p id="processing-summary" class="muted"></p>
+      <p id="processing-current"></p>
+      <details open><summary>최근 처리 로그</summary><ol id="processing-log"></ol></details>
+      <p id="processing-updated" class="muted">3초마다 자동 갱신</p>
+    </section>
+  </aside>
+  <main>
+    <header><div><span class="eyebrow">YOUR PERSONAL ARCHIVE</span><h1 id="heading">나의 기록</h1></div><span id="today" class="date"></span></header>
+    <div id="notice" role="status" aria-live="polite" hidden></div>
+    <section id="records" class="tab">
+      <div class="grid">
+        <article class="card editor"><div class="card-head"><h2 id="editor-title">오늘, 무엇을 기억할까요?</h2><button id="new-record" class="link">새 기록</button></div>
+          <p class="muted">경험과 생각을 자유롭게 남기세요. AI가 검색할 수 있는 기억으로 정리합니다.</p>
+          <form id="record-form">
+            <label for="record-text">기록 내용</label><textarea id="record-text" required maxlength="4000" rows="10" placeholder="어떤 일이 있었고, 무엇을 결정했나요?"></textarea>
+            <div class="field-row"><label for="reference-time">기준 시각 <span class="muted">‘오늘’, ‘어제’ 해석에 사용</span></label><input id="reference-time" type="datetime-local"></div>
+            <div class="form-footer"><span id="char-count" class="muted">0 / 4,000</span><button type="submit" class="primary" id="save">기록 저장</button></div>
+          </form>
+          <p class="hint">저장한 원문은 AI 처리에 실패해도 보존됩니다.</p>
+        </article>
+        <article class="card"><div class="card-head"><h2>기록 목록</h2><button id="refresh" class="link">새로고침</button></div><div id="record-list" class="record-list"></div><button id="more" class="secondary" hidden>더 보기</button></article>
+      </div>
+      <article id="detail" class="card detail" hidden><div class="card-head"><h2>원문과 기억</h2><button id="close-detail" class="link">닫기</button></div><div id="detail-content"></div></article>
+    </section>
+    <section id="questions" class="tab" hidden>
+      <article class="card question-card"><span class="eyebrow">CONNECT THE DOTS</span><h2>지금 필요한 과거의 경험은?</h2><p class="muted">기록에서 단서를 찾고, 답변에 사용한 원문까지 확인하세요.</p>
+        <form id="question-form"><label for="question">질문</label><textarea id="question" maxlength="1000" rows="3" required placeholder="예전에 역할 분담 문제를 어떻게 해결했지?"></textarea>
+          <details><summary>기간 직접 지정</summary><div class="dates"><label>시작일<input id="date-from" type="date"></label><label>종료일<input id="date-to" type="date"></label></div></details>
+          <div class="form-footer"><span class="muted">질문과 답변은 저장하지 않습니다.</span><button class="primary" id="ask" type="submit">기억 찾아보기</button></div>
+        </form>
+      </article><article id="answer" class="card" hidden aria-live="polite"></article>
+    </section>
+    <section id="chat" class="tab" hidden>
+      <button id="chat-sidebar-toggle" class="secondary" aria-controls="chat-sidebar" aria-expanded="true">대화 목록 접기</button>
+      <div class="chat-layout" id="chat-layout">
+        <aside class="card chat-sidebar" id="chat-sidebar"><h2>대화</h2><button id="chat-new" class="primary">새 대화</button><button id="chat-refresh" class="link">새로고침</button><label for="chat-search">이전 대화 검색</label><input id="chat-search" type="search" maxlength="1000" placeholder="제목이나 대화 내용"><div id="chat-list"></div></aside>
+        <article id="chat-conversation" class="card chat-room" hidden>
+          <div class="card-head"><h2 id="chat-title"></h2><button id="chat-delete" class="link">대화 삭제</button></div>
+          <p id="chat-state" class="muted" role="status">편하게 이야기하세요. 필요할 때 기억을 찾아 함께 답합니다.</p>
+          <div id="chat-context" class="chat-context"></div>
+          <details id="chat-topics"><summary>이전 주제로 돌아가기</summary><p class="muted">선택한 대화는 질문의 대상 해석에만 사용하고, 사실은 기록에서 다시 확인합니다.</p><div id="chat-topic-list"></div></details>
+          <div id="chat-messages" role="log" aria-live="polite"></div>
+          <form id="chat-form"><label for="chat-mode">대화 방식</label><select id="chat-mode" aria-describedby="chat-mode-help"><option value="auto">자동</option><option value="general">일반 대화</option><option value="memory">내 기억 사용</option></select><small id="chat-mode-help" class="muted">일반 대화는 개인 기록을 검색하지 않으며, 최근 대화 맥락은 사용합니다.</small><label for="chat-question">메시지</label><div class="chat-composer"><textarea id="chat-question" required maxlength="1000" rows="2" placeholder="오늘은 어떤 이야기를 나눌까요?"></textarea><button id="chat-send" class="primary">보내기</button><button id="chat-cancel" type="button" class="secondary" hidden>중단</button></div><small class="muted">Enter 전송 · Shift+Enter 줄바꿈 · 대화는 이 PC에 보관됩니다.</small></form>
+          <details id="chat-diagnostics" hidden><summary>개발자 진단 · 대화 평가</summary><div id="chat-metrics"></div></details>
+        </article>
+        <div id="chat-empty" class="card"><h2>기억과 함께하는 대화</h2><p>새 대화를 열고 편하게 이야기하세요.<br>기록이 필요한 순간에는 관련된 기억을 찾아 드립니다.</p></div>
+        <aside id="chat-evidence-panel" class="card chat-evidence-panel" role="region" aria-label="답변의 근거 원문" hidden tabindex="-1"><div class="card-head"><h2>답변에 사용한 기록</h2><button id="chat-evidence-close" type="button" class="secondary">닫기</button></div><div id="chat-evidence-content"></div></aside>
+      </div>
+    </section>
+    <section id="trash" class="tab" hidden><article class="card"><h2>잠시 보관한 기록</h2><p class="muted">30일 동안 복원할 수 있습니다. 만료된 기록은 앱 실행 중 또는 다음 실행 때 영구 삭제됩니다.</p><div id="trash-list" class="record-list"></div><button id="trash-more" class="secondary" hidden>더 보기</button></article></section>
+    <section id="failures" class="tab" hidden><article class="card">
+      <h2>처리 실패 목록</h2><p class="muted">원문은 보존되어 있습니다. 재처리는 대기열에 추가되며, 같은 원인으로 다시 실패할 수 있습니다.</p>
+      <p id="failure-summary" role="status"></p><div id="failure-groups" class="actions"></div>
+      <label for="failure-filter">실패 원인</label><select id="failure-filter"><option value="">전체 원인</option></select>
+      <div class="actions"><button id="failure-refresh" class="secondary">새로고침</button><button id="failure-retry" class="primary" disabled>표시된 실패 전체 재처리</button></div>
+      <p id="failure-notice" role="status"></p><div id="failure-list"></div>
+    </article></section>
+    <footer>기억은 원문에서 시작합니다. 중요한 판단 전에는 답변의 근거를 확인하세요.</footer>
+  </main>
+</div>
+</body></html>
