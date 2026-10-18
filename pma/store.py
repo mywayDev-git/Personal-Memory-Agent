@@ -2,10 +2,12 @@
 
 import json
 import sqlite3
+import time
 from contextlib import closing, contextmanager
 from datetime import datetime, timedelta, timezone
 from uuid import uuid4
 
+from .diagnostics import Reason, Stage, Status, current_trace
 from .errors import AppError
 from .facts import FACT_VERSION, connection, fingerprint, project
 
@@ -16,6 +18,74 @@ def now():
 
 def identifier():
     return str(uuid4())
+
+
+def _start_observation():
+    try:
+        trace = current_trace()
+        return (trace, time.perf_counter()) if trace is not None else None
+    except Exception:
+        return None
+
+
+def _observe_read(stage, observation, rows, *, selected_ids=None, record_id=None, executed=True):
+    """Observe materialized results after closing the transaction; never query here."""
+    if observation is None:
+        return
+    trace, started = observation
+    try:
+        duration_ms = (time.perf_counter() - started) * 1000
+        if stage == Stage.SNAPSHOT:
+            trace.record_event(
+                stage,
+                input_count=None,
+                output_count=len(rows),
+                duration_ms=duration_ms,
+                unobserved_reason=Reason.NOT_OBSERVED,
+                candidates=[
+                    dict(
+                        memory_ref=trace.memory_ref(row["id"]),
+                        record_ref=trace.record_ref(row["record_id"]),
+                        status=Status.INCLUDED,
+                        has_fact=row["fact"] is not None,
+                        has_embedding=row["vector"] is not None,
+                        has_record=row["record_id"] is not None,
+                    )
+                    for row in rows
+                ],
+            )
+        else:
+            trace.record_event(
+                stage,
+                input_count=len(selected_ids) if selected_ids is not None else None,
+                output_count=len(rows),
+                duration_ms=duration_ms,
+                executed=executed,
+                evidence_refs=(
+                    [trace.memory_ref(mid) for mid in selected_ids]
+                    if selected_ids is not None
+                    else None
+                ),
+                record_refs=[trace.record_ref(record_id)] if record_id else None,
+                relation_refs=[trace.relation_ref(row["id"]) for row in rows],
+                candidates=[
+                    dict(
+                        relation_ref=trace.relation_ref(row["id"]),
+                        memory_ref=trace.memory_ref(mid),
+                        record_ref=trace.record_ref(rid),
+                        status=Status.INCLUDED,
+                    )
+                    for row in rows
+                    for mid, rid in zip(row["citations"], row["records"], strict=True)
+                ],
+            )
+    except Exception:
+        # Even preparation failures must not affect the original query result.
+        # Do not log exception strings: they may contain original record data.
+        try:
+            trace.recording_failed = True
+        except Exception:
+            pass
 
 
 DDL = """
@@ -477,6 +547,7 @@ class Store:
             return dict(r)
 
     def snapshot(self, model_key):
+        observation = _start_observation()
         with self.connect() as db:
             generation = db.execute("SELECT generation FROM metadata WHERE id=1").fetchone()[0]
             rows = db.execute(
@@ -497,7 +568,8 @@ class Store:
                     )
                 ]
                 result.append(item)
-            return generation, result
+        _observe_read(Stage.SNAPSHOT, observation, result)
+        return generation, result
 
     def project_memory(self, db, mid, memory, source, reference_time, recorded_at, revision_id):
         evidence = [
@@ -593,12 +665,23 @@ class Store:
             return len(rows)
 
     def links(self, record_id=None, memory_ids=None):
+        observation = _start_observation()
         selected_clause = ""
         selected_args = []
+        observed_ids = None
         if memory_ids is not None:
             if not memory_ids:
+                _observe_read(
+                    Stage.RELATION_LOOKUP,
+                    observation,
+                    [],
+                    selected_ids=[],
+                    record_id=record_id,
+                    executed=False,
+                )
                 return []
             selected_args = sorted(memory_ids)
+            observed_ids = selected_args
             marks = ",".join("?" for _ in selected_args)
             selected_clause = f" AND l.left_id IN ({marks}) AND l.right_id IN ({marks})"
             selected_args = selected_args + selected_args
@@ -611,7 +694,7 @@ class Store:
                 + " ORDER BY l.id",
                 (FACT_VERSION, FACT_VERSION, record_id, record_id, record_id, *selected_args),
             ).fetchall()
-            return [
+            result = [
                 {
                     "id": row["id"],
                     **json.loads(row["payload"]),
@@ -621,6 +704,14 @@ class Store:
                 }
                 for row in rows
             ]
+        _observe_read(
+            Stage.RELATION_LOOKUP,
+            observation,
+            result,
+            selected_ids=observed_ids,
+            record_id=record_id,
+        )
+        return result
 
     def dismiss_link(self, link_id):
         with self.connect(True) as db:

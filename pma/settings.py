@@ -25,6 +25,8 @@ class AppSettings:
     evaluation_details: bool = False
     context_tokens: int = 16384
     llm: Settings = field(default_factory=Settings)
+    diagnostics: bool = field(default=False, kw_only=True)
+    diagnostics_path: str | Path | None = field(default=None, kw_only=True)
 
     @property
     def origin(self):
@@ -63,6 +65,10 @@ class AppSettings:
             evaluation_details=os.getenv("PMA_EVALUATION_DETAILS", "0") == "1",
             context_tokens=int(os.getenv("PMA_CONTEXT_TOKENS", "16384")),
             llm=Settings.from_env(),
+            diagnostics=os.getenv("PMA_DIAGNOSTICS", "0") == "1",
+            # Preserve the supplied path without filesystem access. A bad logging
+            # destination must not prevent startup; the collector handles failure.
+            diagnostics_path=os.getenv("PMA_DIAGNOSTICS_PATH") or None,
         )
         result.validate()
         return result

@@ -10,6 +10,31 @@ async function api(path, method='GET', data) {
   const body=await response.json(); if(response.status===401)throw new Error('접속 인증이 필요합니다. 일반 주소만 열면 기록이 표시되지 않습니다. 실행기가 자동으로 연 브라우저 탭을 사용해 주세요.'); if(!response.ok)throw new Error(body.error?.message||'요청을 처리하지 못했습니다.'); return body;
 }
 function action(text, fn, cls='secondary') {const b=node('button',text,cls);b.type='button';b.addEventListener('click',async()=>{b.disabled=true;try{await fn();}catch(e){notice(e.message,true);}finally{b.disabled=false;}});return b;}
+function renderAnswerSources(host, result) {
+  const citedIds = new Set(result.items.flatMap(item => item.citations));
+  const cited = result.results.filter(source => citedIds.has(source.id));
+  const candidates = result.results.filter(source => !citedIds.has(source.id));
+  function appendSource(container, source) {
+    const details = node('details');
+    details.append(node('summary', source.content));
+    for (const evidence of source.evidence) details.append(node('blockquote', evidence.quote));
+    details.append(action('기록 열기', () => openRecord(source.record_id), 'link'));
+    container.append(details);
+  }
+  if (cited.length) {
+    const section = node('section', undefined, 'answer-sources');
+    section.append(node('h3', '답변 근거'), node('p', '답변에서 실제로 인용한 기록입니다.', 'muted'));
+    for (const source of cited) appendSource(section, source);
+    host.append(section);
+  }
+  if (candidates.length) {
+    const section = node('details', undefined, 'search-candidates');
+    section.append(node('summary', `검색 후보 ${candidates.length}개`),
+      node('p', '검색 중 찾았지만 답변에서 인용하지 않은 기록입니다. 질문과 관련이 적은 기록도 포함될 수 있습니다.', 'muted'));
+    for (const source of candidates) appendSource(section, source);
+    host.append(section);
+  }
+}
 function renderConnections(host, links) {
   if (!links?.length) return;
   const section=node('section',undefined,'connections');
@@ -163,7 +188,7 @@ $('failure-filter').addEventListener('change',renderFailures);
 $('failure-refresh').addEventListener('click',()=>loadFailures().catch(e=>notice(e.message,true)));
 $('failure-retry').addEventListener('click',()=>retryFailures(visibleFailures().map(r=>r.job_id)).catch(e=>notice(e.message,true)));
 $('record-form').addEventListener('submit',async e=>{e.preventDefault();$('save').disabled=true;try{const data={text:$('record-text').value,reference_time:$('reference-time').value?new Date($('reference-time').value).toISOString():null};if(editing){data.expected_version=editing.version;await api('/records/'+editing.id,'PATCH',data);}else await api('/records','POST',data);resetEditor();clearAnswer();$('detail').hidden=true;await loadList();notice('원문을 저장했습니다. AI가 기억을 정리합니다.');}catch(err){notice(err.message,true);}finally{$('save').disabled=false;}});
-$('question-form').addEventListener('submit',async e=>{e.preventDefault();$('ask').disabled=true;clearAnswer();notice('관련 기억을 찾고 답변을 정리하고 있습니다.');try{const d=new Date();const today=[d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');const data={question:$('question').value,today:lifeData?.today||today};if($('date-from').value||$('date-to').value)data.filters={date_from:$('date-from').value||null,date_to:$('date-to').value||null};const result=await api('/answers','POST',data);const box=$('answer');box.hidden=false;box.append(node('h2','기록에 근거한 답변'));if(result.clarification)box.append(node('p',result.clarification));if(result.facts_pending)box.append(node('p','일부 기록의 검색 정보를 구축 중이므로 결과가 완전하지 않을 수 있습니다.','muted'));if(result.status==='unsupported_intent')box.append(node('p','전체 횟수나 순위를 집계하는 질문은 아직 지원하지 않습니다. 특정 경험을 질문해 주세요.'));else if(result.status==='insufficient_evidence')box.append(node('p','답변을 뒷받침할 충분한 기록을 찾지 못했습니다.'));for(const item of result.items){const p=node('p',undefined,'answer-item');p.append(node('span',item.claim_kind==='inference'?'추정되는 연결 · ':'기록의 사실 · ','badge'));p.append(document.createTextNode(' '+item.text));for(const cid of item.citations){const source=result.results.find(r=>r.id===cid);if(source)p.append(action('원문 확인',()=>openRecord(source.record_id),'citation'));}box.append(p);}if(result.filters.date_from||result.filters.date_to)box.append(node('p',`적용 기간: ${result.filters.date_from||'제한 없음'} ~ ${result.filters.date_to||'제한 없음'}`,'muted'));for(const source of result.results){const details=node('details');details.append(node('summary',source.content));for(const evidence of source.evidence)details.append(node('blockquote',evidence.quote));details.append(action('기록 열기',()=>openRecord(source.record_id),'link'));box.append(details);}renderConnections(box,result.connections);notice('');}catch(err){notice(err.message,true);}finally{$('ask').disabled=false;}});
+$('question-form').addEventListener('submit',async e=>{e.preventDefault();$('ask').disabled=true;clearAnswer();notice('관련 기억을 찾고 답변을 정리하고 있습니다.');try{const d=new Date();const today=[d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');const data={question:$('question').value,today:lifeData?.today||today};if($('date-from').value||$('date-to').value)data.filters={date_from:$('date-from').value||null,date_to:$('date-to').value||null};const result=await api('/answers','POST',data);const box=$('answer');box.hidden=false;box.append(node('h2','기록에 근거한 답변'));if(result.clarification)box.append(node('p',result.clarification));if(result.facts_pending)box.append(node('p','일부 기록의 검색 정보를 구축 중이므로 결과가 완전하지 않을 수 있습니다.','muted'));if(result.status==='unsupported_intent')box.append(node('p','전체 횟수나 순위를 집계하는 질문은 아직 지원하지 않습니다. 특정 경험을 질문해 주세요.'));else if(result.status==='insufficient_evidence')box.append(node('p','답변을 뒷받침할 충분한 기록을 찾지 못했습니다.'));for(const item of result.items){const p=node('p',undefined,'answer-item');p.append(node('span',item.claim_kind==='inference'?'추정되는 연결 · ':'기록의 사실 · ','badge'));p.append(document.createTextNode(' '+item.text));for(const cid of item.citations){const source=result.results.find(r=>r.id===cid);if(source)p.append(action('원문 확인',()=>openRecord(source.record_id),'citation'));}box.append(p);}if(result.filters.date_from||result.filters.date_to)box.append(node('p',`적용 기간: ${result.filters.date_from||'제한 없음'} ~ ${result.filters.date_to||'제한 없음'}`,'muted'));renderAnswerSources(box,result);renderConnections(box,result.connections);notice('');}catch(err){notice(err.message,true);}finally{$('ask').disabled=false;}});
 for(const b of document.querySelectorAll('[data-tab]'))b.addEventListener('click',()=>setTab(b.dataset.tab));
 $('new-record').addEventListener('click',resetEditor);$('refresh').addEventListener('click',()=>loadList().catch(e=>notice(e.message,true)));$('more').addEventListener('click',()=>loadList(false,true).catch(e=>notice(e.message,true)));$('trash-more').addEventListener('click',()=>loadList(true,true).catch(e=>notice(e.message,true)));$('close-detail').addEventListener('click',()=>{$('detail').hidden=true;});$('check-health').addEventListener('click',()=>health().catch(e=>notice(e.message,true)));$('record-text').addEventListener('input',()=>{$('char-count').textContent=$('record-text').value.length+' / 4,000';});
 $('today').textContent=new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'});resetEditor();

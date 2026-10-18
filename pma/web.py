@@ -418,4 +418,7 @@ def create_app(settings=None, models=None, run_worker=True, test_dataset=None):
             return {"enabled": False}
         return test_dataset.view(app.state.store)
 
+    from .web_diagnostics import DiagnosticMiddleware
+
+    app.add_middleware(DiagnosticMiddleware, settings=settings)
     return app

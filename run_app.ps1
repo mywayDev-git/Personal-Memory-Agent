@@ -4,13 +4,15 @@ param(
     [string]$EmbeddingModel = 'C:\models\bge-m3-Q8_0.gguf',
     [switch]$NoBrowser,
     [switch]$ExternalServers,
-    [switch]$LifeTest
+    [switch]$LifeTest,
+    [switch]$Evaluation
 )
 $ErrorActionPreference = 'Stop'
 if ($PSVersionTable.PSVersion.Major -lt 7) {
     throw 'PowerShell 7 is required. Run: pwsh -File ./run_app.ps1'
 }
 Write-Host '[PMA] Starting Personal Memory Agent...'
+if ($Evaluation) { $env:PMA_EVALUATION = '1' }
 Set-Location -LiteralPath $PSScriptRoot
 if (-not (Test-Path -LiteralPath '.venv/Scripts/python.exe')) {
     throw 'Run uv sync --frozen --python 3.14 first.'

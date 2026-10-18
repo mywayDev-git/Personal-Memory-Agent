@@ -14,10 +14,12 @@ from scripts.memory_agent.diagnostics import failure
 from scripts.memory_agent.postprocess import make_source_context
 from scripts.memory_agent.validator import schema_errors
 
+from .diagnostics import Stage
 from .errors import AppError
 from .facts import compatible, query_plan
 from .models import ANSWER_SCHEMA, QUERY_SCHEMA, normalized_vectors
 from .processing import extract_record
+from .service_diagnostics import capture, filter_reason, traced_request
 
 log = logging.getLogger("pma")
 
@@ -49,6 +51,7 @@ class Service:
         self.diagnostic_sink = diagnostic_sink
 
     def trace(self, stage, **data):
+        capture("legacy", stage, data)
         if self.diagnostic_sink is not None:
             try:
                 self.diagnostic_sink(deepcopy({"stage": stage, **data}))
@@ -150,6 +153,7 @@ class Service:
 
     def _search(self, question, filters=None, today=None):
         today = today or datetime.now(timezone.utc).astimezone().date().isoformat()
+        capture("begin", Stage.QUERY_UNDERSTANDING)
         try:
             understood = self.models.understand(question, today)
             if schema_errors(understood, QUERY_SCHEMA):
@@ -166,15 +170,19 @@ class Service:
             applied.update(filters)
             if applied.get("date_to"):
                 plan["needs_time_anchor"] = False
+        capture("plan", plan, applied, filters)
+        capture("begin", Stage.STRUCTURE_FILTER)
         start = date.fromisoformat(applied["date_from"]) if applied["date_from"] else None
         end = date.fromisoformat(applied["date_to"]) if applied["date_to"] else None
         if start and end and start > end:
             raise AppError("INVALID_DATE_RANGE", "시작일은 종료일보다 늦을 수 없습니다.")
+        capture("begin", Stage.SNAPSHOT)
         generation, rows = self.store.snapshot(self.settings.embedding_key)
         if understood["intent"] == "aggregate" and re.search(
             r"총|몇\s*번|횟수|가장|최초|최후|제일|처음|마지막", question
         ):
             return generation, {"status": "unsupported_intent", "filters": applied, "results": []}
+        capture("begin", Stage.STRUCTURE_FILTER)
         candidates = []
         locations = re.findall(r"([가-힣A-Za-z]+?)(?:에서|(?:에\s*)?\s+가서)", question)
         known_names = {
@@ -192,9 +200,12 @@ class Service:
             and len(r["fact"]["object_key"]) >= 2
             and r["fact"]["object_key"] in question
         }
+        capture("constraints", plan, locations, known_names, requested_objects)
         for row in rows:
             fact = row["fact"]
-            if not fact or not compatible(fact, plan):
+            if not fact or not compatible(
+                fact, plan, on_exclude=filter_reason, diagnostic_id=row["id"]
+            ):
                 self.trace(
                     "excluded",
                     id=row["id"],
@@ -233,6 +244,7 @@ class Service:
                 ):
                     self.trace("excluded", id=row["id"], reason="location")
                     continue
+                capture("condition_pass", "place", row["id"])
             if known_names:
                 roles = (
                     {fact["actor"]}
@@ -249,6 +261,7 @@ class Service:
                 if not known_names & roles and not source_review:
                     self.trace("excluded", id=row["id"], reason="explicit_named_person")
                     continue
+                capture("condition_pass", "person", row["id"])
             t = fact["event_time"]
             a, b = temporal_bounds(t.get("start")), temporal_bounds(t.get("end"))
             if start or end:
@@ -259,6 +272,7 @@ class Service:
                 if (start and low < start) or (end and high > end):
                     self.trace("excluded", id=row["id"], reason="date_range")
                     continue
+                capture("condition_pass", "time", row["id"])
             candidates.append(row)
         candidates.sort(
             key=lambda r: (
@@ -267,7 +281,9 @@ class Service:
                 r["text"],
             )
         )
+        capture("filtered", rows, candidates, locations, known_names)
         if not candidates:
+            capture("begin", Stage.SOURCE_VALIDATION)
             self.store.assert_generation(generation)
             return generation, {
                 "status": "ok",
@@ -277,6 +293,7 @@ class Service:
                 "facts_pending": pending,
                 "connections": [],
             }
+        capture("begin", Stage.VECTOR_RETRIEVAL)
         query = normalized_vectors(
             self.models.embed([question]), 1, self.settings.embedding_dimensions
         )[0]
@@ -284,6 +301,8 @@ class Service:
         matrix = normalized_vectors(matrix, len(candidates), self.settings.embedding_dimensions)
         scores = matrix @ query
         vector_order = np.argsort(-scores, kind="stable")[:20].tolist()
+        capture("retrieval", Stage.VECTOR_RETRIEVAL, candidates, vector_order, scores)
+        capture("begin", Stage.KEYWORD_RETRIEVAL)
         terms = set(re.findall(r"[\w가-힣]+", question.casefold()))
         keyword = [
             sum(t in (r["memory"]["content"] + " " + r["text"]).casefold() for t in terms)
@@ -293,22 +312,29 @@ class Service:
             (i for i, score in enumerate(keyword) if score),
             key=lambda i: (-keyword[i], candidates[i]["id"]),
         )[:20]
+        capture("retrieval", Stage.KEYWORD_RETRIEVAL, candidates, keyword_order, keyword)
+        capture("begin", Stage.RANK_FUSION)
         ranks = {}
-        for order in (vector_order, keyword_order):
+        for component, order in (("vector", vector_order), ("keyword", keyword_order)):
             for rank, i in enumerate(order, 1):
-                ranks[i] = ranks.get(i, 0) + 1 / (60 + rank)
+                contribution = 1 / (60 + rank)
+                ranks[i] = ranks.get(i, 0) + contribution
+                capture("component", i, component, contribution)
         for i in ranks:
-            ranks[i] += sum(
+            bonus = sum(
                 1 / 600
                 for role, hint in plan["role_hints"].items()
                 if candidates[i]["fact"].get(role) == hint["value"]
             )
+            ranks[i] += bonus
+            capture("component", i, "role", bonus)
         results = []
         # Structural matches are eligible independently of dense top-k. Stable ties
         # use content/time, never newly generated UUIDs or insertion order.
         if plan["relation"] != "other" or known_names:
             for i in range(len(candidates)):
                 ranks[i] = ranks.get(i, 0) + 1 / 60
+                capture("component", i, "structure", 1 / 60)
         order = sorted(
             ranks,
             key=lambda i: (
@@ -317,6 +343,7 @@ class Service:
                 candidates[i]["fact"]["event_time"].get("start") or "",
             ),
         )
+        capture("fusion", candidates, order, ranks)
         for i in order[:24]:
             row = candidates[i]
             results.append(
@@ -348,6 +375,7 @@ class Service:
                     for i, r in enumerate(results)
                 ],
             )
+        capture("selection_input", results)
         if plan["kind"] in {"current", "change", "compare"}:
             results.sort(key=lambda r: (r["time"].get("start") or "", r["content"]), reverse=True)
         elif (
@@ -368,6 +396,7 @@ class Service:
             }
             and hasattr(self.models, "select")
         ):
+            capture("selecting")
             selected = self.models.select(question, results)
             allowed = {r["id"] for r in results}
             if not set(selected) <= allowed:
@@ -376,10 +405,15 @@ class Service:
             self.trace(
                 "selection", selected_ids=selected, excluded_ids=sorted(allowed - set(selected))
             )
+        capture("limit_input", results)
         results = results[:8]
+        capture("selected", results)
         selected_ids = {r["id"] for r in results}
         self.trace("evidence", ids=sorted(selected_ids))
+        capture("begin", Stage.RELATION_LOOKUP)
         links = self.store.links(memory_ids=selected_ids)
+        capture("relations", selected_ids, links)
+        capture("begin", Stage.SOURCE_VALIDATION)
         self.store.assert_generation(generation)
         return generation, {
             "status": "ok",
@@ -390,10 +424,12 @@ class Service:
             "connections": links,
         }
 
+    @traced_request
     def search(self, question, filters=None, today=None):
         with self.model_slot():
             return self._search(question, filters, today)[1]
 
+    @traced_request
     def answer(self, question, filters=None, today=None):
         response = self._answer(question, filters, today)
         self.trace("result", response=response)
@@ -417,6 +453,9 @@ class Service:
             from .grounding import claims_supported, grounded_response
 
             self.trace("generation_start", status="running")
+            capture(
+                "policy", bool(hasattr(self.models, "review") and self.settings.answer_validation)
+            )
 
             if hasattr(self.models, "review") and self.settings.answer_validation:
                 from .answer_review import answer_found
@@ -431,17 +470,25 @@ class Service:
                     response = self.models.answer(question, found["results"])
                 self.trace("answer", structured=structured_answer, response=response)
                 if schema_errors(response, ANSWER_SCHEMA):
+                    capture("validation", "schema", False)
                     raise ValueError("INVALID_ANSWER")
+                capture("validation", "schema", True)
                 allowed = {r["id"] for r in found["results"]}
                 if (response["status"] == "answered" and not response["items"]) or any(
                     cid not in allowed for item in response["items"] for cid in item["citations"]
                 ):
+                    capture("validation", "citation", False, found["results"])
                     raise ValueError("INVALID_CITATION")
+                capture("validation", "citation", True, found["results"])
                 if response["status"] == "insufficient_evidence" and response["items"]:
                     raise ValueError("INVALID_ANSWER_STATE")
-                if response["status"] == "answered" and not claims_supported(
-                    response["items"], found["results"], found["query_plan"]
-                ):
+                attributes_supported = True
+                if response["status"] == "answered":
+                    attributes_supported = claims_supported(
+                        response["items"], found["results"], found["query_plan"]
+                    )
+                    capture("validation", "attributes", attributes_supported, found["results"])
+                if response["status"] == "answered" and not attributes_supported:
                     response = {
                         "status": "insufficient_evidence",
                         "items": [],
@@ -485,5 +532,6 @@ class Service:
             response.setdefault(
                 "validation", "structured" if structured_answer else "model_checked"
             )
+            capture("begin", Stage.SOURCE_VALIDATION)
             self.store.assert_generation(generation)
             return {**found, **response}

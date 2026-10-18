@@ -2,6 +2,9 @@
 
 from scripts.memory_agent.validator import schema_errors
 
+from .diagnostics import Reason, Stage
+from .validation_diagnostics import check, observed_validation, retry
+
 REVIEW_SCHEMA = {
     "type": "object",
     "additionalProperties": False,
@@ -54,6 +57,7 @@ REVIEW_SCHEMA = {
 }
 
 
+@observed_validation(Stage.REVIEW_CHECK)
 def validate_review(review, response, evidence):
     if schema_errors(review, REVIEW_SCHEMA):
         raise ValueError("INVALID_REVIEW_SCHEMA")
@@ -92,6 +96,7 @@ def accepted(review, response):
     )
 
 
+@observed_validation(Stage.ANSWER_POLICY)
 def answer_found(models, question, found, trace, *, repair=True):
     """Bounded generation/review, also used by fixed-evidence experiments."""
     import requests
@@ -110,6 +115,7 @@ def answer_found(models, question, found, trace, *, repair=True):
         if response is None:
             response = models.answer(question, evidence)
         for attempt in range(2 if repair else 1):
+            retry(attempt)
             trace(
                 "answer" if not attempt else "answer_repair",
                 structured=structured,
@@ -131,6 +137,18 @@ def answer_found(models, question, found, trace, *, repair=True):
                 models.review(question, evidence, response), response, evidence
             )
             passed = attributes and accepted(review, response)
+            check(
+                "llm",
+                passed,
+                reason=Reason.CONDITION_MATCHED
+                if passed
+                else Reason.INCOMPLETE_ANSWER
+                if review["fulfillment"] == "missing"
+                else Reason.EXCESSIVE_ABSTENTION
+                if review["abstention"] == "excessive"
+                else Reason.VERIFICATION_REJECTED,
+                stage=Stage.REVIEW_CHECK,
+            )
             trace(
                 "verification",
                 attempt=attempt,

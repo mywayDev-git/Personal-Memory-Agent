@@ -3,9 +3,12 @@
 import re
 from decimal import Decimal
 
-from .facts import COLORS, compatible, distance_values
+from .diagnostics import Reason, Stage
+from .facts import COLORS, distance_values
+from .validation_diagnostics import check, compatible_evidence, observed_validation
 
 
+@observed_validation(Stage.GROUNDING_CHECK)
 def claims_supported(items, evidence, plan=None):
     """Reject checkable invented attributes even when the model verifier says yes."""
     by_id = {r["id"]: r for r in evidence}
@@ -19,12 +22,15 @@ def claims_supported(items, evidence, plan=None):
                 & set(r.get("fact", {}).get("review_reasons", []))
                 for r in cited
             ):
+                check("role", False, cited, Reason.PERSON_MISMATCH)
                 return False
-        if plan and any(not compatible(r["fact"], plan) for r in cited):
+        if plan and any(not compatible_evidence(r, plan) for r in cited):
             return False
         distances = {Decimal(n) for r in cited for n in r.get("fact", {}).get("distance_m", [])}
         if not set(distance_values(item["text"])) <= distances:
+            check("quantity", False, cited or None, Reason.QUANTITY_MISMATCH)
             return False
+        check("quantity", True, cited or None)
         colors = {v for k, v in COLORS.items() if k in item["text"]}
         supported_colors = {
             v
@@ -33,7 +39,9 @@ def claims_supported(items, evidence, plan=None):
             if any(k in e["quote"] for e in r["evidence"])
         }
         if not colors <= supported_colors:
+            check("color", False, cited or None, Reason.UNSUPPORTED_ATTRIBUTES)
             return False
+        check("color", True, cited or None)
     return True
 
 

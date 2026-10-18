@@ -13,6 +13,9 @@ from decimal import Decimal
 
 from scripts.memory_agent.provenance import normalize_time, sentences
 
+from .diagnostics import Reason, Stage
+from .facts_diagnostics import comparison_check, comparison_reason, observed_facts
+
 FACT_VERSION = 7
 RELATIONS = (
     "desire",
@@ -260,6 +263,7 @@ def project(memory, source, reference_time, recorded_at, evidence=None):
     }
 
 
+@observed_facts(Stage.DATE_PARSING)
 def explicit_dates(question, today):
     """Only locally parsed, explicit date phrases can impose a hard filter."""
     base = date.fromisoformat(today)
@@ -310,6 +314,7 @@ def explicit_dates(question, today):
     return {"date_from": None, "date_to": None}
 
 
+@observed_facts(Stage.QUERY_PLAN)
 def query_plan(question, understood, today):
     # Model roles remain hints. A source substring proves provenance, not semantics.
     hints = {}
@@ -400,7 +405,18 @@ def quantity_matches(fact, plan):
     return False
 
 
-def compatible(fact, plan):
+def _incompatible(reason, on_exclude):
+    comparison_reason(reason)
+    if on_exclude is not None:
+        try:
+            on_exclude(reason)
+        except Exception:
+            pass
+    return False
+
+
+@observed_facts(Stage.FACT_COMPARISON)
+def compatible(fact, plan, *, on_exclude=None, diagnostic_id=None):
     review = bool(fact.get("review_reasons"))
     if plan["relation"] != "other" and plan["kind"] not in {"compare", "change"}:
         if (
@@ -408,7 +424,12 @@ def compatible(fact, plan):
             and not (plan["relation"] == "receive" and fact["relation"] == "give")
             and fact.get("action_relation") != plan["relation"]
         ):
-            return False
+            return _incompatible(Reason.RELATION_MISMATCH, on_exclude)
+    comparison_check(
+        "relation",
+        True,
+        applied=plan["relation"] != "other" and plan["kind"] not in {"compare", "change"},
+    )
     actor = (
         fact["recipient"]
         if plan["relation"] == "receive" and fact["relation"] == "give"
@@ -420,16 +441,34 @@ def compatible(fact, plan):
         and plan["relation"] in {"run", "give", "receive"}
         and actor != "self"
     ):
-        return False
+        return _incompatible(Reason.PERSON_MISMATCH, on_exclude)
+    comparison_check(
+        "person",
+        True,
+        applied=not review and plan["self"] and plan["relation"] in {"run", "give", "receive"},
+    )
     if plan.get("event_listing") and fact["state"] != "observed" and not review:
-        return False
+        return _incompatible(Reason.STATUS_MISMATCH, on_exclude)
     if plan["relation"] == "run" and not plan.get("execution_check") and not review:
         if (fact["state"] == "planned") != plan["planned"] or fact["state"] in {
             "negated",
             "uncertain",
         }:
-            return False
-    return quantity_matches(fact, plan)
+            return _incompatible(Reason.STATUS_MISMATCH, on_exclude)
+    comparison_check(
+        "state",
+        True,
+        applied=not review
+        and bool(
+            plan.get("event_listing")
+            or (plan["relation"] == "run" and not plan.get("execution_check"))
+        ),
+    )
+    matched = quantity_matches(fact, plan)
+    if not matched:
+        return _incompatible(Reason.QUANTITY_MISMATCH, on_exclude)
+    comparison_check("quantity", True, applied=plan["distance_m"] is not None)
+    return matched
 
 
 def connection(a, b):

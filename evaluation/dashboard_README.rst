@@ -9,8 +9,11 @@
 
 PowerShell에서 기존 모델 설정을 유지한 채 실행합니다::
 
-    $env:PMA_EVALUATION = "1"
-    .venv/Scripts/python.exe -m pma
+    pwsh -File ./run_app.ps1 -Evaluation
+
+이 실행기는 생성·검색 모델 서버를 함께 시작하고 임베딩 파일 버전을 설정합니다.
+``python -m pma``는 웹 앱만 시작하므로 모델 서버가 없는 상태에서는 연결되지 않습니다.
+이미 호환 모델 서버가 실행 중이라면 ``-ExternalServers``를 추가하세요.
 
 실행기가 연 인증된 화면에서 **평가 관제실**을 선택합니다.
 기본값은 비활성화이며, 끈 상태에서는 평가 DB를 만들지 않습니다.
