@@ -54,6 +54,7 @@ def chat(client, models):
         }
 
     models.review = review
+    client.app.state.chat.fixed_evidence = True
     return client.app.state.chat
 
 
@@ -102,7 +103,8 @@ def test_complete_api_workflow_and_persistence(client, chat, models):
             "chat_sessions",
             "chat_snapshots",
             "chat_snapshot_items",
-            "chat_messages",
+            "chat_message_evidence",
+            "chat_message_snapshots",
             "chat_citations",
             "chat_searches",
             "chat_search_results",
@@ -137,7 +139,7 @@ def test_modified_source_readonly(chat, operation):
     else:
         chat.service.store.update(rid, 1, "수정된 원문")
     saved = chat.store.get(session["id"])
-    assert saved["state"] == "read_only"
+    assert saved["state"] == "active"
     assert saved["evidence"][0]["source_text"] == "담당자를 정했다."
     with pytest.raises(AppError, match="SOURCE_CHANGED"):
         chat.message(session["id"], "x", "질문")
@@ -158,14 +160,17 @@ def test_source_delete_removes_all_derived_data(chat, operation):
         future = datetime.now(timezone.utc) + timedelta(days=31)
         chat.service.store.clock = lambda: future.isoformat()
         assert chat.service.store.expire() == 1
-    assert chat.store.list() == {"items": []}
+    saved = chat.store.get(session["id"])
+    assert saved["messages"][0]["response"] is None
+    assert saved["messages"][0]["error_code"] == "SOURCE_DELETED"
     with chat.service.store.connect() as db:
         for table in (
             "chat_searches",
             "chat_search_results",
             "chat_snapshots",
             "chat_snapshot_items",
-            "chat_messages",
+            "chat_message_evidence",
+            "chat_message_snapshots",
             "chat_citations",
         ):
             assert db.execute(f"SELECT count(*) FROM {table}").fetchone()[0] == 0
@@ -209,7 +214,7 @@ def test_recovery_retry_and_request_conflict(chat):
 def test_model_busy_does_not_deadlock(chat):
     _, _, session = seed(chat)
     original = chat.service.model_slot
-    chat.service.model_slot = lambda: original(wait=0)
+    chat.service.model_slot = lambda **kwargs: original(wait=0)
     with original():
         with pytest.raises(AppError, match="MODEL_BUSY"):
             chat.message(session["id"], "x", "질문")
@@ -279,7 +284,10 @@ def test_clarification(chat, models):
 
     models.structured = clarify
     models.answer = lambda *args: pytest.fail("ambiguous answer generated")
-    assert chat.message(session["id"], "x", "그 사람?")["status"] == "needs_clarification"
+    response = chat.message(session["id"], "x", "그 사람?")
+    assert response["status"] == "needs_clarification"
+    assert {r["quote"] for r in response["citation_details"]} == {"회사 민수", "동아리 민수"}
+    assert len(chat.store.get(session["id"])["messages"][0]["response"]["citation_details"]) == 2
 
 
 def test_budget_drops_old_history_and_rejects_oversized_evidence(chat, models):
@@ -346,7 +354,7 @@ def test_additive_migration(tmp_path, version):
     migrated = Store(path)
     assert migrated.get(rid)["text"] == "기존 원문"
     with migrated.connect() as db:
-        assert db.execute("PRAGMA user_version").fetchone()[0] == 3
+        assert db.execute("PRAGMA user_version").fetchone()[0] == 5
 
 
 def test_local_chat_does_not_change_legacy_model_settings(store, settings):
@@ -504,7 +512,7 @@ def test_source_changed_while_waiting_for_model_never_generates(chat, models):
     rid, _, session = seed(chat)
 
     @contextmanager
-    def wait_slot():
+    def wait_slot(**kwargs):
         chat.service.store.update(rid, 1, "수정")
         yield
 

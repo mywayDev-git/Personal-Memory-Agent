@@ -206,7 +206,7 @@ def test_migration_backfills_without_rewriting_history(store, settings):
     assert migrated.get(rid)["facts_status"] == "ready"
     assert migrated.rebuild_facts() == 0
     with sqlite3.connect(store.path) as db:
-        assert db.execute("PRAGMA user_version").fetchone()[0] == 3
+        assert db.execute("PRAGMA user_version").fetchone()[0] == 5
 
 
 def test_relations_api_security(client, settings):

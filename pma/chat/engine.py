@@ -7,15 +7,25 @@ import time
 from copy import deepcopy
 from dataclasses import replace
 from datetime import date
+from threading import RLock
 
+from scripts.memory_agent.llm_client import RequestDeadlineExceeded, observe_phases, request_budget
 from scripts.memory_agent.validator import schema_errors
 
 from ..answer_review import accepted, validate_review
 from ..errors import AppError
 from ..grounding import claims_supported
 from ..models import ANSWER_SCHEMA, LocalModels
-from .evidence import causal_claims_supported, reviewed_citations
+from .evidence import (
+    causal_claims_supported,
+    direct_statement,
+    identity_alternatives,
+    reviewed_citations,
+    selected_alternative,
+)
 from .models import ChatLocalModels
+from .presentation import presentation
+from .schemas import ConversationMode
 from .store import ChatStore, changed
 
 RESOLVE_SCHEMA = {
@@ -76,9 +86,12 @@ AMBIGUITY_PROMPT = (
 
 
 class ChatEngine:
-    def __init__(self, service):
+    def __init__(self, service, *, fixed_evidence=False):
+        self.fixed_evidence = fixed_evidence
         self.service = service
         self.store = ChatStore(service.store)
+        self.progress = {}
+        self.progress_lock = RLock()
         self.models = service.models
         if isinstance(self.models, LocalModels):
             # The chat module always uses the reviewed prompt, without changing legacy search.
@@ -102,12 +115,12 @@ class ChatEngine:
             },
         )
 
-    def resolve(self, question, session, today):
+    def resolve(self, question, session, today, *, original_question=None):
         models = self.models
         history = [
             {"question": m["question"], "response": m["response"]}
             for m in session["messages"]
-            if m["state"] == "completed"
+            if m["state"] == "completed" and m["response"] and not m.get("error_code")
         ][-6:]
         # Full immutable sources are budgeted; history is discarded oldest first.
         data = {
@@ -126,7 +139,7 @@ class ChatEngine:
             if not history:
                 raise AppError(
                     "CONTEXT_LIMIT",
-                    "근거가 너무 깁니다. 더 적은 기록으로 새 대화를 시작하세요.",
+                    "근거가 너무 깁니다. 질문의 범위를 좁혀 주세요.",
                     422,
                 )
             history.pop(0)
@@ -134,13 +147,22 @@ class ChatEngine:
         if schema_errors(result, RESOLVE_SCHEMA):
             raise ValueError("INVALID_CHAT_CONTEXT")
         sources = {r["id"]: r["source_text"] for r in session["evidence"]}
-        alternatives = result["alternatives"]
+        forced = identity_alternatives(original_question or question, session["evidence"])
+        alternatives = forced or result["alternatives"]
+        if forced:
+            result["needs_clarification"] = True
         valid = len({a["label"] for a in alternatives}) >= 2 and all(
-            a["quote"] in sources.get(a["evidence_id"], "") and a["label"] in a["quote"]
+            a["quote"] in sources.get(a["evidence_id"], "")
+            and a["label"] in a["quote"]
+            and not re.search(
+                r"(?:했다|봤다|이다|있다|없다|않았다|합니다|했습니다)[.!]?$", a["label"]
+            )
             for a in alternatives
         )
-        compact_question = re.sub(r"\s+", "", question)
-        explicit = any(
+        compact_question = re.sub(r"\s+", "", original_question or question)
+        explicit = selected_alternative(
+            original_question or question, [a["label"] for a in alternatives]
+        ) or any(
             re.sub(r"\s+", "", a["label"]) in compact_question
             or (
                 len(a["label"].split()) >= 3
@@ -159,7 +181,7 @@ class ChatEngine:
             )
             if not has_reference and not any(name in question for name in shared_names):
                 ambiguous = False
-        if ambiguous:
+        if ambiguous and not forced:
             review = models.structured(
                 AMBIGUITY_PROMPT,
                 {
@@ -174,6 +196,7 @@ class ChatEngine:
                 raise ValueError("INVALID_AMBIGUITY_REVIEW")
             ambiguous = review["decision"] == "ambiguous_reference"
         result["needs_clarification"] = ambiguous
+        result["alternatives"] = alternatives if ambiguous else []
         if not history:
             result["question"] = question
         result["clarification"] = "어느 대상을 뜻하나요? " + " / ".join(
@@ -181,13 +204,37 @@ class ChatEngine:
         )
         return result, len(history)
 
-    def generate(self, question, session, today):
+    def generate(self, question, session, today, *, original_question=None):
         models = self.models
-        resolved, history_count = self.resolve(question, session, today)
+        intent_question = original_question or question
+        resolved, history_count = self.resolve(
+            question, session, today, original_question=intent_question
+        )
         if resolved["needs_clarification"]:
+            # Expose only the exact source labels already checked by resolve.
+            # Their citation buttons explain the options without inventing facts.
+            items, details = [], []
+            sources = {row["id"]: row for row in session["evidence"]}
+            for index, alternative in enumerate(resolved["alternatives"]):
+                source = sources[alternative["evidence_id"]]
+                quote = alternative["label"]
+                start = source["source_text"].index(quote)
+                items.append({"text": quote, "citations": [source["id"]]})
+                details.append(
+                    {
+                        "item_index": index,
+                        "memory_id": source["id"],
+                        "record_id": source["record_id"],
+                        "revision_id": source["revision_id"],
+                        "quote": quote,
+                        "start": start,
+                        "end": start + len(quote),
+                    }
+                )
             return {
                 "status": "needs_clarification",
-                "items": [],
+                "items": items,
+                "citation_details": details,
                 "clarification": resolved["clarification"],
                 "history_turns": history_count,
             }
@@ -212,7 +259,10 @@ class ChatEngine:
                 }
             # Keep the complete frozen bundle for conflict detection; relevance gating
             # must not silently hide a contradictory selected record.
-        response = models.answer(question, evidence)
+            evidence = sorted(evidence, key=lambda row: row["id"] not in selected)
+        response = direct_statement(question, evidence, intent_question) or models.answer(
+            question, evidence
+        )
         for attempt in range(2):
             if schema_errors(response, ANSWER_SCHEMA):
                 raise ValueError("INVALID_ANSWER")
@@ -225,14 +275,21 @@ class ChatEngine:
             # can support explaining that execution is unknown. Reuse attribute validation
             # and independently review the current resolved question against the sources.
             attributes = claims_supported(response["items"], evidence) and causal_claims_supported(
-                question, response, evidence
+                intent_question, response, evidence
             )
-            review = validate_review(
-                models.review(question, evidence, response), response, evidence
-            )
-            self.service.trace(
-                "chat_verification", supported=attributes and accepted(review, response)
-            )
+            try:
+                review = validate_review(
+                    models.review(question, evidence, response), response, evidence
+                )
+                review_ok = accepted(review, response)
+            except ValueError as exc:
+                review = {
+                    "error": "INVALID_REVIEW",
+                    "reason": str(exc),
+                    "instruction": "원문의 정확한 인용으로만 답하라.",
+                }
+                review_ok = False
+            self.service.trace("chat_verification", supported=attributes and review_ok)
             self.service.trace(
                 "chat_validation",
                 question=question,
@@ -240,7 +297,7 @@ class ChatEngine:
                 review=review,
                 attributes_supported=attributes,
             )
-            if attributes and accepted(review, response):
+            if attributes and review_ok:
                 return {
                     **reviewed_citations(response, review, evidence),
                     "validation": "model_checked",
@@ -263,34 +320,165 @@ class ChatEngine:
             "history_turns": history_count,
         }
 
-    def message(self, sid, request_id, question, today=None):
-        mid, cached = self.store.begin(sid, request_id, question)
-        if cached is not None:
-            return {"message_id": mid, **cached}
+    def request_status(self, sid, request_id):
+        state = self.store.request_state(sid, request_id)
+        with self.progress_lock:
+            return {
+                **state,
+                "phase": self.progress.get((sid, request_id)),
+                "worker_active": (sid, request_id) in self.progress,
+            }
+
+    def message(self, sid, request_id, question, today=None, context_message_id=None, mode="auto"):
+        mode = ConversationMode(mode)
         started = time.monotonic()
+        with self.progress_lock:
+            if any(key[0] == sid for key in self.progress):
+                raise AppError(
+                    "CHAT_BUSY",
+                    "이전 요청을 마무리하고 있습니다. 잠시 후 다시 시도해 주세요.",
+                    409,
+                    True,
+                )
+            mid, cached = self.store.begin(
+                sid, request_id, question, today, context_message_id, mode
+            )
+            if cached is not None:
+                return {"message_id": mid, **cached}
+            self.progress[sid, request_id] = "resolving_context"
+
+        def phase(name):
+            if self.store.request_state(sid, request_id)["state"] != "running":
+                raise AppError("CANCELLED", "요청을 중단했습니다.", 409)
+            labels = {
+                "routing": "resolving_context",
+                "context_selection": "resolving_context",
+                "search": "searching",
+                "search_planning": "searching",
+                "generation": "generating",
+                "general": "generating",
+                "review": "validating",
+            }
+            with self.progress_lock:
+                self.progress[sid, request_id] = labels.get(name, "generating")
+
         try:
-            with self.service.model_slot():
+            with (
+                observe_phases(phase),
+                request_budget(
+                    self.service.settings.chat_timeout - (time.monotonic() - started)
+                ) as budget,
+                self.service.model_slot(wait=min(5, budget.remaining())),
+            ):
+                budget.remaining()
+                lock_seconds = time.monotonic() - started
                 session = self.store.get(sid)
+                if context_message_id:
+                    # Revisit a stored, valid turn for interpretation, never as source proof.
+                    session["messages"] = [m for m in session["messages"] if m["id"] != mid]
+                    anchor = next(m for m in session["messages"] if m["id"] == context_message_id)
+                    if not anchor["response"] or anchor.get("error_code"):
+                        raise AppError(
+                            "CONTEXT_EXPIRED",
+                            "선택한 대화의 근거가 변경되었습니다. 다시 질문해 주세요.",
+                            409,
+                        )
+                    if anchor["response"]["status"] == "needs_clarification":
+                        selection = selected_alternative(
+                            question, [i["text"] for i in anchor["response"]["items"]]
+                        )
+                        remainder = re.sub(r"\s+|[.!?]", "", question)
+                        for word in sorted((selection or "").split(), key=len, reverse=True):
+                            remainder = remainder.replace(word, "")
+                        if selection and re.fullmatch(
+                            r"(?:이요|요|예요|이에요|야|입니다|맞아|말하는거야)*", remainder
+                        ):
+                            name = selection.split()[-1]
+                            question = (
+                                anchor["question"].replace(name, selection)
+                                if name in anchor["question"]
+                                else selection + "에 대해: " + anchor["question"]
+                            )
+                    session["messages"] = [
+                        m for m in session["messages"] if m["id"] != context_message_id
+                    ] + [anchor]
                 if session["state"] != "active":
                     raise changed()
-                response = self.generate(
-                    question, deepcopy(session), today or date.today().isoformat()
-                )
-                response["elapsed_seconds"] = round(time.monotonic() - started, 3)
-                response["model"] = self.service.settings.llm.model or "server-default"
-                response["generation_revision"] = os.getenv(
-                    "PMA_GENERATION_REVISION", "unconfigured"
-                )
-                response["chat_prompt_version"] = 1
-                self.store.finish(sid, mid, response)
+                for attempt in range(2):
+                    try:
+                        if context_message_id:
+                            active = [
+                                m
+                                for m in session["messages"]
+                                if m["id"] == context_message_id
+                                and m.get("response")
+                                and not m.get("error_code")
+                            ]
+                            if active:
+                                session["messages"] = [
+                                    m for m in session["messages"] if m["id"] != context_message_id
+                                ] + active
+                        if self.fixed_evidence and mode == ConversationMode.AUTO:
+                            self.store.freeze(session["evidence"])
+                            response = self.generate(
+                                question, deepcopy(session), today or date.today().isoformat()
+                            )
+                            evidence, metadata = session["evidence"], session["snapshot"]
+                        else:
+                            from .automatic import run
+
+                            response, evidence, metadata = run(
+                                self,
+                                question,
+                                deepcopy(session),
+                                today or date.today().isoformat(),
+                                mode,
+                            )
+                        response["conversation_mode"] = (
+                            "hybrid"
+                            if response.get("conversation_type") == "mixed"
+                            else response.get("conversation_type", "memory")
+                        )
+                        response["requested_mode"] = mode
+                        response["elapsed_seconds"] = round(time.monotonic() - started, 3)
+                        response["model"] = self.service.settings.llm.model or "server-default"
+                        response["generation_revision"] = os.getenv(
+                            "PMA_GENERATION_REVISION", "unconfigured"
+                        )
+                        response["chat_prompt_version"] = 4
+                        response["presentation"] = presentation(response)
+                        metadata.update(
+                            model=response["model"],
+                            generation_revision=response["generation_revision"],
+                            chat_prompt_version=4,
+                        )
+                        budget.remaining()
+                        phase("review")
+                        metadata["performance"] = {
+                            "lock_wait_seconds": round(lock_seconds, 3),
+                            "model_http_calls": budget.calls,
+                        }
+                        self.store.finish(sid, mid, response, evidence, metadata, budget=budget)
+                        break
+                    except AppError as exc:
+                        if exc.code != "SOURCE_CHANGED" or attempt or self.fixed_evidence:
+                            raise
+                        session = self.store.get(sid)
             self.service.trace("chat_result", question=question, response=response)
             return {"message_id": mid, **response}
         except Exception as exc:
+            if isinstance(exc, RequestDeadlineExceeded):
+                exc = AppError(
+                    "CHAT_TIMEOUT", "응답 시간이 초과되었습니다. 다시 시도해 주세요.", 504, True
+                )
             self.store.fail(mid, exc.code if isinstance(exc, AppError) else "MODEL_FAILED")
             if isinstance(exc, AppError) and exc.code == "CONTEXT_LIMIT":
                 raise AppError(
                     "CONTEXT_LIMIT",
-                    "근거가 너무 깁니다. 더 적은 기록으로 새 대화를 시작하세요.",
+                    "근거가 너무 깁니다. 질문의 범위를 좁혀 주세요.",
                     422,
                 ) from exc
-            raise
+            raise exc
+        finally:
+            with self.progress_lock:
+                self.progress.pop((sid, request_id), None)

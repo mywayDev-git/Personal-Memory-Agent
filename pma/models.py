@@ -30,6 +30,9 @@ QUERY_SCHEMA = {
         "requested_slots": {
             "type": "array",
             "uniqueItems": True,
+            # Five possible unique values already imply this bound. Spell it out
+            # for constrained decoders that do not enforce uniqueItems.
+            "maxItems": 5,
             "items": {"enum": ["actor", "recipient", "time", "execution", "other"]},
         },
     },

@@ -3,11 +3,65 @@
 import hashlib
 import json
 import time
+from contextlib import contextmanager
+from contextvars import ContextVar
 from urllib.parse import urlsplit
 
 import requests
 
 from .diagnostics import ProcessingError
+
+_request_budget = ContextVar("model_request_budget", default=None)
+_model_phase = ContextVar("model_phase", default="other")
+_phase_listener = ContextVar("model_phase_listener", default=None)
+
+
+@contextmanager
+def observe_phases(listener):
+    token = _phase_listener.set(listener)
+    try:
+        yield
+    finally:
+        _phase_listener.reset(token)
+
+
+@contextmanager
+def model_phase(name):
+    listener = _phase_listener.get()
+    if listener is not None:
+        listener(name)
+    token = _model_phase.set(name)
+    try:
+        yield
+    finally:
+        _model_phase.reset(token)
+
+
+class RequestDeadlineExceeded(TimeoutError):
+    """The complete conversation request exhausted its time budget."""
+
+
+class RequestBudget:
+    def __init__(self, seconds):
+        self.deadline = time.monotonic() + seconds
+        self.calls = []
+
+    def remaining(self):
+        remaining = self.deadline - time.monotonic()
+        if remaining <= 0:
+            raise RequestDeadlineExceeded("CHAT_TIMEOUT")
+        return remaining
+
+
+@contextmanager
+def request_budget(seconds):
+    """Thread/context-local budget; other API and worker requests are unaffected."""
+    budget = RequestBudget(seconds)
+    token = _request_budget.set(budget)
+    try:
+        yield budget
+    finally:
+        _request_budget.reset(token)
 
 
 def validate_endpoint(endpoint: str) -> None:
@@ -32,7 +86,27 @@ def local_session() -> requests.Session:
 def post_json(session, endpoint: str, body: dict, timeout: float) -> dict:
     validate_endpoint(endpoint)
     session.trust_env = False
-    response = session.post(endpoint, json=body, timeout=timeout, allow_redirects=False)
+    budget = _request_budget.get()
+    if budget is not None:
+        timeout = min(timeout, budget.remaining())
+    started = time.monotonic()
+    try:
+        response = session.post(endpoint, json=body, timeout=timeout, allow_redirects=False)
+    except requests.Timeout:
+        if budget is not None:
+            budget.remaining()
+        raise
+    finally:
+        if budget is not None:
+            budget.calls.append(
+                {
+                    "operation": urlsplit(endpoint).path,
+                    "phase": _model_phase.get(),
+                    "seconds": round(time.monotonic() - started, 3),
+                }
+            )
+    if budget is not None:
+        budget.remaining()  # Discard a response arriving after the request deadline.
     if not 200 <= response.status_code < 300:
         raise requests.HTTPError(f"MODEL_HTTP_{response.status_code}", response=response)
     try:

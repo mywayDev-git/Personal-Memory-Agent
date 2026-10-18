@@ -62,6 +62,7 @@ def fixed_session(engine, case):
 
 
 def run(engine, cases):
+    engine.fixed_evidence = True
     results = []
     for case in cases:
         session = fixed_session(engine, case)

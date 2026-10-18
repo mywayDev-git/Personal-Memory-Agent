@@ -27,6 +27,7 @@ class AppSettings:
     llm: Settings = field(default_factory=Settings)
     diagnostics: bool = field(default=False, kw_only=True)
     diagnostics_path: str | Path | None = field(default=None, kw_only=True)
+    chat_timeout: float = field(default=300, kw_only=True)
 
     @property
     def origin(self):
@@ -37,6 +38,8 @@ class AppSettings:
         return f"{self.embedding_model}:{self.embedding_revision}:{self.embedding_dimensions}"
 
     def validate(self):
+        if not 0 < self.chat_timeout <= 3600:
+            raise ValueError("INVALID_CHAT_TIMEOUT")
         validate_endpoint(self.llm.endpoint)
         validate_endpoint(self.embedding_endpoint)
         if not 1024 <= self.port <= 65535 or self.embedding_dimensions < 1:
@@ -69,6 +72,7 @@ class AppSettings:
             # Preserve the supplied path without filesystem access. A bad logging
             # destination must not prevent startup; the collector handles failure.
             diagnostics_path=os.getenv("PMA_DIAGNOSTICS_PATH") or None,
+            chat_timeout=float(os.getenv("PMA_CHAT_TIMEOUT", "300")),
         )
         result.validate()
         return result

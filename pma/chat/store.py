@@ -12,9 +12,7 @@ def encode(value):
 
 
 def changed():
-    return AppError(
-        "SOURCE_CHANGED", "근거 기록이 변경되었습니다. 새 검색으로 대화를 시작하세요.", 409
-    )
+    return AppError("SOURCE_CHANGED", "근거 기록이 변경되었습니다. 다시 시도해 주세요.", 409, True)
 
 
 class ChatStore:
@@ -51,6 +49,35 @@ class ChatStore:
                     (sid, row["id"], row["record_id"], row["version"], encode(row)),
                 )
         return {**found, "search_id": sid}
+
+    def create_empty(self):
+        sid, ts = identifier(), self.store.clock()
+        with self.store.connect(True) as db:
+            db.execute(
+                "INSERT INTO chat_sessions VALUES(?,NULL,?,'active',?,?)", (sid, "새 대화", ts, ts)
+            )
+        return self.get(sid)
+
+    def freeze(self, rows):
+        """Resolve exact revisions before inference without persisting drafts."""
+        with self.store.connect() as db:
+            self.check_sources(db, rows)
+            frozen = []
+            for row in rows:
+                revision = db.execute(
+                    "SELECT id,text FROM revisions WHERE record_id=? AND version=?",
+                    (row["record_id"], row["version"]),
+                ).fetchone()
+                if not revision or revision["text"] != row["source_text"]:
+                    raise changed()
+                for ref in row["evidence"]:
+                    if (
+                        not (0 <= ref["start"] < ref["end"] <= len(revision["text"]))
+                        or revision["text"][ref["start"] : ref["end"]] != ref["quote"]
+                    ):
+                        raise ValueError("INVALID_SOURCE_SPAN")
+                frozen.append({**row, "revision_id": revision["id"]})
+            return frozen
 
     def create(self, search_id, selected_ids):
         sid, ts = identifier(), self.store.clock()
@@ -127,29 +154,58 @@ class ChatStore:
         with self.store.connect() as db:
             result = self.require(db, sid)
             result["evidence"] = self.evidence(db, sid)
-            result["snapshot"] = json.loads(
-                db.execute(
-                    "SELECT payload FROM chat_snapshots WHERE session_id=?", (sid,)
-                ).fetchone()[0]
-            )
+            snapshot = db.execute(
+                "SELECT payload FROM chat_snapshots WHERE session_id=?", (sid,)
+            ).fetchone()
+            result["snapshot"] = json.loads(snapshot[0]) if snapshot else {}
             result["messages"] = []
             for row in db.execute(
                 "SELECT * FROM chat_messages WHERE session_id=? ORDER BY created_at,rowid", (sid,)
             ):
                 message = dict(row)
+                request_input = message.pop("request_input")
+                message["request_today"] = (
+                    json.loads(request_input)["today"] if request_input else None
+                )
+                message["context_message_id"] = (
+                    json.loads(request_input).get("context_message_id") if request_input else None
+                )
+                message["mode"] = (
+                    json.loads(request_input).get("mode", "auto") if request_input else "auto"
+                )
                 message["response"] = (
                     json.loads(message["response"]) if message["response"] else None
                 )
+                message["evidence"] = [
+                    json.loads(r[0])
+                    for r in db.execute(
+                        "SELECT payload FROM chat_message_evidence WHERE message_id=? ORDER BY rowid",
+                        (message["id"],),
+                    )
+                ]
+                snapshot = db.execute(
+                    "SELECT payload FROM chat_message_snapshots WHERE message_id=?",
+                    (message["id"],),
+                ).fetchone()
+                message["snapshot"] = json.loads(snapshot[0]) if snapshot else {}
                 result["messages"].append(message)
+            result["mode"] = result["messages"][-1]["mode"] if result["messages"] else "auto"
             return result
 
-    def list(self):
+    def list(self, query=""):
         with self.store.connect() as db:
             return {
                 "items": [
                     dict(r)
                     for r in db.execute(
-                        "SELECT * FROM chat_sessions ORDER BY updated_at DESC,id DESC"
+                        "SELECT s.* FROM chat_sessions s WHERE ?='' OR instr(lower(s.title),lower(?))>0 "
+                        "OR EXISTS(SELECT 1 FROM chat_messages m WHERE m.session_id=s.id AND "
+                        "(instr(lower(m.question),lower(?))>0 OR "
+                        "(m.state='completed' AND m.error_code IS NULL AND EXISTS "
+                        "(SELECT 1 FROM json_each(m.response,'$.items') i "
+                        "WHERE instr(lower(json_extract(i.value,'$.text')),lower(?))>0)))) "
+                        "ORDER BY s.updated_at DESC,s.id DESC",
+                        (query, query, query, query),
                     )
                 ]
             }
@@ -159,7 +215,13 @@ class ChatStore:
             self.require(db, sid)
             db.execute("DELETE FROM chat_sessions WHERE id=?", (sid,))
 
-    def begin(self, sid, request_id, question):
+    def begin(self, sid, request_id, question, today=None, context_message_id=None, mode="auto"):
+        inputs = {"question": question, "today": today}
+        if context_message_id is not None:
+            inputs["context_message_id"] = context_message_id
+        if mode != "auto":
+            inputs["mode"] = mode
+        request_input = encode(inputs)
         with self.store.connect(True) as db:
             session = self.require(db, sid)
             previous = db.execute(
@@ -167,11 +229,43 @@ class ChatStore:
             ).fetchone()
             if previous and previous["question"] != question:
                 raise AppError("REQUEST_CONFLICT", "같은 요청 ID의 질문이 다릅니다.", 409)
+            if (
+                previous
+                and previous["request_input"] is not None
+                and previous["request_input"] != request_input
+            ):
+                raise AppError("REQUEST_CONFLICT", "같은 요청 ID의 입력 조건이 다릅니다.", 409)
             if previous and previous["state"] == "completed":
-                return previous["id"], json.loads(previous["response"])
+                return previous["id"], (
+                    json.loads(previous["response"])
+                    if previous["response"]
+                    else {"status": "insufficient_evidence", "items": [], "source_state": "deleted"}
+                )
+            if context_message_id is not None:
+                anchor = db.execute(
+                    "SELECT * FROM chat_messages WHERE session_id=? AND id=?",
+                    (sid, context_message_id),
+                ).fetchone()
+                if not anchor or anchor["state"] != "completed" or anchor["error_code"]:
+                    raise AppError(
+                        "CONTEXT_EXPIRED",
+                        "이전 대화의 근거가 변경되었거나 선택이 만료되었습니다. 다시 질문해 주세요.",
+                        409,
+                    )
+                if json.loads(anchor["response"])["status"] == "needs_clarification":
+                    latest = db.execute(
+                        "SELECT id FROM chat_messages WHERE session_id=? AND state='completed' "
+                        "ORDER BY created_at DESC,rowid DESC LIMIT 1",
+                        (sid,),
+                    ).fetchone()
+                    if latest["id"] != context_message_id:
+                        raise AppError(
+                            "CONTEXT_EXPIRED",
+                            "이미 이어진 대화의 선택입니다. 현재 기록으로 다시 질문해 주세요.",
+                            409,
+                        )
             if session["state"] != "active":
                 raise changed()
-            self.check_sources(db, self.evidence(db, sid))
             if db.execute(
                 "SELECT 1 FROM chat_messages WHERE session_id=? AND state='running'", (sid,)
             ).fetchone():
@@ -179,24 +273,37 @@ class ChatStore:
             mid = previous["id"] if previous else identifier()
             if previous:
                 db.execute(
-                    "UPDATE chat_messages SET state='running',error_code=NULL,created_at=? WHERE id=?",
-                    (self.store.clock(), mid),
+                    "UPDATE chat_messages SET state='running',error_code=NULL,created_at=?,request_input=? WHERE id=?",
+                    (self.store.clock(), request_input, mid),
                 )
             else:
                 db.execute(
-                    "INSERT INTO chat_messages(id,session_id,request_id,question,state,created_at) "
-                    "VALUES(?,?,?,?,'running',?)",
-                    (mid, sid, request_id, question, self.store.clock()),
+                    "INSERT INTO chat_messages(id,session_id,request_id,question,state,created_at,request_input) "
+                    "VALUES(?,?,?,?,'running',?,?)",
+                    (mid, sid, request_id, question, self.store.clock(), request_input),
                 )
             return mid, None
 
-    def finish(self, sid, mid, response):
+    def finish(self, sid, mid, response, rows=None, metadata=None, *, budget=None):
         with self.store.connect(True) as db:
             session = self.require(db, sid)
-            rows = self.evidence(db, sid)
+            state = db.execute(
+                "SELECT state FROM chat_messages WHERE id=? AND session_id=?", (mid, sid)
+            ).fetchone()
+            if not state or state["state"] != "running":
+                raise AppError("CANCELLED", "요청을 중단했습니다.", 409)
+            rows = self.evidence(db, sid) if rows is None else rows
             if session["state"] != "active":
                 raise changed()
             self.check_sources(db, rows)
+            for row in rows:
+                db.execute(
+                    "INSERT INTO chat_message_evidence VALUES(?,?,?,?,?)",
+                    (mid, row["id"], row["record_id"], row["version"], encode(row)),
+                )
+            db.execute(
+                "INSERT INTO chat_message_snapshots VALUES(?,?)", (mid, encode(metadata or {}))
+            )
             sources = {r["id"]: r for r in rows}
             for index, item in enumerate(response["items"]):
                 for cid in item["citations"]:
@@ -207,7 +314,8 @@ class ChatStore:
                     ]
                     source = sources[cid]
                     if not refs or any(
-                        ref["revision_id"] != source["revision_id"]
+                        ref["record_id"] != source["record_id"]
+                        or ref["revision_id"] != source["revision_id"]
                         or not (0 <= ref["start"] < ref["end"] <= len(source["source_text"]))
                         or source["source_text"][ref["start"] : ref["end"]] != ref["quote"]
                         for ref in refs
@@ -222,7 +330,12 @@ class ChatStore:
                 "UPDATE chat_messages SET state='completed',response=?,completed_at=? WHERE id=?",
                 (encode(response), ts, mid),
             )
-            db.execute("UPDATE chat_sessions SET updated_at=? WHERE id=?", (ts, sid))
+            db.execute(
+                "UPDATE chat_sessions SET updated_at=?,title=CASE WHEN title='새 대화' THEN (SELECT substr(question,1,100) FROM chat_messages WHERE id=?) ELSE title END WHERE id=?",
+                (ts, mid, sid),
+            )
+            if budget is not None:
+                budget.remaining()  # Raise inside the transaction so all draft writes roll back.
 
     def fail(self, mid, code):
         with self.store.connect(True) as db:
@@ -230,3 +343,30 @@ class ChatStore:
                 "UPDATE chat_messages SET state='failed',error_code=? WHERE id=? AND state='running'",
                 (code, mid),
             )
+
+    def cancel(self, sid, request_id):
+        with self.store.connect(True) as db:
+            self.require(db, sid)
+            if not db.execute(
+                "SELECT 1 FROM chat_messages WHERE session_id=? AND request_id=?", (sid, request_id)
+            ).fetchone():
+                raise AppError(
+                    "REQUEST_PENDING",
+                    "요청이 아직 접수되지 않았습니다. 잠시 후 다시 중단해 주세요.",
+                    409,
+                    True,
+                )
+            db.execute(
+                "UPDATE chat_messages SET state='failed',error_code='CANCELLED' "
+                "WHERE session_id=? AND request_id=? AND state='running'",
+                (sid, request_id),
+            )
+
+    def request_state(self, sid, request_id):
+        with self.store.connect() as db:
+            self.require(db, sid)
+            row = db.execute(
+                "SELECT state,error_code FROM chat_messages WHERE session_id=? AND request_id=?",
+                (sid, request_id),
+            ).fetchone()
+            return dict(row) if row else {"state": "pending", "error_code": None}
