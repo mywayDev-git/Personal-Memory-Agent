@@ -65,6 +65,12 @@ $models = @(Start-ModelServers Test-Devices gen emb gpu 0 0 cpu)
 Assert ((Layers $script:launched[0]) -eq '99' -and (Layers $script:launched[1]) -eq '0') 'mixed placement must keep generation on GPU and embeddings on CPU'
 
 Reset-Mocks
+$models = @(Start-ModelServers Test-Devices gen emb gpu 0 0 cpu 'qwen3-retrieval-v1' 'off')
+Assert ($script:launched[1].Args -contains 'last') 'Qwen embeddings require last-token pooling'
+Assert ($script:launched[1].Args -contains 'qwen3-embedding-0.6b') 'embedding alias must match the selected profile'
+Assert ($script:launched[0].Args -contains 'off') 'explicit Flash Attention selection lost'
+
+Reset-Mocks
 $models = @(Start-ModelServers Test-Devices gen emb cpu 0 0 gpu)
 Assert ($script:deviceQueries -eq 0 -and (Layers $script:launched[1]) -eq '0') 'CPU-only mode must override embedding placement'
 

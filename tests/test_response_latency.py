@@ -169,3 +169,26 @@ def test_benchmark_quality_requires_current_message_citation_source():
                       {"seconds": .1, "warmup": False, "error_code": "FAILED"},
                       {"seconds": 100, "warmup": True}])
     assert result["median_seconds"] == 1 and result["failure_rate"] == .5
+
+
+def test_benchmark_seed_covers_real_search_fields(tmp_path):
+    from evaluation.response_latency import DOCUMENTS, seed_database
+
+    settings = replace(AppSettings(), embedding_dimensions=2)
+    path = tmp_path / "synthetic.db"
+    seed_database(path, SimpleNamespace(embed=lambda texts: [[1., 0.]] * len(texts)), settings)
+    models = SimpleNamespace(understand=lambda *a: {"intent": "recall", "date_from": None, "date_to": None},
+                             embed=lambda texts: [[1., 0.]] * len(texts))
+    result = Service(Store(path), models, settings).search("민수에게 무엇을 선물했어?", today="2026-10-19")
+    assert len(DOCUMENTS) == 11 and result["results"]
+
+
+def test_timing_gate_requires_twenty_quality_checked_samples():
+    from evaluation.response_latency_report import latency_gate
+
+    baseline = {"samples": 20, "quality_passes": 20, "failures": 0, "median_seconds": 10, "p95_seconds": 12}
+    candidate = {**baseline, "median_seconds": 7, "p95_seconds": 10}
+    assert latency_gate(baseline, candidate)["passed"]
+    assert not latency_gate(baseline, {**candidate, "samples": 5})["passed"]
+    assert not latency_gate(baseline, {**candidate, "quality_passes": 19})["passed"]
+    assert not latency_gate(baseline, {**candidate, "p95_seconds": 13})["passed"]

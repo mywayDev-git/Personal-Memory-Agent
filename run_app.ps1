@@ -6,6 +6,8 @@ param(
     [ValidateSet('auto', 'cpu', 'gpu')][string]$EmbeddingAcceleration = 'auto',
     [ValidateRange(0, 1024)][int]$GenerationThreads = 0,
     [ValidateRange(0, 1024)][int]$EmbeddingThreads = 0,
+    [ValidateSet('raw-v1', 'qwen3-retrieval-v1')][string]$EmbeddingProfile = 'raw-v1',
+    [ValidateSet('auto', 'on', 'off')][string]$FlashAttention = 'auto',
     [switch]$NoBrowser,
     [switch]$ExternalServers,
     [switch]$Evaluation,
@@ -45,7 +47,7 @@ function Wait-Model([int]$Port, $Process) {
     throw "Model server on port $Port did not become ready."
 }
 function Start-ModelServers {
-    param($Server, $GenerationModel, $EmbeddingModel, $Acceleration, $GenerationThreads, $EmbeddingThreads, $EmbeddingAcceleration = 'auto')
+    param($Server, $GenerationModel, $EmbeddingModel, $Acceleration, $GenerationThreads, $EmbeddingThreads, $EmbeddingAcceleration = 'auto', $EmbeddingProfile = 'raw-v1', $FlashAttention = 'auto')
     $modes = @($Acceleration)
     if ($Acceleration -ne 'cpu') {
         # Query the installed backend, rather than assuming NVIDIA is required.
@@ -65,6 +67,12 @@ function Start-ModelServers {
             $embeddingLayers = if ($mode -eq 'cpu' -or $EmbeddingAcceleration -eq 'cpu') { '0' } else { '99' }
             $generationArgs = @('-m', ('"' + $GenerationModel + '"'), '--host', '127.0.0.1', '--port', '8081', '-c', '16384', '-np', '1', '--alias', 'qwen3', '--log-disable', '-ngl', $layers)
             $embeddingArgs = @('-m', ('"' + $EmbeddingModel + '"'), '--host', '127.0.0.1', '--port', '8082', '-c', '8192', '-b', '8192', '-ub', '8192', '--embedding', '--pooling', 'cls', '--alias', 'bge-m3', '--log-disable', '-ngl', $embeddingLayers)
+            if ($EmbeddingProfile -eq 'qwen3-retrieval-v1') {
+                $embeddingArgs[$embeddingArgs.IndexOf('cls')] = 'last'
+                $embeddingArgs[$embeddingArgs.IndexOf('bge-m3')] = 'qwen3-embedding-0.6b'
+            }
+            $embeddingArgs += @('--embd-normalize', '2', '--flash-attn', $FlashAttention)
+            $generationArgs += @('--flash-attn', $FlashAttention)
             if ($GenerationThreads -gt 0) { $generationArgs += @('-t', "$GenerationThreads") }
             if ($EmbeddingThreads -gt 0) { $embeddingArgs += @('-t', "$EmbeddingThreads") }
             Write-Host "[PMA] Launching models ($mode)..."
@@ -101,7 +109,8 @@ try {
     $hashTimer = [Diagnostics.Stopwatch]::StartNew()
     $env:PMA_EMBEDDING_REVISION = (Get-FileHash -LiteralPath $EmbeddingModel -Algorithm SHA256).Hash.ToLowerInvariant()
     Write-Host "[PMA] SHA-256 complete ($([Math]::Round($hashTimer.Elapsed.TotalSeconds, 1))s)."
-    $env:PMA_EMBEDDING_MODEL = 'bge-m3'
+    $env:PMA_EMBEDDING_PROFILE = $EmbeddingProfile
+    $env:PMA_EMBEDDING_MODEL = if ($EmbeddingProfile -eq 'qwen3-retrieval-v1') { 'qwen3-embedding-0.6b' } else { 'bge-m3' }
     $env:PMA_GENERATION_REVISION = (Get-FileHash -LiteralPath $GenerationModel -Algorithm SHA256).Hash.ToLowerInvariant()
     $env:PMA_MODEL = 'qwen3'
     $env:PMA_CONTEXT_TOKENS = '16384'
@@ -117,7 +126,7 @@ try {
             catch [System.Net.Sockets.SocketException] { }
             finally { $client.Dispose() }
         }
-        $ownedProcesses += @(Start-ModelServers -Server $Server -GenerationModel $GenerationModel -EmbeddingModel $EmbeddingModel -Acceleration $Acceleration -GenerationThreads $GenerationThreads -EmbeddingThreads $EmbeddingThreads -EmbeddingAcceleration $EmbeddingAcceleration)
+        $ownedProcesses += @(Start-ModelServers -Server $Server -GenerationModel $GenerationModel -EmbeddingModel $EmbeddingModel -Acceleration $Acceleration -GenerationThreads $GenerationThreads -EmbeddingThreads $EmbeddingThreads -EmbeddingAcceleration $EmbeddingAcceleration -EmbeddingProfile $EmbeddingProfile -FlashAttention $FlashAttention)
     }
     Write-Host '[PMA] Starting web app. Keep this terminal open; press Ctrl+C to stop.'
     $appArguments = @('-u', '-B', '-m', 'pma')
