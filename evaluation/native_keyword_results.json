@@ -1,0 +1,1271 @@
+{
+  "quality": {
+    "random_batches": 160,
+    "randomized_rows": 1320,
+    "cache_limit_crossing": true,
+    "empty_input": true,
+    "unicode_offsets": true,
+    "exact_output_equality": true,
+    "unicode_codepoints": 1114112,
+    "unicode_word_runs": 771
+  },
+  "comparisons": [
+    {
+      "mode": "python",
+      "initial_memory": {
+        "rss_mib": 55.078125,
+        "peak_rss_mib": 55.078125
+      },
+      "normal": {
+        "first_seconds": 0.014357500011101365,
+        "median_seconds": 0.014180600002873689,
+        "max_seconds": 0.015117399976588786,
+        "samples_seconds": [
+          0.014312100014649332,
+          0.015117399976588786,
+          0.013968000013846904,
+          0.014148399990517646,
+          0.014180600002873689
+        ],
+        "memory": {
+          "rss_mib": 70.97265625,
+          "peak_rss_mib": 72.49609375
+        },
+        "digest": "7d6988dc241025cb9e44b1465135cd6d4ac6286cd1f8824d19ab272d214d8bb8",
+        "rows": 960,
+        "hits": 3840
+      },
+      "many_terms": {
+        "first_seconds": 0.039206999994348735,
+        "median_seconds": 0.039738900028169155,
+        "max_seconds": 0.04019159998279065,
+        "samples_seconds": [
+          0.04019159998279065,
+          0.03971619997173548,
+          0.039530100009869784,
+          0.039738900028169155,
+          0.04002289997879416
+        ],
+        "memory": {
+          "rss_mib": 72.265625,
+          "peak_rss_mib": 72.49609375
+        },
+        "digest": "7d6988dc241025cb9e44b1465135cd6d4ac6286cd1f8824d19ab272d214d8bb8",
+        "rows": 960,
+        "hits": 3840
+      },
+      "count": 1000,
+      "scope": "matching"
+    },
+    {
+      "mode": "cpp",
+      "initial_memory": {
+        "rss_mib": 55.00390625,
+        "peak_rss_mib": 55.00390625
+      },
+      "normal": {
+        "first_seconds": 0.0037435999838635325,
+        "median_seconds": 0.0032753999694250524,
+        "max_seconds": 0.004024399968329817,
+        "samples_seconds": [
+          0.003617800015490502,
+          0.004024399968329817,
+          0.0032470999867655337,
+          0.0032753999694250524,
+          0.0032179999980144203
+        ],
+        "memory": {
+          "rss_mib": 71.0859375,
+          "peak_rss_mib": 72.44140625
+        },
+        "digest": "7d6988dc241025cb9e44b1465135cd6d4ac6286cd1f8824d19ab272d214d8bb8",
+        "rows": 960,
+        "hits": 3840
+      },
+      "many_terms": {
+        "first_seconds": 0.004396399948745966,
+        "median_seconds": 0.004600599990226328,
+        "max_seconds": 0.004790300037711859,
+        "samples_seconds": [
+          0.004790300037711859,
+          0.004607499984558672,
+          0.004320800013374537,
+          0.004600599990226328,
+          0.004434200003743172
+        ],
+        "memory": {
+          "rss_mib": 72.390625,
+          "peak_rss_mib": 72.44140625
+        },
+        "digest": "7d6988dc241025cb9e44b1465135cd6d4ac6286cd1f8824d19ab272d214d8bb8",
+        "rows": 960,
+        "hits": 3840
+      },
+      "count": 1000,
+      "scope": "matching"
+    },
+    {
+      "mode": "python",
+      "initial_memory": {
+        "rss_mib": 54.7578125,
+        "peak_rss_mib": 54.7578125
+      },
+      "all": {
+        "first_seconds": 0.06704739999258891,
+        "median_seconds": 0.05366789997788146,
+        "max_seconds": 0.05601219995878637,
+        "samples_seconds": [
+          0.05601219995878637,
+          0.05466100003104657,
+          0.05337750003673136,
+          0.053319099999498576,
+          0.05366789997788146
+        ],
+        "memory": {
+          "rss_mib": 70.9375,
+          "peak_rss_mib": 79.6171875
+        },
+        "digest": "f78f1557074fc6ddc229eddbca8aa6bb1d45d32c86e221af6e279724eb4ce10d"
+      },
+      "date_filtered": {
+        "first_seconds": 0.04573459998937324,
+        "median_seconds": 0.03650069999275729,
+        "max_seconds": 0.03784770000493154,
+        "samples_seconds": [
+          0.03634640004020184,
+          0.03650069999275729,
+          0.035726499976590276,
+          0.036658499971963465,
+          0.03784770000493154
+        ],
+        "memory": {
+          "rss_mib": 67.37109375,
+          "peak_rss_mib": 79.6171875
+        },
+        "digest": "87bdae917d762435802e4044bb7ad28c7f9d30401b767a35d8c505c1a3f826bc"
+      },
+      "stages": {
+        "samples": [
+          {
+            "total_seconds": 0.05396019999170676,
+            "stages": {
+              "query_understanding": 0.0001346999779343605,
+              "structure_filter": 0.005788100068457425,
+              "snapshot": 0.024434199964161962,
+              "vector_retrieval": 0.00042339996434748173,
+              "keyword_retrieval": 0.015027199988253415,
+              "rank_fusion": 0.0020025999983772635,
+              "relation_lookup": 0.002416800009086728,
+              "source_validation": 0.003728599986061454
+            }
+          },
+          {
+            "total_seconds": 0.05238790001021698,
+            "stages": {
+              "query_understanding": 0.00013050000416114926,
+              "structure_filter": 0.005394300038460642,
+              "snapshot": 0.023202899959869683,
+              "vector_retrieval": 0.0004054000019095838,
+              "keyword_retrieval": 0.015025399974547327,
+              "rank_fusion": 0.002069600042887032,
+              "relation_lookup": 0.002322099986486137,
+              "source_validation": 0.0038343999767675996
+            }
+          },
+          {
+            "total_seconds": 0.05320679995929822,
+            "stages": {
+              "query_understanding": 0.00011690001701936126,
+              "structure_filter": 0.00556339998729527,
+              "snapshot": 0.02315020002424717,
+              "vector_retrieval": 0.0004138000076636672,
+              "keyword_retrieval": 0.015138599963393062,
+              "rank_fusion": 0.002191700041294098,
+              "relation_lookup": 0.0026013999595306814,
+              "source_validation": 0.00402849999954924
+            }
+          },
+          {
+            "total_seconds": 0.06348919996526092,
+            "stages": {
+              "query_understanding": 0.00013280002167448401,
+              "structure_filter": 0.005772600008640438,
+              "snapshot": 0.032418199989479035,
+              "vector_retrieval": 0.00044299999717622995,
+              "keyword_retrieval": 0.01533460000064224,
+              "rank_fusion": 0.0021635000011883676,
+              "relation_lookup": 0.0027834000065922737,
+              "source_validation": 0.004438299976754934
+            }
+          },
+          {
+            "total_seconds": 0.054234799987170845,
+            "stages": {
+              "query_understanding": 0.00013040000339969993,
+              "structure_filter": 0.005892599991057068,
+              "snapshot": 0.023796299996320158,
+              "vector_retrieval": 0.00043650000588968396,
+              "keyword_retrieval": 0.015091400011442602,
+              "rank_fusion": 0.0021388999884948134,
+              "relation_lookup": 0.0028232000186108053,
+              "source_validation": 0.003922100004274398
+            }
+          }
+        ],
+        "median_total_seconds": 0.05396019999170676,
+        "stages_median_seconds": {
+          "keyword_retrieval": 0.015091400011442602,
+          "query_understanding": 0.00013050000416114926,
+          "rank_fusion": 0.0021388999884948134,
+          "relation_lookup": 0.0026013999595306814,
+          "snapshot": 0.023796299996320158,
+          "source_validation": 0.003922100004274398,
+          "structure_filter": 0.005772600008640438,
+          "vector_retrieval": 0.00042339996434748173
+        },
+        "digest": "f78f1557074fc6ddc229eddbca8aa6bb1d45d32c86e221af6e279724eb4ce10d",
+        "memory": {
+          "rss_mib": 71.5390625,
+          "peak_rss_mib": 80.265625
+        },
+        "retained_vector_bytes": 3932160
+      },
+      "count": 1000,
+      "scope": "search"
+    },
+    {
+      "mode": "cpp",
+      "initial_memory": {
+        "rss_mib": 54.90234375,
+        "peak_rss_mib": 54.90234375
+      },
+      "all": {
+        "first_seconds": 0.0517155000125058,
+        "median_seconds": 0.04240179999032989,
+        "max_seconds": 0.0425816000206396,
+        "samples_seconds": [
+          0.04203000001143664,
+          0.0425816000206396,
+          0.04257709998637438,
+          0.04185079998569563,
+          0.04240179999032989
+        ],
+        "memory": {
+          "rss_mib": 70.25,
+          "peak_rss_mib": 79.859375
+        },
+        "digest": "f78f1557074fc6ddc229eddbca8aa6bb1d45d32c86e221af6e279724eb4ce10d"
+      },
+      "date_filtered": {
+        "first_seconds": 0.0437159999855794,
+        "median_seconds": 0.03477299999212846,
+        "max_seconds": 0.03612930001690984,
+        "samples_seconds": [
+          0.03430250001838431,
+          0.03477299999212846,
+          0.034394499962218106,
+          0.03612930001690984,
+          0.035815599956549704
+        ],
+        "memory": {
+          "rss_mib": 67.72265625,
+          "peak_rss_mib": 79.859375
+        },
+        "digest": "87bdae917d762435802e4044bb7ad28c7f9d30401b767a35d8c505c1a3f826bc"
+      },
+      "stages": {
+        "samples": [
+          {
+            "total_seconds": 0.041135800012853,
+            "stages": {
+              "query_understanding": 0.00011959997937083244,
+              "structure_filter": 0.005468400020617992,
+              "snapshot": 0.022820200014393777,
+              "vector_retrieval": 0.00046499999007210135,
+              "keyword_retrieval": 0.004627799964509904,
+              "rank_fusion": 0.0018272000015713274,
+              "relation_lookup": 0.0024225999950431287,
+              "source_validation": 0.003381800022907555
+            }
+          },
+          {
+            "total_seconds": 0.042742100020404905,
+            "stages": {
+              "query_understanding": 0.00012560002505779266,
+              "structure_filter": 0.006035699974745512,
+              "snapshot": 0.023257200024090707,
+              "vector_retrieval": 0.0004040999920107424,
+              "keyword_retrieval": 0.004552399972453713,
+              "rank_fusion": 0.0017707000370137393,
+              "relation_lookup": 0.0025677999947220087,
+              "source_validation": 0.004026099981274456
+            }
+          },
+          {
+            "total_seconds": 0.04143899999326095,
+            "stages": {
+              "query_understanding": 0.00012430001515895128,
+              "structure_filter": 0.0055324999848380685,
+              "snapshot": 0.02271889999974519,
+              "vector_retrieval": 0.0003997000167146325,
+              "keyword_retrieval": 0.004630299983546138,
+              "rank_fusion": 0.0019672999624162912,
+              "relation_lookup": 0.0025754000525921583,
+              "source_validation": 0.0034873999538831413
+            }
+          },
+          {
+            "total_seconds": 0.04966020002029836,
+            "stages": {
+              "query_understanding": 0.0001221999991685152,
+              "structure_filter": 0.00564639997901395,
+              "snapshot": 0.031090800010133535,
+              "vector_retrieval": 0.00048069999320432544,
+              "keyword_retrieval": 0.00444180000340566,
+              "rank_fusion": 0.001922000024933368,
+              "relation_lookup": 0.002417699957732111,
+              "source_validation": 0.0035366000374779105
+            }
+          },
+          {
+            "total_seconds": 0.04172159999143332,
+            "stages": {
+              "query_understanding": 0.00011779996566474438,
+              "structure_filter": 0.005570000037550926,
+              "snapshot": 0.022697400010656565,
+              "vector_retrieval": 0.00039060000563040376,
+              "keyword_retrieval": 0.004681099962908775,
+              "rank_fusion": 0.0018407999887131155,
+              "relation_lookup": 0.002487200021278113,
+              "source_validation": 0.003934299980755895
+            }
+          }
+        ],
+        "median_total_seconds": 0.04172159999143332,
+        "stages_median_seconds": {
+          "keyword_retrieval": 0.004627799964509904,
+          "query_understanding": 0.0001221999991685152,
+          "rank_fusion": 0.0018407999887131155,
+          "relation_lookup": 0.002487200021278113,
+          "snapshot": 0.022820200014393777,
+          "source_validation": 0.0035366000374779105,
+          "structure_filter": 0.005570000037550926,
+          "vector_retrieval": 0.0004040999920107424
+        },
+        "digest": "f78f1557074fc6ddc229eddbca8aa6bb1d45d32c86e221af6e279724eb4ce10d",
+        "memory": {
+          "rss_mib": 71.6015625,
+          "peak_rss_mib": 80.31640625
+        },
+        "retained_vector_bytes": 3932160
+      },
+      "count": 1000,
+      "scope": "search"
+    },
+    {
+      "mode": "python",
+      "initial_memory": {
+        "rss_mib": 55.30859375,
+        "peak_rss_mib": 55.30859375
+      },
+      "normal": {
+        "first_seconds": 0.14594100002432242,
+        "median_seconds": 0.14864530001068488,
+        "max_seconds": 0.18635539995739236,
+        "samples_seconds": [
+          0.15016730001661927,
+          0.14702800003578886,
+          0.14820029999827966,
+          0.14864530001068488,
+          0.18635539995739236
+        ],
+        "memory": {
+          "rss_mib": 214.16015625,
+          "peak_rss_mib": 214.16015625
+        },
+        "digest": "dd0debc0ac88d7fe6a4337e0827cc4de3907f06394285d4195374ba20fe66082",
+        "rows": 9600,
+        "hits": 38400
+      },
+      "many_terms": {
+        "first_seconds": 0.3980100000044331,
+        "median_seconds": 0.40307250001933426,
+        "max_seconds": 0.45947719999821857,
+        "samples_seconds": [
+          0.40307250001933426,
+          0.4014110999996774,
+          0.40281319996574894,
+          0.45947719999821857,
+          0.41318049997789785
+        ],
+        "memory": {
+          "rss_mib": 227.78515625,
+          "peak_rss_mib": 227.78515625
+        },
+        "digest": "dd0debc0ac88d7fe6a4337e0827cc4de3907f06394285d4195374ba20fe66082",
+        "rows": 9600,
+        "hits": 38400
+      },
+      "count": 10000,
+      "scope": "matching"
+    },
+    {
+      "mode": "cpp",
+      "initial_memory": {
+        "rss_mib": 54.96875,
+        "peak_rss_mib": 54.96875
+      },
+      "normal": {
+        "first_seconds": 0.041739100008271635,
+        "median_seconds": 0.040787699981592596,
+        "max_seconds": 0.07856310001807287,
+        "samples_seconds": [
+          0.040787699981592596,
+          0.03841209999518469,
+          0.04025249998085201,
+          0.04580949997762218,
+          0.07856310001807287
+        ],
+        "memory": {
+          "rss_mib": 215.16015625,
+          "peak_rss_mib": 215.16015625
+        },
+        "digest": "dd0debc0ac88d7fe6a4337e0827cc4de3907f06394285d4195374ba20fe66082",
+        "rows": 9600,
+        "hits": 38400
+      },
+      "many_terms": {
+        "first_seconds": 0.051564999972470105,
+        "median_seconds": 0.052308800048194826,
+        "max_seconds": 0.09760500001721084,
+        "samples_seconds": [
+          0.05352610000409186,
+          0.05158499995013699,
+          0.052308800048194826,
+          0.051264100009575486,
+          0.09760500001721084
+        ],
+        "memory": {
+          "rss_mib": 228.75390625,
+          "peak_rss_mib": 228.75390625
+        },
+        "digest": "dd0debc0ac88d7fe6a4337e0827cc4de3907f06394285d4195374ba20fe66082",
+        "rows": 9600,
+        "hits": 38400
+      },
+      "count": 10000,
+      "scope": "matching"
+    },
+    {
+      "mode": "python",
+      "initial_memory": {
+        "rss_mib": 54.9296875,
+        "peak_rss_mib": 54.9296875
+      },
+      "all": {
+        "first_seconds": 0.5536495000123978,
+        "median_seconds": 0.504893200006336,
+        "max_seconds": 0.5149833000032231,
+        "samples_seconds": [
+          0.5149833000032231,
+          0.5022099999478087,
+          0.504893200006336,
+          0.5079585000057705,
+          0.504184199962765
+        ],
+        "memory": {
+          "rss_mib": 135.91015625,
+          "peak_rss_mib": 263.72265625
+        },
+        "digest": "127b7d583fbf8b69cd815ad7346ae227a9f92357c37e56b07bd3e8b1960dcbcd"
+      },
+      "date_filtered": {
+        "first_seconds": 0.33244239998748526,
+        "median_seconds": 0.3238772999611683,
+        "max_seconds": 0.32621909998124465,
+        "samples_seconds": [
+          0.32621909998124465,
+          0.3238772999611683,
+          0.3221336000133306,
+          0.3211042999755591,
+          0.3252568999887444
+        ],
+        "memory": {
+          "rss_mib": 118.16015625,
+          "peak_rss_mib": 263.72265625
+        },
+        "digest": "e4d08dfdb4ce15ed9f177d67dc72e6cfe6273ec78a19a5ad95b87b59c803b92c"
+      },
+      "stages": {
+        "samples": [
+          {
+            "total_seconds": 0.49359010002808645,
+            "stages": {
+              "query_understanding": 0.0001382000045850873,
+              "structure_filter": 0.06427840003743768,
+              "snapshot": 0.22820979997050017,
+              "vector_retrieval": 0.002954100025817752,
+              "keyword_retrieval": 0.16070979996584356,
+              "rank_fusion": 0.010944999987259507,
+              "relation_lookup": 0.0025538000045344234,
+              "source_validation": 0.02379480004310608
+            }
+          },
+          {
+            "total_seconds": 0.4894664000021294,
+            "stages": {
+              "query_understanding": 0.00013179995585232973,
+              "structure_filter": 0.06399400002555922,
+              "snapshot": 0.22596180002437904,
+              "vector_retrieval": 0.0027262999792583287,
+              "keyword_retrieval": 0.16074010002193972,
+              "rank_fusion": 0.00954149995232001,
+              "relation_lookup": 0.0027003000141121447,
+              "source_validation": 0.02366589999292046
+            }
+          },
+          {
+            "total_seconds": 0.4883607000228949,
+            "stages": {
+              "query_understanding": 0.00013419997412711382,
+              "structure_filter": 0.06649450003169477,
+              "snapshot": 0.22186609997879714,
+              "vector_retrieval": 0.0026132999919354916,
+              "keyword_retrieval": 0.15976359997875988,
+              "rank_fusion": 0.011087200022302568,
+              "relation_lookup": 0.0025713000213727355,
+              "source_validation": 0.023826499993447214
+            }
+          },
+          {
+            "total_seconds": 0.4864178999559954,
+            "stages": {
+              "query_understanding": 0.00015199999324977398,
+              "structure_filter": 0.0640086000203155,
+              "snapshot": 0.22335190000012517,
+              "vector_retrieval": 0.002692999958526343,
+              "keyword_retrieval": 0.15972570003941655,
+              "rank_fusion": 0.010723399987909943,
+              "relation_lookup": 0.00274089997401461,
+              "source_validation": 0.023017100000288337
+            }
+          },
+          {
+            "total_seconds": 0.529502900026273,
+            "stages": {
+              "query_understanding": 0.00015390000771731138,
+              "structure_filter": 0.06629479996627197,
+              "snapshot": 0.22696360002737492,
+              "vector_retrieval": 0.002764300035778433,
+              "keyword_retrieval": 0.15950909996172413,
+              "rank_fusion": 0.04815200000302866,
+              "relation_lookup": 0.0024956000270321965,
+              "source_validation": 0.023164600017480552
+            }
+          }
+        ],
+        "median_total_seconds": 0.4894664000021294,
+        "stages_median_seconds": {
+          "keyword_retrieval": 0.15976359997875988,
+          "query_understanding": 0.0001382000045850873,
+          "rank_fusion": 0.010944999987259507,
+          "relation_lookup": 0.0025713000213727355,
+          "snapshot": 0.22596180002437904,
+          "source_validation": 0.02366589999292046,
+          "structure_filter": 0.06427840003743768,
+          "vector_retrieval": 0.0027262999792583287
+        },
+        "digest": "127b7d583fbf8b69cd815ad7346ae227a9f92357c37e56b07bd3e8b1960dcbcd",
+        "memory": {
+          "rss_mib": 182.2421875,
+          "peak_rss_mib": 280.27734375
+        },
+        "retained_vector_bytes": 39321600
+      },
+      "count": 10000,
+      "scope": "search"
+    },
+    {
+      "mode": "cpp",
+      "initial_memory": {
+        "rss_mib": 54.96875,
+        "peak_rss_mib": 54.96875
+      },
+      "all": {
+        "first_seconds": 0.4653219999745488,
+        "median_seconds": 0.4000009000301361,
+        "max_seconds": 0.4148589000105858,
+        "samples_seconds": [
+          0.4148589000105858,
+          0.4000009000301361,
+          0.39911630004644394,
+          0.40149790002033114,
+          0.39916979998815805
+        ],
+        "memory": {
+          "rss_mib": 133.76171875,
+          "peak_rss_mib": 263.39453125
+        },
+        "digest": "127b7d583fbf8b69cd815ad7346ae227a9f92357c37e56b07bd3e8b1960dcbcd"
+      },
+      "date_filtered": {
+        "first_seconds": 0.33688630000688136,
+        "median_seconds": 0.3249278999865055,
+        "max_seconds": 0.33691209997050464,
+        "samples_seconds": [
+          0.32658450002782047,
+          0.3201593999983743,
+          0.33691209997050464,
+          0.3249278999865055,
+          0.3187208999879658
+        ],
+        "memory": {
+          "rss_mib": 117.7109375,
+          "peak_rss_mib": 263.39453125
+        },
+        "digest": "e4d08dfdb4ce15ed9f177d67dc72e6cfe6273ec78a19a5ad95b87b59c803b92c"
+      },
+      "stages": {
+        "samples": [
+          {
+            "total_seconds": 0.39250080002238974,
+            "stages": {
+              "query_understanding": 0.00015430001076310873,
+              "structure_filter": 0.0617490999866277,
+              "snapshot": 0.2359695000341162,
+              "vector_retrieval": 0.002604299981612712,
+              "keyword_retrieval": 0.05392019997816533,
+              "rank_fusion": 0.010756200004834682,
+              "relation_lookup": 0.002854800026398152,
+              "source_validation": 0.024485300004016608
+            }
+          },
+          {
+            "total_seconds": 0.38609660003567114,
+            "stages": {
+              "query_understanding": 0.00013449997641146183,
+              "structure_filter": 0.06586470000911504,
+              "snapshot": 0.2279273999738507,
+              "vector_retrieval": 0.002603700035251677,
+              "keyword_retrieval": 0.0533523999620229,
+              "rank_fusion": 0.010143799998331815,
+              "relation_lookup": 0.0024116000276990235,
+              "source_validation": 0.023654200020246208
+            }
+          },
+          {
+            "total_seconds": 0.38256119994912297,
+            "stages": {
+              "query_understanding": 0.00013539998326450586,
+              "structure_filter": 0.06282350001856685,
+              "snapshot": 0.2259044999955222,
+              "vector_retrieval": 0.0025563000235706568,
+              "keyword_retrieval": 0.0535822999663651,
+              "rank_fusion": 0.011188200034666806,
+              "relation_lookup": 0.0031529999687336385,
+              "source_validation": 0.023214199987705797
+            }
+          },
+          {
+            "total_seconds": 0.38361419999273494,
+            "stages": {
+              "query_understanding": 0.0001412000274285674,
+              "structure_filter": 0.06439899996621534,
+              "snapshot": 0.22459739999612793,
+              "vector_retrieval": 0.0025730000343173742,
+              "keyword_retrieval": 0.054406499955803156,
+              "rank_fusion": 0.010988100024405867,
+              "relation_lookup": 0.0024055999820120633,
+              "source_validation": 0.024099500034935772
+            }
+          },
+          {
+            "total_seconds": 0.38212490000296384,
+            "stages": {
+              "query_understanding": 0.00014210003428161144,
+              "structure_filter": 0.06632059992989525,
+              "snapshot": 0.22339600004488602,
+              "vector_retrieval": 0.002977799973450601,
+              "keyword_retrieval": 0.05251990002579987,
+              "rank_fusion": 0.010921699984464794,
+              "relation_lookup": 0.002480100025422871,
+              "source_validation": 0.023362300009466708
+            }
+          }
+        ],
+        "median_total_seconds": 0.38361419999273494,
+        "stages_median_seconds": {
+          "keyword_retrieval": 0.0535822999663651,
+          "query_understanding": 0.0001412000274285674,
+          "rank_fusion": 0.010921699984464794,
+          "relation_lookup": 0.002480100025422871,
+          "snapshot": 0.2259044999955222,
+          "source_validation": 0.023654200020246208,
+          "structure_filter": 0.06439899996621534,
+          "vector_retrieval": 0.002603700035251677
+        },
+        "digest": "127b7d583fbf8b69cd815ad7346ae227a9f92357c37e56b07bd3e8b1960dcbcd",
+        "memory": {
+          "rss_mib": 184.984375,
+          "peak_rss_mib": 280.09765625
+        },
+        "retained_vector_bytes": 39321600
+      },
+      "count": 10000,
+      "scope": "search"
+    },
+    {
+      "mode": "python",
+      "initial_memory": {
+        "rss_mib": 55.19921875,
+        "peak_rss_mib": 55.19921875
+      },
+      "normal": {
+        "first_seconds": 0.37536180001916364,
+        "median_seconds": 0.3824571999721229,
+        "max_seconds": 0.4602619000361301,
+        "samples_seconds": [
+          0.4602619000361301,
+          0.37071450002258644,
+          0.37239520001458004,
+          0.45662750001065433,
+          0.3824571999721229
+        ],
+        "memory": {
+          "rss_mib": 440.12109375,
+          "peak_rss_mib": 446.12109375
+        },
+        "digest": "f63954fdcb2cb9e5413b0e05d2236e5030e7da7a2692aff66366faea36acb1db",
+        "rows": 24000,
+        "hits": 96000
+      },
+      "many_terms": {
+        "first_seconds": 1.1114480000105686,
+        "median_seconds": 1.058971999969799,
+        "max_seconds": 1.1520712999626994,
+        "samples_seconds": [
+          1.058971999969799,
+          1.1342636999906972,
+          1.0432639000355266,
+          1.1520712999626994,
+          1.0305899999802932
+        ],
+        "memory": {
+          "rss_mib": 478.5703125,
+          "peak_rss_mib": 479.5703125
+        },
+        "digest": "f63954fdcb2cb9e5413b0e05d2236e5030e7da7a2692aff66366faea36acb1db",
+        "rows": 24000,
+        "hits": 96000
+      },
+      "count": 25000,
+      "scope": "matching"
+    },
+    {
+      "mode": "cpp",
+      "initial_memory": {
+        "rss_mib": 55.03125,
+        "peak_rss_mib": 55.03125
+      },
+      "normal": {
+        "first_seconds": 0.1057831000071019,
+        "median_seconds": 0.10976179997669533,
+        "max_seconds": 0.1861174000077881,
+        "samples_seconds": [
+          0.1861174000077881,
+          0.10279989999253303,
+          0.10976179997669533,
+          0.18053160002455115,
+          0.10716720001073554
+        ],
+        "memory": {
+          "rss_mib": 441.44140625,
+          "peak_rss_mib": 447.44140625
+        },
+        "digest": "f63954fdcb2cb9e5413b0e05d2236e5030e7da7a2692aff66366faea36acb1db",
+        "rows": 24000,
+        "hits": 96000
+      },
+      "many_terms": {
+        "first_seconds": 0.2420154000283219,
+        "median_seconds": 0.1697271000011824,
+        "max_seconds": 0.28129539999645203,
+        "samples_seconds": [
+          0.1697271000011824,
+          0.2674135999986902,
+          0.16817909997189417,
+          0.28129539999645203,
+          0.16710800002329051
+        ],
+        "memory": {
+          "rss_mib": 479.69140625,
+          "peak_rss_mib": 480.69140625
+        },
+        "digest": "f63954fdcb2cb9e5413b0e05d2236e5030e7da7a2692aff66366faea36acb1db",
+        "rows": 24000,
+        "hits": 96000
+      },
+      "count": 25000,
+      "scope": "matching"
+    },
+    {
+      "mode": "python",
+      "initial_memory": {
+        "rss_mib": 55.05078125,
+        "peak_rss_mib": 55.05078125
+      },
+      "all": {
+        "first_seconds": 1.4464395000250079,
+        "median_seconds": 1.462017800018657,
+        "max_seconds": 1.5168624999932945,
+        "samples_seconds": [
+          1.462017800018657,
+          1.4842115000355989,
+          1.4429619000293314,
+          1.450115600018762,
+          1.5168624999932945
+        ],
+        "memory": {
+          "rss_mib": 101.42578125,
+          "peak_rss_mib": 591.03125
+        },
+        "digest": "4e737e1704e4e1dc92a6eccf6bdb5b90789a0310abe50b2c2e5082c0e1823c82"
+      },
+      "date_filtered": {
+        "first_seconds": 0.9091047000256367,
+        "median_seconds": 0.9115117999608628,
+        "max_seconds": 0.9363888999796472,
+        "samples_seconds": [
+          0.9363888999796472,
+          0.8790405000327155,
+          0.9123939000419341,
+          0.8637213999754749,
+          0.9115117999608628
+        ],
+        "memory": {
+          "rss_mib": 139.81640625,
+          "peak_rss_mib": 591.03125
+        },
+        "digest": "80c2f3eed96c0059b1f6f80377f6c9e2526ac7ac224cee0f330cda418f81027e"
+      },
+      "stages": {
+        "samples": [
+          {
+            "total_seconds": 1.4828170000109822,
+            "stages": {
+              "query_understanding": 0.0001401000190526247,
+              "structure_filter": 0.22303549997741356,
+              "snapshot": 0.5929123000241816,
+              "vector_retrieval": 0.13800350000383332,
+              "keyword_retrieval": 0.42970639996929094,
+              "rank_fusion": 0.02521819999674335,
+              "relation_lookup": 0.002758299990091473,
+              "source_validation": 0.07103680004365742
+            }
+          },
+          {
+            "total_seconds": 1.5136081000091508,
+            "stages": {
+              "query_understanding": 0.00013619998935610056,
+              "structure_filter": 0.16019999998388812,
+              "snapshot": 0.6223540999926627,
+              "vector_retrieval": 0.13736640004208311,
+              "keyword_retrieval": 0.4996891999617219,
+              "rank_fusion": 0.02466450002975762,
+              "relation_lookup": 0.0026094000204466283,
+              "source_validation": 0.06658419995801523
+            }
+          },
+          {
+            "total_seconds": 1.4637327999807894,
+            "stages": {
+              "query_understanding": 0.00014219997683539987,
+              "structure_filter": 0.1622745000058785,
+              "snapshot": 0.6402398999780416,
+              "vector_retrieval": 0.13484360004076734,
+              "keyword_retrieval": 0.4310956999543123,
+              "rank_fusion": 0.02533550001680851,
+              "relation_lookup": 0.0025080000050365925,
+              "source_validation": 0.0672894999734126
+            }
+          },
+          {
+            "total_seconds": 1.4894622000283562,
+            "stages": {
+              "query_understanding": 0.00014600000577047467,
+              "structure_filter": 0.16370490001281723,
+              "snapshot": 0.605089999968186,
+              "vector_retrieval": 0.13492510002106428,
+              "keyword_retrieval": 0.492520899977535,
+              "rank_fusion": 0.024123899987898767,
+              "relation_lookup": 0.002729700005147606,
+              "source_validation": 0.0662177000194788
+            }
+          },
+          {
+            "total_seconds": 1.5223899999982677,
+            "stages": {
+              "query_understanding": 0.00013259996194392443,
+              "structure_filter": 0.158862600044813,
+              "snapshot": 0.6141291999956593,
+              "vector_retrieval": 0.13460869999835268,
+              "keyword_retrieval": 0.5151249999762513,
+              "rank_fusion": 0.02591630001552403,
+              "relation_lookup": 0.0026156000094488263,
+              "source_validation": 0.07099599996581674
+            }
+          }
+        ],
+        "median_total_seconds": 1.4894622000283562,
+        "stages_median_seconds": {
+          "keyword_retrieval": 0.492520899977535,
+          "query_understanding": 0.0001401000190526247,
+          "rank_fusion": 0.02521819999674335,
+          "relation_lookup": 0.0026156000094488263,
+          "snapshot": 0.6141291999956593,
+          "source_validation": 0.0672894999734126,
+          "structure_filter": 0.1622745000058785,
+          "vector_retrieval": 0.13492510002106428
+        },
+        "digest": "4e737e1704e4e1dc92a6eccf6bdb5b90789a0310abe50b2c2e5082c0e1823c82",
+        "memory": {
+          "rss_mib": 161.0078125,
+          "peak_rss_mib": 625.16796875
+        },
+        "retained_vector_bytes": 0
+      },
+      "count": 25000,
+      "scope": "search"
+    },
+    {
+      "mode": "cpp",
+      "initial_memory": {
+        "rss_mib": 55.16015625,
+        "peak_rss_mib": 55.16015625
+      },
+      "all": {
+        "first_seconds": 1.2276971999672242,
+        "median_seconds": 1.3356792000122368,
+        "max_seconds": 1.402908899995964,
+        "samples_seconds": [
+          1.2230792000191286,
+          1.337807400035672,
+          1.3356792000122368,
+          1.402908899995964,
+          1.3174675999907777
+        ],
+        "memory": {
+          "rss_mib": 107.40234375,
+          "peak_rss_mib": 591.63671875
+        },
+        "digest": "4e737e1704e4e1dc92a6eccf6bdb5b90789a0310abe50b2c2e5082c0e1823c82"
+      },
+      "date_filtered": {
+        "first_seconds": 0.9097697000252083,
+        "median_seconds": 0.8939012000337243,
+        "max_seconds": 0.9001054000109434,
+        "samples_seconds": [
+          0.8939012000337243,
+          0.8509718000423163,
+          0.9001054000109434,
+          0.8592201999854296,
+          0.8939619000302628
+        ],
+        "memory": {
+          "rss_mib": 140.08203125,
+          "peak_rss_mib": 591.63671875
+        },
+        "digest": "80c2f3eed96c0059b1f6f80377f6c9e2526ac7ac224cee0f330cda418f81027e"
+      },
+      "stages": {
+        "samples": [
+          {
+            "total_seconds": 1.2060251000220887,
+            "stages": {
+              "query_understanding": 0.0001406000228598714,
+              "structure_filter": 0.16354410001076758,
+              "snapshot": 0.6037643000017852,
+              "vector_retrieval": 0.13378400000510737,
+              "keyword_retrieval": 0.21036309999180958,
+              "rank_fusion": 0.025331799988634884,
+              "relation_lookup": 0.0025693000061437488,
+              "source_validation": 0.06652260001283139
+            }
+          },
+          {
+            "total_seconds": 1.2498051000293344,
+            "stages": {
+              "query_understanding": 0.00014659995213150978,
+              "structure_filter": 0.16265429998748004,
+              "snapshot": 0.6300795000279322,
+              "vector_retrieval": 0.13499460002640262,
+              "keyword_retrieval": 0.2257136999978684,
+              "rank_fusion": 0.024922599957790226,
+              "relation_lookup": 0.0027553000254556537,
+              "source_validation": 0.06853340001543984
+            }
+          },
+          {
+            "total_seconds": 1.2107425999711268,
+            "stages": {
+              "query_understanding": 0.00013940001372247934,
+              "structure_filter": 0.16354099998716265,
+              "snapshot": 0.6524576999945566,
+              "vector_retrieval": 0.13365149998571724,
+              "keyword_retrieval": 0.15687950002029538,
+              "rank_fusion": 0.02897699997993186,
+              "relation_lookup": 0.002781400049570948,
+              "source_validation": 0.07231089996639639
+            }
+          },
+          {
+            "total_seconds": 1.2249655000050552,
+            "stages": {
+              "query_understanding": 0.00013599998783320189,
+              "structure_filter": 0.1644718000316061,
+              "snapshot": 0.6126021999516524,
+              "vector_retrieval": 0.14011420001043007,
+              "keyword_retrieval": 0.2126181999919936,
+              "rank_fusion": 0.0244731999700889,
+              "relation_lookup": 0.0030326000414788723,
+              "source_validation": 0.06751249998342246
+            }
+          },
+          {
+            "total_seconds": 1.3182501000119373,
+            "stages": {
+              "query_understanding": 0.00015169999096542597,
+              "structure_filter": 0.16821600002003834,
+              "snapshot": 0.6825339000206441,
+              "vector_retrieval": 0.15297349996399134,
+              "keyword_retrieval": 0.14451780001400039,
+              "rank_fusion": 0.09877440001582727,
+              "relation_lookup": 0.0026993000064976513,
+              "source_validation": 0.06837890000315383
+            }
+          }
+        ],
+        "median_total_seconds": 1.2249655000050552,
+        "stages_median_seconds": {
+          "keyword_retrieval": 0.21036309999180958,
+          "query_understanding": 0.0001406000228598714,
+          "rank_fusion": 0.025331799988634884,
+          "relation_lookup": 0.0027553000254556537,
+          "snapshot": 0.6300795000279322,
+          "source_validation": 0.06837890000315383,
+          "structure_filter": 0.16354410001076758,
+          "vector_retrieval": 0.13499460002640262
+        },
+        "digest": "4e737e1704e4e1dc92a6eccf6bdb5b90789a0310abe50b2c2e5082c0e1823c82",
+        "memory": {
+          "rss_mib": 161.55859375,
+          "peak_rss_mib": 626.14453125
+        },
+        "retained_vector_bytes": 0
+      },
+      "count": 25000,
+      "scope": "search"
+    }
+  ],
+  "criteria": {
+    "matching_median_reduction_at_least": 0.2,
+    "search_median_reduction_at_least": 0.1,
+    "max_peak_memory_increase_mib": 10,
+    "exact_equality_required": true
+  },
+  "paired_25000": [
+    {
+      "iteration": 0,
+      "mode": "python",
+      "seconds": 1.4637695999699645,
+      "digest": "4e737e1704e4e1dc92a6eccf6bdb5b90789a0310abe50b2c2e5082c0e1823c82",
+      "memory": {
+        "rss_mib": 95.66015625,
+        "peak_rss_mib": 572.3984375
+      }
+    },
+    {
+      "iteration": 0,
+      "mode": "cpp",
+      "seconds": 1.1503679999732412,
+      "digest": "4e737e1704e4e1dc92a6eccf6bdb5b90789a0310abe50b2c2e5082c0e1823c82",
+      "memory": {
+        "rss_mib": 98.640625,
+        "peak_rss_mib": 580.85546875
+      }
+    },
+    {
+      "iteration": 1,
+      "mode": "cpp",
+      "seconds": 1.1788480000104755,
+      "digest": "4e737e1704e4e1dc92a6eccf6bdb5b90789a0310abe50b2c2e5082c0e1823c82",
+      "memory": {
+        "rss_mib": 106.22265625,
+        "peak_rss_mib": 581.15625
+      }
+    },
+    {
+      "iteration": 1,
+      "mode": "python",
+      "seconds": 1.4829106000252068,
+      "digest": "4e737e1704e4e1dc92a6eccf6bdb5b90789a0310abe50b2c2e5082c0e1823c82",
+      "memory": {
+        "rss_mib": 111.79296875,
+        "peak_rss_mib": 591.19921875
+      }
+    },
+    {
+      "iteration": 2,
+      "mode": "python",
+      "seconds": 1.4492803000030108,
+      "digest": "4e737e1704e4e1dc92a6eccf6bdb5b90789a0310abe50b2c2e5082c0e1823c82",
+      "memory": {
+        "rss_mib": 116.171875,
+        "peak_rss_mib": 612.87890625
+      }
+    },
+    {
+      "iteration": 2,
+      "mode": "cpp",
+      "seconds": 1.1897135999752209,
+      "digest": "4e737e1704e4e1dc92a6eccf6bdb5b90789a0310abe50b2c2e5082c0e1823c82",
+      "memory": {
+        "rss_mib": 118.0859375,
+        "peak_rss_mib": 613.26171875
+      }
+    },
+    {
+      "iteration": 3,
+      "mode": "cpp",
+      "seconds": 1.1428352000075392,
+      "digest": "4e737e1704e4e1dc92a6eccf6bdb5b90789a0310abe50b2c2e5082c0e1823c82",
+      "memory": {
+        "rss_mib": 123.07421875,
+        "peak_rss_mib": 613.8203125
+      }
+    },
+    {
+      "iteration": 3,
+      "mode": "python",
+      "seconds": 1.4412430999800563,
+      "digest": "4e737e1704e4e1dc92a6eccf6bdb5b90789a0310abe50b2c2e5082c0e1823c82",
+      "memory": {
+        "rss_mib": 124.0625,
+        "peak_rss_mib": 613.8203125
+      }
+    },
+    {
+      "iteration": 4,
+      "mode": "python",
+      "seconds": 1.476022999966517,
+      "digest": "4e737e1704e4e1dc92a6eccf6bdb5b90789a0310abe50b2c2e5082c0e1823c82",
+      "memory": {
+        "rss_mib": 125.89453125,
+        "peak_rss_mib": 613.93359375
+      }
+    },
+    {
+      "iteration": 4,
+      "mode": "cpp",
+      "seconds": 1.1513580000028014,
+      "digest": "4e737e1704e4e1dc92a6eccf6bdb5b90789a0310abe50b2c2e5082c0e1823c82",
+      "memory": {
+        "rss_mib": 130.13671875,
+        "peak_rss_mib": 613.93359375
+      }
+    }
+  ],
+  "manifest": {
+    "date": "2026-10-19",
+    "branch": "codex/cpu-gpu-performance",
+    "python": "3.14.8 (tags/v3.14.8:8e6e75d, Sep 30 2026, 18:19:33) [MSC v.1944 64 bit (AMD64)]",
+    "cpu": "Intel Core i7-13700",
+    "ram_gib": 16,
+    "models": "deterministic stubs; no inference/HTTP",
+    "compiler": {
+      "tarball": "https://ziglang.org/download/0.15.2/zig-x86_64-windows-0.15.2.zip",
+      "shasum": "3a0ed1e8799a2f8ce2a6e6290a9ff22e6906f8227865911fb7ddedc3cc14cb0c",
+      "size": "92614574"
+    },
+    "build": {
+      "command": [
+        "C:\\development\\Personal-Memory-Agent\\.local\\cpp-toolchain\\zig-x86_64-windows-0.15.2\\zig.exe",
+        "c++",
+        "-std=c++17",
+        "-O3",
+        "-shared",
+        "-target",
+        "x86_64-windows-gnu",
+        "-I",
+        "c:\\Users\\myway\\AppData\\Local\\Python\\pythoncore-3.14-64\\Include",
+        "C:\\development\\Personal-Memory-Agent\\native\\keyword_match.cpp",
+        "c:\\Users\\myway\\AppData\\Local\\Python\\pythoncore-3.14-64\\libs\\python314.lib",
+        "-o",
+        "C:\\development\\Personal-Memory-Agent\\.local\\native-keyword\\_keyword_native.cp314-win_amd64.pyd"
+      ],
+      "python": "3.14.8 (tags/v3.14.8:8e6e75d, Sep 30 2026, 18:19:33) [MSC v.1944 64 bit (AMD64)]",
+      "output": "C:\\development\\Personal-Memory-Agent\\.local\\native-keyword\\_keyword_native.cp314-win_amd64.pyd"
+    },
+    "samples": 5,
+    "warmup": 1,
+    "dimensions": 1024,
+    "compiled_native_installed": true,
+    "sources": {
+      "native/keyword_match.cpp": {
+        "bytes": 8139,
+        "sha256": "76b403569acdf43e45031f67824814ded4a2f7ab6f8d4f65b72dbbbd2e094e85"
+      },
+      "pma/search_explain.py": {
+        "bytes": 10826,
+        "sha256": "7cad7f369b351c3c63b58b67d5e3e8fe85ef5c133cd37be95b9a586256541f81"
+      },
+      "pma/service.py": {
+        "bytes": 41834,
+        "sha256": "3a54d305d373bb409aad136ab4446e0e0a8dceaefd8a9c3224bcb5395e55cf0f"
+      },
+      "evaluation/build_keyword_native.py": {
+        "bytes": 2230,
+        "sha256": "79ec763c60a708f7fa04574d98c8d73d00f5a96d23efdbb60465052a31824fa5"
+      },
+      "evaluation/native_keyword_benchmark.py": {
+        "bytes": 8158,
+        "sha256": "c4f95be6ab44408834b5a50d88d9cbb0e232a6bd7a64eb66e74507cc114a663e"
+      },
+      "pma/_keyword_native.cp314-win_amd64.pyd": {
+        "bytes": 350720,
+        "sha256": "89ecaadb9e90aca9060ecb56d4cfeb240d0f38fefd621e57f920095d2e90efa8"
+      }
+    },
+    "delivery_tool_hashes": {
+      "evaluation/native_keyword_benchmark.py": "a032eb8c7f2c5161a1bf9a587ddc766d20221045feba79dd1cd359158b4f04da",
+      "evaluation/build_keyword_native.py": "79ec763c60a708f7fa04574d98c8d73d00f5a96d23efdbb60465052a31824fa5",
+      "tests/test_native_keyword.py": "9a7c70f090628bf5fda4bdfa58470926bad92f730fe9bb66df1aa009a5db7d38"
+    }
+  },
+  "adoption": {
+    "adopted": true,
+    "optional": true,
+    "python_fallback": true,
+    "min_matching_reduction": 0.7130089328042568,
+    "paired_full_search_reduction": 0.21342949052472027,
+    "max_fresh_process_peak_increase_mib": 1.3203125,
+    "first_independent_process_25000_reduction": 0.08641385898640086,
+    "caveat": "First independent-process 25k all-search reduction was below 10%; interleaved same-process confirmation passed. Date-filtered queries show little benefit."
+  },
+  "validation": {
+    "python_forced_tests": 198,
+    "cpp_auto_tests_before_final_loader_case": 197,
+    "native_quality_tests": 8,
+    "unicode_codepoints": 1114112,
+    "all_comparison_digests_equal": true,
+    "installed_binary_hash_matches_measured_binary": true,
+    "private_database_used": false,
+    "model_servers_changed": false,
+    "lint_passed": true,
+    "cpp_forced_tests": 198,
+    "cpp_forced_test_seconds": 14.69,
+    "python_forced_test_seconds": 14.84,
+    "warnings_per_full_run": 1,
+    "diff_check_passed": true
+  }
+}

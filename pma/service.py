@@ -67,6 +67,23 @@ class Service:
         self.vector_cache_bytes = 64 * 1024 * 1024
         self._vector_cache = None
         self._vector_cache_lock = threading.Lock()
+
+    def _candidate_matrix(self, generation, candidates):
+        key = (generation, self.settings.embedding_key, self.settings.embedding_dimensions,
+               tuple(row["id"] for row in candidates))
+        with self._vector_cache_lock:
+            if self._vector_cache is not None and self._vector_cache[0] == key:
+                return self._vector_cache[1]
+            # Release the old generation/subset before allocating a replacement.
+            self._vector_cache = None
+            matrix = np.stack([np.frombuffer(row["vector"], dtype="<f4") for row in candidates])
+            matrix = normalized_vectors(matrix, len(candidates), self.settings.embedding_dimensions)
+            # Include a conservative allowance for retained candidate identifiers.
+            if matrix.nbytes + len(candidates) * 128 <= self.vector_cache_bytes:
+                matrix.setflags(write=False)
+                self._vector_cache = (key, matrix)
+            return matrix
+
     def trace(self, stage, **data):
         capture("legacy", stage, data)
         if self.diagnostic_sink is not None:
@@ -104,7 +121,21 @@ class Service:
                 self.gate.release()
                 self.slot_condition.notify_all()
 
+    @contextmanager
+    def background_model_slot(self):
+        started = time.monotonic()
+        with self.model_slot(background=True):
+            self.processing_metric("model_wait", time.monotonic() - started)
+            yield
 
+    def processing_metric(self, stage, seconds=0, **counts):
+        status = self.processing_status
+        if status is None:
+            return
+        metrics = status.setdefault("performance", {})
+        metrics[stage + "_seconds"] = metrics.get(stage + "_seconds", 0) + seconds
+        for key, value in counts.items():
+            metrics[key] = metrics.get(key, 0) + value
 
     def start(self):
         self.store.expire()
@@ -663,6 +694,14 @@ class Service:
             self.trace("result", response=response)
             return response
 
+    def search_in_model_slot(self, question, filters=None, today=None, *,
+                             defer_limit=False, selection_question=None, correction_enabled=True):
+        """Search adapter for orchestrators already holding model_slot().
+
+        Does not acquire a second semaphore; uses exactly the public search core.
+        """
+        return self._search(question, filters, today, defer_limit=defer_limit,
+                            selection_question=selection_question, correction_enabled=correction_enabled)
 
     @traced_request
     def answer(self, question, filters=None, today=None, *, correction_enabled=True):
@@ -772,48 +811,3 @@ class Service:
             capture("begin", Stage.SOURCE_VALIDATION)
             self.store.assert_generation(generation)
             return {**found, **response}
-
-    def search_in_model_slot(self, question, filters=None, today=None, *,
-                             defer_limit=False, selection_question=None, correction_enabled=True):
-        """Search adapter for orchestrators already holding model_slot().
-
-        Does not acquire a second semaphore; uses exactly the public search core.
-        """
-        return self._search(question, filters, today, defer_limit=defer_limit,
-                            selection_question=selection_question, correction_enabled=correction_enabled)
-
-
-    @contextmanager
-    def background_model_slot(self):
-        started = time.monotonic()
-        with self.model_slot(background=True):
-            self.processing_metric("model_wait", time.monotonic() - started)
-            yield
-
-
-    def processing_metric(self, stage, seconds=0, **counts):
-        status = self.processing_status
-        if status is None:
-            return
-        metrics = status.setdefault("performance", {})
-        metrics[stage + "_seconds"] = metrics.get(stage + "_seconds", 0) + seconds
-        for key, value in counts.items():
-            metrics[key] = metrics.get(key, 0) + value
-
-
-    def _candidate_matrix(self, generation, candidates):
-        key = (generation, self.settings.embedding_key, self.settings.embedding_dimensions,
-               tuple(row["id"] for row in candidates))
-        with self._vector_cache_lock:
-            if self._vector_cache is not None and self._vector_cache[0] == key:
-                return self._vector_cache[1]
-            # Release the old generation/subset before allocating a replacement.
-            self._vector_cache = None
-            matrix = np.stack([np.frombuffer(row["vector"], dtype="<f4") for row in candidates])
-            matrix = normalized_vectors(matrix, len(candidates), self.settings.embedding_dimensions)
-            # Include a conservative allowance for retained candidate identifiers.
-            if matrix.nbytes + len(candidates) * 128 <= self.vector_cache_bytes:
-                matrix.setflags(write=False)
-                self._vector_cache = (key, matrix)
-            return matrix
-

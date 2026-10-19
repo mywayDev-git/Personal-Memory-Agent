@@ -125,8 +125,29 @@ def python_keyword_matches_batch(rows, terms, vocabulary):
     return [keyword_matches(row, terms, vocabulary, normalization_cache=cache) for row in rows]
 
 
+@lru_cache(maxsize=1)
+def _native_matcher():
+    try:
+        from . import _keyword_native as module
+        return module.match_batch if getattr(module, "TOKENIZER_VERSION", 0) == 1 else None
+    except (ImportError, OSError):
+        # The optional binary is interpreter/platform specific. Source-only and
+        # CPU-only installations keep the same Python matching implementation.
+        return None
+
+
 def keyword_matches_batch(rows, terms, vocabulary):
+    backend = os.environ.get("PMA_KEYWORD_BACKEND", "auto").strip().lower()
+    if backend not in {"auto", "python", "cpp"}:
+        raise ValueError("PMA_KEYWORD_BACKEND must be auto, python, or cpp")
+    if backend != "python":
+        matcher = _native_matcher()
+        if matcher is not None:
+            return matcher(rows, terms, vocabulary, normalize)
+        if backend == "cpp":
+            raise RuntimeError("C++ keyword matcher is unavailable; build it or use PMA_KEYWORD_BACKEND=python")
     return python_keyword_matches_batch(rows, terms, vocabulary)
+
 
 def condition_matches(row, plan, applied, locations, names, objects):
     fact = row["fact"]

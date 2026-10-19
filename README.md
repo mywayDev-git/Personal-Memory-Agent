@@ -68,6 +68,27 @@ CPU·GPU·혼합 실행의 실제 시간·메모리와 채택하지 않은 실�
 개인 DB와 모델 서버를 사용하지 않고 재현할 수 있습니다. 모델 호출은 고정 대체 구현이므로
 보고서의 개선율은 실제 AI 답변 전체의 개선율과 구분해야 합니다.
 
+검색어 매칭에는 검증된 선택적 C++ 경로도 추가했습니다.
+[C++ 시제품 비교·적용 보고서](evaluation/native_keyword_results.rst)에
+기존 최적화 Python과의 실제 속도·RAM·전체 응답 일치 결과를 기록했습니다.
+기본 `PMA_KEYWORD_BACKEND=auto`는 호환 확장 파일이 있으면 사용하고, 없으면 Python을 사용합니다.
+`python`은 기존 구현을 강제하고 `cpp`는 C++를 강제하되 확장이 없으면 원인을 표시합니다.
+두 경로 모두 같은 모델·근거 검증·검색 순위를 유지하며 GPU에 의존하지 않습니다.
+
+확장 파일은 Python·운영체제별 빌드가 필요하며 저장소에 바이너리를 포함하지 않습니다.
+현재 시제품은 Windows x64 CPython 3.14에서 검증했습니다. 해당 환경에서
+[Zig 0.15.2 공식 배포본](https://ziglang.org/download/)을 준비한 후
+`python -m evaluation.build_keyword_native --zig <zig.exe 경로> --install`로 빌드·배치할 수 있습니다.
+앱을 다시 시작하면 자동으로 사용합니다. 컴파일러와 빌드는 앱 실행의 필수 조건이 아닙니다.
+합성 데이터 재측정은
+`python -m evaluation.native_keyword_benchmark --output .local/cpp-bench-new --extension .local/native-keyword/_keyword_native.cp314-win_amd64.pyd`로 실행합니다.
+
+앱 재시작 후 실제 C++ 실행 확인과 실제 Qwen/BGE의 CPU·GPU 비교는
+[실제 모델 전체 처리 비교](evaluation/native_real_model_results.rst)에 정리했습니다.
+이 밀집 합성 입력에서는 검색이 개선됐지만 GPU 답변 전체의 개선은 뚜렷하지 않았고,
+CPU 답변은 두 경로 모두 컨텍스트 한도로 완료하지 못했습니다.
+`evaluation/run_native_real_models.ps1`는 개인 DB와 분리해 측정한 뒤 모델 서버를 복구하고 앱을 재시작합니다.
+
 실행 직후 시작 메시지와 모델 파일 검사 단계가 표시됩니다. 모델을 로딩하는 동안 10초마다 대기 시간이 표시되며, 각 모델의 준비 제한 시간은 5분입니다. 웹 앱이 준비되면 터미널에 일회용 접속 주소가 표시됩니다. 브라우저가 자동으로 열리지 않으면 이 주소를 직접 여세요. Windows PowerShell 5에서 실행했다면 PowerShell 7에서 `pwsh -File ./run_app.ps1`로 실행하세요.
 
 기본 모델 경로:
@@ -199,10 +220,6 @@ DB 기본 위치는 `%LOCALAPPDATA%\PersonalMemoryAgent\memory.db`입니다. rec
 
 `PMA_CHAT_TIMEOUT`은 대화 요청 전체의 시간 제한이며 기본 300초, 최대 3,600초입니다. `PMA_DIAGNOSTICS=1`이면 검색·검증·소요 시간 진단을 표시합니다.
 
-## CLI
-
-`python -m scripts.main --help`로 추출 CLI 옵션을 확인할 수 있습니다. `config/`, `prompts/`, `schema/`와 `scripts/memory_agent/`는 웹 앱과 CLI가 사용하는 실행 파일입니다.
-
 ## 대화에서 기억 저장
 
 세 대화 모드에서 메시지의 **기억에 저장**, 선택 문장, 복수 메시지 선택을 사용할 수 있습니다.
@@ -216,3 +233,6 @@ AI 답변은 제안으로 구분하고 저장 승인을 사실 검증으로 취�
 구현 계약·실행한 평가·아직 제공하지 않는 범위는 [기억 저장 구현 보고서](docs/memory_capture/implementation_report.md)와
 [남은 범위](docs/memory_capture/remaining_issues.md)를 참조하세요.
 
+## CLI
+
+`python -m scripts.main --help`로 추출 CLI 옵션을 확인할 수 있습니다. `config/`, `prompts/`, `schema/`와 `scripts/memory_agent/`는 웹 앱과 CLI가 사용하는 실행 파일입니다.
