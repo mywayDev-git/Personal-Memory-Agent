@@ -336,7 +336,11 @@ def main():
                         report["runs"].append(row)
                         save()
                         print(json.dumps({k: row.get(k) for k in ("case", "sample", "variant", "seconds", "status", "error_code", "quality")}), flush=True)
-            report["execution_completed"] = True
+            report["source_unchanged"] = all(digest(Path(path)) == expected
+                                             for path, expected in report["sources"].items())
+            report["evaluator_unchanged"] = all(digest(Path(path)) == expected
+                                                for path, expected in report["evaluator_sources"].items())
+            report["execution_completed"] = report["source_unchanged"] and report["evaluator_unchanged"]
     finally:
         save()
 

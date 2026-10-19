@@ -235,3 +235,19 @@ def test_model_comparison_reuses_source_ids_and_only_rebuilds_vectors(tmp_path):
             assert [tuple(r) for r in a.execute(f"SELECT {columns} FROM {table} ORDER BY 1")] == [tuple(r) for r in b.execute(f"SELECT {columns} FROM {table} ORDER BY 1")]
     with Store(alternate).connect() as db:
         assert {r[0] for r in db.execute("SELECT DISTINCT model_key FROM embeddings")} == {changed_settings.embedding_key}
+
+
+def test_retrieval_gate_rejects_a_single_question_regression_even_if_average_improves():
+    from copy import deepcopy
+
+    from evaluation.response_latency_report import retrieval_gate
+
+    baseline = {"cases": [{"id": str(i), "expanded": {"precision_at_8": .75, "recall_at_8": .75}}
+                          for i in range(90)], "replayed_model_outputs": False,
+                "alias_checks": {key: {"expanded": True} for key in ("python", "api", "ml")}}
+    candidate = deepcopy(baseline)
+    for row in candidate["cases"]:
+        row["expanded"].update(precision_at_8=1., recall_at_8=1.)
+    assert retrieval_gate(baseline, candidate)["passed"]
+    candidate["cases"][0]["expanded"]["recall_at_8"] = .5
+    assert retrieval_gate(baseline, candidate)["regressed_cases"] == ["0"]

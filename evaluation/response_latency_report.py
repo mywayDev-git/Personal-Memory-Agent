@@ -50,6 +50,26 @@ def latency_gate(baseline, candidate):
             "reason": "timing_gate_only" if passed else "speed_or_p95_target_not_met"}
 
 
+def retrieval_gate(baseline, candidate):
+    before = {row["id"]: row for row in baseline["cases"]}
+    after = {row["id"]: row for row in candidate["cases"]}
+    if baseline.get("replayed_model_outputs") or candidate.get("replayed_model_outputs"):
+        return {"passed": False, "reason": "requires_fresh_understanding"}
+    if set(before) != set(after) or len(before) != 90:
+        return {"passed": False, "reason": "requires_same_90_cases"}
+    regressions = []
+    for key, row in before.items():
+        left, right = row.get("expanded", {}), after[key].get("expanded", {})
+        if (not left or not right or left.get("understanding_error") or right.get("understanding_error")
+                or any(right.get(metric, -1) < left[metric]
+                       for metric in ("precision_at_8", "recall_at_8"))):
+            regressions.append(key)
+    alias_ok = all(group.get("expanded") is True for group in candidate.get("alias_checks", {}).values())
+    alias_ok = alias_ok and set(candidate.get("alias_checks", {})) == {"python", "api", "ml"}
+    return {"passed": not regressions and alias_ok, "regressed_cases": regressions,
+            "alias_invariance": alias_ok}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("inputs", nargs="+", type=Path)

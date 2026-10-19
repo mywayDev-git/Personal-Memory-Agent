@@ -125,6 +125,9 @@ def evaluate(settings, output, *, limit=90, replay=None, current_only=False):
         report["cases"].append(entry)
         completed = [c for c in report["cases"] if "error" not in c]
         report["summary"] = {"completed": len(completed), "errors": len(report["cases"])-len(completed)}
+        report["summary"]["understanding_errors"] = sum(
+            bool(case[mode].get("understanding_error"))
+            for case in completed for mode in report["evaluated_modes"])
         for group in ("positive", "negative"):
             subset = [c for c in completed if c["group"] == group]
             report["summary"][group] = {mode: {
