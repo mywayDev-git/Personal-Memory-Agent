@@ -96,6 +96,18 @@ def test_person_particle_still_matches_without_matching_longer_names():
     assert all(match["kind"] == "normalized" for match in found)
 
 
+def test_global_selection_keeps_late_high_rank_and_distinct_state():
+    records = [row(i, score=1, source="same") for i in range(8)]
+    later = row(9, score=0.9, state="negated", source="same")
+    strongest = row(10, score=2)
+    selected = combine([records, [later, strongest]])
+    assert selected[0]["id"] == "10"
+    assert "9" in {r["id"] for r in selected}
+    assert len(selected) == 8
+    assert [r["id"] for r in selected] == [
+        r["id"] for r in combine([[strongest, later], list(reversed(records))])
+    ]
+    assert "search_explanation" not in records[0]
 
 
 def test_duplicate_memory_id_uses_best_score():
@@ -205,5 +217,32 @@ def test_chat_defers_eight_record_limit_until_all_queries_are_combined():
     assert all(r["stages"]["selection"] == {"status": "excluded", "reason": "evidence_limit", "limit": 8} for r in excluded)
 
 
+def test_current_state_keeps_event_date_order_across_queries():
+    old, new = row(1, score=2), row(2, score=1)
+    old["fact"]["event_time"]["start"] = "2024-01-01"
+    new["fact"]["event_time"]["start"] = "2026-01-01"
+    old["search_explanation"] = {"selection": {"reason": "event_time_order"}}
+    assert combine([[old], [new]])[0]["id"] == "2"
 
 
+def test_automatic_chat_marks_global_limit_without_claiming_condition_failure(monkeypatch):
+    from pma.chat import automatic
+    from pma.chat.answer_audit import answer_audit, attach_answer_audit
+
+    svc = service([row(i) for i in range(12)])
+    monkeypatch.setattr(automatic, "structured", lambda *args: {"mode": "memory", "query": "제주 여행"})
+
+    def generate(question, session, today, **kwargs):
+        response = {"status": "answered", "items": [{"text": "제주 여행", "citations": [session["evidence"][0]["id"]]}]}
+        response["answer_audit"] = answer_audit(session["evidence"], [], response)
+        return response
+
+    engine = SimpleNamespace(service=svc, store=SimpleNamespace(freeze=lambda rows: rows), generate=generate)
+    response, evidence, metadata = automatic.run(engine, "제주 여행", {"messages": []}, "2026-10-19")
+    attach_answer_audit(metadata, response.pop("answer_audit"))
+    candidates = metadata["searches"][0]["audit"]["candidates"]
+    excluded = [r for r in candidates if r["final_status"] == "excluded"]
+    assert len(excluded) == 4 and len(evidence) == 8
+    assert all(r["stages"]["selection"] == {"status": "excluded", "reason": "global_evidence_limit", "limit": 8} for r in excluded)
+    assert all(r["stages"]["conditions"]["status"] == "passed" for r in excluded)
+    assert all(r["stages"]["answer"]["status"] == "not_run" for r in excluded)

@@ -111,5 +111,36 @@ def test_constraint_changing_edit_is_rejected():
     assert validate("여햄 언제", [edit("여햄", "여행")], BASE, TODAY, [])["status"] == "rejected"
 
 
+def test_api_passes_opt_out_and_defaults_without_breaking_existing_clients():
+    from types import SimpleNamespace
+    from fastapi import FastAPI
+    from fastapi.testclient import TestClient
+    from pma.chat.api import router
+    from pma.web import Input, QueryInput
+    seen = []
+    app = FastAPI()
+    app.include_router(router(Input, QueryInput))
+    def message(*args, **kwargs):
+        seen.append(kwargs)
+        return {"message_id": "m"}
+    app.state.chat = SimpleNamespace(message=message, search=message)
+    with TestClient(app) as client:
+        for enabled in (True, False):
+            response = client.post('/api/v1/chat/sessions/s/messages', json={
+                "request_id": str(enabled), "question": "회의 내욜", "correction_enabled": enabled})
+            assert response.status_code == 200
+        response = client.post('/api/v1/chat/searches', json={
+            "question": "회의 내욜", "correction_enabled": False})
+        assert response.status_code == 200
+    assert seen == [{}, {"correction_enabled": False}, {"correction_enabled": False}]
 
 
+def test_opt_out_is_part_of_retry_identity(tmp_path):
+    from pma.chat.store import ChatStore
+    from pma.store import Store
+    from pma.errors import AppError
+    chat = ChatStore(Store(tmp_path / "correction.db"))
+    sid = chat.create_empty()["id"]
+    chat.begin(sid, "r", "회의 내욜", correction_enabled=False)
+    with pytest.raises(AppError, match="REQUEST_CONFLICT"):
+        chat.begin(sid, "r", "회의 내욜")

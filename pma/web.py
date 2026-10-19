@@ -143,9 +143,9 @@ def create_app(settings=None, models=None, run_worker=True, console_test=False):
                 sink.intro(settings.data_dir / "memory.db")
             service = Service(store, models or LocalModels(settings), settings, diagnostic_sink=sink)
             app.state.store, app.state.service = store, service
-            from .chat.engine import ChatEngine
+            from .chat.orchestrator import ChatOrchestrator
 
-            app.state.chat = ChatEngine(service)
+            app.state.chat = ChatOrchestrator(service)
             app.state.chat.store.recover()
             if run_worker:
                 service.start()

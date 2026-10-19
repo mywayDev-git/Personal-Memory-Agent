@@ -155,6 +155,7 @@ class Store:
             version = db.execute("PRAGMA user_version").fetchone()[0]
             if version not in (0, 1, 2, 3, 4, 5):
                 raise RuntimeError("UNSUPPORTED_DATABASE_VERSION")
+            from .chat.migrations import DDL as CHAT_EXTENSION_DDL
             from .chat.schema import DDL as CHAT_DDL
             from .chat.schema import upgrade_v4, upgrade_v5
             from .memory.repository import DDL as CAPTURE_DDL
@@ -171,6 +172,7 @@ class Store:
                 + upgrade_v4(version)
                 + upgrade_v5(has_request_input)
                 + CAPTURE_DDL
+                + CHAT_EXTENSION_DDL
                 + "\nCOMMIT;"
             )
 

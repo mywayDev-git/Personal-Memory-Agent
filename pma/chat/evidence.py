@@ -10,6 +10,13 @@ def asks_identity(question):
     )
 
 
+def preserve_overview(question, resolved):
+    """A named overview is not a request to infer identity or a relationship."""
+    overview = re.search(r"(?:에\s*대해|에\s*관해|관련해서).*(?:이야기|알려|설명|정리)", question)
+    dependent = re.search(r"그\s*(?:사람|분|것|거)|그녀|그때|그날|저\s*사람", question)
+    return question if overview and not dependent else resolved
+
+
 def selected_alternative(question, labels):
     """Match a unique explicitly named candidate, including a shortened role.
 
@@ -43,6 +50,30 @@ def causal_claims_supported(question, response, evidence):
         ):
             return False
     return True
+
+
+def semantic_issue(question, item, evidence):
+    """Reject narrow, checkable meaning changes even if the model approves them."""
+    cited = [row["source_text"] for row in evidence if row["id"] in item["citations"]]
+    text = item["text"]
+    if not causal_claims_supported(question, {"items": [item]}, evidence):
+        return "cause"
+    if re.search(r"때문|덕분|탓으로|원인이|이유로", text) and not any(
+        re.search(r"때문|덕분|탓|느라|므로|어서|아서|여서|와서|워서|해서|라서|니까|위해", source)
+        for source in cited
+    ):
+        if not re.search(r"확인.*없|알.*없|단정.*없|불명", text):
+            return "cause"
+    for source in cited:
+        for match in re.finditer(r"(?<![가-힣])([가-힣]+?)기로\s*하지\s*않", source):
+            stronger = re.escape(match[1]) + r"지\s*않기로"
+            absence = r"(?:계획|의도)[이가은는]*\s*없(?:다|습니다|어요)[.!?]?$"
+            if re.search(stronger, text) and not any(re.search(stronger, s) for s in cited):
+                if not re.search(r"뜻.*아니|의미.*아니|단정.*없", text):
+                    return "negation"
+            if re.search(absence, text) and not any(re.search(absence, s) for s in cited):
+                return "negation"
+    return None
 
 
 def reviewed_citations(response, review, evidence):

@@ -213,7 +213,10 @@ class Service:
         if start and end and start > end:
             raise AppError("INVALID_DATE_RANGE", "시작일은 종료일보다 늦을 수 없습니다.")
         capture("begin", Stage.SNAPSHOT)
-        generation, rows = self.store.snapshot(self.settings.embedding_key)
+        if hasattr(self.store, "snapshot_for_owner"):
+            generation, rows = self.store.snapshot_for_owner(self.settings.embedding_key, "local-account")
+        else:
+            generation, rows = self.store.snapshot(self.settings.embedding_key)
         correction = validate_correction(question, understood.get("corrections"), understood,
                                          today, rows, enabled=correction_enabled)
         correction.update(original_query=question, searched=False)
@@ -719,3 +722,13 @@ class Service:
             capture("begin", Stage.SOURCE_VALIDATION)
             self.store.assert_generation(generation)
             return {**found, **response}
+
+    def search_in_model_slot(self, question, filters=None, today=None, *,
+                             defer_limit=False, selection_question=None, correction_enabled=True):
+        """Search adapter for orchestrators already holding model_slot().
+
+        Does not acquire a second semaphore; uses exactly the public search core.
+        """
+        return self._search(question, filters, today, defer_limit=defer_limit,
+                            selection_question=selection_question, correction_enabled=correction_enabled)
+

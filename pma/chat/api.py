@@ -1,22 +1,27 @@
 """Chat routes use the host application's authentication and error middleware."""
 
-from fastapi import APIRouter, Request, Response
-from pydantic import Field, field_validator
+from fastapi import APIRouter, Query, Request, Response
+from pydantic import AliasChoices, Field, field_validator
 
 from .schemas import ConversationMode
 
 
 def router(input_type, query_type):
+    from ..web import Filters
+
     class Selection(input_type):
         search_id: str | None = Field(default=None, min_length=1, max_length=128)
         selected_ids: list[str] = Field(default_factory=list, max_length=8)
 
     class Message(input_type):
-        request_id: str = Field(min_length=1, max_length=128)
+        correction_enabled: bool = True
+        request_id: str = Field(min_length=1, max_length=128,
+                                validation_alias=AliasChoices("request_id", "client_message_id"))
         question: str = Field(min_length=1, max_length=1000)
-        mode: ConversationMode = ConversationMode.AUTO
+        mode: ConversationMode = Field(default=ConversationMode.AUTO, strict=False)
         today: str | None = None
         context_message_id: str | None = Field(default=None, min_length=1, max_length=128)
+        filters: Filters | None = None
 
         @field_validator("question")
         @classmethod
@@ -39,7 +44,8 @@ def router(input_type, query_type):
     @routes.post("/searches")
     def search(data: query_type, request: Request):
         return request.app.state.chat.search(
-            data.question, data.filters.model_dump() if data.filters else None, data.today
+            data.question, data.filters.model_dump() if data.filters else None, data.today,
+            **({"correction_enabled": False} if not data.correction_enabled else {})
         )
 
     @routes.post("/sessions", status_code=201)
@@ -66,9 +72,10 @@ def router(input_type, query_type):
     @routes.post("/sessions/{sid}/messages")
     def message(sid: str, data: Message, request: Request):
         result = request.app.state.chat.message(
-            sid, data.request_id, data.question, data.today, data.context_message_id, data.mode
+            sid, data.request_id, data.question, data.today, data.context_message_id, data.mode,
+            **({"filters": data.filters.model_dump(exclude_unset=True)} if data.filters else {}),
+            **({"correction_enabled": False} if not data.correction_enabled else {}),
         )
-
         from ..memory.api import natural_candidates
 
         try:
@@ -85,6 +92,27 @@ def router(input_type, query_type):
             result["memory_capture_error"] = getattr(exc, "code", "CAPTURE_FAILED")
         return result
 
+    @routes.get("/sessions/{sid}/messages")
+    def messages(sid: str, request: Request, offset: int = Query(0, ge=0),
+                 limit: int = Query(50, ge=1, le=100)):
+        return request.app.state.chat.store.messages(sid, offset, limit)
+
+    @routes.post("/sessions/{sid}/clarifications")
+    def clarification(sid: str, data: Message, request: Request):
+        from ..errors import AppError
+
+        if not data.context_message_id:
+            raise AppError("CONTEXT_REQUIRED", "확인할 질문을 선택하세요.", 422)
+        session = request.app.state.chat.store.get(sid)
+        anchor = next((m for m in session["messages"] if m["id"] == data.context_message_id), None)
+        if (not anchor or anchor.get("error_code") or
+                (anchor.get("response") or {}).get("status") != "needs_clarification"):
+            raise AppError("CONTEXT_EXPIRED", "확인 질문이 만료되었습니다.", 409)
+        return message(sid, data, request)
+
+    @routes.get("/citations/{citation_id}")
+    def citation(citation_id: str, request: Request):
+        return request.app.state.chat.store.citation(citation_id)
 
     @routes.get("/sessions/{sid}/requests/{request_id}")
     def progress(sid: str, request_id: str, request: Request):

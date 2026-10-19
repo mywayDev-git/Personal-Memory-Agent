@@ -1,0 +1,68 @@
+{
+  "kind": "offline deterministic model doubles; not Qwen quality or production latency",
+  "routing_cases": 10,
+  "routing_accuracy": 1.0,
+  "memory_required_recall": 1.0,
+  "search_comparison": [
+    {
+      "records": 1,
+      "same_order": true,
+      "recall_at_8_existing": 1.0,
+      "recall_at_8_chat": 1.0,
+      "mrr_existing": 1.0,
+      "mrr_chat": 1.0,
+      "missing_evidence": 0,
+      "irrelevant_evidence": 0
+    },
+    {
+      "records": 2,
+      "same_order": true,
+      "recall_at_8_existing": 1.0,
+      "recall_at_8_chat": 1.0,
+      "mrr_existing": 1.0,
+      "mrr_chat": 1.0,
+      "missing_evidence": 0,
+      "irrelevant_evidence": 0
+    },
+    {
+      "records": 8,
+      "same_order": true,
+      "recall_at_8_existing": 1.0,
+      "recall_at_8_chat": 1.0,
+      "mrr_existing": 1.0,
+      "mrr_chat": 1.0,
+      "missing_evidence": 0,
+      "irrelevant_evidence": 0
+    },
+    {
+      "records": 12,
+      "same_order": true,
+      "recall_at_8_existing": 0.6666666666666666,
+      "recall_at_8_chat": 0.6666666666666666,
+      "mrr_existing": 1.0,
+      "mrr_chat": 1.0,
+      "missing_evidence": 4,
+      "irrelevant_evidence": 0
+    }
+  ],
+  "latency_ms": {
+    "existing_search": {
+      "average": 0.5207450012676418,
+      "median": 0.45250001130625606,
+      "p95": 0.7179999956861138
+    },
+    "chat_adapter": {
+      "average": 0.521970001864247,
+      "median": 0.45870000030845404,
+      "p95": 0.9642000077292323
+    }
+  },
+  "unmeasured": [
+    "real-model citation precision",
+    "grounded claim rate",
+    "unsupported claim rate",
+    "semantic context continuity",
+    "clarification necessity",
+    "real-model latency and call counts"
+  ]
+}

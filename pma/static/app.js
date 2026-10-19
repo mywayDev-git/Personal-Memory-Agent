@@ -169,3 +169,5 @@ setInterval(()=>{if(authorized&&!document.hidden)processingProgress();},3000);
 document.addEventListener("visibilitychange",()=>{if(authorized&&!document.hidden)processingProgress();});
 
 setupChat({api,node,action,notice,today:()=>{const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');}});
+setTab('chat');
+if (authorized) document.querySelector('[data-tab="chat"]').click();
