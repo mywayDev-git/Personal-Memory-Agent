@@ -5,6 +5,8 @@ import re
 from copy import deepcopy
 from functools import lru_cache
 
+from scripts.memory_agent.performance import measured
+
 from .search_expressions import (
     ALIASES,
     PARTICLES,
@@ -150,6 +152,7 @@ def _native_matcher():
         return None
 
 
+@measured("keyword_ranking")
 def keyword_matches_batch(rows, terms, vocabulary):
     backend = os.environ.get("PMA_KEYWORD_BACKEND", "auto").strip().lower()
     if backend not in {"auto", "python", "cpp"}:

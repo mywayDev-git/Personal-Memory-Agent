@@ -5,6 +5,7 @@ import re
 from datetime import date
 
 from scripts.memory_agent.llm_client import model_phase
+from scripts.memory_agent.performance import count
 from scripts.memory_agent.validator import schema_errors
 
 from ..errors import AppError
@@ -295,6 +296,7 @@ def run(engine, question, session, today, requested_mode="auto"):
         if not query or query in seen_queries:
             break
         seen_queries.add(query)
+        count("search_iterations")
         with model_phase("search"):
             from .retrieval import retrieve
 

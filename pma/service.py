@@ -12,6 +12,7 @@ import numpy as np
 import requests
 
 from scripts.memory_agent.diagnostics import failure
+from scripts.memory_agent.performance import measure, measured
 from scripts.memory_agent.postprocess import make_source_context
 from scripts.memory_agent.validator import schema_errors
 
@@ -77,6 +78,7 @@ class Service:
         self._vector_cache = None
         self._vector_cache_lock = threading.Lock()
 
+    @measured("candidate_matrix")
     def _candidate_matrix(self, generation, candidates):
         key = (generation, self.settings.embedding_key, self.settings.embedding_dimensions,
                tuple(row["id"] for row in candidates))
@@ -106,7 +108,7 @@ class Service:
         if wait is None and not background:
             wait = getattr(getattr(self.settings, "llm", None), "timeout", 5)
         deadline = None if wait is None else time.monotonic() + wait
-        with self.slot_condition:
+        with measure("model_wait"), self.slot_condition:
             if not background:
                 self.foreground_waiters += 1
             try:
@@ -277,6 +279,7 @@ class Service:
                 self.processing_status = None
             return True
 
+    @measured("retrieval")
     def _search(self, question, filters=None, today=None, *, defer_limit=False, selection_question=None, correction_enabled=True):
         today = today or datetime.now(timezone.utc).astimezone().date().isoformat()
         capture("begin", Stage.QUERY_UNDERSTANDING)

@@ -10,6 +10,7 @@ from datetime import date
 from threading import RLock
 
 from scripts.memory_agent.llm_client import RequestDeadlineExceeded, observe_phases, request_budget
+from scripts.memory_agent.performance import count, measure, measured, profile_request
 from scripts.memory_agent.validator import schema_errors
 
 from ..answer_review import accepted, validate_review
@@ -121,6 +122,7 @@ class ChatEngine:
             },
         )
 
+    @measured("context_resolution")
     def resolve(self, question, session, today, *, original_question=None):
         models = self.models
         history = [
@@ -215,6 +217,8 @@ class ChatEngine:
         attempts = []
 
         def finish(response, reason=None):
+            count("generation_attempts", max((a.get("generation", 0) for a in attempts), default=0))
+            count("review_attempts", len(attempts))
             response["answer_audit"] = answer_audit(session["evidence"], attempts, response, reason)
             return response
 
@@ -402,6 +406,7 @@ class ChatEngine:
                 "generation": "generating",
                 "general": "generating",
                 "review": "validating",
+                "display_review": "validating",
             }
             with self.progress_lock:
                 next_phase = labels.get(name, "generating")
@@ -417,8 +422,11 @@ class ChatEngine:
             budget.remaining()
             return self.store.request_state(sid, request_id)["state"] != "running"
 
+        profile = None
+        budget = None
         try:
             with (
+                profile_request() as profile,
                 observe_phases(phase),
                 request_budget(
                     self.service.settings.chat_timeout - (time.monotonic() - started)
@@ -523,10 +531,15 @@ class ChatEngine:
                         metadata["performance"] = {
                             "lock_wait_seconds": round(lock_seconds, 3),
                             "model_http_calls": budget.calls,
+                            "profile": profile.snapshot(),
                         }
                         with self.progress_lock:
                             response.update(self.timing(sid, request_id))
-                        self.store.finish(sid, mid, response, evidence, metadata, budget=budget)
+                        with measure("final_save"):
+                            self.store.finish(sid, mid, response, evidence, metadata, budget=budget)
+                        # The committed snapshot measures the transaction body; this
+                        # trace also includes commit time without another DB write.
+                        self.service.trace("chat_performance", performance=profile.snapshot())
                         break
                     except AppError as exc:
                         if exc.code != "SOURCE_CHANGED" or attempt or self.fixed_evidence:
@@ -540,7 +553,14 @@ class ChatEngine:
                 exc = AppError(
                     "CHAT_TIMEOUT", "응답 시간이 초과되었습니다. 다시 시도해 주세요.", 504, True
                 )
-            self.store.fail(mid, exc.code if isinstance(exc, AppError) else "MODEL_FAILED")
+            performance = None
+            if profile is not None:
+                outcome = "cancelled" if isinstance(exc, AppError) and exc.code == "CANCELLED" else "failed"
+                performance = {"profile": profile.snapshot(outcome),
+                               "model_http_calls": budget.calls if budget is not None else []}
+                self.service.trace("chat_performance", performance=performance)
+            self.store.fail(mid, exc.code if isinstance(exc, AppError) else "MODEL_FAILED",
+                            **({"performance": performance} if performance is not None else {}))
             if isinstance(exc, AppError) and exc.code == "CONTEXT_LIMIT":
                 raise AppError(
                     "CONTEXT_LIMIT",

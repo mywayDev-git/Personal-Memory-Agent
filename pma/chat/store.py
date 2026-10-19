@@ -339,9 +339,6 @@ class ChatStore:
                     "INSERT INTO chat_message_evidence VALUES(?,?,?,?,?)",
                     (mid, row["id"], row["record_id"], row["version"], encode(row)),
                 )
-            db.execute(
-                "INSERT INTO chat_message_snapshots VALUES(?,?)", (mid, encode(metadata or {}))
-            )
             sources = {r["id"]: r for r in rows}
             for index, item in enumerate(response["items"]):
                 for cid in item["citations"]:
@@ -395,19 +392,31 @@ class ChatStore:
                 "SET version=excluded.version,payload=excluded.payload",
                 (sid, context.version, encode(context.model_dump())),
             )
-            db.execute("INSERT INTO chat_retrieval_runs VALUES(?,?)",
-                       (mid, encode(metadata or {})))
             if context.pending_clarification:
                 db.execute("INSERT INTO chat_clarifications VALUES(?,?)", (mid, encode(response)))
             if budget is not None:
                 budget.remaining()  # Raise inside the transaction so all draft writes roll back.
+            if metadata is not None and "performance" in metadata:
+                from scripts.memory_agent.performance import current_snapshot
 
-    def fail(self, mid, code):
+                snapshot = current_snapshot()
+                if snapshot is not None:
+                    metadata["performance"]["profile"] = snapshot
+            db.execute("INSERT INTO chat_message_snapshots VALUES(?,?) "
+                       "ON CONFLICT(message_id) DO UPDATE SET payload=excluded.payload",
+                       (mid, encode(metadata or {})))
+            db.execute("INSERT INTO chat_retrieval_runs VALUES(?,?)", (mid, encode(metadata or {})))
+
+    def fail(self, mid, code, *, performance=None):
         with self.store.connect(True) as db:
             db.execute(
                 "UPDATE chat_messages SET state='failed',error_code=? WHERE id=? AND state='running'",
                 (code, mid),
             )
+            if performance is not None:
+                db.execute("INSERT INTO chat_message_snapshots VALUES(?,?) "
+                           "ON CONFLICT(message_id) DO UPDATE SET payload=excluded.payload",
+                           (mid, encode({"performance": performance})))
 
     def cancel(self, sid, request_id):
         with self.store.connect(True) as db:

@@ -10,6 +10,7 @@ import requests
 from config.settings import paths
 from scripts.memory_agent.extractor import extract_json
 from scripts.memory_agent.llm_client import chat, local_session, post_json
+from scripts.memory_agent.performance import measured
 from scripts.memory_agent.pipeline import process_text
 from scripts.memory_agent.validator import load_schema, schema_errors
 
@@ -108,6 +109,7 @@ class LocalModels:
         url = urlsplit(endpoint)
         return f"{url.scheme}://{url.netloc}"
 
+    @measured("token_budget")
     def budget(self, session, content, output_tokens, endpoint=None, context=None):
         endpoint = endpoint or self.settings.llm.endpoint
         payload = post_json(
@@ -146,6 +148,7 @@ class LocalModels:
                 target_ids=target_ids,
             )
 
+    @measured("token_count")
     def count_tokens(self, text):
         with local_session() as session:
             return len(
@@ -157,6 +160,7 @@ class LocalModels:
                 )["tokens"]
             )
 
+    @measured("embedding")
     def embed(self, texts):
         if not texts:
             return np.empty((0, self.settings.embedding_dimensions), dtype=np.float32)
@@ -231,6 +235,7 @@ class LocalModels:
         return result
 
     @observed_model(Stage.MODEL_UNDERSTANDING)
+    @measured("question_understanding")
     def understand(self, question, today, *, expand=True):
         expansion_prompt = (
             "검색용 expansions를 최대 4개 제안하라. 각 항목은 start,end,before,after,kind다. "
@@ -266,6 +271,7 @@ class LocalModels:
         )
 
     @observed_model(Stage.MODEL_ANSWER)
+    @measured("answer_generation")
     def answer(self, question, evidence, *, feedback=None):
         if not self.settings.answer_validation:
             from .legacy_answer import LegacyAnswerMethods
@@ -313,6 +319,7 @@ class LocalModels:
         )
 
     @observed_model(Stage.EVIDENCE_SELECTION_BATCH)
+    @measured("relevance_selection")
     def select_explained(self, question, evidence):
         """Review every candidate before applying a global limit; retain verifiable excerpts."""
         if len(evidence) > 4:
@@ -358,6 +365,7 @@ class LocalModels:
         return decisions
 
     @observed_model(Stage.EVIDENCE_SELECTION_BATCH)
+    @measured("answer_selection")
     def select(self, question, evidence):
         if not evidence:
             return []
@@ -393,6 +401,7 @@ class LocalModels:
         return result["ids"]
 
     @observed_model(Stage.MODEL_REVIEW)
+    @measured("answer_review")
     def review(self, question, evidence, response):
         from .answer_review import FACT_REVIEW_POLICY, REVIEW_SCHEMA, validate_review
 

@@ -7,6 +7,8 @@ from contextlib import closing, contextmanager
 from datetime import datetime, timedelta, timezone
 from uuid import uuid4
 
+from scripts.memory_agent.performance import measured
+
 from .diagnostics import Reason, Stage, Status, current_trace
 from .errors import AppError
 from .facts import FACT_VERSION, connection, fingerprint, project
@@ -603,6 +605,7 @@ class Store:
     def snapshot_for_owner(self, model_key, owner_id):
         return self.snapshot(model_key, owner_id=owner_id)
 
+    @measured("candidate_snapshot")
     def snapshot(self, model_key, *, owner_id=None):
         observation = _start_observation()
         with self.connect() as db:

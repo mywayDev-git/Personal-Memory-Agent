@@ -10,6 +10,7 @@ from urllib.parse import urlsplit
 import requests
 
 from .diagnostics import ProcessingError
+from .performance import measure
 
 _request_budget = ContextVar("model_request_budget", default=None)
 _model_phase = ContextVar("model_phase", default="other")
@@ -32,7 +33,8 @@ def model_phase(name):
         listener(name)
     token = _model_phase.set(name)
     try:
-        yield
+        with measure(name):
+            yield
     finally:
         _model_phase.reset(token)
 
@@ -105,21 +107,19 @@ def post_json(session, endpoint: str, body: dict, timeout: float) -> dict:
     if budget is not None:
         timeout = min(timeout, budget.remaining())
     started = time.monotonic()
+    call = {"operation": urlsplit(endpoint).path, "phase": _model_phase.get(),
+            "status": "error"}
     try:
         response = session.post(endpoint, json=body, timeout=timeout, allow_redirects=False)
+        call["http_status"] = response.status_code
     except requests.Timeout:
         if budget is not None:
             budget.remaining()
         raise
     finally:
         if budget is not None:
-            budget.calls.append(
-                {
-                    "operation": urlsplit(endpoint).path,
-                    "phase": _model_phase.get(),
-                    "seconds": round(time.monotonic() - started, 3),
-                }
-            )
+            call["seconds"] = round(time.monotonic() - started, 6)
+            budget.calls.append(call)
     if budget is not None:
         budget.remaining()  # Discard a response arriving after the request deadline.
     if not 200 <= response.status_code < 300:
@@ -130,6 +130,12 @@ def post_json(session, endpoint: str, body: dict, timeout: float) -> dict:
         raise ValueError("MODEL_INVALID_JSON") from exc
     if not isinstance(payload, dict):
         raise ValueError("MODEL_INVALID_RESPONSE")
+    call["status"] = "completed"
+    usage = payload.get("usage")
+    if isinstance(usage, dict):
+        call["usage"] = {key: usage[key] for key in
+                         ("prompt_tokens", "completion_tokens", "total_tokens")
+                         if type(usage.get(key)) is int and usage[key] >= 0}
     return payload
 
 

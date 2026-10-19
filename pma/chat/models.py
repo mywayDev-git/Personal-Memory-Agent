@@ -7,6 +7,7 @@ import requests
 
 from scripts.memory_agent.llm_client import model_phase, optional_request_budget
 from scripts.memory_agent.meaning import meaning_conflict
+from scripts.memory_agent.performance import measured
 from scripts.memory_agent.validator import schema_errors
 
 from ..answer_review import FACT_REVIEW_POLICY, REVIEW_SCHEMA, accepted, validate_review
@@ -39,6 +40,7 @@ def asks_record_time(question):
 
 
 class ChatLocalModels(LocalModels):
+    @measured("independent_review")
     def review(self, question, evidence, response, *, feedback=None):
         sources, catalog = source_catalog(evidence)
         metadata_policy = ""
@@ -185,7 +187,7 @@ class ChatLocalModels(LocalModels):
                 + prompt
             )
         if "proposed_answer" in data or "presentation_proposal" in data:
-            phase = "review"
+            phase = "display_review" if "presentation_proposal" in data else "review"
         elif "feedback" in data:
             phase = "generation"
         elif "history" in data or "current_question" in data:
