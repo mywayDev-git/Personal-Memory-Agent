@@ -32,3 +32,61 @@ GPU는 RTX 3060 8GB 중 기존 앱이 약 7.6GB를 사용하므로 동시 실험
 별도 서버는 실험이 소유한 프로세스만 종료하며 개인 DB나 기존 앱을 재시작하지 않는다.
 90개 다국어 평가에서는 새 질문 이해를 실행한다. 재생 결과는 지연 측정에 사용하지 않는다.
 모델 교체는 품질과 속도 평가를 모두 통과한 뒤 선택하며 실제 개인 DB 전환은 별도 작업이다.
+
+## 비교 실행과 해석
+
+먼저 모델 저장 위치에 선택한 모든 파일과 512 MiB의 추가 여유 공간이 있는지 확인한다.
+다운로드 도구는 파일 리비전·크기·SHA-256을 고정하며 기존 파일을 다른 내용으로 덮어쓰지 않는다.
+생성 후보는 Unsloth가 배포한 Qwen3-4B-Instruct-2507의 Q4_K_M·Q8_0이고,
+임베딩 후보는 Qwen 공식 Qwen3-Embedding-0.6B-Q8_0이다. 배포된 생성 파일에는
+변환 도구의 정확한 커밋이 공개되어 있지 않다. `upstream_reference_revision`은
+비교를 위한 공식 원본 참조이며 해당 변환 파일의 재빌드 이력을 증명하지 않는다.
+배포 파일 자체의 재현은 고정 리비전과 해시로 보장하고, 변환 재빌드의 한계는 별도로 보고한다.
+
+예시(모델 저장 경로와 새 출력 폴더는 환경에 맞게 지정)::
+
+    python -m evaluation.latency_models --directory D:/pma-evaluation/models
+    python -m evaluation.response_latency --placement gpu --samples 5 --multilingual --output D:/pma-evaluation/baseline
+    python -m evaluation.response_latency --placement gpu --generation q4 --model-directory D:/pma-evaluation/models --seed-template D:/pma-evaluation/baseline/synthetic-seed.db --multilingual --multilingual-current-only --output D:/pma-evaluation/q4
+
+`--seed-template`은 이 평가기의 합성 DB만 받는다. 같은 원문·기억 ID·시각·사실·인용을
+복제하고, 임베딩 프로필이 달라질 때만 별도 DB의 벡터를 교체한다. 새로운 기본 합성 DB도
+고정 ID와 시각을 사용한다. 실제 추출 품질 전체를 평가하는 데이터는 아니며 동시 실행
+시나리오에서 별도 합성 기록의 실제 추출·저장 성공을 확인한다.
+
+`--variants baseline cached batch8 plain combined`로 요청 단위 토큰 캐시, 8개 판정 배치,
+간단한 표시와 조합을 비교한다. 단독 후보는 해당 변경만 활성화한다. 모든 후보에서
+전체 후보 검토·추가 검색·독립 근거 검증·재검증을 유지한다. `selection_batch`는 관련성
+판정 구성 요소의 측정이며 최종 답변 전체 지연과 혼동하지 않는다.
+
+`--multilingual-current-only`는 현재 검색 경로로 모델을 비교할 때 사용한다. 질문 이해를
+90개 모두 새로 실행하며 확장 비활성화 실험만 생략한다. 기존 두 경로 평가의 기본값은 유지한다.
+질문별 Precision@8 또는 Recall@8이 낮아지거나 별칭 동등성이 깨지는 후보는 평균이
+올라도 채택하지 않는다. 모델 해석 오류와 통신·스키마 실패도 숨기지 않는다.
+`--retrieval-baseline <새 기준 보고서>`를 함께 주면 90개 질문에서 회귀한 모델은
+채택 후보에서 제외하고 단순 검색·답변의 5회 지연만 측정한다. 이 경우 실행하지 않은
+복합 시나리오를 통과했다고 보고하지 않는다.
+
+`--placement cpu|gpu|hybrid`와 `--flash auto|on|off`는 서버 배치만 바꾼다.
+문맥은 생성 16,384·임베딩 8,192 토큰으로 유지한다. `--samples 20`은 최종 재측정이며
+여러 variant의 실행 순서를 반복마다 뒤집는다. 준비 실행과 모델 시작·색인 생성은 따로 보고한다.
+실험 중 구현이나 평가 코드가 바뀐 결과는 최종 채택에 사용하지 않는다.
+
+RAM은 평가 Python과 소유한 모델 서버의 작업 집합 합계이며 공유 페이지가 중복될 수 있다.
+VRAM은 바탕화면 등을 포함한 GPU 전체의 1초 간격 관측 최대다. 순간 절대 최대나
+별도 PC에서의 성능 보장을 뜻하지 않는다. 오류 실행은 성공 지연 중앙값에서 분리하되
+실패율과 품질 실패에는 포함한다. 독립 모델 검증과 정답 근거 포함 여부는 자동 지표이며
+실제 사용자 질문 전체에 대한 사람의 정확도 평가를 대체하지 않는다.
+
+## 선택 옵션과 복구
+
+기존 기본값은 4개 판정 배치, 요청 토큰 캐시 비활성화, 검토된 표시 형식, BGE-M3다.
+실험 옵션은 `PMA_SELECTION_BATCH_SIZE=8`, `PMA_REQUEST_TOKEN_CACHE=1`,
+`PMA_CHAT_PRESENTATION=plain`이다. 이를 해제하면 기존 경로로 돌아간다.
+`raw-v1` 임베딩 식별 키는 이전 형식을 유지한다.
+
+Qwen 임베딩은 `PMA_EMBEDDING_PROFILE=qwen3-retrieval-v1`로 문서와 질문 입력을 구분한다.
+질문에만 고정 영어 검색 지시문을 붙이고 서버는 last-token pooling과 L2 정규화를 사용한다.
+실행기는 `-EmbeddingModel <파일> -EmbeddingProfile qwen3-retrieval-v1`을 제공한다.
+지시문을 바꾸면 프로필 버전도 바꿔야 한다. 다른 프로필의 벡터와 검색 결과를 혼용하지 않는다.
+실제 DB로 옮길 때는 먼저 백업하고 별도 색인을 검증해야 하며, 이번 평가는 그 전환을 실행하지 않는다.

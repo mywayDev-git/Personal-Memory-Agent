@@ -213,12 +213,15 @@ def main():
     parser.add_argument("--multilingual", action="store_true")
     parser.add_argument("--multilingual-current-only", action="store_true")
     parser.add_argument("--seed-template", type=Path, help="Reuse this evaluator's synthetic seed; only embeddings may be rebuilt")
+    parser.add_argument("--retrieval-baseline", type=Path,
+                        help="Quality-screen against a fresh 90-case report; rejected models only run the two basic timing cases")
     args = parser.parse_args()
     if args.samples < 1 or args.output.exists() or not 1024 <= args.port < 65535:
         parser.error("positive samples, unused output directory and valid port required")
     generation = Path("C:/models/Qwen3-8B-Q4_K_M.gguf") if args.generation == "baseline" else args.model_directory / MODELS[f"generation-{args.generation}"]["filename"]
     embedding = Path("C:/models/bge-m3-Q8_0.gguf") if args.embedding == "bge" else args.model_directory / MODELS["embedding-q8"]["filename"]
     hashes = {"generation": digest(generation), "embedding": digest(embedding), "server": digest(args.server)}
+    os.environ["PMA_GENERATION_REVISION"] = hashes["generation"]
     args.output.mkdir(parents=True)
     if shutil.disk_usage(args.output).free < 512 * 1024 * 1024:
         parser.error("at least 512 MiB free space required for evaluation output")
@@ -256,7 +259,19 @@ def main():
             if args.multilingual:
                 from evaluation.multilingual_search import evaluate
 
-                evaluate(settings, args.output / "multilingual.json", current_only=args.multilingual_current_only)
+                multilingual = evaluate(settings, args.output / "multilingual.json", current_only=args.multilingual_current_only)
+                if args.retrieval_baseline:
+                    from evaluation.response_latency_report import retrieval_gate
+
+                    baseline = json.loads(args.retrieval_baseline.read_text(encoding="utf-8"))
+                    report["retrieval_gate"] = retrieval_gate(baseline, multilingual)
+                    if not report["retrieval_gate"]["passed"]:
+                        report["screen_rejected"] = True
+                        report["configuration"]["original_cases"] = args.cases
+                        args.cases = ["simple_search", "simple_answer"]
+                        report["configuration"]["cases"] = args.cases
+                        print(json.dumps({"retrieval_gate": report["retrieval_gate"],
+                                          "remaining_timing_cases": args.cases}), flush=True)
             for case_name in args.cases:
                 case = CASES[case_name]
                 for sample in range(args.samples + 1):
@@ -291,6 +306,7 @@ def main():
                             row["arrival_during_extract"] = arrival.wait(30) and service.gate.locked()
                         with MemorySampler([os.getpid()] + [p.pid for p in processes]) as mem:
                             started = time.perf_counter()
+                            profile = budget = None
                             try:
                                 if case.get("search"):
                                     with profile_request() as profile, request_budget(300) as budget:
@@ -322,8 +338,12 @@ def main():
                                 row["error_code"] = getattr(exc, "code", type(exc).__name__)
                                 frame = traceback.extract_tb(exc.__traceback__)[-1]
                                 row["error_location"] = {"file": Path(frame.filename).name, "function": frame.name, "line": frame.lineno}
-                                messages = engine.store.get(sid)["messages"]
-                                row["performance"] = (messages[-1].get("snapshot") or {}).get("performance", {}) if messages else {}
+                                if profile is not None:
+                                    row["performance"] = {"profile": profile.snapshot("failed"),
+                                                          "model_http_calls": budget.calls if budget else []}
+                                else:
+                                    messages = engine.store.get(sid)["messages"]
+                                    row["performance"] = (messages[-1].get("snapshot") or {}).get("performance", {}) if messages else {}
                             row["seconds"] = time.perf_counter() - started
                         if worker is not None:
                             worker.join()
