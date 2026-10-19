@@ -1,7 +1,7 @@
 import pytest
+from test_search_explain import row, service
 
 from pma.query_correction import fuse, validate
-from test_search_explain import row, service
 
 BASE = {"intent": "recall", "date_from": None, "date_to": None}
 TODAY = "2026-10-19"
@@ -113,8 +113,10 @@ def test_constraint_changing_edit_is_rejected():
 
 def test_api_passes_opt_out_and_defaults_without_breaking_existing_clients():
     from types import SimpleNamespace
+
     from fastapi import FastAPI
     from fastapi.testclient import TestClient
+
     from pma.chat.api import router
     from pma.web import Input, QueryInput
     seen = []
@@ -137,8 +139,8 @@ def test_api_passes_opt_out_and_defaults_without_breaking_existing_clients():
 
 def test_opt_out_is_part_of_retry_identity(tmp_path):
     from pma.chat.store import ChatStore
-    from pma.store import Store
     from pma.errors import AppError
+    from pma.store import Store
     chat = ChatStore(Store(tmp_path / "correction.db"))
     sid = chat.create_empty()["id"]
     chat.begin(sid, "r", "회의 내욜", correction_enabled=False)

@@ -50,16 +50,17 @@ def main():
     parser.add_argument("--embedding-file", type=Path, default=Path("C:/models/bge-m3-Q8_0.gguf"))
     parser.add_argument("--embedding-model", default="bge-m3")
     parser.add_argument("--embedding-profile", choices=["raw-v1", "qwen3-retrieval-v1"], default="raw-v1")
+    parser.add_argument("--current-only", action="store_true", help="Compare models on the current expanded search path; no separate expansion-off experiment")
     args = parser.parse_args()
     with args.embedding_file.open("rb") as stream:
         revision = hashlib.file_digest(stream, "sha256").hexdigest()
     settings = AppSettings(embedding_revision=revision, embedding_model=args.embedding_model,
                            embedding_endpoint=args.embedding_endpoint, embedding_profile=args.embedding_profile,
                            llm=Settings(model=args.model, endpoint=args.generation_endpoint, timeout=60, max_tokens=2048))
-    evaluate(settings, args.output, limit=args.limit, replay=args.replay)
+    evaluate(settings, args.output, limit=args.limit, replay=args.replay, current_only=args.current_only)
 
 
-def evaluate(settings, output, *, limit=90, replay=None):
+def evaluate(settings, output, *, limit=90, replay=None, current_only=False):
     args = SimpleNamespace(output=output, limit=limit, replay=replay, model=settings.llm.model)
     replay = json.loads(args.replay.read_text(encoding="utf-8")) if args.replay else None
     replay_cases = {case["id"]: case for case in replay["cases"]} if replay else {}
@@ -73,15 +74,16 @@ def evaluate(settings, output, *, limit=90, replay=None):
     store = SimpleNamespace(snapshot=lambda key: (1, rows), assert_generation=lambda generation: None,
                             links=lambda **kw: [])
     report = {"scope": "production top-8 retrieval before optional LLM relevance review",
-              "baseline": "same deterministic aliases, model expansion disabled",
+              "baseline": "not run; current search path only" if current_only else "same deterministic aliases, model expansion disabled",
               "replayed_model_outputs": bool(replay),
               "embedding_key": settings.embedding_key,
               "model": args.model, "embedding_revision": revision, "documents": len(rows), "cases": []}
+    report["evaluated_modes"] = ["expanded"] if current_only else ["baseline", "expanded"]
     for case_index, case in enumerate(cases[:args.limit]):
         try:
             expected = {doc["id"] for doc in documents if doc["topic"] in case["topics"]}
             entry = dict(case)
-            modes = ("baseline", "expanded") if case_index % 2 == 0 else ("expanded", "baseline")
+            modes = ("expanded",) if current_only else ("baseline", "expanded") if case_index % 2 == 0 else ("expanded", "baseline")
             for mode in modes:
                 started = time.perf_counter()
                 understanding_error = None
@@ -116,7 +118,7 @@ def evaluate(settings, output, *, limit=90, replay=None):
                                "understanding_error": understanding_error,
                                "understood": analysis,
                                "query_expansion": result.get("query_expansion")}
-            print(case["id"], entry["baseline"]["precision_at_8"], entry["expanded"]["precision_at_8"], flush=True)
+            print(case["id"], {mode: entry[mode]["precision_at_8"] for mode in report["evaluated_modes"]}, flush=True)
         except Exception as exc:
             entry = {**case, "error": type(exc).__name__ + ": " + str(exc)[:160]}
             print(case["id"], entry["error"], flush=True)
@@ -128,7 +130,7 @@ def evaluate(settings, output, *, limit=90, replay=None):
             report["summary"][group] = {mode: {
                 key: statistics.mean(c[mode][key] for c in subset) if subset else None
                 for key in ("precision_at_8", "recall_at_8", "search_seconds", "understanding_seconds", "total_seconds")}
-                for mode in ("baseline", "expanded")}
+                for mode in report["evaluated_modes"]}
         by_id = {case["id"]: case for case in completed}
         report["alias_checks"] = {}
         for topic in ("python", "api", "ml"):
@@ -137,7 +139,7 @@ def evaluate(settings, output, *, limit=90, replay=None):
                 report["alias_checks"][topic] = {mode: all(
                     (member[mode]["ids"], member[mode].get("scores")) ==
                     (members[0][mode]["ids"], members[0][mode].get("scores"))
-                    for member in members) for mode in ("baseline", "expanded")}
+                    for member in members) for mode in report["evaluated_modes"]}
         args.output.parent.mkdir(parents=True, exist_ok=True)
         temporary = args.output.with_suffix(".partial")
         temporary.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")

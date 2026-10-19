@@ -192,3 +192,27 @@ def test_timing_gate_requires_twenty_quality_checked_samples():
     assert not latency_gate(baseline, {**candidate, "samples": 5})["passed"]
     assert not latency_gate(baseline, {**candidate, "quality_passes": 19})["passed"]
     assert not latency_gate(baseline, {**candidate, "p95_seconds": 13})["passed"]
+
+
+def test_current_path_multilingual_comparison_uses_fresh_understanding(tmp_path, monkeypatch):
+    from evaluation import multilingual_search as evaluation
+
+    understood = []
+    class Models:
+        def __init__(self, settings):
+            pass
+        def embed(self, texts):
+            return [[1., 0.]] * len(texts)
+        embed_queries = embed
+        def understand(self, question, today, *, expand):
+            understood.append(expand)
+            return {"intent": "recall", "date_from": None, "date_to": None}
+    monkeypatch.setattr(evaluation, "LocalModels", Models)
+    monkeypatch.setattr(evaluation, "dataset", lambda: (
+        [{"id": "one", "text": "Python 공부", "topic": "python"}],
+        [{"id": "test", "question": "파이썬 공부", "topics": ["python"], "group": "positive"}]))
+    report = evaluation.evaluate(replace(AppSettings(), embedding_dimensions=2), tmp_path / "result.json", current_only=True)
+    assert understood == [True]
+    assert not report["replayed_model_outputs"]
+    assert report["evaluated_modes"] == ["expanded"]
+    assert "baseline" not in report["cases"][0]

@@ -62,6 +62,8 @@ CASES = {
     "no_evidence": {"question": "지연의 혈액형이 뭐야?", "absent": True, "gold": []},
     "long_evidence": {"question": "검색 프로젝트에서 무엇을 검토했어?", "gold": ["long"]},
     "concurrent": {"question": "민수에게 무엇을 선물했어?", "gold": ["gift"], "background": True},
+    "selection_batch": {"question": "기록에 담긴 내용을 모두 찾아줘", "search": True, "selection": True,
+                        "gold": [key for key, *_ in DOCUMENTS]},
 }
 
 
@@ -181,6 +183,7 @@ def main():
     parser.add_argument("--variants", nargs="+", choices=["baseline", "cached", "batch8", "plain", "combined"], default=["baseline"])
     parser.add_argument("--cases", nargs="+", choices=list(CASES), default=list(CASES))
     parser.add_argument("--multilingual", action="store_true")
+    parser.add_argument("--multilingual-current-only", action="store_true")
     args = parser.parse_args()
     if args.samples < 1 or args.output.exists() or not 1024 <= args.port < 65535:
         parser.error("positive samples, unused output directory and valid port required")
@@ -220,7 +223,7 @@ def main():
             if args.multilingual:
                 from evaluation.multilingual_search import evaluate
 
-                evaluate(settings, args.output / "multilingual.json")
+                evaluate(settings, args.output / "multilingual.json", current_only=args.multilingual_current_only)
             for case_name in args.cases:
                 case = CASES[case_name]
                 for sample in range(args.samples + 1):
@@ -255,7 +258,16 @@ def main():
                             try:
                                 if case.get("search"):
                                     with profile_request() as profile, request_budget(300) as budget:
-                                        response = service.search(case["question"], today="2026-10-19")
+                                        if case.get("selection"):
+                                            _, candidates = service.store.snapshot(variant_settings.embedding_key)
+                                            evidence = [{"id": r["id"], "record_id": r["record_id"],
+                                                         "source_text": r["text"], "content": r["memory"]["content"],
+                                                         "fact": r["fact"], "evidence": r["evidence"]} for r in candidates]
+                                            decisions = service.models.select_explained(case["question"], evidence)
+                                            response = {"status": "ok", "results": [r for r in evidence
+                                                if decisions[r["id"]]["category"] not in {"irrelevant", "unverified_selection"}]}
+                                        else:
+                                            response = service.search(case["question"], today="2026-10-19")
                                     row["performance"] = {"profile": profile.snapshot(), "model_http_calls": budget.calls}
                                     evidence = response["results"]
                                 else:
@@ -288,6 +300,7 @@ def main():
                         report["runs"].append(row)
                         save()
                         print(json.dumps({k: row.get(k) for k in ("case", "sample", "variant", "seconds", "status", "error_code", "quality")}), flush=True)
+            report["execution_completed"] = True
     finally:
         save()
 
