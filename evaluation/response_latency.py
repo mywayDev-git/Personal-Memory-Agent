@@ -65,7 +65,7 @@ CASES = {
              "answer_patterns": [r"계획|예정", r"확인|알\s*수\s*없|불명|불확실|실제|실행"]},
     "identity": {"question": "민수는 누구야?", "clarification": True, "gold": ["coworker", "club"]},
     "followup": {"question": "그 사람 직업은 뭐야?", "anchor": "회사 동료 민수는 누구야?", "gold": ["coworker"],
-                 "answer_patterns": [r"프론트|프런트|front[- ]?end"]},
+                 "answer_patterns": [r"프론트|프런트|front[- ]?end"], "allowed_sources": ["coworker"]},
     "additional_search": {"question": "부산 여행은 왜 취소했어?", "gold": ["cancel"],
                           "answer_patterns": [r"비|우천|rain"]},
     "no_evidence": {"question": "지연의 혈액형이 뭐야?", "absent": True, "gold": []},
@@ -74,7 +74,8 @@ CASES = {
     "selection_batch": {"question": "기록에 담긴 내용을 모두 찾아줘", "search": True, "selection": True,
                         "gold": [key for key, *_ in DOCUMENTS]},
     "multi_hop": {"question": "회사 동료 민수의 직업과 부산 여행을 취소한 이유는 뭐야?",
-                  "gold": ["coworker", "cancel"], "answer_patterns": [r"프론트|프런트|front[- ]?end", r"비|우천|rain"]},
+                  "gold": ["coworker", "cancel"], "allowed_sources": ["coworker", "cancel"],
+                  "answer_patterns": [r"프론트|프런트|front[- ]?end", r"비|우천|rain"]},
 }
 
 
@@ -217,11 +218,13 @@ def quality(case, response, evidence, keys):
     cited = {keys.get(ref["record_id"]) for ref in citations}
     text = "\n".join(item["text"] for item in response.get("items", []))
     patterns_match = all(re.search(pattern, text, re.I) for pattern in case.get("answer_patterns", []))
+    scope_valid = "allowed_sources" not in case or cited <= set(case["allowed_sources"])
     passed = (status == "insufficient_evidence" if case.get("absent") else
               status == "needs_clarification" and gold <= cited if case.get("clarification") else
               status == "answered" and response.get("validation") == "model_checked" and gold <= cited)
-    return {"passed": bool(passed and valid and patterns_match), "citation_spans_valid": valid,
+    return {"passed": bool(passed and valid and patterns_match and scope_valid), "citation_spans_valid": valid,
             "answer_patterns_match": bool(patterns_match),
+            "source_scope_valid": scope_valid,
             "gold_sources_cited": len(cited & gold), "gold_sources": len(gold),
             "status": status, "validation": response.get("validation")}
 

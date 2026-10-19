@@ -31,7 +31,7 @@ def rescore(path):
             if CASES[row["case"]].get("background"):
                 row["quality"]["passed"] &= row.get("arrival_during_extract", False) and row.get("background_status") == "succeeded"
     report["rescored_from_sha256"] = original_hash
-    report["scoring_version"] = 3
+    report["scoring_version"] = 4
     report["summary"] = {f"{variant}/{case}": summary([
         row for row in report["runs"] if row["variant"] == variant and row["case"] == case])
         for variant in report["configuration"]["variants"] for case in report["configuration"]["cases"]}

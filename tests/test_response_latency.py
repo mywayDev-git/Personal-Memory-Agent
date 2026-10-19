@@ -295,3 +295,10 @@ def test_gold_checks_reject_wrong_occupation_even_with_correct_source_and_review
     assert not quality(CASES["followup"], response, evidence, {"r": "coworker"})["passed"]
     response["items"][0]["text"] = "프론트엔드 개발자입니다."
     assert quality(CASES["followup"], response, evidence, {"r": "coworker"})["passed"]
+    evidence.append({"id": "other", "record_id": "other-r", "source_text": "수학 교사"})
+    response["items"][0]["text"] = "프론트엔드 개발자이며 수학 교사입니다."
+    response["citation_details"].append({"memory_id": "other", "record_id": "other-r", "start": 0, "end": 5,
+                                         "quote": "수학 교사"})
+    checked = quality(CASES["followup"], response, evidence, {"r": "coworker", "other-r": "club"})
+    assert checked["citation_spans_valid"] and checked["answer_patterns_match"]
+    assert not checked["source_scope_valid"] and not checked["passed"]
