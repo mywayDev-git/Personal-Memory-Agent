@@ -1,0 +1,83 @@
+{
+  "python": {
+    "passed": 358,
+    "failed": 0,
+    "seconds": 26.76,
+    "warnings": [
+      "StarletteDeprecationWarning: existing httpx TestClient deprecation"
+    ]
+  },
+  "ui_checks": [
+    "multilingual_ui.mjs",
+    "query_correction_ui.mjs",
+    "search_highlight.mjs",
+    "search_audit_browser.cjs"
+  ],
+  "ui_all_passed": true,
+  "mixed_event_summary": {
+    "cases": 10,
+    "exact_sets": 10,
+    "mean_recall_at_8": 1.0,
+    "wrong_filter_questions": 0,
+    "wrong_expansion_approvals": 0,
+    "valid_expansion_rejections": 0,
+    "mean_seconds": 0.001775569998426363,
+    "p95_seconds": 0.008132400049362332
+  },
+  "answer_text_inspection": {
+    "reviewer": "Codex source/text inspection; not an independent human study",
+    "method": "Inspected every unique response text with multiplicity against the fixed synthetic sources",
+    "baseline_full_response_records": 50,
+    "planning_critical_response_records": 50,
+    "final20_simple_answer_records": 40,
+    "other_generation_embedding_basic_answer_records": 15,
+    "final20_expected_fact_correct": 40,
+    "other_model_basic_expected_fact_correct": 15,
+    "existing_errors": [
+      {
+        "case": "stopped",
+        "baseline_failures": 5,
+        "planning_failures": 5,
+        "reason": "denies_stop_record_despite_explicit_quitting_source"
+      },
+      {
+        "case": "followup",
+        "baseline_failures": 5,
+        "planning_failures": 5,
+        "reason": "wrong_or_merged_person_after_correct_coworker_anchor"
+      },
+      {
+        "case": "multi_hop",
+        "planning_failures": 5,
+        "baseline_not_measured": true,
+        "reason": "abstains_despite_two_available_facts"
+      }
+    ],
+    "limitation": "Limited synthetic scenarios; short long-evidence answers do not establish general completeness.",
+    "grading_update": "Same source-supported stop-denial exclusion applied retrospectively to all saved responses; latency data untouched.",
+    "runtime_basic_answer_records": 25,
+    "runtime_quality_screen_stop_failures": 5
+  },
+  "quality_scoring_version": 5,
+  "restoration": {
+    "experiment_ports_closed": true,
+    "original_model_hashes_verified": true,
+    "http": {
+      "app": 200,
+      "generation": 200,
+      "embedding": 200
+    },
+    "models": {
+      "port_8081": {
+        "original_context": true,
+        "original_model": true,
+        "gpu_layers_99": true
+      },
+      "port_8082": {
+        "original_context": true,
+        "original_model": true,
+        "gpu_layers_99": true
+      }
+    }
+  }
+}

@@ -4,6 +4,7 @@ import argparse
 import hashlib
 import json
 import statistics
+import unicodedata
 from pathlib import Path
 
 from evaluation.latency_models import MODELS, digest
@@ -192,6 +193,12 @@ def render_report(report):
     if "median_reduction" in gate:
         sections.append(f"단순 답변 중앙값 감소율은 {gate['median_reduction']:.1%}다. "
                         "이 수치를 복합 질문 전체의 개선율로 해석하지 않는다.\n\n")
+    auto_control = trials.get("gpu-flash-auto-basic", {}).get("summary", {}).get("baseline/simple_answer")
+    if auto_control and auto_control["median_seconds"] is not None:
+        sections.append(f"추가한 단일 변형 자동 설정 5회 기준선은 중앙값 {auto_control['median_seconds']:.3f}초였다. "
+                        "기존 코드도 이 별도 실행에서는 입력 축소 후보와 비슷한 시간에 답했다. "
+                        "교차 실행과 단일 변형 실행에서 추가 검색 분기가 달랐으며, 순서·서버 상태 등의 영향을 "
+                        "분리해 확정하지 못했다. 따라서 이 교차 조건의 감소율을 일관된 운영 속도 개선으로 채택하지 않는다.\n\n")
     sections.append("모든 핵심 사례가 통과해야 기본값 변경 후보가 된다. 인용 위치가 정확하고 독립 모델 검증이 "
                     "성공해도 동명이인의 직업을 합치거나 반납 계획을 실제 실행으로 해석하면 실패다. "
                     "정답 근거 누락·과도한 거절도 품질 실패로 센다.\n\n")
@@ -318,6 +325,19 @@ def render_report(report):
                               http.get("/tokenize", {}).get("calls_median", "미측정"),
                               part.get("counters", {}).get("token_cache_hits", {}).get("median", 0)])
             sections.append(rst_table(["변형/사례", "생성 호출 중앙값", "토큰 계산 호출 중앙값", "캐시 적중 중앙값"], calls))
+        else:
+            calls = []
+            for name in names:
+                part = trials.get(name, {}).get("breakdown", {}).get("baseline/simple_answer")
+                if part:
+                    generation = part.get("http", {}).get("/v1/chat/completions", {})
+                    calls.append([name, part.get("counters", {}).get("search_iterations", {}).get("median", "미측정"),
+                                  generation.get("calls_median", "미측정"), seconds(generation.get("seconds_median"))])
+            sections.append(rst_table(["실험", "검색 반복 중앙값", "생성 호출 중앙값", "생성 HTTP 초"], calls))
+            sections.append("이 설정 비교는 종단 응답 시간이다. 호출 횟수와 추가 검색 판단도 달라졌으므로 "
+                            "차이를 모두 Flash Attention 커널 계산 속도의 효과로 단정하지 않는다. "
+                            "빠른 설정은 학습 중단 사례부터 추가 품질 검사를 했고, 실패하면 나머지 복합 사례를 "
+                            "통과했다고 간주하지 않는다.\n\n")
     sections.append("selection_batch는 11개 모든 후보를 기존 인용 문맥 범위로 판정하는 구성 요소 실험이며 최종 답변 지연이 아니다. "
                     "관련성 판정은 기존 compact_evidence의 인용 시작 200자 전부터 600자 뒤까지인 범위를 유지한다. "
                     "추가 검색 판단의 전체 source_text와 최종 원문 인용 검증 범위는 줄이지 않았다. "
@@ -383,7 +403,26 @@ def render_report(report):
                         f"혼합 사건 평가는 {mixed['exact_sets']}/{mixed['cases']}개 정답 집합 일치, "
                         f"평균 Recall@8 {mixed['mean_recall_at_8']:.3f}, 잘못된 필터 질문 {mixed['wrong_filter_questions']}개다. "
                         "혼합 사건 평가는 결정적 대체 모델을 사용하는 회귀 검사로, 실제 모델 정확도와 구분한다.\n")
-    return "".join(sections)
+        restored = verification.get("restoration")
+        if restored:
+            models = restored.get("models", {})
+            ready = (all(restored.get("http", {}).get(key) == 200 for key in ("app", "generation", "embedding"))
+                     and restored.get("original_model_hashes_verified") is True
+                     and restored.get("experiment_ports_closed") is True
+                     and set(models) == {"port_8081", "port_8082"}
+                     and all(all(row.get(key) is True for key in ("original_context", "original_model", "gpu_layers_99"))
+                             for row in models.values()))
+            sections.append("\n앱 복구 확인: 화면 8765 및 모델 8081·8082에서 모두 HTTP 200. "
+                            "원래 모델 해시·문맥 한도·GPU 오프로딩을 확인했고 실험 포트 18181·18182는 종료했다.\n"
+                            if ready else "\n앱 복구 상태는 추가 확인이 필요하다. JSON 복구 기록을 참고한다.\n")
+    lines = "".join(sections).splitlines()
+    for index in range(1, len(lines)):
+        line = lines[index]
+        if line and line[0] in "=-" and len(set(line)) == 1:
+            width = sum(0 if unicodedata.combining(c) else 2 if unicodedata.east_asian_width(c) in "FW" else 1
+                        for c in lines[index - 1])
+            lines[index] = line[0] * width
+    return "\n".join(lines) + "\n"
 
 
 def main():
