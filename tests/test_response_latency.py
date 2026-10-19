@@ -251,3 +251,35 @@ def test_retrieval_gate_rejects_a_single_question_regression_even_if_average_imp
     assert retrieval_gate(baseline, candidate)["passed"]
     candidate["cases"][0]["expanded"]["recall_at_8"] = .5
     assert retrieval_gate(baseline, candidate)["regressed_cases"] == ["0"]
+
+
+def test_planning_trial_preserves_all_semantic_source_fields_and_stored_audit(monkeypatch):
+    from copy import deepcopy
+
+    from evaluation.response_latency import planning_variant
+    from pma.chat import automatic
+
+    seen = []
+    def structured(engine, prompt, data, schema, max_tokens=1024):
+        seen.append(data)
+        return {"query": ""}
+    monkeypatch.setattr(automatic, "structured", structured)
+    data = {"history": [{"question": "회사 동료 민수는?"}],
+            "searches": [{"question": "민수", "filters": {"date_from": "2026-10-01"},
+                          "query_plan": {"requested_slots": ["recipient"]}}],
+            "evidence": [{"id": "m", "source_text": "회사 동료 민수는 프론트엔드 개발자다.",
+                          "evidence": [{"quote": "프론트엔드 개발자"}],
+                          "time": {"certainty": "uncertain"}, "reference_time": "2026-10-19",
+                          "fact": {"review_reasons": ["extraction_meaning_mismatch"]},
+                          "score": .1, "search_explanation": {"selection": "selected"}}]}
+    before = deepcopy(data)
+    with planning_variant(True):
+        automatic.structured(None, "", data, automatic.NEXT)
+        assert seen[-1]["evidence"][0]["source_text"] == data["evidence"][0]["source_text"]
+        assert seen[-1]["evidence"][0]["fact"] == data["evidence"][0]["fact"]
+        assert seen[-1]["searches"][0]["filters"] == data["searches"][0]["filters"]
+        assert "query_plan" not in seen[-1]["searches"][0]
+        assert "search_explanation" not in seen[-1]["evidence"][0]
+        automatic.structured(None, "", data, automatic.ROUTE)
+        assert seen[-1] is data
+    assert automatic.structured is structured and data == before

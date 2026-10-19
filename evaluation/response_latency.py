@@ -72,6 +72,27 @@ CASES = {
 }
 
 
+@contextmanager
+def planning_variant(enabled):
+    """Evaluation-only input reduction; source semantics and product defaults stay intact."""
+    if not enabled:
+        yield
+        return
+    from pma.chat import automatic
+
+    original = automatic.structured
+    def structured(engine, prompt, data, schema, max_tokens=1024):
+        if schema is automatic.NEXT:
+            data = {**data,
+                    "searches": [{k: v for k, v in row.items() if k != "query_plan"}
+                                 for row in data.get("searches", [])],
+                    "evidence": [{k: v for k, v in row.items() if k not in {"score", "search_explanation"}}
+                                 for row in data.get("evidence", [])]}
+        return original(engine, prompt, data, schema, max_tokens)
+    with patch.object(automatic, "structured", structured):
+        yield
+
+
 def summary(rows):
     measured = [row for row in rows if not row.get("warmup")]
     completed = [row for row in measured if not row.get("error_code")]
@@ -208,7 +229,7 @@ def main():
     parser.add_argument("--threads", type=int, default=0)
     parser.add_argument("--samples", type=int, default=5)
     parser.add_argument("--port", type=int, default=18181)
-    parser.add_argument("--variants", nargs="+", choices=["baseline", "cached", "batch8", "plain", "combined"], default=["baseline"])
+    parser.add_argument("--variants", nargs="+", choices=["baseline", "cached", "batch8", "plain", "combined", "planning", "planning_plain"], default=["baseline"])
     parser.add_argument("--cases", nargs="+", choices=list(CASES), default=list(CASES))
     parser.add_argument("--multilingual", action="store_true")
     parser.add_argument("--multilingual-current-only", action="store_true")
@@ -279,18 +300,20 @@ def main():
                     for variant in order:
                         variant_settings = replace(settings, request_token_cache=variant in {"cached", "combined"},
                                                    selection_batch_size=8 if variant in {"batch8", "combined"} else 4,
-                                                   chat_presentation="plain" if variant in {"plain", "combined"} else "reviewed")
+                                                   chat_presentation="plain" if variant in {"plain", "combined", "planning_plain"} else "reviewed")
                         path = args.output / f"{case_name}-{sample}-{variant}.db"
                         shutil.copy2(seed, path)
                         service = Service(Store(path), LocalModels(variant_settings), variant_settings)
                         engine = ChatEngine(service)
                         sid = engine.store.create_empty()["id"]
                         if case.get("anchor"):
-                            engine.message(sid, "anchor", case["anchor"], today="2026-10-19", mode="memory")
+                            with planning_variant(variant in {"planning", "planning_plain"}):
+                                engine.message(sid, "anchor", case["anchor"], today="2026-10-19", mode="memory")
                         row = {"case": case_name, "sample": sample, "warmup": sample == 0, "variant": variant,
                                "parameters": {"request_token_cache": variant_settings.request_token_cache,
                                               "selection_batch_size": variant_settings.selection_batch_size,
-                                              "chat_presentation": variant_settings.chat_presentation}}
+                                              "chat_presentation": variant_settings.chat_presentation,
+                                              "compact_planning": variant in {"planning", "planning_plain"}}}
                         worker = None
                         background_record = None
                         if case.get("background"):
@@ -323,7 +346,8 @@ def main():
                                     row["performance"] = {"profile": profile.snapshot(), "model_http_calls": budget.calls}
                                     evidence = response["results"]
                                 else:
-                                    response = engine.message(sid, "measured", case["question"], today="2026-10-19", mode="memory")
+                                    with planning_variant(variant in {"planning", "planning_plain"}):
+                                        response = engine.message(sid, "measured", case["question"], today="2026-10-19", mode="memory")
                                     message = engine.store.get(sid)["messages"][-1]
                                     row["performance"] = message["snapshot"].get("performance", {})
                                     evidence = message["evidence"]
