@@ -314,7 +314,9 @@ def test_cached_token_counts_still_enforce_context_limit_and_deadline(monkeypatc
         calls.append(1)
         return {"tokens": list(range(80))}
     monkeypatch.setattr("scripts.memory_agent.llm_client.post_json", post)
-    settings = replace(AppSettings(), request_token_cache=True, context_tokens=1024)
+    settings = replace(AppSettings(), request_token_cache=True, context_tokens=1024,
+                       llm=replace(AppSettings().llm, max_tokens=256))
+    settings.validate()
     models = LocalModels(settings)
     with request_budget(10) as budget:
         models.budget(None, "same immutable input", 100)
