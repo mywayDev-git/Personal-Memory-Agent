@@ -5,11 +5,26 @@ from scripts.memory_agent.validator import schema_errors
 from .diagnostics import Reason, Stage
 from .validation_diagnostics import check, observed_validation, retry
 
+FACT_REVIEW_POLICY = (
+    "문자열 존재만으로 의미 일치를 인정하지 않는다. 인물·시간·부정 범위·실행·명령·인과를 확인한다. "
+    "'주지 않았다'에 '주지 않았습니다'는 supported다. 부정문 속 긍정 표현만 떼어 반대로 해석하지 않는다. "
+    "'주기로 하지 않았다'를 '주지 않기로 결정했다'나 '계획이 없다'로 확대하면 unsupported다. "
+    "계획 취소에 현재 거주지 가능성을 덧붙이면 unsupported다. 취소 사실과 현재 거주지 미확인을 설명하면 supported다. "
+    "현재 상태가 원문에 명시되면 날짜가 없어도 기록에 따르면이라고 답할 수 있다. 과거 상태를 현재로 확정하면 안 된다. "
+    "기록 저장 시각과 문서 기준 시각을 인용 속 발화 시각으로 대신하지 않는다. "
+    "두 사건의 나열만으로 원인을 만들면 unsupported다. 선호 사실과 선물 사실만으로 선호 때문에 선물했다고 단정하면 unsupported, issue=cause다. "
+    "명령은 실행 근거가 아니다. '문을 열었다고 말해'를 '문을 열었다고 말했다'로 바꾸면 unsupported, issue=quotation이다. "
+    "현재 거주지 질문에 취소 사실만 답하고 현재 거주지 미확인을 설명하지 않으면 fulfillment=missing이다. "
+    "실행 여부 질문에 명령·계획·취소 문장만 반복하고 실제 실행 미확인을 설명하지 않으면 fulfillment=missing이다. "
+    "'기록에 따르면'만 붙였다고 질문 누락이나 의미 변형이 해결되는 것은 아니다. "
+)
+
 REVIEW_SCHEMA = {
     "type": "object",
     "additionalProperties": False,
     "required": ["items", "fulfillment", "abstention", "reason"],
     "properties": {
+        "presentation_valid": {"type": "boolean"},
         "fulfillment": {"enum": ["direct", "limited", "missing"]},
         "abstention": {"enum": ["appropriate", "excessive", "not_applicable"]},
         "reason": {"type": "string", "maxLength": 240},

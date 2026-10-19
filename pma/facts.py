@@ -16,7 +16,7 @@ from scripts.memory_agent.provenance import normalize_time, sentences
 from .diagnostics import Reason, Stage
 from .facts_diagnostics import comparison_check, comparison_reason, observed_facts
 
-FACT_VERSION = 7
+FACT_VERSION = 8
 RELATIONS = (
     "desire",
     "give",
@@ -79,6 +79,24 @@ def relation(text):
         if re.search(PATTERNS[key], text):
             return key
     return "other"
+
+
+def mentions_person(text, person):
+    return bool(re.search(
+        r"(?<![가-힣A-Za-z])" + re.escape(person) +
+        r"(?=이(?:가|는|를|랑|한테|에게)|한테|에게|와|과|랑|은|는|을|를|이|가|[\s.,!?]|$)", text
+    ))
+
+
+def companions(content, quote_text):
+    """Only an explicit companion in the focused event, corroborated by its quote."""
+    if re.search(r"없이|아니라|추천|않|못|안\s|가정|라면|다면", content):
+        return []
+    matches = re.finditer(
+        r"(?<![가-힣A-Za-z])([가-힣A-Za-z]{2,12}?)(?:이랑|랑|와|과)\s+"
+        r"(?:함께\s+|같이\s+)?[^.!?\n]{0,40}(?:산책|만났|만나|회의|식사|먹|여행|갔|달렸)", content
+    )
+    return sorted({m[1] for m in matches if m.group() in quote_text})
 
 
 def project(memory, source, reference_time, recorded_at, evidence=None):
@@ -235,6 +253,7 @@ def project(memory, source, reference_time, recorded_at, evidence=None):
         "actor": actor,
         "recipient": recipient,
         "counterparty": counterparty,
+        "participants": companions(content, quote_text),
         "speaker": None,
         "review_reasons": review,
         "action_relation": next(
@@ -316,6 +335,7 @@ def explicit_dates(question, today):
 
 @observed_facts(Stage.QUERY_PLAN)
 def query_plan(question, understood, today):
+    from .search_expressions import canonical_query
     # Model roles remain hints. A source substring proves provenance, not semantics.
     hints = {}
     for role in ("actor", "recipient"):
@@ -332,8 +352,11 @@ def query_plan(question, understood, today):
             and not re.search(r"누구|누가|언제", evidence)
         ):
             hints[role] = {"value": name(value), "evidence": evidence, "verified": False}
-    rel = relation(question)
-    if re.search(r"달린|달렸|달려|달리", question):
+    # Registered noun phrases (e.g. 머신러닝) must not trigger an activity
+    # condition merely because they contain 러닝. Keep the original question.
+    relation_question = canonical_query(question)
+    rel = relation(relation_question)
+    if re.search(r"달린|달렸|달려|달리", relation_question):
         rel = "run"
     kind = (
         "why"

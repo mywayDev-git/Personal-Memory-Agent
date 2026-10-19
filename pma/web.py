@@ -86,6 +86,7 @@ class Filters(Input):
 
 
 class QueryInput(Input):
+    correction_enabled: bool = True
     question: str = Field(min_length=1, max_length=1000)
     filters: Filters | None = None
     today: str | None = None
@@ -142,9 +143,9 @@ def create_app(settings=None, models=None, run_worker=True, console_test=False):
                 sink.intro(settings.data_dir / "memory.db")
             service = Service(store, models or LocalModels(settings), settings, diagnostic_sink=sink)
             app.state.store, app.state.service = store, service
-            from .chat.engine import ChatEngine
+            from .chat.orchestrator import ChatOrchestrator
 
-            app.state.chat = ChatEngine(service)
+            app.state.chat = ChatOrchestrator(service)
             app.state.chat.store.recover()
             if run_worker:
                 service.start()
@@ -413,17 +414,22 @@ def create_app(settings=None, models=None, run_worker=True, console_test=False):
     @app.post("/api/v1/search")
     def search(data: QueryInput):
         return app.state.service.search(
-            data.question, data.filters.model_dump() if data.filters else None, data.today
+            data.question, data.filters.model_dump() if data.filters else None, data.today,
+            **({"correction_enabled": False} if not data.correction_enabled else {})
         )
 
     from .chat.api import router as chat_router
 
     app.include_router(chat_router(Input, QueryInput))
+    from .memory.api import router as memory_router
+
+    app.include_router(memory_router(Input))
 
     @app.post("/api/v1/answers")
     def answer(data: QueryInput):
         return app.state.service.answer(
-            data.question, data.filters.model_dump() if data.filters else None, data.today
+            data.question, data.filters.model_dump() if data.filters else None, data.today,
+            **({"correction_enabled": False} if not data.correction_enabled else {})
         )
 
     from .web_diagnostics import DiagnosticMiddleware

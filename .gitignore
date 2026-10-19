@@ -8,6 +8,7 @@ __pycache__/
 *.db-*
 *.sqlite*
 *.gguf
+*.pyd
 .local/
 output/
 .test-tmp*/

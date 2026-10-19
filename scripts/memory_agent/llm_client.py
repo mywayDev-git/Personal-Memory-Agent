@@ -64,6 +64,21 @@ def request_budget(seconds):
         _request_budget.reset(token)
 
 
+@contextmanager
+def optional_request_budget(seconds, reserve=2):
+    """Bound optional display work, leaving the parent time to persist the answer."""
+    parent = _request_budget.get()
+    if parent is not None and parent.remaining() < seconds + reserve:
+        yield False
+        return
+    with request_budget(seconds) as child:
+        try:
+            yield True
+        finally:
+            if parent is not None:
+                parent.calls.extend(child.calls)
+
+
 def validate_endpoint(endpoint: str) -> None:
     url = urlsplit(endpoint)
     if (

@@ -15,16 +15,18 @@ from scripts.memory_agent.validator import schema_errors
 from ..answer_review import accepted, validate_review
 from ..errors import AppError
 from ..grounding import claims_supported
-from ..models import ANSWER_SCHEMA, LocalModels
+from ..models import LocalModels
+from .answer_audit import answer_audit, attach_answer_audit, review_attempt
 from .evidence import (
     causal_claims_supported,
     direct_statement,
     identity_alternatives,
+    preserve_overview,
     reviewed_citations,
     selected_alternative,
 )
 from .models import ChatLocalModels
-from .presentation import presentation
+from .presentation import CHAT_ANSWER_SCHEMA, presentation, reviewed_display
 from .schemas import ConversationMode
 from .store import ChatStore, changed
 
@@ -91,19 +93,21 @@ class ChatEngine:
         self.service = service
         self.store = ChatStore(service.store)
         self.progress = {}
+        self.progress_times = {}
         self.progress_lock = RLock()
         self.models = service.models
         if isinstance(self.models, LocalModels):
             # The chat module always uses the reviewed prompt, without changing legacy search.
             self.models = ChatLocalModels(replace(self.models.settings, answer_validation=True))
 
-    def search(self, question, filters=None, today=None):
-        found = self.service.search(question, filters, today)
+    def search(self, question, filters=None, today=None, *, correction_enabled=True):
+        found = self.service.search(question, filters, today, **({"correction_enabled": False} if not correction_enabled else {}))
         settings = self.service.settings
         return self.store.save_search(
             found,
             {
                 "question": question,
+                "route": {"mode": "EXPLICIT_SEARCH", "reason_code": "SEARCH_BUTTON"},
                 "filters": found["filters"],
                 "today": today,
                 "search_version": "evidence-chat-v1",
@@ -206,6 +210,12 @@ class ChatEngine:
 
     def generate(self, question, session, today, *, original_question=None):
         models = self.models
+        attempts = []
+
+        def finish(response, reason=None):
+            response["answer_audit"] = answer_audit(session["evidence"], attempts, response, reason)
+            return response
+
         intent_question = original_question or question
         resolved, history_count = self.resolve(
             question, session, today, original_question=intent_question
@@ -231,13 +241,14 @@ class ChatEngine:
                         "end": start + len(quote),
                     }
                 )
-            return {
+            return finish({
                 "status": "needs_clarification",
                 "items": items,
                 "citation_details": details,
                 "clarification": resolved["clarification"],
                 "history_turns": history_count,
-            }
+            }, "clarification_required")
+        resolved["question"] = preserve_overview(intent_question, resolved["question"])
         if question != resolved["question"]:
             question = (
                 "현재 사용자 질문: "
@@ -251,20 +262,22 @@ class ChatEngine:
             if not isinstance(selected, list) or not set(selected) <= {r["id"] for r in evidence}:
                 raise ValueError("INVALID_SELECTION")
             if not selected:
-                return {
+                return finish({
                     "status": "insufficient_evidence",
                     "items": [],
                     "validation": "no_relevant_evidence",
                     "history_turns": history_count,
-                }
+                }, "no_relevant_evidence")
             # Keep the complete frozen bundle for conflict detection; relevance gating
             # must not silently hide a contradictory selected record.
             evidence = sorted(evidence, key=lambda row: row["id"] not in selected)
         response = direct_statement(question, evidence, intent_question) or models.answer(
             question, evidence
         )
+        generation_index = 1
+        review_feedback = None
         for attempt in range(2):
-            if schema_errors(response, ANSWER_SCHEMA):
+            if schema_errors(response, CHAT_ANSWER_SCHEMA):
                 raise ValueError("INVALID_ANSWER")
             if (response["status"] == "answered") != bool(response["items"]):
                 raise ValueError("INVALID_ANSWER_STATE")
@@ -278,10 +291,14 @@ class ChatEngine:
                 intent_question, response, evidence
             )
             try:
-                review = validate_review(
-                    models.review(question, evidence, response), response, evidence
+                checked = (
+                    models.review(question, evidence, response, feedback=review_feedback)
+                    if isinstance(models, ChatLocalModels)
+                    else models.review(question, evidence, response)
                 )
+                review = validate_review(checked, response, evidence)
                 review_ok = accepted(review, response)
+                review_feedback = None
             except ValueError as exc:
                 review = {
                     "error": "INVALID_REVIEW",
@@ -289,6 +306,7 @@ class ChatEngine:
                     "instruction": "원문의 정확한 인용으로만 답하라.",
                 }
                 review_ok = False
+                review_feedback = {"error": str(exc), "instruction": "유효한 답변 index와 해당 답변의 인용 기록에 속한 span_id를 사용하고, 모순된 판정을 수정하라."}
             self.service.trace("chat_verification", supported=attributes and review_ok)
             self.service.trace(
                 "chat_validation",
@@ -297,13 +315,20 @@ class ChatEngine:
                 review=review,
                 attributes_supported=attributes,
             )
+            attempts.append(review_attempt(response, review, attributes, attributes and review_ok))
+            attempts[-1]["generation"] = generation_index
             if attributes and review_ok:
-                return {
+                display = reviewed_display(response, review)
+                response = {k: v for k, v in response.items() if k != "display"}
+                if display is not None:
+                    response["display"] = display
+                return finish({
                     **reviewed_citations(response, review, evidence),
                     "validation": "model_checked",
                     "history_turns": history_count,
-                }
-            if not attempt:
+                })
+            if not attempt and not review.get("error"):
+                generation_index += 1
                 response = models.answer(
                     question,
                     evidence,
@@ -313,12 +338,24 @@ class ChatEngine:
                         "attributes_supported": attributes,
                     },
                 )
-        return {
+        return finish({
             "status": "insufficient_evidence",
             "items": [],
             "validation": "rejected",
             "history_turns": history_count,
-        }
+        })
+
+    def timing(self, sid, request_id):
+        clock = self.progress_times.get((sid, request_id))
+        if not clock:
+            return {}
+        now = time.monotonic()
+        durations = dict(clock["durations"])
+        current = self.progress.get((sid, request_id))
+        durations[current] = durations.get(current, 0) + now - clock["since"]
+        return {"elapsed_seconds": round(now - clock["started"], 3),
+                "phase_seconds": round(now - clock["since"], 3),
+                "phase_timings": {key: round(value, 3) for key, value in durations.items()}}
 
     def request_status(self, sid, request_id):
         state = self.store.request_state(sid, request_id)
@@ -327,9 +364,10 @@ class ChatEngine:
                 **state,
                 "phase": self.progress.get((sid, request_id)),
                 "worker_active": (sid, request_id) in self.progress,
+                **self.timing(sid, request_id),
             }
 
-    def message(self, sid, request_id, question, today=None, context_message_id=None, mode="auto"):
+    def message(self, sid, request_id, question, today=None, context_message_id=None, mode="auto", *, filters=None, correction_enabled=True):
         mode = ConversationMode(mode)
         started = time.monotonic()
         with self.progress_lock:
@@ -341,11 +379,13 @@ class ChatEngine:
                     True,
                 )
             mid, cached = self.store.begin(
-                sid, request_id, question, today, context_message_id, mode
+                sid, request_id, question, today, context_message_id, mode, filters,
+                **({"correction_enabled": False} if not correction_enabled else {})
             )
             if cached is not None:
                 return {"message_id": mid, **cached}
             self.progress[sid, request_id] = "resolving_context"
+            self.progress_times[sid, request_id] = {"started": started, "since": started, "durations": {}}
 
         def phase(name):
             if self.store.request_state(sid, request_id)["state"] != "running":
@@ -360,7 +400,18 @@ class ChatEngine:
                 "review": "validating",
             }
             with self.progress_lock:
-                self.progress[sid, request_id] = labels.get(name, "generating")
+                next_phase = labels.get(name, "generating")
+                previous = self.progress[sid, request_id]
+                if previous != next_phase:
+                    clock = self.progress_times[sid, request_id]
+                    now = time.monotonic()
+                    clock["durations"][previous] = clock["durations"].get(previous, 0) + now - clock["since"]
+                    clock["since"] = now
+                    self.progress[sid, request_id] = next_phase
+
+        def wait_cancelled():
+            budget.remaining()
+            return self.store.request_state(sid, request_id)["state"] != "running"
 
         try:
             with (
@@ -368,11 +419,13 @@ class ChatEngine:
                 request_budget(
                     self.service.settings.chat_timeout - (time.monotonic() - started)
                 ) as budget,
-                self.service.model_slot(wait=min(5, budget.remaining())),
+                self.service.model_slot(wait=budget.remaining(), cancelled=wait_cancelled),
             ):
                 budget.remaining()
                 lock_seconds = time.monotonic() - started
                 session = self.store.get(sid)
+                session["request_filters"] = filters
+                session["correction_enabled"] = correction_enabled
                 if context_message_id:
                     # Revisit a stored, valid turn for interpretation, never as source proof.
                     session["messages"] = [m for m in session["messages"] if m["id"] != mid]
@@ -440,17 +493,26 @@ class ChatEngine:
                             else response.get("conversation_type", "memory")
                         )
                         response["requested_mode"] = mode
+                        from .memory_capture import capture_intent
+
+                        if capture_intent(question):
+                            response['memory_save_notice'] = '기억 후보를 확인하고 저장을 승인해 주세요. 승인 전에는 장기 기억에 등록되지 않습니다.'
                         response["elapsed_seconds"] = round(time.monotonic() - started, 3)
                         response["model"] = self.service.settings.llm.model or "server-default"
                         response["generation_revision"] = os.getenv(
                             "PMA_GENERATION_REVISION", "unconfigured"
                         )
-                        response["chat_prompt_version"] = 4
+                        response["chat_prompt_version"] = 5
                         response["presentation"] = presentation(response)
+                        if "answer_audit" in response:
+                            attach_answer_audit(metadata, response.pop("answer_audit"))
+                        else:
+                            metadata.pop("answer_audit", None)
                         metadata.update(
+                            context_version=session.get("context", {}).get("version", 0),
                             model=response["model"],
                             generation_revision=response["generation_revision"],
-                            chat_prompt_version=4,
+                            chat_prompt_version=5,
                         )
                         budget.remaining()
                         phase("review")
@@ -458,12 +520,15 @@ class ChatEngine:
                             "lock_wait_seconds": round(lock_seconds, 3),
                             "model_http_calls": budget.calls,
                         }
+                        with self.progress_lock:
+                            response.update(self.timing(sid, request_id))
                         self.store.finish(sid, mid, response, evidence, metadata, budget=budget)
                         break
                     except AppError as exc:
                         if exc.code != "SOURCE_CHANGED" or attempt or self.fixed_evidence:
                             raise
                         session = self.store.get(sid)
+                        session["request_filters"] = filters
             self.service.trace("chat_result", question=question, response=response)
             return {"message_id": mid, **response}
         except Exception as exc:
@@ -482,3 +547,4 @@ class ChatEngine:
         finally:
             with self.progress_lock:
                 self.progress.pop((sid, request_id), None)
+                self.progress_times.pop((sid, request_id), None)

@@ -155,8 +155,10 @@ class Store:
             version = db.execute("PRAGMA user_version").fetchone()[0]
             if version not in (0, 1, 2, 3, 4, 5):
                 raise RuntimeError("UNSUPPORTED_DATABASE_VERSION")
+            from .chat.migrations import DDL as CHAT_EXTENSION_DDL
             from .chat.schema import DDL as CHAT_DDL
             from .chat.schema import upgrade_v4, upgrade_v5
+            from .memory.repository import DDL as CAPTURE_DDL
 
             has_request_input = any(
                 row["name"] == "request_input"
@@ -169,6 +171,8 @@ class Store:
                 + CHAT_DDL
                 + upgrade_v4(version)
                 + upgrade_v5(has_request_input)
+                + CAPTURE_DDL
+                + CHAT_EXTENSION_DDL
                 + "\nCOMMIT;"
             )
 
@@ -352,6 +356,9 @@ class Store:
         self.checkpoint()
 
     def expire(self):
+        from .memory.repository import MemoryRepository
+
+        MemoryRepository(self).cleanup()
         with self.connect(True) as db:
             cutoff = (datetime.fromisoformat(self.clock()) - timedelta(hours=24)).isoformat()
             db.execute(
@@ -375,9 +382,15 @@ class Store:
         finally:
             db.close()
 
-    def retry(self, rid):
+    def retry(self, rid, expected_version=None):
         with self.connect(True) as db:
             r = self.require(db, rid, "active")
+            if expected_version is not None and r["version"] != expected_version:
+                raise AppError("RECORD_VERSION_CONFLICT", "최신 기억을 다시 확인해 주세요.", 409)
+            if r["status"] == "archived":
+                raise AppError(
+                    "INVALID_RECORD_STATE", "보관된 기억을 먼저 다시 활성화해 주세요.", 409
+                )
             rev = db.execute(
                 "SELECT id FROM revisions WHERE record_id=? AND version=?", (rid, r["version"])
             ).fetchone()[0]
@@ -567,27 +580,54 @@ class Store:
                 raise AppError("NOT_FOUND", "작업을 찾을 수 없습니다.", 404)
             return dict(r)
 
-    def snapshot(self, model_key):
+    def snapshot_for_owner(self, model_key, owner_id):
+        return self.snapshot(model_key, owner_id=owner_id)
+
+    def snapshot(self, model_key, *, owner_id=None):
         observation = _start_observation()
         with self.connect() as db:
             generation = db.execute("SELECT generation FROM metadata WHERE id=1").fetchone()[0]
             rows = db.execute(
-                "SELECT m.id,m.payload,e.vector,e.dimensions,v.record_id,v.version,v.text,v.reference_time,v.created_at,f.payload AS fact_payload FROM memories m JOIN embeddings e ON e.memory_id=m.id JOIN revisions v ON v.id=m.revision_id JOIN records r ON r.id=v.record_id LEFT JOIN facts f ON f.memory_id=m.id AND f.projection_version=? WHERE r.state='active' AND r.status='ready' AND r.version=v.version AND e.model_key=? ORDER BY v.id,m.local_id",
-                (FACT_VERSION, model_key),
+                # Materialize exclusions once rather than scanning captures twice
+                # for every memory. Automatic join indexes require no schema change.
+                "WITH archived AS MATERIALIZED ("
+                "SELECT record_id,json_extract(payload,'$.record_version') AS version "
+                "FROM captured_memories WHERE json_extract(payload,'$.lifecycle_status')='archived'), "
+                "other_owners AS MATERIALIZED (SELECT DISTINCT record_id FROM captured_memories "
+                "WHERE ? IS NOT NULL AND owner_id<>?) "
+                "SELECT m.id,m.payload,e.vector,e.dimensions,v.record_id,v.version,v.text,"
+                "v.reference_time,v.created_at,f.payload AS fact_payload "
+                "FROM memories m JOIN embeddings e ON e.memory_id=m.id "
+                "JOIN revisions v ON v.id=m.revision_id JOIN records r ON r.id=v.record_id "
+                "LEFT JOIN facts f ON f.memory_id=m.id AND f.projection_version=? "
+                "LEFT JOIN archived a ON a.record_id=r.id AND a.version=r.version "
+                "LEFT JOIN other_owners o ON o.record_id=r.id "
+                "WHERE r.state='active' AND r.status='ready' AND r.version=v.version "
+                "AND a.record_id IS NULL AND o.record_id IS NULL "
+                "AND e.model_key=? ORDER BY v.id,m.local_id",
+                (owner_id, owner_id, FACT_VERSION, model_key),
             ).fetchall()
+            # Keep the same read transaction and evidence ordering, but avoid one
+            # SQL round trip per memory. Small batches also support SQLite builds
+            # with the older 999-variable limit.
+            evidence = {}
+            for offset in range(0, len(rows), 500):
+                ids = [row["id"] for row in rows[offset:offset + 500]]
+                placeholders = ",".join("?" for _ in ids)
+                for item in db.execute(
+                    "SELECT memory_id,quote,start,end FROM evidence WHERE memory_id IN ("
+                    + placeholders + ") ORDER BY memory_id,position", ids
+                ):
+                    evidence.setdefault(item["memory_id"], []).append(
+                        {key: item[key] for key in ("quote", "start", "end")}
+                    )
             result = []
             for row in rows:
                 item = dict(row)
                 item["memory"] = json.loads(item.pop("payload"))
                 fact = item.pop("fact_payload")
                 item["fact"] = json.loads(fact) if fact else None
-                item["evidence"] = [
-                    dict(e)
-                    for e in db.execute(
-                        "SELECT quote,start,end FROM evidence WHERE memory_id=? ORDER BY position",
-                        (row["id"],),
-                    )
-                ]
+                item["evidence"] = evidence.get(row["id"], [])
                 result.append(item)
         _observe_read(Stage.SNAPSHOT, observation, result)
         return generation, result
