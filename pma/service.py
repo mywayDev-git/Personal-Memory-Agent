@@ -507,7 +507,8 @@ class Service:
                             for item in expansion["queries"]]
         try:
             query_vectors = normalized_vectors(
-                self.models.embed(queries), len(queries), self.settings.embedding_dimensions
+                getattr(self.models, "embed_queries", self.models.embed)(queries),
+                len(queries), self.settings.embedding_dimensions
             )
         except (ValueError, requests.RequestException, AppError):
             if len(queries) == 1:
@@ -520,7 +521,8 @@ class Service:
             expanded_queries = []
             corrected = None
             query_vectors = normalized_vectors(
-                self.models.embed([canonical_query(question)]), 1, self.settings.embedding_dimensions
+                getattr(self.models, "embed_queries", self.models.embed)([canonical_query(question)]),
+                1, self.settings.embedding_dimensions
             )
         query = query_vectors[0]
         matrix = self._candidate_matrix(generation, candidates)

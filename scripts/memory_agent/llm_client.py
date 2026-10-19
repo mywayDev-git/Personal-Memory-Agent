@@ -3,6 +3,7 @@
 import hashlib
 import json
 import time
+from collections import OrderedDict
 from contextlib import contextmanager
 from contextvars import ContextVar
 from urllib.parse import urlsplit
@@ -10,7 +11,7 @@ from urllib.parse import urlsplit
 import requests
 
 from .diagnostics import ProcessingError
-from .performance import measure
+from .performance import count, measure
 
 _request_budget = ContextVar("model_request_budget", default=None)
 _model_phase = ContextVar("model_phase", default="other")
@@ -47,6 +48,7 @@ class RequestBudget:
     def __init__(self, seconds):
         self.deadline = time.monotonic() + seconds
         self.calls = []
+        self.token_counts = OrderedDict()
 
     def remaining(self):
         remaining = self.deadline - time.monotonic()
@@ -74,11 +76,36 @@ def optional_request_budget(seconds, reserve=2):
         yield False
         return
     with request_budget(seconds) as child:
+        if parent is not None:
+            child.token_counts = parent.token_counts
         try:
             yield True
         finally:
             if parent is not None:
                 parent.calls.extend(child.calls)
+
+
+def token_count(session, endpoint, content, timeout, *, add_special, cache=False, identity=""):
+    """Exact tokenizer counts only; bounded cache dies with the request budget."""
+    budget = _request_budget.get()
+    key = hashlib.sha256(json.dumps([endpoint, identity, add_special, content],
+                                    ensure_ascii=False).encode()).digest()
+    if budget is not None:
+        budget.remaining()
+        if cache and key in budget.token_counts:
+            budget.token_counts.move_to_end(key)
+            count("token_cache_hits")
+            return budget.token_counts[key]
+    payload = post_json(session, endpoint, {"content": content, "add_special": add_special}, timeout)
+    tokens = payload.get("tokens")
+    if not isinstance(tokens, list):
+        raise ValueError("MODEL_TOKENIZER_UNAVAILABLE")
+    result = len(tokens)
+    if cache and budget is not None:
+        budget.token_counts[key] = result
+        if len(budget.token_counts) > 128:
+            budget.token_counts.popitem(last=False)
+    return result
 
 
 def validate_endpoint(endpoint: str) -> None:

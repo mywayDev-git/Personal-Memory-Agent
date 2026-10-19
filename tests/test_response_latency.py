@@ -1,4 +1,5 @@
 import json
+from dataclasses import replace
 from types import SimpleNamespace
 
 import pytest
@@ -9,7 +10,7 @@ from pma.service import Service
 from pma.settings import AppSettings
 from pma.store import Store
 from scripts.memory_agent import performance
-from scripts.memory_agent.llm_client import post_json, request_budget
+from scripts.memory_agent.llm_client import post_json, request_budget, token_count
 from scripts.memory_agent.performance import count, measure, profile_request
 
 
@@ -70,3 +71,101 @@ def test_failed_request_persists_profile_without_source_text(tmp_path):
     mid, _ = engine.store.begin(sid, "failed", "안녕")
     engine.store.fail(mid, "MODEL_FAILED", performance={"profile": {"outcome": "failed"}})
     assert ChatStore(engine.service.store).get(sid)["messages"][-1]["state"] == "failed"
+
+
+def test_token_cache_is_exact_bounded_and_request_local():
+    calls = []
+    def post(*args, **kwargs):
+        calls.append(kwargs["json"])
+        return SimpleNamespace(status_code=200, json=lambda: {"tokens": [1, 2, 3]})
+    session = SimpleNamespace(post=post)
+    def read(text="private", special=False, identity="v1"):
+        return token_count(session, "http://127.0.0.1:1234/tokenize", text, 10,
+                           add_special=special, cache=True, identity=identity)
+    with request_budget(10) as budget:
+        assert read() == read() == 3
+        assert len(calls) == 1
+        read(special=True)
+        read(identity="v2")
+        assert len(calls) == 3
+        for index in range(150):
+            read(str(index))
+        assert len(budget.token_counts) == 128
+        assert "private" not in repr(budget.token_counts)
+    with request_budget(10):
+        read()
+    assert len(calls) == 154
+
+
+@pytest.mark.parametrize("batch_size", [4, 8])
+def test_selection_batches_review_every_candidate_without_truncating_sources(batch_size):
+    from pma.models import LocalModels
+
+    settings = replace(AppSettings(), selection_batch_size=batch_size)
+    models = LocalModels(settings)
+    evidence = [{"id": str(i), "source_text": f"원문 {i}", "content": f"원문 {i}"}
+                for i in range(17)]
+    seen = []
+    def structured(prompt, data, schema, max_tokens=None):
+        rows = data["evidence"]
+        seen.extend(row["id"] for row in rows)
+        return {"items": [{"id": row["id"], "category": "direct_answer", "quote": row["source_context"]}
+                          for row in rows]}
+    models.structured = structured
+    result = models.select_explained("무엇?", evidence)
+    assert set(result) == set(seen) == {row["id"] for row in evidence}
+    assert len(seen) == 17
+
+
+def test_plain_presentation_preserves_fact_policy_and_independent_review(monkeypatch):
+    from pma.chat.models import FACT_POLICY, ChatLocalModels
+    from pma.models import LocalModels
+
+    models = ChatLocalModels(replace(AppSettings(), chat_presentation="plain"))
+    observed = []
+    def structured(self, prompt, data, schema, max_tokens=None):
+        observed.append((prompt, data, schema))
+        return {}
+    monkeypatch.setattr(LocalModels, "structured", structured)
+    schema = {"properties": {}, "required": []}
+    models.structured("generation", {"question": "파이썬 공부?", "evidence": [], "feedback": None}, schema)
+    assert FACT_POLICY in observed[-1][0]
+    assert "display" not in observed[-1][2]["properties"]
+    models.structured("review", {"question": "파이썬 공부?", "proposed_answer": {"items": []}}, schema)
+    assert "기억 대화 필수 정책" in observed[-1][0]
+
+
+def test_embedding_profile_separates_index_and_only_prefixes_queries(monkeypatch):
+    from pma.models import LocalModels
+
+    settings = replace(AppSettings(), embedding_revision="a" * 64)
+    alternate = replace(settings, embedding_profile="qwen3-retrieval-v1")
+    assert settings.embedding_key == f"bge-m3:{'a' * 64}:1024"
+    assert alternate.embedding_key != settings.embedding_key
+    sent = []
+    def post(session, endpoint, body, timeout):
+        sent.append(body["input"])
+        return {"data": [{"index": i, "embedding": [1.0] * 1024} for i in range(len(body["input"]))]}
+    monkeypatch.setattr("pma.models.post_json", post)
+    monkeypatch.setattr(LocalModels, "budget", lambda *a, **kw: None)
+    models = LocalModels(alternate)
+    models.embed(["document"])
+    models.embed_queries(["question"])
+    assert sent[0] == ["document"]
+    assert sent[1][0].startswith("Instruct: ")
+    assert sent[1][0].endswith("\nQuery: question")
+
+
+def test_benchmark_quality_requires_current_message_citation_source():
+    from evaluation.response_latency import quality, summary
+
+    case = {"gold": ["gift"]}
+    response = {"status": "answered", "validation": "model_checked", "citation_details": [
+        {"memory_id": "m", "record_id": "r", "start": 0, "end": 2, "quote": "원문"}]}
+    evidence = [{"id": "m", "record_id": "r", "source_text": "원문"}]
+    assert quality(case, response, evidence, {"r": "gift"})["passed"]
+    assert not quality(case, response, [], {"r": "gift"})["passed"]
+    result = summary([{"seconds": 1, "warmup": False, "quality": {"passed": True}},
+                      {"seconds": .1, "warmup": False, "error_code": "FAILED"},
+                      {"seconds": 100, "warmup": True}])
+    assert result["median_seconds"] == 1 and result["failure_rate"] == .5

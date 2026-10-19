@@ -9,7 +9,7 @@ import requests
 
 from config.settings import paths
 from scripts.memory_agent.extractor import extract_json
-from scripts.memory_agent.llm_client import chat, local_session, post_json
+from scripts.memory_agent.llm_client import chat, local_session, post_json, token_count
 from scripts.memory_agent.performance import measured
 from scripts.memory_agent.pipeline import process_text
 from scripts.memory_agent.validator import load_schema, schema_errors
@@ -112,16 +112,15 @@ class LocalModels:
     @measured("token_budget")
     def budget(self, session, content, output_tokens, endpoint=None, context=None):
         endpoint = endpoint or self.settings.llm.endpoint
-        payload = post_json(
+        tokens = token_count(
             session,
             self.base(endpoint) + "/tokenize",
-            {"content": content, "add_special": True},
+            content,
             self.settings.llm.timeout,
+            add_special=True, cache=getattr(self.settings, "request_token_cache", False),
+            identity=f"{self.settings.llm.model}:{self.settings.embedding_revision}",
         )
-        tokens = payload.get("tokens")
-        if not isinstance(tokens, list):
-            raise ValueError("MODEL_TOKENIZER_UNAVAILABLE")
-        if len(tokens) + output_tokens + 256 > (context or self.settings.context_tokens):
+        if tokens + output_tokens + 256 > (context or self.settings.context_tokens):
             raise AppError(
                 "CONTEXT_LIMIT", "모델이 처리할 수 있는 길이를 넘었습니다. 내용을 나눠 주세요."
             )
@@ -151,23 +150,24 @@ class LocalModels:
     @measured("token_count")
     def count_tokens(self, text):
         with local_session() as session:
-            return len(
-                post_json(
-                    session,
-                    self.base(self.settings.llm.endpoint) + "/tokenize",
-                    {"content": text, "add_special": False},
-                    self.settings.llm.timeout,
-                )["tokens"]
+            return token_count(
+                session, self.base(self.settings.llm.endpoint) + "/tokenize", text,
+                self.settings.llm.timeout, add_special=False,
+                cache=getattr(self.settings, "request_token_cache", False),
+                identity=f"{self.settings.llm.model}:{self.settings.embedding_revision}",
             )
 
     @measured("embedding")
-    def embed(self, texts):
+    def embed(self, texts, *, query=False):
         if not texts:
             return np.empty((0, self.settings.embedding_dimensions), dtype=np.float32)
         if self.settings.embedding_revision == "unconfigured":
             raise AppError(
                 "EMBEDDING_NOT_CONFIGURED", "임베딩 모델 파일의 SHA-256 설정이 필요합니다.", 503
             )
+        if query and self.settings.embedding_profile == "qwen3-retrieval-v1":
+            texts = ["Instruct: Given a question about personal memories, retrieve relevant records that answer the question\nQuery: " + text
+                     for text in texts]
         with local_session() as session:
             for text in texts:
                 self.budget(session, text, 0, self.settings.embedding_endpoint, 8192)
@@ -193,6 +193,9 @@ class LocalModels:
             )
         except (KeyError, TypeError, ValueError) as exc:
             raise ValueError("INVALID_EMBEDDING_RESPONSE") from exc
+
+    def embed_queries(self, texts):
+        return self.embed(texts, query=True)
 
     def structured(self, prompt, data, schema, max_tokens=None):
         content = json.dumps(data, ensure_ascii=False)
@@ -322,10 +325,11 @@ class LocalModels:
     @measured("relevance_selection")
     def select_explained(self, question, evidence):
         """Review every candidate before applying a global limit; retain verifiable excerpts."""
-        if len(evidence) > 4:
+        batch_size = getattr(getattr(self, "settings", None), "selection_batch_size", 4)
+        if len(evidence) > batch_size:
             decisions = {}
-            for offset in range(0, len(evidence), 4):
-                decisions.update(self.select_explained(question, evidence[offset:offset + 4]))
+            for offset in range(0, len(evidence), batch_size):
+                decisions.update(self.select_explained(question, evidence[offset:offset + batch_size]))
             return decisions
         if not evidence:
             return {}
@@ -352,7 +356,8 @@ class LocalModels:
             {"question": question, "evidence": self.compact_evidence(evidence),
              "query_corrections_unverified": [r["search_explanation"]["query_correction"] for r in evidence
                  if r.get("search_explanation", {}).get("query_correction", {}).get("status") == "applied"]},
-            schema, max_tokens=1536)
+            schema, max_tokens=min(getattr(getattr(getattr(self, "settings", None), "llm", None), "max_tokens", 4096),
+                                   1536 * max(1, (len(evidence) + 3) // 4)))
         if schema_errors(result, schema) or {item["id"] for item in result["items"]} != {row["id"] for row in evidence}:
             raise ValueError("INVALID_SELECTION")
         sources = {row["id"]: row["source_text"] for row in evidence}
@@ -369,10 +374,11 @@ class LocalModels:
     def select(self, question, evidence):
         if not evidence:
             return []
-        if len(evidence) > 4:
+        batch_size = getattr(getattr(self, "settings", None), "selection_batch_size", 4)
+        if len(evidence) > batch_size:
             ids = []
-            for offset in range(0, len(evidence), 4):
-                ids.extend(self.select(question, evidence[offset : offset + 4]))
+            for offset in range(0, len(evidence), batch_size):
+                ids.extend(self.select(question, evidence[offset : offset + batch_size]))
             return list(dict.fromkeys(ids))
         schema = {
             "type": "object",

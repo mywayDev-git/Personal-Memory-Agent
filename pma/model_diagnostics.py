@@ -37,7 +37,7 @@ def observed_model(stage):
             if selection and batches is None:
                 batches = []
                 root_token = _BATCHES.set(batches)
-            merge = selection and len(evidence) > 4
+            merge = selection and len(evidence) > getattr(getattr(self, "settings", None), "selection_batch_size", 4)
             state = {"model_called": False}
             token = _CALL.set(state)
             started = perf_counter()

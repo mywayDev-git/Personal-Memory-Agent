@@ -145,7 +145,8 @@ class ChatLocalModels(LocalModels):
                 "재작성할 때 원문으로 확인된 독립 사실은 유지하고 잘못된 주장만 고친다. "
                 "모르는 부분은 분리해 설명한다. 반대 근거·취소·부정 기록을 숨겨 긍정 결론만 남기지 않는다. "
             ) + prompt
-        if "question" in data and "feedback" in data:
+        if (getattr(getattr(self, "settings", None), "chat_presentation", "reviewed") == "reviewed"
+                and "question" in data and "feedback" in data):
             schema = deepcopy(schema)
             schema["properties"]["display"] = DISPLAY_SCHEMA
             schema["required"].append("display")

@@ -20,6 +20,7 @@ class AppSettings:
     embedding_model: str = "bge-m3"
     embedding_revision: str = "unconfigured"
     embedding_dimensions: int = 1024
+    embedding_profile: str = field(default="raw-v1", kw_only=True)
     answer_validation: bool = False
     evaluation_enabled: bool = False
     evaluation_details: bool = False
@@ -28,6 +29,9 @@ class AppSettings:
     diagnostics: bool = field(default=False, kw_only=True)
     diagnostics_path: str | Path | None = field(default=None, kw_only=True)
     chat_timeout: float = field(default=300, kw_only=True)
+    request_token_cache: bool = field(default=False, kw_only=True)
+    selection_batch_size: int = field(default=4, kw_only=True)
+    chat_presentation: str = field(default="reviewed", kw_only=True)
 
     @property
     def origin(self):
@@ -35,9 +39,14 @@ class AppSettings:
 
     @property
     def embedding_key(self):
-        return f"{self.embedding_model}:{self.embedding_revision}:{self.embedding_dimensions}"
+        key = f"{self.embedding_model}:{self.embedding_revision}:{self.embedding_dimensions}"
+        return key if self.embedding_profile == "raw-v1" else f"{key}:{self.embedding_profile}"
 
     def validate(self):
+        if self.embedding_profile not in {"raw-v1", "qwen3-retrieval-v1"}:
+            raise ValueError("INVALID_EMBEDDING_PROFILE")
+        if self.selection_batch_size not in {4, 8} or self.chat_presentation not in {"reviewed", "plain"}:
+            raise ValueError("INVALID_RESPONSE_OPTIMIZATION")
         if not 0 < self.chat_timeout <= 3600:
             raise ValueError("INVALID_CHAT_TIMEOUT")
         validate_endpoint(self.llm.endpoint)
@@ -63,6 +72,7 @@ class AppSettings:
             embedding_model=os.getenv("PMA_EMBEDDING_MODEL", default.embedding_model),
             embedding_revision=os.getenv("PMA_EMBEDDING_REVISION", "unconfigured"),
             embedding_dimensions=int(os.getenv("PMA_EMBEDDING_DIMENSIONS", "1024")),
+            embedding_profile=os.getenv("PMA_EMBEDDING_PROFILE", "raw-v1"),
             answer_validation=os.getenv("PMA_ANSWER_VALIDATION", "0") == "1",
             evaluation_enabled=os.getenv("PMA_EVALUATION", "0") == "1",
             evaluation_details=os.getenv("PMA_EVALUATION_DETAILS", "0") == "1",
@@ -73,6 +83,9 @@ class AppSettings:
             # destination must not prevent startup; the collector handles failure.
             diagnostics_path=os.getenv("PMA_DIAGNOSTICS_PATH") or None,
             chat_timeout=float(os.getenv("PMA_CHAT_TIMEOUT", "300")),
+            request_token_cache=os.getenv("PMA_REQUEST_TOKEN_CACHE", "0") == "1",
+            selection_batch_size=int(os.getenv("PMA_SELECTION_BATCH_SIZE", "4")),
+            chat_presentation=os.getenv("PMA_CHAT_PRESENTATION", "reviewed"),
         )
         result.validate()
         return result
