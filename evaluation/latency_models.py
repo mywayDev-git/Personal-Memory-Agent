@@ -16,7 +16,7 @@ MODELS = {
         "sha256": "3605803b982cb64aead44f6c1b2ae36e3acdb41d8e46c8a94c6533bc4c67e597",
         "bytes": 2497281120,
         "upstream": "Qwen/Qwen3-4B-Instruct-2507",
-        "upstream_revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+        "upstream_reference_revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
         "conversion_tool_revision": None,
     },
     "generation-q8": {
@@ -26,7 +26,7 @@ MODELS = {
         "sha256": "391c1e410fd9f4cf2de2b510273b56a84c19ce18f4fa3bfb3774031dac4ef068",
         "bytes": 4280405600,
         "upstream": "Qwen/Qwen3-4B-Instruct-2507",
-        "upstream_revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+        "upstream_reference_revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
         "conversion_tool_revision": None,
     },
     "embedding-q8": {

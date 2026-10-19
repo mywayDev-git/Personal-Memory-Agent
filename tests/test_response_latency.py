@@ -216,3 +216,22 @@ def test_current_path_multilingual_comparison_uses_fresh_understanding(tmp_path,
     assert not report["replayed_model_outputs"]
     assert report["evaluated_modes"] == ["expanded"]
     assert "baseline" not in report["cases"][0]
+
+
+def test_model_comparison_reuses_source_ids_and_only_rebuilds_vectors(tmp_path):
+    import numpy as np
+
+    from evaluation.response_latency import seed_database
+
+    settings = replace(AppSettings(), embedding_dimensions=2)
+    models = SimpleNamespace(embed=lambda texts: np.asarray([[1., 0.]] * len(texts)))
+    first, repeated, alternate = (tmp_path / name for name in ("first.db", "repeat.db", "alternate.db"))
+    original_keys = seed_database(first, models, settings)
+    assert seed_database(repeated, models, settings) == original_keys
+    changed_settings = replace(settings, embedding_profile="qwen3-retrieval-v1")
+    assert seed_database(alternate, models, changed_settings, template=first) == original_keys
+    for table, columns in (("revisions", "id,text,created_at"), ("memories", "id,payload"), ("evidence", "memory_id,quote,start,end")):
+        with Store(first).connect() as a, Store(alternate).connect() as b:
+            assert [tuple(r) for r in a.execute(f"SELECT {columns} FROM {table} ORDER BY 1")] == [tuple(r) for r in b.execute(f"SELECT {columns} FROM {table} ORDER BY 1")]
+    with Store(alternate).connect() as db:
+        assert {r[0] for r in db.execute("SELECT DISTINCT model_key FROM embeddings")} == {changed_settings.embedding_key}

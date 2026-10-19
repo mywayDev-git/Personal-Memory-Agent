@@ -6,6 +6,7 @@ an unmeasured anchor turn. Cold model startup, indexing and warmups are separate
 
 import argparse
 import hashlib
+import itertools
 import json
 import math
 import os
@@ -20,6 +21,8 @@ import traceback
 from contextlib import contextmanager
 from dataclasses import replace
 from pathlib import Path
+from unittest.mock import patch
+from uuid import NAMESPACE_URL, uuid5
 
 from config.settings import Settings
 from evaluation.latency_models import MODELS, digest
@@ -64,6 +67,8 @@ CASES = {
     "concurrent": {"question": "민수에게 무엇을 선물했어?", "gold": ["gift"], "background": True},
     "selection_batch": {"question": "기록에 담긴 내용을 모두 찾아줘", "search": True, "selection": True,
                         "gold": [key for key, *_ in DOCUMENTS]},
+    "multi_hop": {"question": "회사 동료 민수의 직업과 부산 여행을 취소한 이유는 뭐야?",
+                  "gold": ["coworker", "cancel"]},
 }
 
 
@@ -121,14 +126,36 @@ def servers(args, generation, embedding):
             log.close()
 
 
-def seed_database(path, models, settings):
-    store = Store(path)
+def seed_database(path, models, settings, *, template=None):
+    if template is not None:
+        shutil.copy2(template, path)
+        store = Store(path)
+        with store.connect() as db:
+            sources = db.execute("SELECT record_id,text FROM revisions").fetchall()
+            if sorted(row[1] for row in sources) != sorted(row[1] for row in DOCUMENTS):
+                raise ValueError("SEED_TEMPLATE_IS_NOT_THE_SYNTHETIC_FIXTURE")
+            memories = db.execute("SELECT id,payload FROM memories ORDER BY id").fetchall()
+            existing = {r[0] for r in db.execute("SELECT DISTINCT model_key FROM embeddings")}
+        if existing != {settings.embedding_key}:
+            vectors = models.embed([json.loads(row[1])["content"] for row in memories])
+            with store.connect(True) as db:
+                db.execute("DELETE FROM embeddings")
+                for row, vector in zip(memories, vectors, strict=True):
+                    db.execute("INSERT INTO embeddings VALUES(?,?,?,?)",
+                               (row[0], settings.embedding_key, len(vector), vector.astype("<f4").tobytes()))
+                store.bump(db)
+        store.checkpoint()
+        by_text = {text: key for key, text, *_ in DOCUMENTS}
+        return {rid: by_text[text] for rid, text in sources}
+    store = Store(path, clock=lambda: "2026-10-19T09:00:00+09:00")
     keys = {}
     # Documents use the document embedding path, never the query instruction.
     vectors = models.embed([row[1] for row in DOCUMENTS])
+    identifiers = itertools.count()
     for (key, text, predicate, obj), vector in zip(DOCUMENTS, vectors, strict=True):
-        record = store.create(text, "2026-10-19T09:00:00+09:00")
-        job = store.claim()
+        with patch("pma.store.identifier", side_effect=lambda: str(uuid5(NAMESPACE_URL, f"pma-latency-v1/{next(identifiers)}"))):
+            record = store.create(text, "2026-10-19T09:00:00+09:00")
+            job = store.claim()
         date = re.search(r"(\d{4})년\s*(\d{1,2})월\s*(\d{1,2})일", text)
         event_time = {"raw": None, "start": None, "end": None, "precision": "unknown", "certainty": "uncertain"}
         if date:
@@ -142,7 +169,8 @@ def seed_database(path, models, settings):
         schema = load_schema(Path("schema/memory_extraction_output.schema.json"))
         if schema_errors({"memories": [{k: v for k, v in memory.items() if k != "local_id"}]}, schema):
             raise ValueError("INVALID_SYNTHETIC_MEMORY")
-        store.publish(job, [memory], [vector], settings.embedding_key, {})
+        with patch("pma.store.identifier", side_effect=lambda: str(uuid5(NAMESPACE_URL, f"pma-latency-v1/{next(identifiers)}"))):
+            store.publish(job, [memory], [vector], settings.embedding_key, {})
         keys[record["record_id"]] = key
     store.checkpoint()
     return keys
@@ -184,6 +212,7 @@ def main():
     parser.add_argument("--cases", nargs="+", choices=list(CASES), default=list(CASES))
     parser.add_argument("--multilingual", action="store_true")
     parser.add_argument("--multilingual-current-only", action="store_true")
+    parser.add_argument("--seed-template", type=Path, help="Reuse this evaluator's synthetic seed; only embeddings may be rebuilt")
     args = parser.parse_args()
     if args.samples < 1 or args.output.exists() or not 1024 <= args.port < 65535:
         parser.error("positive samples, unused output directory and valid port required")
@@ -198,6 +227,10 @@ def main():
               "runs": [], "summary": {}, "sources": {
                   p.as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
                   for root in ("pma", "scripts/memory_agent") for p in Path(root).rglob("*.py")}}
+    report["evaluator_sources"] = {p: digest(Path(p)) for p in (
+        "evaluation/response_latency.py", "evaluation/multilingual_search.py", "evaluation/response_latency_report.py")}
+    if args.seed_template:
+        report["seed_template_sha256"] = digest(args.seed_template)
 
     def save():
         report["summary"] = {f"{variant}/{case}": summary([
@@ -218,7 +251,7 @@ def main():
                 settings = replace(settings, embedding_profile="qwen3-retrieval-v1")
             started = time.perf_counter()
             seed = args.output / "synthetic-seed.db"
-            keys = seed_database(seed, LocalModels(settings), settings)
+            keys = seed_database(seed, LocalModels(settings), settings, template=args.seed_template)
             report["index_seconds"] = time.perf_counter() - started
             if args.multilingual:
                 from evaluation.multilingual_search import evaluate
@@ -229,7 +262,7 @@ def main():
                 for sample in range(args.samples + 1):
                     order = args.variants if sample % 2 == 0 else list(reversed(args.variants))
                     for variant in order:
-                        variant_settings = replace(settings, request_token_cache=variant != "baseline",
+                        variant_settings = replace(settings, request_token_cache=variant in {"cached", "combined"},
                                                    selection_batch_size=8 if variant in {"batch8", "combined"} else 4,
                                                    chat_presentation="plain" if variant in {"plain", "combined"} else "reviewed")
                         path = args.output / f"{case_name}-{sample}-{variant}.db"
@@ -239,7 +272,10 @@ def main():
                         sid = engine.store.create_empty()["id"]
                         if case.get("anchor"):
                             engine.message(sid, "anchor", case["anchor"], today="2026-10-19", mode="memory")
-                        row = {"case": case_name, "sample": sample, "warmup": sample == 0, "variant": variant}
+                        row = {"case": case_name, "sample": sample, "warmup": sample == 0, "variant": variant,
+                               "parameters": {"request_token_cache": variant_settings.request_token_cache,
+                                              "selection_batch_size": variant_settings.selection_batch_size,
+                                              "chat_presentation": variant_settings.chat_presentation}}
                         worker = None
                         background_record = None
                         if case.get("background"):
