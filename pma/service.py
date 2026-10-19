@@ -39,7 +39,7 @@ from .search_expressions import (
     describe_matches,
     location_terms,
 )
-from .service_diagnostics import capture, filter_reason, traced_request
+from .service_diagnostics import capture, filter_reason, profiled_request, traced_request
 
 log = logging.getLogger("pma")
 
@@ -785,6 +785,7 @@ class Service:
         }
 
     @traced_request
+    @profiled_request
     def search(self, question, filters=None, today=None, *, correction_enabled=True):
         with self.model_slot():
             response = self._search(question, filters, today, correction_enabled=correction_enabled)[1]
@@ -801,6 +802,7 @@ class Service:
                             selection_question=selection_question, correction_enabled=correction_enabled)
 
     @traced_request
+    @profiled_request
     def answer(self, question, filters=None, today=None, *, correction_enabled=True):
         response = self._answer(question, filters, today, correction_enabled=correction_enabled)
         self.trace("result", response=response)

@@ -1,12 +1,17 @@
 """Passive service observations. All preparation is guarded and request-local."""
 
+import logging
 import time
 from contextlib import nullcontext
 from contextvars import ContextVar
 from functools import wraps
 
+from scripts.memory_agent.llm_client import transport_metrics
+from scripts.memory_agent.performance import has_profile, profile_request
+
 from .diagnostics import Reason, Source, Stage, Status, current_trace, start_trace
 
+log = logging.getLogger(__name__)
 _OBSERVATION = ContextVar("pma_service_observation", default=None)
 _EXCLUSIONS = {
     "facts_pending": Reason.FACT_MISSING,
@@ -39,6 +44,38 @@ def capture(method, *args, **kwargs):
 
 def filter_reason(reason):
     capture("compatibility", reason)
+
+
+def profiled_request(function):
+    """Optional standalone metrics; orchestration callers retain their own scope."""
+    @wraps(function)
+    def wrapped(self, *args, **kwargs):
+        enabled = (getattr(self.settings, "diagnostics", False)
+                   or getattr(self.settings, "request_token_cache", False)
+                   or getattr(self, "diagnostic_sink", None) is not None or current_trace() is not None)
+        if not enabled:
+            return function(self, *args, **kwargs)
+        owns_profile = not has_profile()
+        with (profile_request() if owns_profile else nullcontext()) as profile, transport_metrics() as budget:
+            outcome = "failed"
+            try:
+                result = function(self, *args, **kwargs)
+                outcome = "completed"
+            except BaseException as exc:
+                if getattr(exc, "code", None) == "CANCELLED":
+                    outcome = "cancelled"
+                raise
+            finally:
+                if owns_profile:
+                    metrics = {"profile": profile.snapshot(outcome), "model_http_calls": list(budget.calls)}
+                    # Diagnostic failures must never change source/answer behavior.
+                    try:
+                        self.trace("request_performance", performance=metrics)
+                        log.info("request_performance operation=%s metrics=%s", function.__name__, metrics)
+                    except Exception:
+                        pass
+            return {**result, "performance": metrics} if owns_profile and isinstance(result, dict) else result
+    return wrapped
 
 
 def traced_request(function):

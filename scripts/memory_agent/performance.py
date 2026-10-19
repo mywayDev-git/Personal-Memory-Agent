@@ -59,6 +59,10 @@ def current_snapshot():
     return profile.snapshot() if profile is not None else None
 
 
+def has_profile():
+    return _profile.get() is not None
+
+
 @contextmanager
 def measure(name):
     profile = _profile.get()

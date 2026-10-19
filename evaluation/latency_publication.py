@@ -51,7 +51,7 @@ def publish(root, *, allow_partial=False):
                      "physical_ram_bytes": 16940138496, "gpu": "NVIDIA GeForce RTX 3060",
                      "gpu_vram_mib": 8192, "driver": "617.42"},
         "runtime": {"version": "0.6.0-dev", "build": 11524, "commit": "86a283532", "compiler": "Clang 20.1.8"},
-        "original_work_preserved_commit": "5a57d39", "profiled_product_commit": "9a3c24d",
+        "original_work_preserved_commit": "5a57d39", "initial_profiled_product_commit": "9a3c24d",
         "candidate_artifacts": MODELS, "conversion_tool_revision_disclosed": False,
         "synthetic_seed_canonical_json_sha256": hashlib.sha256(json.dumps(
             json.loads(Path("evaluation/response_latency_seed.json").read_text(encoding="utf-8")),
@@ -90,6 +90,8 @@ def publish(root, *, allow_partial=False):
                  "evaluator_sources": report.get("evaluator_sources"),
                  "source_unchanged": report.get("source_unchanged"),
                  "evaluator_unchanged": report.get("evaluator_unchanged"),
+                 "repository_reference_revision": report.get("repository_reference_revision"),
+                 "measurement_scope": report.get("measurement_scope", "legacy_wall_including_quality_artifact_io"),
                  "legacy_complete_grid_without_end_guard": legacy_complete,
                  "summary": report["summary"], "runs": [], "breakdown": {},
                  "preparation": {key: report.get(key) for key in (
@@ -104,7 +106,7 @@ def publish(root, *, allow_partial=False):
                 continue
             saved = {key: row[key] for key in (
                 "case", "sample", "variant", "parameters", "seconds", "status", "error_code", "quality",
-                "ram_peak_mb", "gpu_total_peak_mb", "background_status", "arrival_during_extract") if key in row}
+                "ram_peak_mb", "gpu_total_peak_mb", "background_status", "arrival_during_extract", "error_phase") if key in row}
             profile = row.get("performance", {}).get("profile", {})
             saved["counters"] = profile.get("counts", {})
             saved["exclusive_stage_seconds"] = {key: val["exclusive_seconds"] for key, val in profile.get("stages", {}).items()}
@@ -177,6 +179,12 @@ def render_report(report):
                     "5회 P95는 최댓값이다. 서로 다른 실행의 표본을 합치지 않았다. "
                     "실행 실패는 완주 지연 통계와 분리하고 실패율·품질 실패에 포함했다. "
                     "품질 실패한 완주 요청의 시간도 표에는 남기지만, 품질 조건을 통과한 속도 개선으로 세지 않는다.\n\n")
+    sections.append("측정은 모델 서버 HTTP 호출을 포함한 Service.search / ChatEngine.message 함수 호출의 벽시계다. "
+                    "기억 답변에는 독립 검증과 최종 DB 커밋이 포함된다. FastAPI 전송·브라우저 렌더링, "
+                    "단순 검색의 검색 결과 세션 저장은 포함하지 않는다. 최종 20회와 이후 실행 설정·배치 비교는 "
+                    "함수 반환 시 시간을 멈추고 정답 채점·평가 파일 저장을 제외한다. 그 이전 기준선·모델·복합 품질 "
+                    "실험의 벽시계에는 평가 파일 저장·채점·메시지 재조회 비용도 소량 포함되었다. 이 측정 경계 차이를 "
+                    "JSON measurement_scope로 표시하고 서로 다른 경계의 표본을 합산하지 않았다.\n\n")
     sections.append("최종 20회 교차 비교\n-------------------\n\n")
     final = trials.get("planning-final20", {}).get("summary", {})
     sections.append(rst_table(["변형/사례", "중앙값 초", "P95 초", "품질/표본", "실행 실패", "RAM/VRAM MiB"], [
@@ -247,6 +255,20 @@ def render_report(report):
                     "단계 포함 시간은 중복되므로 합산하지 않는다. JSON에는 단계별 exclusive 값, 반복 횟수, "
                     "HTTP 호출 시간·횟수·서버가 제공한 토큰 수와 표본별 측정값을 남겼다. 단계별 중앙값 역시 "
                     "서로 다른 표본에서 나올 수 있어 합계가 전체 중앙값과 같지 않다.\n\n")
+    sections.append("기준선의 주요 병목(각 단계의 exclusive 중앙값, 상위 3개)\n\n")
+    bottlenecks = []
+    full = trials.get("baseline-gpu-full", {}).get("breakdown", {})
+    for case in ("simple_search", "long_evidence", "followup", "plan", "concurrent"):
+        part = full.get("baseline/" + case, {})
+        top = sorted(part.get("stages", {}).items(), key=lambda item: -item[1]["exclusive_seconds_median"])[:3]
+        counts = part.get("counters", {})
+        bottlenecks.append([case, ", ".join(f"{key} {row['exclusive_seconds_median']:.3f}" for key, row in top),
+                            "/".join(str(counts.get(key, {}).get("median", "미계측")) for key in (
+                                "search_iterations", "generation_attempts", "review_attempts"))])
+    sections.append(rst_table(["사례", "상위 단계 초", "검색/생성/검증 반복 중앙값"], bottlenecks))
+    sections.append("긴 근거와 후속 질문은 관련성 판정 비용이 컸고 계획 질문은 생성·검증을 두 번 수행했다. "
+                    "배경 처리 중 요청의 model_wait는 실제 모델 차례 대기다. 독립 검증을 없애거나 다른 질문·정책의 "
+                    "판정 결과를 재사용해 이 시간을 줄이는 방식은 채택하지 않았다.\n\n")
     for group, names in (("판정 배치와 캐시", ("selection-batches",)),
                          ("실행 설정", ("gpu-flash-on", "gpu-flash-off", "hybrid-basic", "cpu-basic"))):
         sections.append(group + "\n\n")
@@ -285,6 +307,9 @@ def render_report(report):
                     "처음 14사례 기준선은 종료 시 코드 검사가 추가되기 전 실행이므로 종료 해시 검증 값은 null이다. "
                     "표본 84개 완주와 후속 기준선의 동일 제품 소스 목록을 확인하고 최신 scoring_version=4로 "
                     "읽기 전용 재채점했다. 후속 실험은 제품·평가 코드 종료 해시 검사를 통과해야 집계했다.\n\n"
+                    "최종 20회 전에 독립 검색의 요청 범위 계측 연결과 반환 시점 타이머를 보완하고 테스트한 뒤 "
+                    "소스를 다시 고정했다. 이 계측 연결의 시간을 별도의 속도 개선으로 주장하지 않는다. "
+                    "각 실행의 Git 참조와 실제 파일 해시를 JSON에 남겼다.\n\n"
                     "초기 C 드라이브 CPU 실행은 다운로드 중 공간 부족으로 중단되어 통계에서 제외했다. "
                     "두 초기 시험의 합성 스키마 오류와 이전 채점기 파일도 제외했다. D 드라이브로 옮긴 것은 "
                     "이번 작업에서 만든 다운로드 파일이며 이후 여유 공간 검사와 원자적 결과 저장을 추가했다.\n\n"
@@ -307,6 +332,16 @@ def render_report(report):
                     "재현 명령과 선택 메타데이터 계약은 docs/response_latency.md를 참고한다. "
                     "JSON 집계는 python -m evaluation.latency_publication <실험 루트> --output evaluation/response_latency_results.json으로 "
                     "재생성한다. 미완료 실행은 기본적으로 공개 집계에서 거부한다.\n")
+    verification = report.get("verification")
+    if verification:
+        python = verification["python"]
+        mixed = verification["mixed_event_summary"]
+        sections.append("\n회귀 검사\n---------\n\n"
+                        f"전체 Python {python['passed']}개 통과, 실패 {python['failed']}개({python['seconds']:.2f}초). "
+                        f"화면 검사 {len(verification['ui_checks'])}종 통과: " + ", ".join(verification["ui_checks"]) + ". "
+                        f"혼합 사건 평가는 {mixed['exact_sets']}/{mixed['cases']}개 정답 집합 일치, "
+                        f"평균 Recall@8 {mixed['mean_recall_at_8']:.3f}, 잘못된 필터 질문 {mixed['wrong_filter_questions']}개다. "
+                        "혼합 사건 평가는 결정적 대체 모델을 사용하는 회귀 검사로, 실제 모델 정확도와 구분한다.\n")
     return "".join(sections)
 
 
@@ -315,8 +350,11 @@ def main():
     parser.add_argument("root", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--allow-partial", action="store_true")
+    parser.add_argument("--verification", type=Path, help="Recorded test/UI/offline evaluation results, if available")
     args = parser.parse_args()
     report = publish(args.root, allow_partial=args.allow_partial)
+    if args.verification:
+        report["verification"] = json.loads(args.verification.read_text(encoding="utf-8"))
     args.output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     if not args.allow_partial:
         args.output.with_suffix(".rst").write_text(render_report(report), encoding="utf-8")

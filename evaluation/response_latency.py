@@ -117,6 +117,14 @@ def summary(rows):
     }
 
 
+def repository_reference():
+    try:
+        return subprocess.check_output(["git", "rev-parse", "HEAD"], text=True,
+                                       stderr=subprocess.DEVNULL, timeout=5).strip()
+    except (OSError, subprocess.SubprocessError):
+        return None
+
+
 @contextmanager
 def servers(args, generation, embedding):
     processes, logs = [], []
@@ -261,6 +269,8 @@ def main():
     if shutil.disk_usage(args.output).free < 512 * 1024 * 1024:
         parser.error("at least 512 MiB free space required for evaluation output")
     report = {"schema_version": 1, "personal_database_used": False, "configuration": vars(args).copy(),
+              "measurement_scope": "response_return_before_quality_artifacts",
+              "repository_reference_revision": repository_reference(),
               "artifact_verification_seconds": artifact_verification_seconds,
               "hashes": hashes, "seed_policy": "hand-authored synthetic memories, real document embeddings",
               "runs": [], "summary": {}, "sources": {
@@ -359,11 +369,13 @@ def main():
                                                 if decisions[r["id"]]["category"] not in {"irrelevant", "unverified_selection"}]}
                                         else:
                                             response = service.search(case["question"], today="2026-10-19")
+                                    row["seconds"] = time.perf_counter() - started
                                     row["performance"] = {"profile": profile.snapshot(), "model_http_calls": budget.calls}
                                     evidence = response["results"]
                                 else:
                                     with planning_variant(variant in {"planning", "planning_plain"}):
                                         response = engine.message(sid, "measured", case["question"], today="2026-10-19", mode="memory")
+                                    row["seconds"] = time.perf_counter() - started
                                     message = engine.store.get(sid)["messages"][-1]
                                     row["performance"] = message["snapshot"].get("performance", {})
                                     evidence = message["evidence"]
@@ -375,6 +387,7 @@ def main():
                                 (artifacts / f"{case_name}-{sample}-{variant}.json").write_text(
                                     json.dumps({"response": response, "evidence": evidence}, ensure_ascii=False, indent=2), encoding="utf-8")
                             except Exception as exc:
+                                row["error_phase"] = "evaluation_after_response" if "seconds" in row else "response"
                                 row["error_code"] = getattr(exc, "code", type(exc).__name__)
                                 frame = traceback.extract_tb(exc.__traceback__)[-1]
                                 row["error_location"] = {"file": Path(frame.filename).name, "function": frame.name, "line": frame.lineno}
@@ -384,7 +397,7 @@ def main():
                                 else:
                                     messages = engine.store.get(sid)["messages"]
                                     row["performance"] = (messages[-1].get("snapshot") or {}).get("performance", {}) if messages else {}
-                            row["seconds"] = time.perf_counter() - started
+                            row.setdefault("seconds", time.perf_counter() - started)
                         if worker is not None:
                             worker.join()
                             row["background_status"] = service.store.job(background_record["job_id"])["status"]

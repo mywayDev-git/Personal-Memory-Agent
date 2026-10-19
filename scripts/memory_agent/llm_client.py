@@ -69,6 +69,17 @@ def request_budget(seconds):
 
 
 @contextmanager
+def transport_metrics():
+    """Collect calls/cache without adding a deadline to legacy per-call timeouts."""
+    current = _request_budget.get()
+    if current is not None:
+        yield current
+    else:
+        with request_budget(float("inf")) as budget:
+            yield budget
+
+
+@contextmanager
 def optional_request_budget(seconds, reserve=2):
     """Bound optional display work, leaving the parent time to persist the answer."""
     parent = _request_budget.get()

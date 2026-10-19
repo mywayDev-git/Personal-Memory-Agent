@@ -119,6 +119,7 @@ class ChatEngine:
                 "generation_revision": os.getenv("PMA_GENERATION_REVISION", "unconfigured"),
                 "chat_prompt_version": 1,
                 "connections": found.get("connections", []),
+                **({"performance": found["performance"]} if "performance" in found else {}),
             },
         )
 
