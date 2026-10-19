@@ -1,7 +1,7 @@
 """Isolated real-model latency/quality benchmark; only hand-authored synthetic records.
 
 Each measured request starts from the same seed database. A follow-up includes
-an unmeasured anchor turn. Cold model startup, indexing and warmups are separate.
+an unmeasured anchor turn. Model startup, indexing and warmups are separate.
 """
 
 import argparse
@@ -251,14 +251,17 @@ def main():
     args = parser.parse_args()
     if args.samples < 1 or args.output.exists() or not 1024 <= args.port < 65535:
         parser.error("positive samples, unused output directory and valid port required")
+    preparation_started = time.perf_counter()
     generation = Path("C:/models/Qwen3-8B-Q4_K_M.gguf") if args.generation == "baseline" else args.model_directory / MODELS[f"generation-{args.generation}"]["filename"]
     embedding = Path("C:/models/bge-m3-Q8_0.gguf") if args.embedding == "bge" else args.model_directory / MODELS["embedding-q8"]["filename"]
     hashes = {"generation": digest(generation), "embedding": digest(embedding), "server": digest(args.server)}
+    artifact_verification_seconds = time.perf_counter() - preparation_started
     os.environ["PMA_GENERATION_REVISION"] = hashes["generation"]
     args.output.mkdir(parents=True)
     if shutil.disk_usage(args.output).free < 512 * 1024 * 1024:
         parser.error("at least 512 MiB free space required for evaluation output")
     report = {"schema_version": 1, "personal_database_used": False, "configuration": vars(args).copy(),
+              "artifact_verification_seconds": artifact_verification_seconds,
               "hashes": hashes, "seed_policy": "hand-authored synthetic memories, real document embeddings",
               "runs": [], "summary": {}, "sources": {
                   p.as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
@@ -289,6 +292,7 @@ def main():
             seed = args.output / "synthetic-seed.db"
             keys = seed_database(seed, LocalModels(settings), settings, template=args.seed_template)
             report["index_seconds"] = time.perf_counter() - started
+            report["initial_preparation_seconds"] = time.perf_counter() - preparation_started
             if args.multilingual:
                 from evaluation.multilingual_search import evaluate
 

@@ -68,6 +68,7 @@ def evaluate(settings, output, *, limit=90, replay=None, current_only=False):
     models = LocalModels(settings)
     documents, cases = dataset()
     vectors = []
+    embedding_started = time.perf_counter()
     for start in range(0, len(documents), 16):
         vectors.extend(models.embed([d["text"] for d in documents[start:start+16]]))
     rows = records(documents, vectors)
@@ -78,6 +79,7 @@ def evaluate(settings, output, *, limit=90, replay=None, current_only=False):
               "replayed_model_outputs": bool(replay),
               "embedding_key": settings.embedding_key,
               "model": args.model, "embedding_revision": revision, "documents": len(rows), "cases": []}
+    report["document_embedding_seconds"] = time.perf_counter() - embedding_started
     report["evaluated_modes"] = ["expanded"] if current_only else ["baseline", "expanded"]
     for case_index, case in enumerate(cases[:args.limit]):
         try:
