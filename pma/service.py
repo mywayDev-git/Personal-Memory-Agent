@@ -16,9 +16,19 @@ from scripts.memory_agent.validator import schema_errors
 
 from .diagnostics import Stage
 from .errors import AppError
-from .facts import compatible, query_plan
+from .facts import compatible, mentions_person, query_plan
 from .models import ANSWER_SCHEMA, QUERY_SCHEMA, normalized_vectors
 from .processing import extract_record
+from .query_correction import fuse as fuse_queries
+from .query_correction import validate as validate_correction
+from .search_explain import (
+    condition_matches,
+    failed_condition,
+    keyword_matches_batch,
+    keyword_query,
+    keyword_weight,
+    select_evidence,
+)
 from .service_diagnostics import capture, filter_reason, traced_request
 
 log = logging.getLogger("pma")
@@ -51,6 +61,7 @@ class Service:
         self.worker_phase = "idle"
         self.diagnostic_sink = diagnostic_sink
 
+
     def trace(self, stage, **data):
         capture("legacy", stage, data)
         if self.diagnostic_sink is not None:
@@ -69,6 +80,8 @@ class Service:
             yield
         finally:
             self.gate.release()
+
+
 
     def start(self):
         self.store.expire()
@@ -173,14 +186,15 @@ class Service:
                 self.processing_status = None
             return True
 
-    def _search(self, question, filters=None, today=None):
+    def _search(self, question, filters=None, today=None, *, defer_limit=False, selection_question=None, correction_enabled=True):
         today = today or datetime.now(timezone.utc).astimezone().date().isoformat()
         capture("begin", Stage.QUERY_UNDERSTANDING)
         try:
             understood = self.models.understand(question, today)
+            understood = dict(understood)
             if schema_errors(understood, QUERY_SCHEMA):
                 raise ValueError("INVALID_QUERY")
-        except (ValueError, requests.RequestException, AppError) as exc:
+        except (TypeError, ValueError, requests.RequestException, AppError) as exc:
             understood = {"intent": "recall", "date_from": None, "date_to": None}
             self.trace("understand_fallback", error=type(exc).__name__)
         plan = query_plan(question, understood, today)
@@ -200,18 +214,38 @@ class Service:
             raise AppError("INVALID_DATE_RANGE", "시작일은 종료일보다 늦을 수 없습니다.")
         capture("begin", Stage.SNAPSHOT)
         generation, rows = self.store.snapshot(self.settings.embedding_key)
+        correction = validate_correction(question, understood.get("corrections"), understood,
+                                         today, rows, enabled=correction_enabled)
+        correction.update(original_query=question, searched=False)
+        corrected = correction["query"] if correction["status"] == "applied" else None
         if understood["intent"] == "aggregate" and re.search(
             r"총|몇\s*번|횟수|가장|최초|최후|제일|처음|마지막", question
         ):
-            return generation, {"status": "unsupported_intent", "filters": applied, "results": []}
+            correction["reason"] = "unsupported_intent"
+            return generation, {"status": "unsupported_intent", "filters": applied, "results": [],
+                                "query_correction": correction}
         capture("begin", Stage.STRUCTURE_FILTER)
         candidates = []
-        locations = re.findall(r"([가-힣A-Za-z]+?)(?:에서|(?:에\s*)?\s+가서)", question)
+        exclusions = []
+        def excluded(row, reason):
+            reason = str(reason)
+            exclusions.append({
+                "id": row["id"], "record_id": row["record_id"], "version": row["version"],
+                "status": "excluded", "reason": reason,
+                "conditions": failed_condition(reason, plan, applied, known_names, locations, requested_objects),
+                "stages": {
+                    "conditions": {"status": "not_run" if reason == "facts_pending" else "failed", "reason": reason},
+                    "selection": {"status": "not_run"},
+                    "answer": {"status": "not_run"},
+                },
+            })
+
+        locations = [m[1] for m in re.finditer(r"([가-힣A-Za-z]+?)(?:에서|에\s+가서)", question)]
         known_names = {
             value
             for r in rows
             if r["fact"]
-            for value in (r["fact"]["actor"], r["fact"]["recipient"], r["fact"].get("counterparty"))
+            for value in (r["fact"]["actor"], r["fact"]["recipient"], r["fact"].get("counterparty"), *r["fact"].get("participants", []))
             if value and value != "self" and value in question
         }
         pending = sum(r["fact"] is None for r in rows)
@@ -225,14 +259,19 @@ class Service:
         capture("constraints", plan, locations, known_names, requested_objects)
         for row in rows:
             fact = row["fact"]
+            failure_reasons = []
+            def record_failure(reason):
+                failure_reasons.append(reason)
+                filter_reason(reason)
             if not fact or not compatible(
-                fact, plan, on_exclude=filter_reason, diagnostic_id=row["id"]
+                fact, plan, on_exclude=record_failure, diagnostic_id=row["id"]
             ):
                 self.trace(
                     "excluded",
                     id=row["id"],
                     reason="facts_pending" if not fact else "relation_state_or_quantity",
                 )
+                excluded(row, failure_reasons[0] if failure_reasons else "facts_pending")
                 continue
             if (
                 plan["relation"] == "visit"
@@ -240,6 +279,7 @@ class Service:
                 and fact["object_key"] not in requested_objects
             ):
                 self.trace("excluded", id=row["id"], reason="requested_object")
+                excluded(row, "requested_object")
                 continue
             if (
                 plan["kind"] == "change"
@@ -247,6 +287,7 @@ class Service:
                 and fact["relation"] not in {"prefer", "desire", "give"}
             ):
                 self.trace("excluded", id=row["id"], reason="preference_change")
+                excluded(row, "preference_change")
                 continue
             if plan["kind"] == "activities" and fact["state"] in {
                 "planned",
@@ -255,6 +296,7 @@ class Service:
                 "uncertain",
             }:
                 self.trace("excluded", id=row["id"], reason="activity_state")
+                excluded(row, "activity_state")
                 continue
             if locations:
                 parent = re.search(
@@ -265,6 +307,7 @@ class Service:
                     for loc in locations
                 ):
                     self.trace("excluded", id=row["id"], reason="location")
+                    excluded(row, "location")
                     continue
                 capture("condition_pass", "place", row["id"])
             if known_names:
@@ -277,11 +320,19 @@ class Service:
                     roles = {fact["actor"], fact["recipient"]}
                 if plan["relation"] not in {"desire", "prefer", "run"}:
                     roles.add(fact.get("counterparty"))
+                    roles.update(fact.get("participants", []))
                 source_review = fact.get("review_reasons") and any(
                     n in row["text"] for n in known_names
                 )
+                if plan["relation"] == "other":
+                    source_review = source_review or any(
+                        mentions_person(row["memory"]["content"], n)
+                        and any(mentions_person(e["quote"], n) for e in row["evidence"])
+                        for n in known_names
+                    )
                 if not known_names & roles and not source_review:
                     self.trace("excluded", id=row["id"], reason="explicit_named_person")
+                    excluded(row, "explicit_named_person")
                     continue
                 capture("condition_pass", "person", row["id"])
             t = fact["event_time"]
@@ -289,10 +340,12 @@ class Service:
             if start or end:
                 if not a or t.get("certainty") == "uncertain":
                     self.trace("excluded", id=row["id"], reason="unknown_filtered_date")
+                    excluded(row, "unknown_filtered_date")
                     continue
                 low, high = a[0], b[1] if b else a[1]
                 if (start and low < start) or (end and high > end):
                     self.trace("excluded", id=row["id"], reason="date_range")
+                    excluded(row, "date_range")
                     continue
                 capture("condition_pass", "time", row["id"])
             candidates.append(row)
@@ -305,6 +358,7 @@ class Service:
         )
         self.trace("search_scope", total=len(rows), count=len(candidates), filters=applied)
         capture("filtered", rows, candidates, locations, known_names)
+        term_specs, vocabulary = keyword_query(question, candidates)
         if not candidates:
             capture("begin", Stage.SOURCE_VALIDATION)
             self.store.assert_generation(generation)
@@ -313,24 +367,44 @@ class Service:
                 "filters": applied,
                 "results": [],
                 "query_plan": plan,
+                "query_correction": correction,
+                "search_keywords": [term["text"] for term in term_specs],
+                "keyword_terms": term_specs,
+                "search_audit": {"candidates": exclusions[:100], "excluded_count": len(exclusions), "truncated": len(exclusions) > 100},
                 "facts_pending": pending,
                 "connections": [],
             }
         capture("begin", Stage.VECTOR_RETRIEVAL)
-        query = normalized_vectors(
-            self.models.embed([question]), 1, self.settings.embedding_dimensions
-        )[0]
-        matrix = np.stack([np.frombuffer(r["vector"], dtype="<f4") for r in candidates])
+        queries = [question]
+        def query_index(text):
+            if text not in queries:
+                queries.append(text)
+            return queries.index(text)
+        corrected_index = query_index(corrected) if corrected else None
+        try:
+            query_vectors = normalized_vectors(
+                self.models.embed(queries), len(queries), self.settings.embedding_dimensions
+            )
+        except (ValueError, requests.RequestException, AppError):
+            if len(queries) == 1:
+                raise
+            if corrected:
+                correction = {"status": "rejected", "query": question, "edits": [],
+                              "reason": "embedding_failed", "original_query": question, "searched": False}
+            corrected = None
+            query_vectors = normalized_vectors(
+                self.models.embed([question]), 1, self.settings.embedding_dimensions
+            )
+        query = query_vectors[0]
+        matrix = np.stack([np.frombuffer(row["vector"], dtype="<f4") for row in candidates])
         matrix = normalized_vectors(matrix, len(candidates), self.settings.embedding_dimensions)
         scores = matrix @ query
         vector_order = np.argsort(-scores, kind="stable")[:20].tolist()
         capture("retrieval", Stage.VECTOR_RETRIEVAL, candidates, vector_order, scores)
         capture("begin", Stage.KEYWORD_RETRIEVAL)
-        terms = set(re.findall(r"[\w가-힣]+", question.casefold()))
-        keyword = [
-            sum(t in (r["memory"]["content"] + " " + r["text"]).casefold() for t in terms)
-            for r in candidates
-        ]
+        terms = {term["text"] for term in term_specs}
+        matches = keyword_matches_batch(candidates, term_specs, vocabulary)
+        keyword = [sum(max((keyword_weight(m) for m in found if m["term"] == term), default=0) for term in terms) for found in matches]
         keyword_order = sorted(
             (i for i, score in enumerate(keyword) if score),
             key=lambda i: (-keyword[i], candidates[i]["id"]),
@@ -339,10 +413,28 @@ class Service:
                    keywords=len(keyword_order))
         capture("retrieval", Stage.KEYWORD_RETRIEVAL, candidates, keyword_order, keyword)
         capture("begin", Stage.RANK_FUSION)
+        corrected_vector_order, corrected_keyword_order = [], []
+        corrected_matches = [[] for _ in candidates]
+        corrected_scores = None
+        corrected_keyword = [0 for _ in candidates]
+        if corrected:
+            correction["searched"] = True
+            corrected_scores = matrix @ query_vectors[corrected_index]
+            corrected_vector_order = np.argsort(-corrected_scores, kind="stable")[:20].tolist()
+            corrected_terms, corrected_vocab = keyword_query(corrected, candidates)
+            corrected_matches = keyword_matches_batch(candidates, corrected_terms, corrected_vocab)
+            corrected_keyword = [sum(max((keyword_weight(m)
+                for m in found if m["term"] == term["text"]), default=0)
+                for term in corrected_terms) for found in corrected_matches]
+            corrected_keyword_order = sorted((i for i, score in enumerate(corrected_keyword) if score),
+                key=lambda i: (-corrected_keyword[i], candidates[i]["id"]))[:20]
         ranks = {}
+        contributions = {}
         for component, order in (("vector", vector_order), ("keyword", keyword_order)):
-            for rank, i in enumerate(order, 1):
-                contribution = 1 / (60 + rank)
+            alternate = corrected_vector_order if component == "vector" else corrected_keyword_order
+            merged = fuse_queries(order, alternate)
+            contributions[component] = merged
+            for i, contribution in merged.items():
                 ranks[i] = ranks.get(i, 0) + contribution
                 capture("component", i, component, contribution)
         for i in ranks:
@@ -390,6 +482,28 @@ class Service:
                     "reference_time": row["reference_time"],
                     "recorded_at": row["created_at"],
                     "score": ranks[i],
+                    "search_explanation": {
+                        "query": question,
+                        "query_correction": correction,
+                        "corrected_retrieval": {
+                            "query": corrected,
+                            "keyword_matches": corrected_matches[i],
+                            "semantic_rank": corrected_vector_order.index(i) + 1 if i in corrected_vector_order else None,
+                            "keyword_rank": corrected_keyword_order.index(i) + 1 if i in corrected_keyword_order else None,
+                            "semantic_score": float(corrected_scores[i]) if corrected_scores is not None else None,
+                            "keyword_score": corrected_keyword[i],
+                            "contributed": any(i in alt and (i not in orig or
+                                0.8 / (61 + alt.index(i)) > 1 / (61 + orig.index(i)))
+                                and 0.8 / (61 + alt.index(i)) == contributions[component].get(i)
+                                for component, orig, alt in (("vector", vector_order, corrected_vector_order), ("keyword", keyword_order, corrected_keyword_order))),
+                        },
+                        "conditions": condition_matches(row, plan, applied, locations, known_names, requested_objects),
+                        "keyword_matches": matches[i],
+                        "methods": [name for name, ranking in (("keyword", keyword_order), ("semantic", vector_order)) if i in ranking] + (["structure"] if plan["relation"] != "other" or known_names else []),
+                        "ranks": {"keyword": keyword_order.index(i) + 1 if i in keyword_order else None, "semantic": vector_order.index(i) + 1 if i in vector_order else None, "combined": order.index(i) + 1},
+                        "scores": {"keyword": keyword[i], "semantic": float(scores[i]), "combined": ranks[i]},
+                        "selection": {"status": "candidate", "reason": "combined_rank"},
+                    },
                 }
             )
         if self.diagnostic_sink is not None:
@@ -400,6 +514,9 @@ class Service:
                     for i, r in enumerate(results)
                 ],
             )
+        selection_pool = list(results)
+        model_selected = None
+        model_decisions = {}
         capture("selection_input", results)
         if plan["kind"] in {"current", "change", "compare"}:
             results.sort(key=lambda r: (r["time"].get("start") or "", r["content"]), reverse=True)
@@ -422,17 +539,50 @@ class Service:
             and hasattr(self.models, "select")
         ):
             capture("selecting")
-            selected = self.models.select(question, results)
+            if hasattr(self.models, "select_explained"):
+                model_decisions = self.models.select_explained(selection_question or question, results)
+                selected = [mid for mid, decision in model_decisions.items() if decision["category"] not in {"irrelevant", "unverified_selection"}]
+                for row in results:
+                    row["search_explanation"]["model_assessment"] = model_decisions.get(row["id"])
+            else:
+                selected = self.models.select(selection_question or question, results)
             allowed = {r["id"] for r in results}
             if not set(selected) <= allowed:
                 raise ValueError("INVALID_SELECTION")
+            model_selected = set(selected)
             results = [r for r in results if r["id"] in selected]
             self.trace(
                 "selection", selected_ids=selected, excluded_ids=sorted(allowed - set(selected))
             )
         capture("limit_input", results)
-        results = results[:8]
-        capture("selected", results)
+        evidence_limit = 24 if defer_limit else 8
+        if plan["kind"] in {"current", "change", "compare"}:
+            results = results[:evidence_limit]
+            selection_reason = "event_time_order"
+        else:
+            results = select_evidence(results, limit=evidence_limit)
+            selection_reason = "combined_rank"
+        selected_ids = {r["id"] for r in results}
+        audit_candidates = []
+        for row in selection_pool:
+            reason = "model_not_selected" if model_selected is not None and row["id"] not in model_selected else "evidence_limit" if row["id"] not in selected_ids else "model_selected" if model_selected is not None else selection_reason
+            if row["id"] in model_decisions and reason in {"model_selected", "model_not_selected"}:
+                reason = model_decisions[row["id"]]["category"]
+            decision = {"status": "selected" if row["id"] in selected_ids else "excluded", "reason": reason}
+            row["search_explanation"]["selection"] = decision
+            for chosen in results:
+                if chosen["id"] == row["id"]:
+                    chosen["search_explanation"]["selection"] = decision
+            audit_candidates.append({"id": row["id"], "record_id": row["record_id"], "version": row["version"], **decision, "methods": row["search_explanation"]["methods"], "ranks": row["search_explanation"]["ranks"], "conditions": [{"condition": c["condition"], "status": c["status"]} for c in row["search_explanation"]["conditions"]]})
+        for candidate in audit_candidates:
+            candidate["stages"] = {
+                "conditions": {"status": "needs_review" if any(
+                    c["status"] == "needs_review" for c in candidate["conditions"]
+                ) else "passed"},
+                "selection": {"status": candidate["status"], "reason": candidate["reason"], "limit": evidence_limit},
+                "answer": {"status": "not_run"},
+            }
+        capture("selected", results, evidence_limit)
         selected_ids = {r["id"] for r in results}
         self.trace("evidence", ids=sorted(selected_ids))
         capture("begin", Stage.RELATION_LOOKUP)
@@ -445,26 +595,31 @@ class Service:
             "filters": applied,
             "results": results,
             "query_plan": plan,
+            "query_correction": correction,
+            "search_keywords": sorted(terms),
+            "keyword_terms": term_specs,
+            "search_audit": {"candidates": audit_candidates + exclusions[:100], "excluded_count": len(exclusions), "truncated": len(exclusions) > 100, "eligible_count": len(candidates), "candidate_limit_count": max(0, len(order) - 24)},
             "facts_pending": pending,
             "connections": links,
         }
 
     @traced_request
-    def search(self, question, filters=None, today=None):
+    def search(self, question, filters=None, today=None, *, correction_enabled=True):
         with self.model_slot():
-            response = self._search(question, filters, today)[1]
+            response = self._search(question, filters, today, correction_enabled=correction_enabled)[1]
             self.trace("result", response=response)
             return response
 
+
     @traced_request
-    def answer(self, question, filters=None, today=None):
-        response = self._answer(question, filters, today)
+    def answer(self, question, filters=None, today=None, *, correction_enabled=True):
+        response = self._answer(question, filters, today, correction_enabled=correction_enabled)
         self.trace("result", response=response)
         return response
 
-    def _answer(self, question, filters=None, today=None):
+    def _answer(self, question, filters=None, today=None, *, correction_enabled=True):
         with self.model_slot():
-            generation, found = self._search(question, filters, today)
+            generation, found = self._search(question, filters, today, correction_enabled=correction_enabled)
             if found.get("query_plan", {}).get("needs_time_anchor"):
                 return {
                     **found,
@@ -476,7 +631,9 @@ class Service:
             if found["status"] == "unsupported_intent":
                 return {**found, "items": []}
             if not found["results"]:
-                return {**found, "status": "insufficient_evidence", "items": []}
+                return {**found, "status": "insufficient_evidence", "items": [],
+                        **({"clarification": "질문의 이름이나 검색 표현을 다시 확인해 주세요."}
+                           if found.get("query_correction", {}).get("status") == "rejected" else {})}
             from .grounding import claims_supported, grounded_response
 
             self.trace("generation_start", status="running")

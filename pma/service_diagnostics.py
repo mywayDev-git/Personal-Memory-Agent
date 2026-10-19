@@ -344,14 +344,14 @@ class Observation:
     def selection_limit(self, ids):
         self.model_limited.update(ids)
 
-    def selected(self, results):
+    def selected(self, results, top_k=8):
         ids = [r["id"] for r in results]
         selected = set(ids)
         self.emit(
             Stage.EVIDENCE_SELECTION,
             input_count=len(self.pool),
             output_count=len(ids),
-            top_k=8,
+            top_k=top_k,
             model_called=self.selection_called,
             evidence_refs=self.refs(self.pool),
             model_selected_refs=self.refs(self.model_selected)
