@@ -3,6 +3,8 @@
 import hashlib
 import json
 import os
+import time
+from contextlib import nullcontext
 
 from scripts.memory_agent.diagnostics import ProcessingError
 from scripts.memory_agent.pipeline import fingerprint
@@ -42,8 +44,24 @@ def extract_record(service, job, context):
 
 def _extract_record(service, job, context):
     model = service.models
+    slot = getattr(service, "background_model_slot", nullcontext)
+    metric = getattr(service, "processing_metric", lambda *args, **kwargs: None)
     if not hasattr(model, "count_tokens"):
-        return model.extract(job["text"], context)
+        with slot():
+            return model.extract(job["text"], context)
+    token_counts = {}
+
+    def count_tokens(text):
+        if text not in token_counts:
+            with slot():
+                started = time.monotonic()
+                try:
+                    token_counts[text] = model.count_tokens(text)
+                finally:
+                    metric("tokenize", time.monotonic() - started, tokenize_calls=1)
+        return token_counts[text]
+
+    split_started = time.monotonic()
     units = sentences(job["text"])
     identity = fingerprint(
         dict(
@@ -59,13 +77,14 @@ def _extract_record(service, job, context):
     for unit in units:
         proposed = group + [unit]
         if group and (
-            len(proposed) > 6 or model.count_tokens(" ".join(u["text"] for u in proposed)) > 600
+            len(proposed) > 6 or count_tokens(" ".join(u["text"] for u in proposed)) > 600
         ):
             groups.append(group)
             group = []
         group.append(unit)
     if group:
         groups.append(group)
+    metric("split", time.monotonic() - split_started)
     all_memories, provenance, diagnostics = [], [], []
     completed = 0
     total = len(groups)
@@ -96,16 +115,18 @@ def _extract_record(service, job, context):
             last = next(i for i, u in enumerate(units) if u["id"] == group[-1]["id"])
             before, after = units[max(0, first - 2) : first], units[last + 1 : last + 3]
             while before or after:
-                if model.count_tokens(" ".join(u["text"] for u in before + after)) <= 300:
+                if count_tokens(" ".join(u["text"] for u in before + after)) <= 300:
                     break
                 if before:
                     before.pop(0)
                 elif after:
                     after.pop()
             try:
-                result, meta = model.extract(
-                    job["text"], context, before + group + after, [u["id"] for u in group]
-                )
+                with slot():
+                    metric("extract_call", extract_calls=1)
+                    result, meta = model.extract(
+                        job["text"], context, before + group + after, [u["id"] for u in group]
+                    )
                 cached = dict(memories=result["memories"], metadata=meta)
                 service.store.chunk_save(job, key, cached)
             except (ProcessingError, AppError) as exc:

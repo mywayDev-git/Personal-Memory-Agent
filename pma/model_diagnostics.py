@@ -64,23 +64,20 @@ def observed_model(stage):
                             evidence_refs=[trace.memory_ref(r["id"]) for r in evidence],
                         )
                     if selection:
-                        selected = (
-                            [i for batch in batches for i in batch] if merge else (result or [])
-                        )
+                        returned = ([mid for mid, decision in result.items()
+                                     if decision.get("category") not in {"irrelevant", "unverified_selection"}]
+                                    if isinstance(result, dict) else (result or []))
+                        selected = list(dict.fromkeys(returned))
                         fields.update(
                             batched=merge or root_token is None,
                             model_selected_refs=[trace.memory_ref(i) for i in selected],
-                            output_count=None if failed else len(result),
+                            output_count=None if failed else len(selected),
                         )
                         if not merge:
                             fields["batch_index"] = len(batches)
                             batches.append(list(selected))
                         else:
-                            fields["evidence_refs"] = [trace.memory_ref(i) for i in (result or [])]
-                            if not failed:
-                                from .service_diagnostics import capture
-
-                                capture("selection_limit", selected[8:])
+                            fields["evidence_refs"] = [trace.memory_ref(r["id"]) for r in evidence]
                         fields["candidates"] = [
                             {
                                 "memory_ref": trace.memory_ref(i),
@@ -89,21 +86,19 @@ def observed_model(stage):
                                 if failed
                                 else (
                                     "selected"
-                                    if (index < 8 if merge else i in selected)
+                                    if i in selected
                                     else "excluded"
                                 ),
                                 "reason": Reason.NOT_OBSERVED
                                 if failed
                                 else (
-                                    Reason.EVIDENCE_LIMIT
-                                    if merge and index >= 8
-                                    else Reason.MODEL_NOT_SELECTED
+                                    Reason.MODEL_NOT_SELECTED
                                     if i not in selected
                                     else None
                                 ),
                             }
                             for index, i in enumerate(
-                                selected if merge else [r["id"] for r in evidence]
+                                [r["id"] for r in evidence]
                             )
                         ]
                     elif not failed and stage == Stage.MODEL_UNDERSTANDING:

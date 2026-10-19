@@ -54,14 +54,15 @@ class Service:
     def __init__(self, store, models, settings, diagnostic_sink=None):
         self.store, self.models, self.settings = store, models, settings
         self.gate = threading.Lock()
+        self.slot_condition = threading.Condition()
+        self.foreground_waiters = 0
+        self.worker_gate = threading.Lock()
         self.stop_event = threading.Event()
         self.thread = None
         self.processing_status = None
         self.worker_paused = False
         self.worker_phase = "idle"
         self.diagnostic_sink = diagnostic_sink
-
-
     def trace(self, stage, **data):
         capture("legacy", stage, data)
         if self.diagnostic_sink is not None:
@@ -71,15 +72,33 @@ class Service:
                 log.warning("diagnostic_sink_failed stage=%s", stage)
 
     @contextmanager
-    def model_slot(self, wait=5):
-        if not self.gate.acquire(timeout=wait):
-            raise AppError(
-                "MODEL_BUSY", "AI가 다른 기록을 처리 중입니다. 잠시 후 다시 시도하세요.", 429, True
-            )
+    def model_slot(self, wait=None, *, background=False, cancelled=None):
+        if wait is None and not background:
+            wait = getattr(getattr(self.settings, "llm", None), "timeout", 5)
+        deadline = None if wait is None else time.monotonic() + wait
+        with self.slot_condition:
+            if not background:
+                self.foreground_waiters += 1
+            try:
+                while True:
+                    if (background and self.stop_event.is_set()) or (cancelled and cancelled()):
+                        raise AppError("CANCELLED", "요청을 중단했습니다.", 409)
+                    if not (background and self.foreground_waiters) and self.gate.acquire(False):
+                        break
+                    remaining = None if deadline is None else deadline - time.monotonic()
+                    if remaining is not None and remaining <= 0:
+                        raise AppError("MODEL_BUSY", "AI가 다른 기록을 처리 중입니다. 잠시 후 다시 시도하세요.", 429, True)
+                    self.slot_condition.wait(0.1 if remaining is None else min(remaining, 0.1))
+            finally:
+                if not background:
+                    self.foreground_waiters -= 1
+                self.slot_condition.notify_all()
         try:
             yield
         finally:
-            self.gate.release()
+            with self.slot_condition:
+                self.gate.release()
+                self.slot_condition.notify_all()
 
 
 
@@ -125,45 +144,71 @@ class Service:
 
     def run_one(self):
         self.worker_phase = "model_wait"
-        with self.model_slot(wait=0):
-            self.worker_phase = "rebuild"
-            self.store.rebuild_facts()
-            self.worker_phase = "claim"
-            job = self.store.claim()
+        with self.worker_gate:
+            with self.model_slot(wait=0, background=True):
+                self.worker_phase = "rebuild"
+                self.store.rebuild_facts()
+                self.worker_phase = "claim"
+                job = self.store.claim()
             if not job:
                 return False
             self.trace("processing_start", record_id=job["record_id"], text=job["text"])
             started = time.monotonic()
             self.processing_status = {"job_id": job["id"], "phase": "extract", "started": started}
             try:
+                extracted = False
                 for attempt in range(2):
                     try:
                         context = make_source_context(job["record_id"], job["reference_time"])
                         self.processing_status = dict(self.processing_status, phase="extract")
-                        result, metadata = extract_record(self, job, context)
+                        if not extracted:
+                            extract_started = time.monotonic()
+                            try:
+                                result, metadata = extract_record(self, job, context)
+                            finally:
+                                self.processing_metric("extract", time.monotonic() - extract_started)
+                            extracted = True
                         self.processing_status = dict(self.processing_status, phase="embed")
                         self.trace("embedding_start", memories=result["memories"])
-                        vectors = self.models.embed([m["content"] for m in result["memories"]])
+                        with self.background_model_slot():
+                            embed_started = time.monotonic()
+                            self.processing_metric("embed", embed_calls=1)
+                            try:
+                                vectors = self.models.embed([m["content"] for m in result["memories"]])
+                            finally:
+                                self.processing_metric("embed", time.monotonic() - embed_started)
                         if len(result["memories"]):
                             vectors = normalized_vectors(
                                 vectors, len(result["memories"]), self.settings.embedding_dimensions
                             )
                         break
-                    except requests.ConnectionError, requests.Timeout:
+                    except (requests.ConnectionError, requests.Timeout) as exc:
+                        # A timed-out extraction has not made progress on this
+                        # chunk. Leave recovery to an explicit retry/config change.
+                        if isinstance(exc, requests.ReadTimeout) and not extracted:
+                            raise
                         if attempt or self.stop_event.wait(1):
                             raise
+                        self.processing_metric("retry", retries=1)
                 if self.stop_event.is_set():
                     return False
                 self.processing_status = dict(self.processing_status, phase="save")
-                self.store.publish(
-                    job, result["memories"], vectors, self.settings.embedding_key, metadata
-                )
+                save_started = time.monotonic()
+                # Publishing changes the search generation: do not invalidate a
+                # foreground answer that acquired its snapshot between calls.
+                with self.background_model_slot():
+                    self.store.publish(
+                        job, result["memories"], vectors, self.settings.embedding_key, metadata
+                    )
+                self.processing_metric("save", time.monotonic() - save_started)
                 self.trace("processing_done", count=len(result["memories"]),
                            record_id=job["record_id"])
                 log.info(
                     "job_finished job_id=%s elapsed=%.3f", job["id"], time.monotonic() - started
                 )
             except Exception as exc:
+                if self.stop_event.is_set():
+                    return False
                 code, diagnostic = failure(
                     exc, (self.processing_status or {}).get("phase", "unknown")
                 )
@@ -183,6 +228,8 @@ class Service:
                     self.worker_paused = True
                 log.warning("job_failed job_id=%s code=%s", job["id"], code)
             finally:
+                log.info("job_performance job_id=%s metrics=%s", job["id"],
+                         (self.processing_status or {}).get("performance", {}))
                 self.processing_status = None
             return True
 
@@ -731,4 +778,22 @@ class Service:
         """
         return self._search(question, filters, today, defer_limit=defer_limit,
                             selection_question=selection_question, correction_enabled=correction_enabled)
+
+
+    @contextmanager
+    def background_model_slot(self):
+        started = time.monotonic()
+        with self.model_slot(background=True):
+            self.processing_metric("model_wait", time.monotonic() - started)
+            yield
+
+
+    def processing_metric(self, stage, seconds=0, **counts):
+        status = self.processing_status
+        if status is None:
+            return
+        metrics = status.setdefault("performance", {})
+        metrics[stage + "_seconds"] = metrics.get(stage + "_seconds", 0) + seconds
+        for key, value in counts.items():
+            metrics[key] = metrics.get(key, 0) + value
 

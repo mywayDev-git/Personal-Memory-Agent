@@ -2,6 +2,10 @@ param(
     [string]$Server = 'C:\llama.cpp\llama-server.exe',
     [string]$GenerationModel = 'C:\models\Qwen3-8B-Q4_K_M.gguf',
     [string]$EmbeddingModel = 'C:\models\bge-m3-Q8_0.gguf',
+    [ValidateSet('auto', 'cpu', 'gpu')][string]$Acceleration = 'auto',
+    [ValidateSet('auto', 'cpu', 'gpu')][string]$EmbeddingAcceleration = 'auto',
+    [ValidateRange(0, 1024)][int]$GenerationThreads = 0,
+    [ValidateRange(0, 1024)][int]$EmbeddingThreads = 0,
     [switch]$NoBrowser,
     [switch]$ExternalServers,
     [switch]$Evaluation,
@@ -23,7 +27,7 @@ function Wait-Model([int]$Port, $Process) {
     $nextStatus = $started
     $deadline = [DateTime]::UtcNow.AddMinutes(5)
     while ([DateTime]::UtcNow -lt $deadline) {
-        if ($Process.HasExited) { throw "Model server on port $Port exited." }
+        if ($Process.HasExited) { throw "Model server on port $Port exited (code $($Process.ExitCode))." }
         if ([DateTime]::UtcNow -ge $nextStatus) {
             $elapsed = [int]([DateTime]::UtcNow - $started).TotalSeconds
             Write-Host "[PMA] Loading model on port $Port... ${elapsed}s elapsed (timeout: 300s)."
@@ -40,7 +44,56 @@ function Wait-Model([int]$Port, $Process) {
     }
     throw "Model server on port $Port did not become ready."
 }
+function Start-ModelServers {
+    param($Server, $GenerationModel, $EmbeddingModel, $Acceleration, $GenerationThreads, $EmbeddingThreads, $EmbeddingAcceleration = 'auto')
+    $modes = @($Acceleration)
+    if ($Acceleration -ne 'cpu') {
+        # Query the installed backend, rather than assuming NVIDIA is required.
+        $devices = & $Server --list-devices 2>&1 | Out-String
+        $available = $LASTEXITCODE -eq 0 -and $devices -match '(?im)^\s*(CUDA|Vulkan|SYCL|Metal|ROCm|HIP)\d*\s*:'
+        if ($Acceleration -eq 'gpu' -and -not $available) {
+            throw 'GPU mode requested, but the server reports no supported GPU device.'
+        }
+        if ($Acceleration -eq 'auto') {
+            $modes = if ($available) { @('gpu', 'cpu') } else { @('cpu') }
+        }
+    }
+    foreach ($mode in $modes) {
+        $attemptProcesses = @()
+        try {
+            $layers = if ($mode -eq 'cpu') { '0' } else { '99' }
+            $embeddingLayers = if ($mode -eq 'cpu' -or $EmbeddingAcceleration -eq 'cpu') { '0' } else { '99' }
+            $generationArgs = @('-m', ('"' + $GenerationModel + '"'), '--host', '127.0.0.1', '--port', '8081', '-c', '16384', '-np', '1', '--alias', 'qwen3', '--log-disable', '-ngl', $layers)
+            $embeddingArgs = @('-m', ('"' + $EmbeddingModel + '"'), '--host', '127.0.0.1', '--port', '8082', '-c', '8192', '-b', '8192', '-ub', '8192', '--embedding', '--pooling', 'cls', '--alias', 'bge-m3', '--log-disable', '-ngl', $embeddingLayers)
+            if ($GenerationThreads -gt 0) { $generationArgs += @('-t', "$GenerationThreads") }
+            if ($EmbeddingThreads -gt 0) { $embeddingArgs += @('-t', "$EmbeddingThreads") }
+            Write-Host "[PMA] Launching models ($mode)..."
+            $generation = Start-Process -FilePath $Server -ArgumentList $generationArgs -WindowStyle Hidden -PassThru
+            $attemptProcesses += $generation
+            Wait-Model 8081 $generation
+            $embedding = Start-Process -FilePath $Server -ArgumentList $embeddingArgs -WindowStyle Hidden -PassThru
+            $attemptProcesses += $embedding
+            Wait-Model 8082 $embedding
+            return $attemptProcesses
+        } catch {
+            foreach ($process in $attemptProcesses) {
+                if (-not $process.HasExited) {
+                    Stop-Process -Id $process.Id
+                    $process.WaitForExit()
+                }
+            }
+            if ($Acceleration -ne 'auto' -or $mode -eq 'cpu') {
+                throw "Model startup failed ($mode): $($_.Exception.Message)"
+            }
+            Write-Host '[PMA] GPU startup failed; retrying once with CPU.'
+        }
+    }
+}
+
 try {
+    # Check before hashing/loading models; the app also locks during its lifespan.
+    & './.venv/Scripts/python.exe' -B -m pma --check-startup
+    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
     if (-not (Test-Path -LiteralPath $EmbeddingModel -PathType Leaf)) {
         throw 'BGE-M3 GGUF is missing. See README.md for the verified download.'
     }
@@ -64,14 +117,7 @@ try {
             catch [System.Net.Sockets.SocketException] { }
             finally { $client.Dispose() }
         }
-        Write-Host '[PMA] Launching Qwen server (8081). Windows process startup may take a while...'
-        $generation = Start-Process -FilePath $Server -ArgumentList @('-m', ('"' + $GenerationModel + '"'), '--host', '127.0.0.1', '--port', '8081', '-c', '16384', '-np', '1', '--alias', 'qwen3', '--log-disable') -WindowStyle Hidden -PassThru
-        $ownedProcesses += $generation
-        Wait-Model 8081 $generation
-        Write-Host '[PMA] Launching BGE-M3 server (8082). Windows process startup may take a while...'
-        $embedding = Start-Process -FilePath $Server -ArgumentList @('-m', ('"' + $EmbeddingModel + '"'), '--host', '127.0.0.1', '--port', '8082', '-c', '8192', '-b', '8192', '-ub', '8192', '--embedding', '--pooling', 'cls', '--alias', 'bge-m3', '--log-disable') -WindowStyle Hidden -PassThru
-        $ownedProcesses += $embedding
-        Wait-Model 8082 $embedding
+        $ownedProcesses += @(Start-ModelServers -Server $Server -GenerationModel $GenerationModel -EmbeddingModel $EmbeddingModel -Acceleration $Acceleration -GenerationThreads $GenerationThreads -EmbeddingThreads $EmbeddingThreads -EmbeddingAcceleration $EmbeddingAcceleration)
     }
     Write-Host '[PMA] Starting web app. Keep this terminal open; press Ctrl+C to stop.'
     $appArguments = @('-u', '-B', '-m', 'pma')

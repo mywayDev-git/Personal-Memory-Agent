@@ -419,7 +419,7 @@ class ChatEngine:
                 request_budget(
                     self.service.settings.chat_timeout - (time.monotonic() - started)
                 ) as budget,
-                self.service.model_slot(wait=min(5, budget.remaining())),
+                self.service.model_slot(wait=budget.remaining(), cancelled=wait_cancelled),
             ):
                 budget.remaining()
                 lock_seconds = time.monotonic() - started

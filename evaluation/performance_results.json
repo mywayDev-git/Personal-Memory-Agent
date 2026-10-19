@@ -1,0 +1,521 @@
+{
+  "date": "2026-10-19",
+  "timezone": "Asia/Seoul",
+  "branch": "codex/cpu-gpu-performance",
+  "hardware": {
+    "memory": [
+      {
+        "TotalVisibleMemorySize": 16543104,
+        "FreePhysicalMemory": 1039396
+      }
+    ],
+    "cpu": [
+      {
+        "Name": "13th Gen Intel(R) Core(TM) i7-13700",
+        "NumberOfCores": 16,
+        "NumberOfLogicalProcessors": 24
+      }
+    ],
+    "gpu": "NVIDIA GeForce RTX 3060, 8192 MiB"
+  },
+  "software": {
+    "python": "3.14.8 (tags/v3.14.8:8e6e75d, Sep 30 2026, 18:19:33) [MSC v.1944 64 bit (AMD64)]",
+    "numpy": "2.5.4",
+    "requests": "2.34.2"
+  },
+  "experiments": {
+    "baseline_cpu": {
+      "source": ".local/performance-20261019/cpu/results.json",
+      "configuration": {
+        "mode": "cpu",
+        "embedding_mode": "cpu",
+        "threads": 0,
+        "model_timeout": 180,
+        "warmup_policy": "per_scenario",
+        "concurrent_fixture": "multi_chunk",
+        "samples": 5,
+        "source_hashes": {
+          "pma/chat/router.py": "556d1e9839c4f0ded83ba63448b6ec6654aaac6a244da3829df262aef637a9d0",
+          "pma/chat/automatic.py": "a8cc80379b10b8bae31bd0ccb38e09165d2bd52c43c513793f6e6ac02e24aec5",
+          "pma/service.py": "9e4a9c45278455395578bd126b505812a1c890c6c92047b9936da63bb290e14f",
+          "pma/chat/engine.py": "16af8061d3351fa17c991dfcbdd083496015882a9f992e6caaa0efd47d794340"
+        },
+        "observed_server_threads": 16
+      },
+      "summary": {
+        "short_record": {
+          "samples": 5,
+          "median_seconds": 38.50918329996057,
+          "max_seconds": 38.97789550002199,
+          "model_completion_median_seconds": 38.355436599988025,
+          "max_ram_mb": 5533.8203125,
+          "max_gpu_total_mb": 1391.0,
+          "statuses": [
+            "succeeded",
+            "succeeded",
+            "succeeded",
+            "succeeded",
+            "succeeded"
+          ],
+          "errors": [],
+          "chat_median_seconds": null
+        },
+        "search": {
+          "samples": 5,
+          "median_seconds": 6.622290999977849,
+          "max_seconds": 6.865909899992403,
+          "model_completion_median_seconds": 6.557169100036845,
+          "max_ram_mb": 6534.6484375,
+          "max_gpu_total_mb": 1387.0,
+          "statuses": [
+            "ok",
+            "ok",
+            "ok",
+            "ok",
+            "ok"
+          ],
+          "errors": [],
+          "chat_median_seconds": null
+        },
+        "memory_chat": {
+          "samples": 5,
+          "median_seconds": 49.97195879998617,
+          "max_seconds": 56.941854700038675,
+          "model_completion_median_seconds": 49.53401529992698,
+          "max_ram_mb": 6775.5234375,
+          "max_gpu_total_mb": 1399.0,
+          "statuses": [
+            "answered",
+            "answered",
+            "answered",
+            "answered",
+            "answered"
+          ],
+          "errors": [],
+          "chat_median_seconds": null
+        },
+        "multi_chunk_record": {
+          "samples": 0,
+          "statuses": [],
+          "errors": [],
+          "incomplete": {
+            "reason": "repeated_MODEL_TIMEOUT",
+            "measured": 0,
+            "requested": 5,
+            "warmup_failed": true
+          }
+        },
+        "concurrent": {
+          "samples": 0,
+          "statuses": [],
+          "errors": [],
+          "incomplete": {
+            "reason": "repeated_MODEL_TIMEOUT",
+            "measured": 0,
+            "requested": 5,
+            "warmup_failed": true
+          }
+        }
+      },
+      "incomplete": {
+        "multi_chunk_record": {
+          "reason": "repeated_MODEL_TIMEOUT",
+          "measured": 0,
+          "requested": 5,
+          "warmup_failed": true
+        },
+        "concurrent": {
+          "reason": "repeated_MODEL_TIMEOUT",
+          "measured": 0,
+          "requested": 5,
+          "warmup_failed": true
+        }
+      }
+    },
+    "baseline_gpu": {
+      "source": ".local/performance-20261019/gpu/results.json",
+      "configuration": {
+        "mode": "gpu",
+        "embedding_mode": "gpu",
+        "threads": 0,
+        "model_timeout": 180,
+        "warmup_policy": "per_scenario",
+        "concurrent_fixture": "multi_chunk",
+        "samples": 5,
+        "source_hashes": null,
+        "observed_server_threads": 16
+      },
+      "summary": {
+        "short_record": {
+          "samples": 5,
+          "median_seconds": 9.280721399991307,
+          "max_seconds": 9.454070500039961,
+          "model_completion_median_seconds": 9.147056300018448,
+          "max_ram_mb": 4440.9765625,
+          "max_gpu_total_mb": 7901.0,
+          "statuses": [
+            "succeeded",
+            "succeeded",
+            "succeeded",
+            "succeeded",
+            "succeeded"
+          ],
+          "errors": [],
+          "chat_median_seconds": null
+        },
+        "multi_chunk_record": {
+          "samples": 5,
+          "median_seconds": 102.2735974000534,
+          "max_seconds": 102.58796420000726,
+          "model_completion_median_seconds": 101.67817979998654,
+          "max_ram_mb": 3267.4140625,
+          "max_gpu_total_mb": 7951.0,
+          "statuses": [
+            "succeeded",
+            "succeeded",
+            "succeeded",
+            "succeeded",
+            "succeeded"
+          ],
+          "errors": [],
+          "chat_median_seconds": null
+        },
+        "search": {
+          "samples": 5,
+          "median_seconds": 3.139974899997469,
+          "max_seconds": 3.1952071999548934,
+          "model_completion_median_seconds": 2.981134200002998,
+          "max_ram_mb": 2047.61328125,
+          "max_gpu_total_mb": 7965.0,
+          "statuses": [
+            "ok",
+            "ok",
+            "ok",
+            "ok",
+            "ok"
+          ],
+          "errors": [],
+          "chat_median_seconds": null
+        },
+        "memory_chat": {
+          "samples": 5,
+          "median_seconds": 15.294831499981228,
+          "max_seconds": 15.554546999977902,
+          "model_completion_median_seconds": 14.851258599956054,
+          "max_ram_mb": 2685.6171875,
+          "max_gpu_total_mb": 7978.0,
+          "statuses": [
+            "answered",
+            "answered",
+            "answered",
+            "answered",
+            "answered"
+          ],
+          "errors": [],
+          "chat_median_seconds": null
+        },
+        "concurrent": {
+          "samples": 5,
+          "median_seconds": 123.10400219995063,
+          "max_seconds": 134.6795979999588,
+          "model_completion_median_seconds": 120.36096690007253,
+          "max_ram_mb": 3436.43359375,
+          "max_gpu_total_mb": 7982.0,
+          "statuses": [
+            "answered",
+            "answered",
+            "answered",
+            "answered",
+            "answered"
+          ],
+          "errors": [],
+          "chat_median_seconds": 19.91426799999317
+        }
+      },
+      "incomplete": {}
+    },
+    "optimized_hybrid_gpu": {
+      "source": ".local/performance-20261019-hybrid/gpu/results.json",
+      "configuration": {
+        "mode": "gpu",
+        "embedding_mode": "cpu",
+        "threads": 0,
+        "model_timeout": 180,
+        "warmup_policy": "per_scenario",
+        "concurrent_fixture": "short",
+        "samples": 5,
+        "source_hashes": {
+          "pma/chat/router.py": "cd832d0be283a6b26a633d3d403e7a7889d222758d0ee007a65c1c74b54f874c",
+          "pma/chat/automatic.py": "1523ceb1bc9227ca12db326176436ccde26efa4c78719be47722c79d51b9a38e",
+          "pma/processing.py": "cb185e5b95e883d564020c0b0deaeb117682dfb2c63e9364945884404df70344",
+          "pma/service.py": "25142bf8685e49d1ce0e0e57c3ebd9c273bad1de9295308f1b85e50721b3bc1b",
+          "pma/chat/engine.py": "2ee623537b3c669c58cd9120e727363371a208978e67f8d352b5e6e8242e9b4a"
+        },
+        "observed_server_threads": 16
+      },
+      "summary": {
+        "short_record": {
+          "samples": 5,
+          "median_seconds": 8.362590200034901,
+          "max_seconds": 8.421317800006364,
+          "model_completion_median_seconds": 8.255909400002565,
+          "max_ram_mb": 5820.59765625,
+          "max_gpu_total_mb": 7885.0,
+          "statuses": [
+            "succeeded",
+            "succeeded",
+            "succeeded",
+            "succeeded",
+            "succeeded"
+          ],
+          "errors": [],
+          "chat_median_seconds": null
+        },
+        "memory_chat": {
+          "samples": 5,
+          "median_seconds": 12.9386961000273,
+          "max_seconds": 13.213944600021932,
+          "model_completion_median_seconds": 12.680438900133595,
+          "max_ram_mb": 5010.45703125,
+          "max_gpu_total_mb": 7880.0,
+          "statuses": [
+            "answered",
+            "answered",
+            "answered",
+            "answered",
+            "answered"
+          ],
+          "errors": [],
+          "chat_median_seconds": null
+        },
+        "concurrent": {
+          "samples": 5,
+          "median_seconds": 21.906196099997032,
+          "max_seconds": 22.032237000006717,
+          "model_completion_median_seconds": 21.58296330005396,
+          "max_ram_mb": 4028.01171875,
+          "max_gpu_total_mb": 7850.0,
+          "statuses": [
+            "answered",
+            "answered",
+            "answered",
+            "answered",
+            "answered"
+          ],
+          "errors": [],
+          "chat_median_seconds": 13.263342300022487
+        }
+      },
+      "incomplete": {}
+    },
+    "gpu_wait_diagnostic": {
+      "source": ".local/performance-20261019-gpu-wait/gpu/results.json",
+      "configuration": {
+        "mode": "gpu",
+        "embedding_mode": "cpu",
+        "threads": 0,
+        "model_timeout": 180,
+        "warmup_policy": "seed_only",
+        "concurrent_fixture": "short",
+        "samples": 1,
+        "source_hashes": {
+          "pma/chat/router.py": "cd832d0be283a6b26a633d3d403e7a7889d222758d0ee007a65c1c74b54f874c",
+          "pma/chat/automatic.py": "1523ceb1bc9227ca12db326176436ccde26efa4c78719be47722c79d51b9a38e",
+          "pma/processing.py": "cb185e5b95e883d564020c0b0deaeb117682dfb2c63e9364945884404df70344",
+          "pma/service.py": "25142bf8685e49d1ce0e0e57c3ebd9c273bad1de9295308f1b85e50721b3bc1b",
+          "pma/chat/engine.py": "2ee623537b3c669c58cd9120e727363371a208978e67f8d352b5e6e8242e9b4a"
+        },
+        "observed_server_threads": 16
+      },
+      "summary": {
+        "concurrent": {
+          "samples": 1,
+          "median_seconds": 26.376420799992047,
+          "max_seconds": 26.376420799992047,
+          "model_completion_median_seconds": 26.072768500074744,
+          "max_ram_mb": 6879.57421875,
+          "max_gpu_total_mb": 7866.0,
+          "statuses": [
+            "answered"
+          ],
+          "errors": [],
+          "chat_median_seconds": 26.222491699969396
+        }
+      },
+      "incomplete": {}
+    },
+    "cpu_long_timeout600": {
+      "source": ".local/performance-20261019-cpu-long/cpu/results.json",
+      "configuration": {
+        "mode": "cpu",
+        "embedding_mode": "cpu",
+        "threads": 0,
+        "model_timeout": 600.0,
+        "warmup_policy": "seed_only",
+        "concurrent_fixture": "short",
+        "samples": 1,
+        "source_hashes": {
+          "pma/chat/router.py": "cd832d0be283a6b26a633d3d403e7a7889d222758d0ee007a65c1c74b54f874c",
+          "pma/chat/automatic.py": "1523ceb1bc9227ca12db326176436ccde26efa4c78719be47722c79d51b9a38e",
+          "pma/processing.py": "503e245e53f4cb25385a34d169e78645f25628a62b963e9a79df58c1b5f33cbd",
+          "pma/service.py": "d82aafca0684dc9ec6ab0e66b846b833430af18de958e1c4262e3f048b68070e",
+          "pma/chat/engine.py": "2ee623537b3c669c58cd9120e727363371a208978e67f8d352b5e6e8242e9b4a"
+        },
+        "observed_server_threads": 16
+      },
+      "summary": {
+        "multi_chunk_record": {
+          "samples": 1,
+          "median_seconds": 532.4975808999734,
+          "max_seconds": 532.4975808999734,
+          "model_completion_median_seconds": 530.9858498999965,
+          "max_ram_mb": 7280.91015625,
+          "max_gpu_total_mb": 1343.0,
+          "statuses": [
+            "succeeded"
+          ],
+          "errors": [],
+          "chat_median_seconds": null
+        },
+        "concurrent": {
+          "samples": 1,
+          "median_seconds": 94.00225730001694,
+          "max_seconds": 94.00225730001694,
+          "model_completion_median_seconds": 93.39112740004202,
+          "max_ram_mb": 6695.2421875,
+          "max_gpu_total_mb": 1346.0,
+          "statuses": [
+            "answered"
+          ],
+          "errors": [],
+          "chat_median_seconds": 93.82005660003051
+        }
+      },
+      "incomplete": {}
+    },
+    "cpu_threads8": {
+      "source": ".local/performance-20261019-cpu-threads8/cpu/results.json",
+      "configuration": {
+        "mode": "cpu",
+        "embedding_mode": "cpu",
+        "threads": 8,
+        "model_timeout": 180.0,
+        "warmup_policy": "per_scenario",
+        "concurrent_fixture": "multi_chunk",
+        "samples": 5,
+        "source_hashes": {
+          "pma/chat/router.py": "cd832d0be283a6b26a633d3d403e7a7889d222758d0ee007a65c1c74b54f874c",
+          "pma/chat/automatic.py": "1523ceb1bc9227ca12db326176436ccde26efa4c78719be47722c79d51b9a38e",
+          "pma/processing.py": "503e245e53f4cb25385a34d169e78645f25628a62b963e9a79df58c1b5f33cbd",
+          "pma/service.py": "d82aafca0684dc9ec6ab0e66b846b833430af18de958e1c4262e3f048b68070e",
+          "pma/chat/engine.py": "2ee623537b3c669c58cd9120e727363371a208978e67f8d352b5e6e8242e9b4a"
+        },
+        "observed_server_threads": 8
+      },
+      "summary": {
+        "short_record": {
+          "samples": 5,
+          "median_seconds": 51.0387422000058,
+          "max_seconds": 51.68735750002088,
+          "model_completion_median_seconds": 50.909524100017734,
+          "max_ram_mb": 5556.796875,
+          "max_gpu_total_mb": 1343.0,
+          "statuses": [
+            "succeeded",
+            "succeeded",
+            "succeeded",
+            "succeeded",
+            "succeeded"
+          ],
+          "errors": [],
+          "chat_median_seconds": null
+        },
+        "search": {
+          "samples": 5,
+          "median_seconds": 7.622077199979685,
+          "max_seconds": 8.570111699984409,
+          "model_completion_median_seconds": 7.5472913000267,
+          "max_ram_mb": 6159.75,
+          "max_gpu_total_mb": 1341.0,
+          "statuses": [
+            "ok",
+            "ok",
+            "ok",
+            "ok",
+            "ok"
+          ],
+          "errors": [],
+          "chat_median_seconds": null
+        }
+      },
+      "incomplete": {}
+    }
+  },
+  "test_result": {
+    "passed": 184,
+    "warnings": 1
+  },
+  "restoration": {
+    "original_ports_ready": [
+      8081,
+      8082
+    ],
+    "original_arguments_restored": true,
+    "benchmark_model_servers_remaining": false
+  },
+  "discarded_experiments": [
+    ".local/performance-20261019-cpu-target1",
+    ".local/performance-20261019-cpu-target1-v2"
+  ],
+  "vector_preparation": {
+    "100": {
+      "median_ms": 0.13590004527941346,
+      "max_ms": 0.21080003352835774,
+      "matrix_mb": 0.390625
+    },
+    "1000": {
+      "median_ms": 4.41659998614341,
+      "max_ms": 4.450000007636845,
+      "matrix_mb": 3.90625
+    },
+    "10000": {
+      "median_ms": 57.98519996460527,
+      "max_ms": 59.04149997513741,
+      "matrix_mb": 39.0625
+    }
+  },
+  "quality_checks": {
+    "long_record_memories": 14,
+    "long_record_normalized_facts": {
+      "blue_book_gift": true,
+      "denied_gift_preserved": true,
+      "return_plan_preserved": true,
+      "cache_decision_preserved": true,
+      "not_started_preserved": true
+    },
+    "verified_book_answers": 15,
+    "baseline_completion_calls_per_memory_chat": 8,
+    "optimized_completion_calls_per_memory_chat": 7
+  },
+  "models": {
+    "Qwen3-8B-Q4_K_M.gguf": {
+      "sha256": "d98cdcbd03e17ce47681435b5150e34c1417f50b5c0019dd560e4882c5745785",
+      "bytes": 5027783488
+    },
+    "bge-m3-Q8_0.gguf": {
+      "sha256": "950f4a8e5e19477a6d3c26d2f162233c20002c601f75e4b002e3239997821167",
+      "bytes": 634553760
+    }
+  },
+  "common_settings": {
+    "generation_context_tokens": 16384,
+    "embedding_context_tokens": 8192,
+    "max_output_tokens": 4096,
+    "temperature": 0,
+    "seed": 42,
+    "top_p": 1,
+    "chat_timeout_seconds": 300,
+    "synthetic_databases_only": true,
+    "physical_gpu_absent_machine_tested": false
+  }
+}
