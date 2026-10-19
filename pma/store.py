@@ -580,6 +580,9 @@ class Store:
                 raise AppError("NOT_FOUND", "작업을 찾을 수 없습니다.", 404)
             return dict(r)
 
+    def snapshot_for_owner(self, model_key, owner_id):
+        return self.snapshot(model_key, owner_id=owner_id)
+
     def snapshot(self, model_key, *, owner_id=None):
         observation = _start_observation()
         with self.connect() as db:
@@ -604,13 +607,27 @@ class Store:
                 "AND e.model_key=? ORDER BY v.id,m.local_id",
                 (owner_id, owner_id, FACT_VERSION, model_key),
             ).fetchall()
+            # Keep the same read transaction and evidence ordering, but avoid one
+            # SQL round trip per memory. Small batches also support SQLite builds
+            # with the older 999-variable limit.
+            evidence = {}
+            for offset in range(0, len(rows), 500):
+                ids = [row["id"] for row in rows[offset:offset + 500]]
+                placeholders = ",".join("?" for _ in ids)
+                for item in db.execute(
+                    "SELECT memory_id,quote,start,end FROM evidence WHERE memory_id IN ("
+                    + placeholders + ") ORDER BY memory_id,position", ids
+                ):
+                    evidence.setdefault(item["memory_id"], []).append(
+                        {key: item[key] for key in ("quote", "start", "end")}
+                    )
             result = []
             for row in rows:
                 item = dict(row)
                 item["memory"] = json.loads(item.pop("payload"))
                 fact = item.pop("fact_payload")
                 item["fact"] = json.loads(fact) if fact else None
-                item["evidence"] = [dict(e) for e in db.execute("SELECT quote,start,end FROM evidence WHERE memory_id=? ORDER BY position", (row["id"],))]
+                item["evidence"] = evidence.get(row["id"], [])
                 result.append(item)
         _observe_read(Stage.SNAPSHOT, observation, result)
         return generation, result
@@ -833,7 +850,3 @@ class Store:
                 self.queue(db, rev)
                 db.execute("UPDATE records SET status='queued' WHERE id=?", (row["id"],))
             return len(rows)
-
-    def snapshot_for_owner(self, model_key, owner_id):
-        return self.snapshot(model_key, owner_id=owner_id)
-

@@ -60,6 +60,14 @@ CPU·GPU·혼합 실행의 실제 시간·메모리와 채택하지 않은 실�
 [CPU·GPU 성능 측정 보고서](evaluation/performance_results.rst)에 정리했습니다.
 긴 CPU 기록의 600초 제한 진단은 기본 180초 비교와 구분해 기록했습니다.
 
+대량 합성 DB의 조회·검색 최적화 결과는
+[DB 성능 측정 보고서](evaluation/database_results.rst)에 정리했습니다.
+근거 일괄 조회, 보관·사용자 범위 SQL 개선, 최대 64MiB 예산의 정규화 벡터 캐시와
+요청 안의 검색어 정규화 재사용을 적용했습니다. 모델·검증·API·DB 스키마는 유지합니다.
+`python -m evaluation.database_benchmark --output .local/db-bench-new --sizes 1000 10000 25000 --samples 5`로
+개인 DB와 모델 서버를 사용하지 않고 재현할 수 있습니다. 모델 호출은 고정 대체 구현이므로
+보고서의 개선율은 실제 AI 답변 전체의 개선율과 구분해야 합니다.
+
 실행 직후 시작 메시지와 모델 파일 검사 단계가 표시됩니다. 모델을 로딩하는 동안 10초마다 대기 시간이 표시되며, 각 모델의 준비 제한 시간은 5분입니다. 웹 앱이 준비되면 터미널에 일회용 접속 주소가 표시됩니다. 브라우저가 자동으로 열리지 않으면 이 주소를 직접 여세요. Windows PowerShell 5에서 실행했다면 PowerShell 7에서 `pwsh -File ./run_app.ps1`로 실행하세요.
 
 기본 모델 경로:

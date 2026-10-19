@@ -1,0 +1,4672 @@
+{
+  "manifest": {
+    "sources": {
+      "pma/store.py": "580ca54f5a8c4e69d04cc23f2693cce9261f797014409b59a51971b6e39c14b2",
+      "pma/service.py": "36ca3f1bbde71deacb6ff1ec581391b5cbea2577ca981e55e88d3e9c13786fdc",
+      "pma/search_explain.py": "dcb43da1dc45e601ad8c348ece4390e3d25e93cf608b3a5c94b93f335f7365d3"
+    },
+    "python": "3.14.8 (tags/v3.14.8:8e6e75d, Sep 30 2026, 18:19:33) [MSC v.1944 64 bit (AMD64)]",
+    "numpy": "2.5.4",
+    "sqlite": "3.50.4",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "samples": 5,
+    "sizes": [
+      1000,
+      10000,
+      25000
+    ],
+    "models": "deterministic stubs; no HTTP/inference",
+    "dimensions": 1024,
+    "captures": "10% captured; 2.5% archived; 2% other owner (overlapping)"
+  },
+  "comparisons": [
+    {
+      "mode": "baseline",
+      "database_bytes": 6897664,
+      "initial_memory": {
+        "rss_mib": 56.51171875,
+        "peak_rss_mib": 56.51171875
+      },
+      "snapshot": {
+        "first_seconds": 0.043743600021116436,
+        "median_seconds": 0.04319130000658333,
+        "max_seconds": 0.04375789995538071,
+        "samples_seconds": [
+          0.04375789995538071,
+          0.042404300009366125,
+          0.043361500022001565,
+          0.04074599995510653,
+          0.04319130000658333
+        ],
+        "rss_mib": 78.48828125,
+        "peak_rss_mib": 88.23046875,
+        "rows": 960,
+        "digest": "901836309ea61c983e17de85ad683b1a394f619faf9cbfb7c55440c57ecd7bd2"
+      },
+      "vector": {
+        "first_seconds": 0.00699620001250878,
+        "median_seconds": 0.0044998000375926495,
+        "max_seconds": 0.0052226000116206706,
+        "samples_seconds": [
+          0.004940399958286434,
+          0.004409999994095415,
+          0.0044998000375926495,
+          0.004186499980278313,
+          0.0052226000116206706
+        ],
+        "rss_mib": 79.9296875,
+        "peak_rss_mib": 88.23046875,
+        "digest": "bf057bdaf742278a523b03f9dd46825196446f28f51088daa1b83cced5fbefd1"
+      },
+      "all": {
+        "first_seconds": 0.08823570003733039,
+        "median_seconds": 0.09008940000785515,
+        "max_seconds": 0.09961909998673946,
+        "samples_seconds": [
+          0.08821960003115237,
+          0.09961909998673946,
+          0.09008940000785515,
+          0.08778859995072708,
+          0.09428010002011433
+        ],
+        "rss_mib": 69.7421875,
+        "peak_rss_mib": 88.23046875,
+        "digest": "f78f1557074fc6ddc229eddbca8aa6bb1d45d32c86e221af6e279724eb4ce10d",
+        "results": 8
+      },
+      "date_filtered": {
+        "first_seconds": 0.05489640001906082,
+        "median_seconds": 0.05354950000764802,
+        "max_seconds": 0.06315050000557676,
+        "samples_seconds": [
+          0.052665899973362684,
+          0.05545159999746829,
+          0.05354950000764802,
+          0.05233809998026118,
+          0.06315050000557676
+        ],
+        "rss_mib": 69.7578125,
+        "peak_rss_mib": 88.23046875,
+        "digest": "87bdae917d762435802e4044bb7ad28c7f9d30401b767a35d8c505c1a3f826bc",
+        "results": 8
+      },
+      "profile": [
+        {
+          "file": "search_explain_before.py",
+          "line": 60,
+          "function": "normalize",
+          "calls": 29772,
+          "self_seconds": 0.07104980000000001,
+          "cumulative_seconds": 0.12130990000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'endswith' of 'str' objects>",
+          "calls": 668468,
+          "self_seconds": 0.0454714,
+          "cumulative_seconds": 0.0454714
+        },
+        {
+          "file": "search_explain_before.py",
+          "line": 92,
+          "function": "keyword_matches",
+          "calls": 960,
+          "self_seconds": 0.022854600000000003,
+          "cumulative_seconds": 0.15197460000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'execute' of 'sqlite3.Connection' objects>",
+          "calls": 973,
+          "self_seconds": 0.021679,
+          "cumulative_seconds": 0.021679
+        },
+        {
+          "file": "decoder.py",
+          "line": 351,
+          "function": "raw_decode",
+          "calls": 1920,
+          "self_seconds": 0.0078609,
+          "cumulative_seconds": 0.0078609
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'group' of 're.Match' objects>",
+          "calls": 61440,
+          "self_seconds": 0.007275500000000001,
+          "cumulative_seconds": 0.007275500000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'casefold' of 'str' objects>",
+          "calls": 59534,
+          "self_seconds": 0.006918100000000001,
+          "cumulative_seconds": 0.006918100000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'fetchall' of 'sqlite3.Cursor' objects>",
+          "calls": 2,
+          "self_seconds": 0.006734700000000001,
+          "cumulative_seconds": 0.006734700000000001
+        },
+        {
+          "file": "service_before.py",
+          "line": 249,
+          "function": "_search",
+          "calls": 1,
+          "self_seconds": 0.0043929,
+          "cumulative_seconds": 0.23324360000000002
+        },
+        {
+          "file": "store_before.py",
+          "line": 586,
+          "function": "snapshot",
+          "calls": 1,
+          "self_seconds": 0.0037258,
+          "cumulative_seconds": 0.0434661
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'close' of 'sqlite3.Connection' objects>",
+          "calls": 3,
+          "self_seconds": 0.0034344,
+          "cumulative_seconds": 0.0034344
+        },
+        {
+          "file": "database_benchmark.py",
+          "line": 182,
+          "function": "<lambda>",
+          "calls": 1,
+          "self_seconds": 0.0021642000000000002,
+          "cumulative_seconds": 0.23540780000000003
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'findall' of 're.Pattern' objects>",
+          "calls": 963,
+          "self_seconds": 0.0018463000000000002,
+          "cumulative_seconds": 0.0018463000000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.len>",
+          "calls": 27870,
+          "self_seconds": 0.0018059,
+          "cumulative_seconds": 0.0018059
+        },
+        {
+          "file": "models.py",
+          "line": 79,
+          "function": "normalized_vectors",
+          "calls": 2,
+          "self_seconds": 0.0017297,
+          "cumulative_seconds": 0.0032068
+        },
+        {
+          "file": "decoder.py",
+          "line": 340,
+          "function": "decode",
+          "calls": 1920,
+          "self_seconds": 0.0016415000000000002,
+          "cumulative_seconds": 0.0107586
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'get' of 'dict' objects>",
+          "calls": 13213,
+          "self_seconds": 0.0016231000000000002,
+          "cumulative_seconds": 0.0016231000000000002
+        },
+        {
+          "file": "facts.py",
+          "line": 437,
+          "function": "compatible",
+          "calls": 960,
+          "self_seconds": 0.0015528,
+          "cumulative_seconds": 0.0028323000000000003
+        },
+        {
+          "file": "shape_base.py",
+          "line": 378,
+          "function": "stack",
+          "calls": 1,
+          "self_seconds": 0.0013008000000000002,
+          "cumulative_seconds": 0.0013545
+        },
+        {
+          "file": "copy.py",
+          "line": 110,
+          "function": "deepcopy",
+          "calls": 5982,
+          "self_seconds": 0.0012050000000000001,
+          "cumulative_seconds": 0.0033151
+        },
+        {
+          "file": "copy.py",
+          "line": 198,
+          "function": "_deepcopy_dict",
+          "calls": 491,
+          "self_seconds": 0.0011033,
+          "cumulative_seconds": 0.0032774
+        },
+        {
+          "file": "_linalg.py",
+          "line": 2615,
+          "function": "norm",
+          "calls": 2,
+          "self_seconds": 0.0010288,
+          "cumulative_seconds": 0.0013750000000000001
+        },
+        {
+          "file": "__init__.py",
+          "line": 304,
+          "function": "loads",
+          "calls": 1920,
+          "self_seconds": 0.0009378,
+          "cumulative_seconds": 0.012025300000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method _sqlite3.connect>",
+          "calls": 3,
+          "self_seconds": 0.0008394,
+          "cumulative_seconds": 0.0008918000000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'append' of 'list' objects>",
+          "calls": 6919,
+          "self_seconds": 0.0007791,
+          "cumulative_seconds": 0.0007791
+        }
+      ],
+      "snapshot_profile": [
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'execute' of 'sqlite3.Connection' objects>",
+          "calls": 965,
+          "self_seconds": 0.021255200000000002,
+          "cumulative_seconds": 0.021255200000000002
+        },
+        {
+          "file": "decoder.py",
+          "line": 351,
+          "function": "raw_decode",
+          "calls": 1920,
+          "self_seconds": 0.007106500000000001,
+          "cumulative_seconds": 0.007106500000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'fetchall' of 'sqlite3.Cursor' objects>",
+          "calls": 1,
+          "self_seconds": 0.006858100000000001,
+          "cumulative_seconds": 0.006858100000000001
+        },
+        {
+          "file": "store_before.py",
+          "line": 586,
+          "function": "snapshot",
+          "calls": 1,
+          "self_seconds": 0.0045093,
+          "cumulative_seconds": 0.0456345
+        },
+        {
+          "file": "decoder.py",
+          "line": 340,
+          "function": "decode",
+          "calls": 1920,
+          "self_seconds": 0.0016731,
+          "cumulative_seconds": 0.010055600000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'close' of 'sqlite3.Connection' objects>",
+          "calls": 1,
+          "self_seconds": 0.0010054,
+          "cumulative_seconds": 0.0010054
+        },
+        {
+          "file": "__init__.py",
+          "line": 304,
+          "function": "loads",
+          "calls": 1920,
+          "self_seconds": 0.0009144000000000001,
+          "cumulative_seconds": 0.0112951
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'match' of 're.Pattern' objects>",
+          "calls": 3840,
+          "self_seconds": 0.0007614000000000001,
+          "cumulative_seconds": 0.0007614000000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'end' of 're.Match' objects>",
+          "calls": 3840,
+          "self_seconds": 0.0003593,
+          "cumulative_seconds": 0.0003593
+        },
+        {
+          "file": "store_before.py",
+          "line": 583,
+          "function": "snapshot_for_owner",
+          "calls": 1,
+          "self_seconds": 0.0002687,
+          "cumulative_seconds": 0.045903200000000005
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'pop' of 'dict' objects>",
+          "calls": 1920,
+          "self_seconds": 0.0002455,
+          "cumulative_seconds": 0.0002455
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method _sqlite3.connect>",
+          "calls": 1,
+          "self_seconds": 0.00024260000000000002,
+          "cumulative_seconds": 0.000259
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'startswith' of 'str' objects>",
+          "calls": 1920,
+          "self_seconds": 0.0001763,
+          "cumulative_seconds": 0.0001763
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'append' of 'list' objects>",
+          "calls": 960,
+          "self_seconds": 0.00017020000000000002,
+          "cumulative_seconds": 0.00017020000000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.len>",
+          "calls": 1920,
+          "self_seconds": 0.0001553,
+          "cumulative_seconds": 0.0001553
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.isinstance>",
+          "calls": 1921,
+          "self_seconds": 0.00014900000000000002,
+          "cumulative_seconds": 0.00014900000000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'disable' of '_lsprof.Profiler' objects>",
+          "calls": 1,
+          "self_seconds": 2.72e-05,
+          "cumulative_seconds": 2.72e-05
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'commit' of 'sqlite3.Connection' objects>",
+          "calls": 1,
+          "self_seconds": 1.18e-05,
+          "cumulative_seconds": 1.18e-05
+        },
+        {
+          "file": "store_before.py",
+          "line": 179,
+          "function": "connect",
+          "calls": 2,
+          "self_seconds": 8.900000000000001e-06,
+          "cumulative_seconds": 0.0012974
+        },
+        {
+          "file": "functools.py",
+          "line": 35,
+          "function": "update_wrapper",
+          "calls": 1,
+          "self_seconds": 4.800000000000001e-06,
+          "cumulative_seconds": 9.800000000000001e-06
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.getattr>",
+          "calls": 9,
+          "self_seconds": 4.2000000000000004e-06,
+          "cumulative_seconds": 4.2000000000000004e-06
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'fetchone' of 'sqlite3.Cursor' objects>",
+          "calls": 1,
+          "self_seconds": 3e-06,
+          "cumulative_seconds": 3e-06
+        },
+        {
+          "file": "functools.py",
+          "line": 593,
+          "function": "decorating_function",
+          "calls": 1,
+          "self_seconds": 2.8000000000000003e-06,
+          "cumulative_seconds": 1.2600000000000001e-05
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.next>",
+          "calls": 2,
+          "self_seconds": 2.8000000000000003e-06,
+          "cumulative_seconds": 0.0013002
+        },
+        {
+          "file": "functools.py",
+          "line": 553,
+          "function": "lru_cache",
+          "calls": 1,
+          "self_seconds": 2.6e-06,
+          "cumulative_seconds": 2.8000000000000003e-06
+        }
+      ],
+      "snapshot_sql_statements": 962,
+      "query_plan": [
+        "SCAN e",
+        "SEARCH m USING INDEX sqlite_autoindex_memories_1 (id=?)",
+        "SEARCH v USING INDEX sqlite_autoindex_revisions_1 (id=?)",
+        "SEARCH r USING INDEX sqlite_autoindex_records_1 (id=?)",
+        "CORRELATED SCALAR SUBQUERY 1",
+        "SCAN c",
+        "CORRELATED SCALAR SUBQUERY 2",
+        "SCAN c",
+        "SEARCH f USING INDEX sqlite_autoindex_facts_1 (memory_id=?) LEFT-JOIN",
+        "USE TEMP B-TREE FOR ORDER BY"
+      ],
+      "final_memory": {
+        "rss_mib": 68.42578125,
+        "peak_rss_mib": 88.23046875
+      },
+      "count": 1000
+    },
+    {
+      "mode": "batch",
+      "database_bytes": 6897664,
+      "initial_memory": {
+        "rss_mib": 55.91015625,
+        "peak_rss_mib": 55.91015625
+      },
+      "snapshot": {
+        "first_seconds": 0.02813130000140518,
+        "median_seconds": 0.026935300033073872,
+        "max_seconds": 0.028472699981648475,
+        "samples_seconds": [
+          0.0279177000047639,
+          0.028472699981648475,
+          0.026935300033073872,
+          0.026085399964358658,
+          0.026459500018972903
+        ],
+        "rss_mib": 76.6953125,
+        "peak_rss_mib": 85.8984375,
+        "rows": 960,
+        "digest": "901836309ea61c983e17de85ad683b1a394f619faf9cbfb7c55440c57ecd7bd2"
+      },
+      "vector": {
+        "first_seconds": 0.005831000045873225,
+        "median_seconds": 0.004475900030229241,
+        "max_seconds": 0.00483610003720969,
+        "samples_seconds": [
+          0.004635800025425851,
+          0.004331299976911396,
+          0.00483610003720969,
+          0.004475900030229241,
+          0.004294499987736344
+        ],
+        "rss_mib": 78.33203125,
+        "peak_rss_mib": 85.8984375,
+        "digest": "bf057bdaf742278a523b03f9dd46825196446f28f51088daa1b83cced5fbefd1"
+      },
+      "all": {
+        "first_seconds": 0.07599470001878217,
+        "median_seconds": 0.07377379998797551,
+        "max_seconds": 0.08099960000254214,
+        "samples_seconds": [
+          0.07116059999680147,
+          0.08099960000254214,
+          0.07548410003073514,
+          0.07377379998797551,
+          0.0724280999857001
+        ],
+        "rss_mib": 67.99609375,
+        "peak_rss_mib": 85.8984375,
+        "digest": "f78f1557074fc6ddc229eddbca8aa6bb1d45d32c86e221af6e279724eb4ce10d",
+        "results": 8
+      },
+      "date_filtered": {
+        "first_seconds": 0.037990500044543296,
+        "median_seconds": 0.03746220003813505,
+        "max_seconds": 0.04811169998720288,
+        "samples_seconds": [
+          0.03746220003813505,
+          0.037305799953173846,
+          0.036984400008805096,
+          0.03828460001386702,
+          0.04811169998720288
+        ],
+        "rss_mib": 68.23046875,
+        "peak_rss_mib": 85.8984375,
+        "digest": "87bdae917d762435802e4044bb7ad28c7f9d30401b767a35d8c505c1a3f826bc",
+        "results": 8
+      },
+      "profile": [
+        {
+          "file": "search_explain_before.py",
+          "line": 60,
+          "function": "normalize",
+          "calls": 28800,
+          "self_seconds": 0.0708014,
+          "cumulative_seconds": 0.119327
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'endswith' of 'str' objects>",
+          "calls": 668468,
+          "self_seconds": 0.045556700000000006,
+          "cumulative_seconds": 0.045556700000000006
+        },
+        {
+          "file": "search_explain_before.py",
+          "line": 92,
+          "function": "keyword_matches",
+          "calls": 960,
+          "self_seconds": 0.022834100000000003,
+          "cumulative_seconds": 0.154373
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'fetchall' of 'sqlite3.Cursor' objects>",
+          "calls": 2,
+          "self_seconds": 0.0087902,
+          "cumulative_seconds": 0.0087902
+        },
+        {
+          "file": "decoder.py",
+          "line": 351,
+          "function": "raw_decode",
+          "calls": 1920,
+          "self_seconds": 0.007657700000000001,
+          "cumulative_seconds": 0.007657700000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'group' of 're.Match' objects>",
+          "calls": 61440,
+          "self_seconds": 0.007209800000000001,
+          "cumulative_seconds": 0.007209800000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'casefold' of 'str' objects>",
+          "calls": 59534,
+          "self_seconds": 0.006982500000000001,
+          "cumulative_seconds": 0.006982500000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'execute' of 'sqlite3.Connection' objects>",
+          "calls": 15,
+          "self_seconds": 0.004366200000000001,
+          "cumulative_seconds": 0.004366200000000001
+        },
+        {
+          "file": "store.py",
+          "line": 586,
+          "function": "snapshot",
+          "calls": 1,
+          "self_seconds": 0.0039455,
+          "cumulative_seconds": 0.028868800000000003
+        },
+        {
+          "file": "service.py",
+          "line": 269,
+          "function": "_search",
+          "calls": 1,
+          "self_seconds": 0.0035651000000000003,
+          "cumulative_seconds": 0.21919490000000003
+        },
+        {
+          "file": "search_explain.py",
+          "line": 60,
+          "function": "normalize",
+          "calls": 972,
+          "self_seconds": 0.0026254,
+          "cumulative_seconds": 0.0044882
+        },
+        {
+          "file": "database_benchmark.py",
+          "line": 182,
+          "function": "<lambda>",
+          "calls": 1,
+          "self_seconds": 0.0024145,
+          "cumulative_seconds": 0.2216094
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'close' of 'sqlite3.Connection' objects>",
+          "calls": 3,
+          "self_seconds": 0.0022371,
+          "cumulative_seconds": 0.0022371
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'findall' of 're.Pattern' objects>",
+          "calls": 963,
+          "self_seconds": 0.0019068000000000002,
+          "cumulative_seconds": 0.0019068000000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.len>",
+          "calls": 27872,
+          "self_seconds": 0.0017992000000000001,
+          "cumulative_seconds": 0.0017992000000000001
+        },
+        {
+          "file": "decoder.py",
+          "line": 340,
+          "function": "decode",
+          "calls": 1920,
+          "self_seconds": 0.0017250000000000002,
+          "cumulative_seconds": 0.0105964
+        },
+        {
+          "file": "models.py",
+          "line": 79,
+          "function": "normalized_vectors",
+          "calls": 2,
+          "self_seconds": 0.0015151000000000001,
+          "cumulative_seconds": 0.0028923
+        },
+        {
+          "file": "facts.py",
+          "line": 437,
+          "function": "compatible",
+          "calls": 960,
+          "self_seconds": 0.0015094000000000002,
+          "cumulative_seconds": 0.0027382
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'get' of 'dict' objects>",
+          "calls": 14173,
+          "self_seconds": 0.0014467,
+          "cumulative_seconds": 0.0014467
+        },
+        {
+          "file": "shape_base.py",
+          "line": 378,
+          "function": "stack",
+          "calls": 1,
+          "self_seconds": 0.0013335,
+          "cumulative_seconds": 0.0013871
+        },
+        {
+          "file": "copy.py",
+          "line": 110,
+          "function": "deepcopy",
+          "calls": 5982,
+          "self_seconds": 0.0011908,
+          "cumulative_seconds": 0.0031108000000000004
+        },
+        {
+          "file": "copy.py",
+          "line": 198,
+          "function": "_deepcopy_dict",
+          "calls": 491,
+          "self_seconds": 0.0010488000000000001,
+          "cumulative_seconds": 0.0030752
+        },
+        {
+          "file": "_linalg.py",
+          "line": 2615,
+          "function": "norm",
+          "calls": 2,
+          "self_seconds": 0.0010287,
+          "cumulative_seconds": 0.0013030000000000001
+        },
+        {
+          "file": "__init__.py",
+          "line": 304,
+          "function": "loads",
+          "calls": 1920,
+          "self_seconds": 0.0009359,
+          "cumulative_seconds": 0.011847
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'append' of 'list' objects>",
+          "calls": 8199,
+          "self_seconds": 0.0008502000000000001,
+          "cumulative_seconds": 0.0008502000000000001
+        }
+      ],
+      "snapshot_profile": [
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'fetchall' of 'sqlite3.Cursor' objects>",
+          "calls": 1,
+          "self_seconds": 0.008615600000000001,
+          "cumulative_seconds": 0.008615600000000001
+        },
+        {
+          "file": "decoder.py",
+          "line": 351,
+          "function": "raw_decode",
+          "calls": 1920,
+          "self_seconds": 0.006982100000000001,
+          "cumulative_seconds": 0.006982100000000001
+        },
+        {
+          "file": "store.py",
+          "line": 586,
+          "function": "snapshot",
+          "calls": 1,
+          "self_seconds": 0.003935,
+          "cumulative_seconds": 0.0287214
+        },
+        {
+          "file": "decoder.py",
+          "line": 340,
+          "function": "decode",
+          "calls": 1920,
+          "self_seconds": 0.0024106,
+          "cumulative_seconds": 0.010617600000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'execute' of 'sqlite3.Connection' objects>",
+          "calls": 7,
+          "self_seconds": 0.0018715000000000001,
+          "cumulative_seconds": 0.0018715000000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'close' of 'sqlite3.Connection' objects>",
+          "calls": 1,
+          "self_seconds": 0.0010914,
+          "cumulative_seconds": 0.0010914
+        },
+        {
+          "file": "__init__.py",
+          "line": 304,
+          "function": "loads",
+          "calls": 1920,
+          "self_seconds": 0.0009047,
+          "cumulative_seconds": 0.0118437
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'match' of 're.Pattern' objects>",
+          "calls": 3840,
+          "self_seconds": 0.000733,
+          "cumulative_seconds": 0.000733
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method _sqlite3.connect>",
+          "calls": 1,
+          "self_seconds": 0.0003688,
+          "cumulative_seconds": 0.00038950000000000003
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'end' of 're.Match' objects>",
+          "calls": 3840,
+          "self_seconds": 0.0003443,
+          "cumulative_seconds": 0.0003443
+        },
+        {
+          "file": "store.py",
+          "line": 583,
+          "function": "snapshot_for_owner",
+          "calls": 1,
+          "self_seconds": 0.00029140000000000004,
+          "cumulative_seconds": 0.029012800000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'append' of 'list' objects>",
+          "calls": 2240,
+          "self_seconds": 0.0002279,
+          "cumulative_seconds": 0.0002279
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'pop' of 'dict' objects>",
+          "calls": 1920,
+          "self_seconds": 0.0002232,
+          "cumulative_seconds": 0.0002232
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'startswith' of 'str' objects>",
+          "calls": 1920,
+          "self_seconds": 0.0001732,
+          "cumulative_seconds": 0.0001732
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'setdefault' of 'dict' objects>",
+          "calls": 1280,
+          "self_seconds": 0.00016700000000000002,
+          "cumulative_seconds": 0.00016700000000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'get' of 'dict' objects>",
+          "calls": 960,
+          "self_seconds": 0.0001519,
+          "cumulative_seconds": 0.0001519
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.isinstance>",
+          "calls": 1921,
+          "self_seconds": 0.0001484,
+          "cumulative_seconds": 0.0001484
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.len>",
+          "calls": 1921,
+          "self_seconds": 0.0001484,
+          "cumulative_seconds": 0.0001484
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'join' of 'str' objects>",
+          "calls": 2,
+          "self_seconds": 9.510000000000001e-05,
+          "cumulative_seconds": 0.0001409
+        },
+        {
+          "file": "store.py",
+          "line": 616,
+          "function": "<genexpr>",
+          "calls": 962,
+          "self_seconds": 4.58e-05,
+          "cumulative_seconds": 4.58e-05
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'disable' of '_lsprof.Profiler' objects>",
+          "calls": 1,
+          "self_seconds": 2.61e-05,
+          "cumulative_seconds": 2.61e-05
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'commit' of 'sqlite3.Connection' objects>",
+          "calls": 1,
+          "self_seconds": 2.3500000000000002e-05,
+          "cumulative_seconds": 2.3500000000000002e-05
+        },
+        {
+          "file": "store.py",
+          "line": 179,
+          "function": "connect",
+          "calls": 2,
+          "self_seconds": 1.79e-05,
+          "cumulative_seconds": 0.0015421
+        },
+        {
+          "file": "functools.py",
+          "line": 35,
+          "function": "update_wrapper",
+          "calls": 1,
+          "self_seconds": 5.7000000000000005e-06,
+          "cumulative_seconds": 1.11e-05
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.getattr>",
+          "calls": 9,
+          "self_seconds": 4.6e-06,
+          "cumulative_seconds": 4.6e-06
+        }
+      ],
+      "snapshot_sql_statements": 4,
+      "query_plan": [
+        "MATERIALIZE archived",
+        "SCAN captured_memories",
+        "MATERIALIZE other_owners",
+        "SCAN captured_memories",
+        "USE TEMP B-TREE FOR DISTINCT",
+        "SCAN v USING INDEX sqlite_autoindex_revisions_1",
+        "SEARCH r USING INDEX sqlite_autoindex_records_1 (id=?)",
+        "SEARCH m USING INDEX memory_revision (revision_id=?)",
+        "SEARCH e USING INDEX sqlite_autoindex_embeddings_1 (memory_id=?)",
+        "SEARCH f USING INDEX sqlite_autoindex_facts_1 (memory_id=?) LEFT-JOIN",
+        "SEARCH a USING AUTOMATIC COVERING INDEX (record_id=?) LEFT-JOIN",
+        "SEARCH o USING AUTOMATIC COVERING INDEX (record_id=?) LEFT-JOIN",
+        "USE TEMP B-TREE FOR LAST TERM OF ORDER BY"
+      ],
+      "final_memory": {
+        "rss_mib": 68.5,
+        "peak_rss_mib": 85.8984375
+      },
+      "count": 1000
+    },
+    {
+      "mode": "cached",
+      "database_bytes": 6897664,
+      "initial_memory": {
+        "rss_mib": 55.9140625,
+        "peak_rss_mib": 55.9140625
+      },
+      "snapshot": {
+        "first_seconds": 0.028339400014374405,
+        "median_seconds": 0.026988200028426945,
+        "max_seconds": 0.0321861999691464,
+        "samples_seconds": [
+          0.028274300042539835,
+          0.0321861999691464,
+          0.026988200028426945,
+          0.026184799964539707,
+          0.026401200040709227
+        ],
+        "rss_mib": 76.109375,
+        "peak_rss_mib": 85.84375,
+        "rows": 960,
+        "digest": "901836309ea61c983e17de85ad683b1a394f619faf9cbfb7c55440c57ecd7bd2"
+      },
+      "vector": {
+        "first_seconds": 0.0052690000156871974,
+        "median_seconds": 0.000235399988014251,
+        "max_seconds": 0.00034769997000694275,
+        "samples_seconds": [
+          0.00034769997000694275,
+          0.00027299998328089714,
+          0.00021580001339316368,
+          0.000235399988014251,
+          0.00022260000696405768
+        ],
+        "rss_mib": 81.3671875,
+        "peak_rss_mib": 85.84375,
+        "digest": "bf057bdaf742278a523b03f9dd46825196446f28f51088daa1b83cced5fbefd1"
+      },
+      "all": {
+        "first_seconds": 0.05529930000193417,
+        "median_seconds": 0.054656899999827147,
+        "max_seconds": 0.06026850000489503,
+        "samples_seconds": [
+          0.0523595999693498,
+          0.06026850000489503,
+          0.054656899999827147,
+          0.0533403999870643,
+          0.0552966000395827
+        ],
+        "rss_mib": 71.85546875,
+        "peak_rss_mib": 85.84375,
+        "digest": "f78f1557074fc6ddc229eddbca8aa6bb1d45d32c86e221af6e279724eb4ce10d",
+        "results": 8
+      },
+      "date_filtered": {
+        "first_seconds": 0.03740269999252632,
+        "median_seconds": 0.036556500010192394,
+        "max_seconds": 0.048809400002937764,
+        "samples_seconds": [
+          0.035618599969893694,
+          0.03684620000422001,
+          0.03598639997653663,
+          0.036556500010192394,
+          0.048809400002937764
+        ],
+        "rss_mib": 68.21484375,
+        "peak_rss_mib": 85.84375,
+        "digest": "87bdae917d762435802e4044bb7ad28c7f9d30401b767a35d8c505c1a3f826bc",
+        "results": 8
+      },
+      "profile": [
+        {
+          "file": "search_explain.py",
+          "line": 92,
+          "function": "keyword_matches",
+          "calls": 960,
+          "self_seconds": 0.022767700000000002,
+          "cumulative_seconds": 0.054211300000000004
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'fetchall' of 'sqlite3.Cursor' objects>",
+          "calls": 2,
+          "self_seconds": 0.009077,
+          "cumulative_seconds": 0.009077
+        },
+        {
+          "file": "search_explain.py",
+          "line": 95,
+          "function": "normalized",
+          "calls": 28800,
+          "self_seconds": 0.0081137,
+          "cumulative_seconds": 0.0193539
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'group' of 're.Match' objects>",
+          "calls": 61440,
+          "self_seconds": 0.007170800000000001,
+          "cumulative_seconds": 0.007170800000000001
+        },
+        {
+          "file": "decoder.py",
+          "line": 351,
+          "function": "raw_decode",
+          "calls": 1920,
+          "self_seconds": 0.007081700000000001,
+          "cumulative_seconds": 0.007081700000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'casefold' of 'str' objects>",
+          "calls": 60502,
+          "self_seconds": 0.006989,
+          "cumulative_seconds": 0.006989
+        },
+        {
+          "file": "search_explain.py",
+          "line": 60,
+          "function": "normalize",
+          "calls": 1940,
+          "self_seconds": 0.0055893,
+          "cumulative_seconds": 0.009535
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'execute' of 'sqlite3.Connection' objects>",
+          "calls": 15,
+          "self_seconds": 0.0047631,
+          "cumulative_seconds": 0.0047631
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'get' of 'dict' objects>",
+          "calls": 42973,
+          "self_seconds": 0.0045910000000000005,
+          "cumulative_seconds": 0.0045910000000000005
+        },
+        {
+          "file": "store.py",
+          "line": 586,
+          "function": "snapshot",
+          "calls": 1,
+          "self_seconds": 0.0038776,
+          "cumulative_seconds": 0.029214800000000003
+        },
+        {
+          "file": "service.py",
+          "line": 269,
+          "function": "_search",
+          "calls": 1,
+          "self_seconds": 0.0037749000000000003,
+          "cumulative_seconds": 0.1165583
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'endswith' of 'str' objects>",
+          "calls": 54249,
+          "self_seconds": 0.0037481000000000003,
+          "cumulative_seconds": 0.0037481000000000003
+        },
+        {
+          "file": "decoder.py",
+          "line": 340,
+          "function": "decode",
+          "calls": 1920,
+          "self_seconds": 0.0027883,
+          "cumulative_seconds": 0.011057500000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'close' of 'sqlite3.Connection' objects>",
+          "calls": 3,
+          "self_seconds": 0.0021507,
+          "cumulative_seconds": 0.0021507
+        },
+        {
+          "file": "database_benchmark.py",
+          "line": 182,
+          "function": "<lambda>",
+          "calls": 1,
+          "self_seconds": 0.0019267000000000002,
+          "cumulative_seconds": 0.11848500000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'findall' of 're.Pattern' objects>",
+          "calls": 963,
+          "self_seconds": 0.0018470000000000001,
+          "cumulative_seconds": 0.0018470000000000001
+        },
+        {
+          "file": "facts.py",
+          "line": 437,
+          "function": "compatible",
+          "calls": 960,
+          "self_seconds": 0.0014962,
+          "cumulative_seconds": 0.0027139
+        },
+        {
+          "file": "copy.py",
+          "line": 110,
+          "function": "deepcopy",
+          "calls": 5982,
+          "self_seconds": 0.0012858000000000001,
+          "cumulative_seconds": 0.0037468000000000002
+        },
+        {
+          "file": "copy.py",
+          "line": 198,
+          "function": "_deepcopy_dict",
+          "calls": 491,
+          "self_seconds": 0.0012473,
+          "cumulative_seconds": 0.0037069000000000004
+        },
+        {
+          "file": "service.py",
+          "line": 533,
+          "function": "<lambda>",
+          "calls": 960,
+          "self_seconds": 0.0010624,
+          "cumulative_seconds": 0.0012626
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method _sqlite3.connect>",
+          "calls": 3,
+          "self_seconds": 0.0009021000000000001,
+          "cumulative_seconds": 0.0009583
+        },
+        {
+          "file": "__init__.py",
+          "line": 304,
+          "function": "loads",
+          "calls": 1920,
+          "self_seconds": 0.0009010000000000001,
+          "cumulative_seconds": 0.012265900000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'append' of 'list' objects>",
+          "calls": 8199,
+          "self_seconds": 0.0008182,
+          "cumulative_seconds": 0.0008182
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.max>",
+          "calls": 1921,
+          "self_seconds": 0.0007486000000000001,
+          "cumulative_seconds": 0.0015349
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'match' of 're.Pattern' objects>",
+          "calls": 3840,
+          "self_seconds": 0.0007083,
+          "cumulative_seconds": 0.0007083
+        }
+      ],
+      "snapshot_profile": [
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'fetchall' of 'sqlite3.Cursor' objects>",
+          "calls": 1,
+          "self_seconds": 0.008845200000000001,
+          "cumulative_seconds": 0.008845200000000001
+        },
+        {
+          "file": "decoder.py",
+          "line": 351,
+          "function": "raw_decode",
+          "calls": 1920,
+          "self_seconds": 0.0079513,
+          "cumulative_seconds": 0.0079513
+        },
+        {
+          "file": "store.py",
+          "line": 586,
+          "function": "snapshot",
+          "calls": 1,
+          "self_seconds": 0.0039491000000000005,
+          "cumulative_seconds": 0.029175700000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'execute' of 'sqlite3.Connection' objects>",
+          "calls": 7,
+          "self_seconds": 0.0018335,
+          "cumulative_seconds": 0.0018335
+        },
+        {
+          "file": "decoder.py",
+          "line": 340,
+          "function": "decode",
+          "calls": 1920,
+          "self_seconds": 0.0017429000000000001,
+          "cumulative_seconds": 0.010905100000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'close' of 'sqlite3.Connection' objects>",
+          "calls": 1,
+          "self_seconds": 0.0010257,
+          "cumulative_seconds": 0.0010257
+        },
+        {
+          "file": "__init__.py",
+          "line": 304,
+          "function": "loads",
+          "calls": 1920,
+          "self_seconds": 0.0009081,
+          "cumulative_seconds": 0.0121297
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'match' of 're.Pattern' objects>",
+          "calls": 3840,
+          "self_seconds": 0.0007316,
+          "cumulative_seconds": 0.0007316
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'end' of 're.Match' objects>",
+          "calls": 3840,
+          "self_seconds": 0.0003346,
+          "cumulative_seconds": 0.0003346
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method _sqlite3.connect>",
+          "calls": 1,
+          "self_seconds": 0.0003152,
+          "cumulative_seconds": 0.0003343
+        },
+        {
+          "file": "store.py",
+          "line": 583,
+          "function": "snapshot_for_owner",
+          "calls": 1,
+          "self_seconds": 0.00028910000000000003,
+          "cumulative_seconds": 0.029464800000000003
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'append' of 'list' objects>",
+          "calls": 2240,
+          "self_seconds": 0.00023980000000000003,
+          "cumulative_seconds": 0.00023980000000000003
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'pop' of 'dict' objects>",
+          "calls": 1920,
+          "self_seconds": 0.0002288,
+          "cumulative_seconds": 0.0002288
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'setdefault' of 'dict' objects>",
+          "calls": 1280,
+          "self_seconds": 0.00017150000000000002,
+          "cumulative_seconds": 0.00017150000000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'get' of 'dict' objects>",
+          "calls": 960,
+          "self_seconds": 0.0001707,
+          "cumulative_seconds": 0.0001707
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'startswith' of 'str' objects>",
+          "calls": 1920,
+          "self_seconds": 0.00017010000000000001,
+          "cumulative_seconds": 0.00017010000000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.isinstance>",
+          "calls": 1921,
+          "self_seconds": 0.00014670000000000002,
+          "cumulative_seconds": 0.00014670000000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.len>",
+          "calls": 1921,
+          "self_seconds": 0.0001459,
+          "cumulative_seconds": 0.0001459
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'join' of 'str' objects>",
+          "calls": 2,
+          "self_seconds": 8.840000000000001e-05,
+          "cumulative_seconds": 0.0001415
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.next>",
+          "calls": 2,
+          "self_seconds": 5.7700000000000007e-05,
+          "cumulative_seconds": 0.0014648
+        },
+        {
+          "file": "store.py",
+          "line": 616,
+          "function": "<genexpr>",
+          "calls": 962,
+          "self_seconds": 5.31e-05,
+          "cumulative_seconds": 5.31e-05
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'disable' of '_lsprof.Profiler' objects>",
+          "calls": 1,
+          "self_seconds": 2.8400000000000003e-05,
+          "cumulative_seconds": 2.8400000000000003e-05
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'commit' of 'sqlite3.Connection' objects>",
+          "calls": 1,
+          "self_seconds": 2.1700000000000002e-05,
+          "cumulative_seconds": 2.1700000000000002e-05
+        },
+        {
+          "file": "store.py",
+          "line": 179,
+          "function": "connect",
+          "calls": 2,
+          "self_seconds": 1.01e-05,
+          "cumulative_seconds": 0.0014071
+        },
+        {
+          "file": "functools.py",
+          "line": 35,
+          "function": "update_wrapper",
+          "calls": 1,
+          "self_seconds": 5.4e-06,
+          "cumulative_seconds": 1.13e-05
+        }
+      ],
+      "snapshot_sql_statements": 4,
+      "query_plan": [
+        "MATERIALIZE archived",
+        "SCAN captured_memories",
+        "MATERIALIZE other_owners",
+        "SCAN captured_memories",
+        "USE TEMP B-TREE FOR DISTINCT",
+        "SCAN v USING INDEX sqlite_autoindex_revisions_1",
+        "SEARCH r USING INDEX sqlite_autoindex_records_1 (id=?)",
+        "SEARCH m USING INDEX memory_revision (revision_id=?)",
+        "SEARCH e USING INDEX sqlite_autoindex_embeddings_1 (memory_id=?)",
+        "SEARCH f USING INDEX sqlite_autoindex_facts_1 (memory_id=?) LEFT-JOIN",
+        "SEARCH a USING AUTOMATIC COVERING INDEX (record_id=?) LEFT-JOIN",
+        "SEARCH o USING AUTOMATIC COVERING INDEX (record_id=?) LEFT-JOIN",
+        "USE TEMP B-TREE FOR LAST TERM OF ORDER BY"
+      ],
+      "final_memory": {
+        "rss_mib": 73.10546875,
+        "peak_rss_mib": 85.84375
+      },
+      "count": 1000
+    },
+    {
+      "mode": "baseline",
+      "database_bytes": 66060288,
+      "initial_memory": {
+        "rss_mib": 55.69921875,
+        "peak_rss_mib": 55.69921875
+      },
+      "snapshot": {
+        "first_seconds": 0.9668517999816686,
+        "median_seconds": 1.0156039000139572,
+        "max_seconds": 1.0337380000273697,
+        "samples_seconds": [
+          0.9534437999827787,
+          1.0337380000273697,
+          1.0248592999996617,
+          1.0156039000139572,
+          0.9504681999678724
+        ],
+        "rss_mib": 222.80078125,
+        "peak_rss_mib": 334.015625,
+        "rows": 9600,
+        "digest": "19c5a2d7f76791610ff320bad9abfce021cef9c3f67995ff19bda3abc2e9b1ad"
+      },
+      "vector": {
+        "first_seconds": 0.051585800014436245,
+        "median_seconds": 0.043975999986287206,
+        "max_seconds": 0.05093159998068586,
+        "samples_seconds": [
+          0.05093159998068586,
+          0.04765730001963675,
+          0.043975999986287206,
+          0.04328380001243204,
+          0.043137699947692454
+        ],
+        "rss_mib": 226.0234375,
+        "peak_rss_mib": 334.015625,
+        "digest": "b0d9b67ec7bd2ae77d985b02c6ffc38509add62c4fd823ea9a9c7fa055a48c1b"
+      },
+      "all": {
+        "first_seconds": 1.3897413000231609,
+        "median_seconds": 1.4009775999584235,
+        "max_seconds": 1.4566266000038013,
+        "samples_seconds": [
+          1.3840243000304326,
+          1.3682098999852315,
+          1.4052228999789804,
+          1.4566266000038013,
+          1.4009775999584235
+        ],
+        "rss_mib": 104.2578125,
+        "peak_rss_mib": 334.015625,
+        "digest": "127b7d583fbf8b69cd815ad7346ae227a9f92357c37e56b07bd3e8b1960dcbcd",
+        "results": 8
+      },
+      "date_filtered": {
+        "first_seconds": 1.0621512000216171,
+        "median_seconds": 1.0554804000421427,
+        "max_seconds": 1.0752969000022858,
+        "samples_seconds": [
+          1.0480267000384629,
+          1.0580559000372887,
+          1.0752969000022858,
+          1.0554804000421427,
+          1.0445238000247627
+        ],
+        "rss_mib": 130.046875,
+        "peak_rss_mib": 334.015625,
+        "digest": "e4d08dfdb4ce15ed9f177d67dc72e6cfe6273ec78a19a5ad95b87b59c803b92c",
+        "results": 8
+      },
+      "profile": [
+        {
+          "file": "search_explain_before.py",
+          "line": 60,
+          "function": "normalize",
+          "calls": 297612,
+          "self_seconds": 0.7335063,
+          "cumulative_seconds": 1.2532521
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'execute' of 'sqlite3.Connection' objects>",
+          "calls": 9613,
+          "self_seconds": 0.6971082000000001,
+          "cumulative_seconds": 0.6971082000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'endswith' of 'str' objects>",
+          "calls": 6681908,
+          "self_seconds": 0.46983830000000004,
+          "cumulative_seconds": 0.46983830000000004
+        },
+        {
+          "file": "search_explain_before.py",
+          "line": 92,
+          "function": "keyword_matches",
+          "calls": 9600,
+          "self_seconds": 0.2721096,
+          "cumulative_seconds": 1.6055603
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'fetchall' of 'sqlite3.Cursor' objects>",
+          "calls": 2,
+          "self_seconds": 0.1018767,
+          "cumulative_seconds": 0.1018767
+        },
+        {
+          "file": "decoder.py",
+          "line": 351,
+          "function": "raw_decode",
+          "calls": 19200,
+          "self_seconds": 0.07935060000000001,
+          "cumulative_seconds": 0.07935060000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'group' of 're.Match' objects>",
+          "calls": 614400,
+          "self_seconds": 0.07443580000000001,
+          "cumulative_seconds": 0.07443580000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'casefold' of 'str' objects>",
+          "calls": 595214,
+          "self_seconds": 0.07079880000000001,
+          "cumulative_seconds": 0.07079880000000001
+        },
+        {
+          "file": "store_before.py",
+          "line": 586,
+          "function": "snapshot",
+          "calls": 1,
+          "self_seconds": 0.043589300000000004,
+          "cumulative_seconds": 0.9651998
+        },
+        {
+          "file": "service_before.py",
+          "line": 249,
+          "function": "_search",
+          "calls": 1,
+          "self_seconds": 0.0414993,
+          "cumulative_seconds": 2.8643741
+        },
+        {
+          "file": "database_benchmark.py",
+          "line": 182,
+          "function": "<lambda>",
+          "calls": 1,
+          "self_seconds": 0.025353800000000003,
+          "cumulative_seconds": 2.8897279
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.len>",
+          "calls": 278430,
+          "self_seconds": 0.0185547,
+          "cumulative_seconds": 0.0185547
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'findall' of 're.Pattern' objects>",
+          "calls": 9603,
+          "self_seconds": 0.017990000000000003,
+          "cumulative_seconds": 0.017990000000000003
+        },
+        {
+          "file": "models.py",
+          "line": 79,
+          "function": "normalized_vectors",
+          "calls": 2,
+          "self_seconds": 0.0170505,
+          "cumulative_seconds": 0.031858000000000004
+        },
+        {
+          "file": "shape_base.py",
+          "line": 378,
+          "function": "stack",
+          "calls": 1,
+          "self_seconds": 0.016974700000000002,
+          "cumulative_seconds": 0.0175102
+        },
+        {
+          "file": "facts.py",
+          "line": 437,
+          "function": "compatible",
+          "calls": 9600,
+          "self_seconds": 0.016314000000000002,
+          "cumulative_seconds": 0.0296829
+        },
+        {
+          "file": "decoder.py",
+          "line": 340,
+          "function": "decode",
+          "calls": 19200,
+          "self_seconds": 0.015838500000000002,
+          "cumulative_seconds": 0.10793810000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'get' of 'dict' objects>",
+          "calls": 99613,
+          "self_seconds": 0.0124971,
+          "cumulative_seconds": 0.0124971
+        },
+        {
+          "file": "_linalg.py",
+          "line": 2615,
+          "function": "norm",
+          "calls": 2,
+          "self_seconds": 0.0108838,
+          "cumulative_seconds": 0.0142083
+        },
+        {
+          "file": "__init__.py",
+          "line": 304,
+          "function": "loads",
+          "calls": 19200,
+          "self_seconds": 0.0094122,
+          "cumulative_seconds": 0.12064420000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'match' of 're.Pattern' objects>",
+          "calls": 38400,
+          "self_seconds": 0.0076068,
+          "cumulative_seconds": 0.0076068
+        },
+        {
+          "file": "search_explain_before.py",
+          "line": 73,
+          "function": "keyword_query",
+          "calls": 1,
+          "self_seconds": 0.007537,
+          "cumulative_seconds": 0.08304070000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'end' of 're.Match' objects>",
+          "calls": 76800,
+          "self_seconds": 0.0074882,
+          "cumulative_seconds": 0.0074882
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.max>",
+          "calls": 19201,
+          "self_seconds": 0.007418800000000001,
+          "cumulative_seconds": 0.013562800000000002
+        },
+        {
+          "file": "service_before.py",
+          "line": 510,
+          "function": "<lambda>",
+          "calls": 9600,
+          "self_seconds": 0.0070609,
+          "cumulative_seconds": 0.0085786
+        }
+      ],
+      "snapshot_profile": [
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'execute' of 'sqlite3.Connection' objects>",
+          "calls": 9605,
+          "self_seconds": 0.7197378000000001,
+          "cumulative_seconds": 0.7197378000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'fetchall' of 'sqlite3.Cursor' objects>",
+          "calls": 1,
+          "self_seconds": 0.1017884,
+          "cumulative_seconds": 0.1017884
+        },
+        {
+          "file": "decoder.py",
+          "line": 351,
+          "function": "raw_decode",
+          "calls": 19200,
+          "self_seconds": 0.0770952,
+          "cumulative_seconds": 0.0770952
+        },
+        {
+          "file": "store_before.py",
+          "line": 586,
+          "function": "snapshot",
+          "calls": 1,
+          "self_seconds": 0.045159500000000005,
+          "cumulative_seconds": 0.9905175
+        },
+        {
+          "file": "decoder.py",
+          "line": 340,
+          "function": "decode",
+          "calls": 19200,
+          "self_seconds": 0.0161618,
+          "cumulative_seconds": 0.1059553
+        },
+        {
+          "file": "__init__.py",
+          "line": 304,
+          "function": "loads",
+          "calls": 19200,
+          "self_seconds": 0.0092235,
+          "cumulative_seconds": 0.11857440000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'match' of 're.Pattern' objects>",
+          "calls": 38400,
+          "self_seconds": 0.0077258000000000005,
+          "cumulative_seconds": 0.0077258000000000005
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'end' of 're.Match' objects>",
+          "calls": 38400,
+          "self_seconds": 0.0034684000000000004,
+          "cumulative_seconds": 0.0034684000000000004
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'pop' of 'dict' objects>",
+          "calls": 19200,
+          "self_seconds": 0.0023773,
+          "cumulative_seconds": 0.0023773
+        },
+        {
+          "file": "store_before.py",
+          "line": 583,
+          "function": "snapshot_for_owner",
+          "calls": 1,
+          "self_seconds": 0.002184,
+          "cumulative_seconds": 0.9927015
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'startswith' of 'str' objects>",
+          "calls": 19200,
+          "self_seconds": 0.0018713000000000002,
+          "cumulative_seconds": 0.0018713000000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.isinstance>",
+          "calls": 19201,
+          "self_seconds": 0.0015247000000000001,
+          "cumulative_seconds": 0.0015247000000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.len>",
+          "calls": 19200,
+          "self_seconds": 0.0015041000000000002,
+          "cumulative_seconds": 0.0015041000000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'append' of 'list' objects>",
+          "calls": 9600,
+          "self_seconds": 0.0014773000000000002,
+          "cumulative_seconds": 0.0014773000000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'close' of 'sqlite3.Connection' objects>",
+          "calls": 1,
+          "self_seconds": 0.0008904000000000001,
+          "cumulative_seconds": 0.0008904000000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method _sqlite3.connect>",
+          "calls": 1,
+          "self_seconds": 0.00044,
+          "cumulative_seconds": 0.0004711
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'disable' of '_lsprof.Profiler' objects>",
+          "calls": 1,
+          "self_seconds": 3.09e-05,
+          "cumulative_seconds": 3.09e-05
+        },
+        {
+          "file": "store_before.py",
+          "line": 179,
+          "function": "connect",
+          "calls": 2,
+          "self_seconds": 1.1200000000000001e-05,
+          "cumulative_seconds": 0.0014053000000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'commit' of 'sqlite3.Connection' objects>",
+          "calls": 1,
+          "self_seconds": 1.11e-05,
+          "cumulative_seconds": 1.11e-05
+        },
+        {
+          "file": "functools.py",
+          "line": 553,
+          "function": "lru_cache",
+          "calls": 1,
+          "self_seconds": 9.800000000000001e-06,
+          "cumulative_seconds": 1.02e-05
+        },
+        {
+          "file": "functools.py",
+          "line": 35,
+          "function": "update_wrapper",
+          "calls": 1,
+          "self_seconds": 7.4e-06,
+          "cumulative_seconds": 1.4700000000000002e-05
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.getattr>",
+          "calls": 9,
+          "self_seconds": 6.6e-06,
+          "cumulative_seconds": 6.6e-06
+        },
+        {
+          "file": "functools.py",
+          "line": 593,
+          "function": "decorating_function",
+          "calls": 1,
+          "self_seconds": 4.9000000000000005e-06,
+          "cumulative_seconds": 1.9600000000000002e-05
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.next>",
+          "calls": 2,
+          "self_seconds": 3.5000000000000004e-06,
+          "cumulative_seconds": 0.0014088
+        },
+        {
+          "file": "contextlib.py",
+          "line": 108,
+          "function": "__init__",
+          "calls": 1,
+          "self_seconds": 2.9e-06,
+          "cumulative_seconds": 3.6000000000000003e-06
+        }
+      ],
+      "snapshot_sql_statements": 9602,
+      "query_plan": [
+        "SCAN e",
+        "SEARCH m USING INDEX sqlite_autoindex_memories_1 (id=?)",
+        "SEARCH v USING INDEX sqlite_autoindex_revisions_1 (id=?)",
+        "SEARCH r USING INDEX sqlite_autoindex_records_1 (id=?)",
+        "CORRELATED SCALAR SUBQUERY 1",
+        "SCAN c",
+        "CORRELATED SCALAR SUBQUERY 2",
+        "SCAN c",
+        "SEARCH f USING INDEX sqlite_autoindex_facts_1 (memory_id=?) LEFT-JOIN",
+        "USE TEMP B-TREE FOR ORDER BY"
+      ],
+      "final_memory": {
+        "rss_mib": 140.37109375,
+        "peak_rss_mib": 334.015625
+      },
+      "count": 10000
+    },
+    {
+      "mode": "batch",
+      "database_bytes": 66060288,
+      "initial_memory": {
+        "rss_mib": 55.79296875,
+        "peak_rss_mib": 55.79296875
+      },
+      "snapshot": {
+        "first_seconds": 0.26071519998367876,
+        "median_seconds": 0.31979939999291673,
+        "max_seconds": 0.3402075999765657,
+        "samples_seconds": [
+          0.2549218999920413,
+          0.31979939999291673,
+          0.33176370000001043,
+          0.3402075999765657,
+          0.26963559997966513
+        ],
+        "rss_mib": 205.8515625,
+        "peak_rss_mib": 334.3828125,
+        "rows": 9600,
+        "digest": "19c5a2d7f76791610ff320bad9abfce021cef9c3f67995ff19bda3abc2e9b1ad"
+      },
+      "vector": {
+        "first_seconds": 0.045886099978815764,
+        "median_seconds": 0.04412380000576377,
+        "max_seconds": 0.04539320000912994,
+        "samples_seconds": [
+          0.04339880001498386,
+          0.04233419999945909,
+          0.044757099996786565,
+          0.04412380000576377,
+          0.04539320000912994
+        ],
+        "rss_mib": 208.81640625,
+        "peak_rss_mib": 334.3828125,
+        "digest": "b0d9b67ec7bd2ae77d985b02c6ffc38509add62c4fd823ea9a9c7fa055a48c1b"
+      },
+      "all": {
+        "first_seconds": 0.6975103000295348,
+        "median_seconds": 0.6855855999747291,
+        "max_seconds": 0.7272150000208057,
+        "samples_seconds": [
+          0.6790545000112616,
+          0.6832055000122637,
+          0.6860591999720782,
+          0.6855855999747291,
+          0.7272150000208057
+        ],
+        "rss_mib": 105.140625,
+        "peak_rss_mib": 334.3828125,
+        "digest": "127b7d583fbf8b69cd815ad7346ae227a9f92357c37e56b07bd3e8b1960dcbcd",
+        "results": 8
+      },
+      "date_filtered": {
+        "first_seconds": 0.38467830000445247,
+        "median_seconds": 0.3639596999855712,
+        "max_seconds": 0.36871159996371716,
+        "samples_seconds": [
+          0.36610109999310225,
+          0.3582137000048533,
+          0.3639596999855712,
+          0.36871159996371716,
+          0.36316340003395453
+        ],
+        "rss_mib": 123.6484375,
+        "peak_rss_mib": 334.3828125,
+        "digest": "e4d08dfdb4ce15ed9f177d67dc72e6cfe6273ec78a19a5ad95b87b59c803b92c",
+        "results": 8
+      },
+      "profile": [
+        {
+          "file": "search_explain_before.py",
+          "line": 60,
+          "function": "normalize",
+          "calls": 288000,
+          "self_seconds": 0.6851358000000001,
+          "cumulative_seconds": 1.1771523000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'endswith' of 'str' objects>",
+          "calls": 6681908,
+          "self_seconds": 0.46153920000000004,
+          "cumulative_seconds": 0.46153920000000004
+        },
+        {
+          "file": "search_explain_before.py",
+          "line": 92,
+          "function": "keyword_matches",
+          "calls": 9600,
+          "self_seconds": 0.2655253,
+          "cumulative_seconds": 1.5653115000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'fetchall' of 'sqlite3.Cursor' objects>",
+          "calls": 2,
+          "self_seconds": 0.09222340000000001,
+          "cumulative_seconds": 0.09222340000000001
+        },
+        {
+          "file": "decoder.py",
+          "line": 351,
+          "function": "raw_decode",
+          "calls": 19200,
+          "self_seconds": 0.08519180000000001,
+          "cumulative_seconds": 0.08519180000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'group' of 're.Match' objects>",
+          "calls": 614400,
+          "self_seconds": 0.0723361,
+          "cumulative_seconds": 0.0723361
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'casefold' of 'str' objects>",
+          "calls": 595214,
+          "self_seconds": 0.0708884,
+          "cumulative_seconds": 0.0708884
+        },
+        {
+          "file": "store.py",
+          "line": 586,
+          "function": "snapshot",
+          "calls": 1,
+          "self_seconds": 0.0406626,
+          "cumulative_seconds": 0.2755752
+        },
+        {
+          "file": "service.py",
+          "line": 269,
+          "function": "_search",
+          "calls": 1,
+          "self_seconds": 0.034398500000000005,
+          "cumulative_seconds": 2.1281311
+        },
+        {
+          "file": "search_explain.py",
+          "line": 60,
+          "function": "normalize",
+          "calls": 9612,
+          "self_seconds": 0.026173000000000002,
+          "cumulative_seconds": 0.0452013
+        },
+        {
+          "file": "database_benchmark.py",
+          "line": 182,
+          "function": "<lambda>",
+          "calls": 1,
+          "self_seconds": 0.024325600000000003,
+          "cumulative_seconds": 2.1524567
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'findall' of 're.Pattern' objects>",
+          "calls": 9603,
+          "self_seconds": 0.018613900000000003,
+          "cumulative_seconds": 0.018613900000000003
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.len>",
+          "calls": 278432,
+          "self_seconds": 0.018140800000000002,
+          "cumulative_seconds": 0.018140800000000002
+        },
+        {
+          "file": "decoder.py",
+          "line": 340,
+          "function": "decode",
+          "calls": 19200,
+          "self_seconds": 0.0172157,
+          "cumulative_seconds": 0.11532830000000001
+        },
+        {
+          "file": "facts.py",
+          "line": 437,
+          "function": "compatible",
+          "calls": 9600,
+          "self_seconds": 0.0165954,
+          "cumulative_seconds": 0.029621300000000003
+        },
+        {
+          "file": "models.py",
+          "line": 79,
+          "function": "normalized_vectors",
+          "calls": 2,
+          "self_seconds": 0.0163874,
+          "cumulative_seconds": 0.030630400000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'get' of 'dict' objects>",
+          "calls": 109213,
+          "self_seconds": 0.0135799,
+          "cumulative_seconds": 0.0135799
+        },
+        {
+          "file": "shape_base.py",
+          "line": 378,
+          "function": "stack",
+          "calls": 1,
+          "self_seconds": 0.0114827,
+          "cumulative_seconds": 0.0120598
+        },
+        {
+          "file": "_linalg.py",
+          "line": 2615,
+          "function": "norm",
+          "calls": 2,
+          "self_seconds": 0.010513000000000002,
+          "cumulative_seconds": 0.0137312
+        },
+        {
+          "file": "__init__.py",
+          "line": 304,
+          "function": "loads",
+          "calls": 19200,
+          "self_seconds": 0.0089747,
+          "cumulative_seconds": 0.12742720000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'match' of 're.Pattern' objects>",
+          "calls": 38400,
+          "self_seconds": 0.0081355,
+          "cumulative_seconds": 0.0081355
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'append' of 'list' objects>",
+          "calls": 71558,
+          "self_seconds": 0.0080482,
+          "cumulative_seconds": 0.0080482
+        },
+        {
+          "file": "search_explain.py",
+          "line": 73,
+          "function": "keyword_query",
+          "calls": 1,
+          "self_seconds": 0.007716000000000001,
+          "cumulative_seconds": 0.0839907
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.max>",
+          "calls": 19201,
+          "self_seconds": 0.0073432,
+          "cumulative_seconds": 0.0134798
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'end' of 're.Match' objects>",
+          "calls": 76800,
+          "self_seconds": 0.0071786,
+          "cumulative_seconds": 0.0071786
+        }
+      ],
+      "snapshot_profile": [
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'fetchall' of 'sqlite3.Cursor' objects>",
+          "calls": 1,
+          "self_seconds": 0.08783120000000001,
+          "cumulative_seconds": 0.08783120000000001
+        },
+        {
+          "file": "decoder.py",
+          "line": 351,
+          "function": "raw_decode",
+          "calls": 19200,
+          "self_seconds": 0.0742163,
+          "cumulative_seconds": 0.0742163
+        },
+        {
+          "file": "store.py",
+          "line": 586,
+          "function": "snapshot",
+          "calls": 1,
+          "self_seconds": 0.0415721,
+          "cumulative_seconds": 0.2700871
+        },
+        {
+          "file": "decoder.py",
+          "line": 340,
+          "function": "decode",
+          "calls": 19200,
+          "self_seconds": 0.02653,
+          "cumulative_seconds": 0.1134976
+        },
+        {
+          "file": "__init__.py",
+          "line": 304,
+          "function": "loads",
+          "calls": 19200,
+          "self_seconds": 0.0089993,
+          "cumulative_seconds": 0.1256993
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'match' of 're.Pattern' objects>",
+          "calls": 38400,
+          "self_seconds": 0.007769700000000001,
+          "cumulative_seconds": 0.007769700000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'end' of 're.Match' objects>",
+          "calls": 38400,
+          "self_seconds": 0.0035004000000000003,
+          "cumulative_seconds": 0.0035004000000000003
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'execute' of 'sqlite3.Connection' objects>",
+          "calls": 25,
+          "self_seconds": 0.0034866000000000003,
+          "cumulative_seconds": 0.0034866000000000003
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'append' of 'list' objects>",
+          "calls": 22400,
+          "self_seconds": 0.0025431,
+          "cumulative_seconds": 0.0025431
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'pop' of 'dict' objects>",
+          "calls": 19200,
+          "self_seconds": 0.0022989,
+          "cumulative_seconds": 0.0022989
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'get' of 'dict' objects>",
+          "calls": 9600,
+          "self_seconds": 0.0021767,
+          "cumulative_seconds": 0.0021767
+        },
+        {
+          "file": "store.py",
+          "line": 583,
+          "function": "snapshot_for_owner",
+          "calls": 1,
+          "self_seconds": 0.00192,
+          "cumulative_seconds": 0.2720071
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'setdefault' of 'dict' objects>",
+          "calls": 12800,
+          "self_seconds": 0.0019154,
+          "cumulative_seconds": 0.0019154
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'startswith' of 'str' objects>",
+          "calls": 19200,
+          "self_seconds": 0.0017467000000000001,
+          "cumulative_seconds": 0.0017467000000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.len>",
+          "calls": 19201,
+          "self_seconds": 0.0014824,
+          "cumulative_seconds": 0.0014824
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.isinstance>",
+          "calls": 19201,
+          "self_seconds": 0.001456,
+          "cumulative_seconds": 0.001456
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'close' of 'sqlite3.Connection' objects>",
+          "calls": 1,
+          "self_seconds": 0.0008056000000000001,
+          "cumulative_seconds": 0.0008056000000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'join' of 'str' objects>",
+          "calls": 20,
+          "self_seconds": 0.0008022000000000001,
+          "cumulative_seconds": 0.0012678000000000001
+        },
+        {
+          "file": "store.py",
+          "line": 616,
+          "function": "<genexpr>",
+          "calls": 9620,
+          "self_seconds": 0.00046560000000000004,
+          "cumulative_seconds": 0.00046560000000000004
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method _sqlite3.connect>",
+          "calls": 1,
+          "self_seconds": 0.0004133,
+          "cumulative_seconds": 0.00043680000000000005
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'disable' of '_lsprof.Profiler' objects>",
+          "calls": 1,
+          "self_seconds": 3.0500000000000003e-05,
+          "cumulative_seconds": 3.0500000000000003e-05
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'commit' of 'sqlite3.Connection' objects>",
+          "calls": 1,
+          "self_seconds": 2.23e-05,
+          "cumulative_seconds": 2.23e-05
+        },
+        {
+          "file": "store.py",
+          "line": 179,
+          "function": "connect",
+          "calls": 2,
+          "self_seconds": 1.11e-05,
+          "cumulative_seconds": 0.0012994
+        },
+        {
+          "file": "functools.py",
+          "line": 35,
+          "function": "update_wrapper",
+          "calls": 1,
+          "self_seconds": 7.3e-06,
+          "cumulative_seconds": 1.34e-05
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.getattr>",
+          "calls": 9,
+          "self_seconds": 5.3e-06,
+          "cumulative_seconds": 5.3e-06
+        }
+      ],
+      "snapshot_sql_statements": 22,
+      "query_plan": [
+        "MATERIALIZE archived",
+        "SCAN captured_memories",
+        "MATERIALIZE other_owners",
+        "SCAN captured_memories",
+        "USE TEMP B-TREE FOR DISTINCT",
+        "SCAN v USING INDEX sqlite_autoindex_revisions_1",
+        "SEARCH r USING INDEX sqlite_autoindex_records_1 (id=?)",
+        "SEARCH m USING INDEX memory_revision (revision_id=?)",
+        "SEARCH e USING INDEX sqlite_autoindex_embeddings_1 (memory_id=?)",
+        "SEARCH f USING INDEX sqlite_autoindex_facts_1 (memory_id=?) LEFT-JOIN",
+        "SEARCH a USING AUTOMATIC COVERING INDEX (record_id=?) LEFT-JOIN",
+        "SEARCH o USING AUTOMATIC COVERING INDEX (record_id=?) LEFT-JOIN",
+        "USE TEMP B-TREE FOR LAST TERM OF ORDER BY"
+      ],
+      "final_memory": {
+        "rss_mib": 114.3515625,
+        "peak_rss_mib": 334.3828125
+      },
+      "count": 10000
+    },
+    {
+      "mode": "cached",
+      "database_bytes": 66060288,
+      "initial_memory": {
+        "rss_mib": 55.8046875,
+        "peak_rss_mib": 55.8046875
+      },
+      "snapshot": {
+        "first_seconds": 0.26276859996141866,
+        "median_seconds": 0.31149990000994876,
+        "max_seconds": 0.34526229999028146,
+        "samples_seconds": [
+          0.2529805999947712,
+          0.31149990000994876,
+          0.34526229999028146,
+          0.3417058000341058,
+          0.2733944999636151
+        ],
+        "rss_mib": 206.01171875,
+        "peak_rss_mib": 334.171875,
+        "rows": 9600,
+        "digest": "19c5a2d7f76791610ff320bad9abfce021cef9c3f67995ff19bda3abc2e9b1ad"
+      },
+      "vector": {
+        "first_seconds": 0.05530680000083521,
+        "median_seconds": 0.0021249999990686774,
+        "max_seconds": 0.0024222999927587807,
+        "samples_seconds": [
+          0.0020332999993115664,
+          0.0024133999831974506,
+          0.0024222999927587807,
+          0.0021249999990686774,
+          0.0019378000288270414
+        ],
+        "rss_mib": 245.9765625,
+        "peak_rss_mib": 334.171875,
+        "digest": "b0d9b67ec7bd2ae77d985b02c6ffc38509add62c4fd823ea9a9c7fa055a48c1b"
+      },
+      "all": {
+        "first_seconds": 0.532169200014323,
+        "median_seconds": 0.5150745999999344,
+        "max_seconds": 0.5346221000072546,
+        "samples_seconds": [
+          0.526919900032226,
+          0.5150745999999344,
+          0.505639799986966,
+          0.512915100029204,
+          0.5346221000072546
+        ],
+        "rss_mib": 139.20703125,
+        "peak_rss_mib": 334.171875,
+        "digest": "127b7d583fbf8b69cd815ad7346ae227a9f92357c37e56b07bd3e8b1960dcbcd",
+        "results": 8
+      },
+      "date_filtered": {
+        "first_seconds": 0.35982650000369176,
+        "median_seconds": 0.3539058000314981,
+        "max_seconds": 0.35443790000863373,
+        "samples_seconds": [
+          0.35443790000863373,
+          0.3502889000228606,
+          0.3542188000283204,
+          0.35268800001358613,
+          0.3539058000314981
+        ],
+        "rss_mib": 123.86328125,
+        "peak_rss_mib": 334.171875,
+        "digest": "e4d08dfdb4ce15ed9f177d67dc72e6cfe6273ec78a19a5ad95b87b59c803b92c",
+        "results": 8
+      },
+      "profile": [
+        {
+          "file": "search_explain.py",
+          "line": 92,
+          "function": "keyword_matches",
+          "calls": 9600,
+          "self_seconds": 0.2556937,
+          "cumulative_seconds": 0.5645256000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'fetchall' of 'sqlite3.Cursor' objects>",
+          "calls": 2,
+          "self_seconds": 0.0876581,
+          "cumulative_seconds": 0.0876581
+        },
+        {
+          "file": "decoder.py",
+          "line": 351,
+          "function": "raw_decode",
+          "calls": 19200,
+          "self_seconds": 0.0858487,
+          "cumulative_seconds": 0.0858487
+        },
+        {
+          "file": "search_explain.py",
+          "line": 95,
+          "function": "normalized",
+          "calls": 288000,
+          "self_seconds": 0.07878740000000001,
+          "cumulative_seconds": 0.19056040000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'group' of 're.Match' objects>",
+          "calls": 614400,
+          "self_seconds": 0.07031190000000001,
+          "cumulative_seconds": 0.07031190000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'casefold' of 'str' objects>",
+          "calls": 604822,
+          "self_seconds": 0.0698728,
+          "cumulative_seconds": 0.0698728
+        },
+        {
+          "file": "search_explain.py",
+          "line": 60,
+          "function": "normalize",
+          "calls": 19220,
+          "self_seconds": 0.0545823,
+          "cumulative_seconds": 0.0936419
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'get' of 'dict' objects>",
+          "calls": 397213,
+          "self_seconds": 0.0440289,
+          "cumulative_seconds": 0.0440289
+        },
+        {
+          "file": "store.py",
+          "line": 586,
+          "function": "snapshot",
+          "calls": 1,
+          "self_seconds": 0.041585000000000004,
+          "cumulative_seconds": 0.27287700000000004
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'endswith' of 'str' objects>",
+          "calls": 538089,
+          "self_seconds": 0.037079,
+          "cumulative_seconds": 0.037079
+        },
+        {
+          "file": "service.py",
+          "line": 269,
+          "function": "_search",
+          "calls": 1,
+          "self_seconds": 0.035122600000000004,
+          "cumulative_seconds": 1.0697521
+        },
+        {
+          "file": "database_benchmark.py",
+          "line": 182,
+          "function": "<lambda>",
+          "calls": 1,
+          "self_seconds": 0.0227427,
+          "cumulative_seconds": 1.0924948
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'findall' of 're.Pattern' objects>",
+          "calls": 9603,
+          "self_seconds": 0.0183016,
+          "cumulative_seconds": 0.0183016
+        },
+        {
+          "file": "decoder.py",
+          "line": 340,
+          "function": "decode",
+          "calls": 19200,
+          "self_seconds": 0.017387,
+          "cumulative_seconds": 0.11599540000000001
+        },
+        {
+          "file": "facts.py",
+          "line": 437,
+          "function": "compatible",
+          "calls": 9600,
+          "self_seconds": 0.015963400000000003,
+          "cumulative_seconds": 0.0289743
+        },
+        {
+          "file": "__init__.py",
+          "line": 304,
+          "function": "loads",
+          "calls": 19200,
+          "self_seconds": 0.0092297,
+          "cumulative_seconds": 0.1284845
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'match' of 're.Pattern' objects>",
+          "calls": 38400,
+          "self_seconds": 0.0077289,
+          "cumulative_seconds": 0.0077289
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'append' of 'list' objects>",
+          "calls": 71558,
+          "self_seconds": 0.0076549,
+          "cumulative_seconds": 0.0076549
+        },
+        {
+          "file": "search_explain.py",
+          "line": 73,
+          "function": "keyword_query",
+          "calls": 1,
+          "self_seconds": 0.007368700000000001,
+          "cumulative_seconds": 0.0829545
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.max>",
+          "calls": 19201,
+          "self_seconds": 0.0073368,
+          "cumulative_seconds": 0.0134926
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'end' of 're.Match' objects>",
+          "calls": 76800,
+          "self_seconds": 0.0070952,
+          "cumulative_seconds": 0.0070952
+        },
+        {
+          "file": "service.py",
+          "line": 533,
+          "function": "<lambda>",
+          "calls": 9600,
+          "self_seconds": 0.006267900000000001,
+          "cumulative_seconds": 0.0075123
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'execute' of 'sqlite3.Connection' objects>",
+          "calls": 33,
+          "self_seconds": 0.0059508,
+          "cumulative_seconds": 0.0059508
+        },
+        {
+          "file": "service.py",
+          "line": 484,
+          "function": "<genexpr>",
+          "calls": 28800,
+          "self_seconds": 0.0058396,
+          "cumulative_seconds": 0.0193318
+        },
+        {
+          "file": "facts_diagnostics.py",
+          "line": 29,
+          "function": "comparison_check",
+          "calls": 38400,
+          "self_seconds": 0.0057236000000000006,
+          "cumulative_seconds": 0.0085057
+        }
+      ],
+      "snapshot_profile": [
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'fetchall' of 'sqlite3.Cursor' objects>",
+          "calls": 1,
+          "self_seconds": 0.0903105,
+          "cumulative_seconds": 0.0903105
+        },
+        {
+          "file": "decoder.py",
+          "line": 351,
+          "function": "raw_decode",
+          "calls": 19200,
+          "self_seconds": 0.072785,
+          "cumulative_seconds": 0.072785
+        },
+        {
+          "file": "store.py",
+          "line": 586,
+          "function": "snapshot",
+          "calls": 1,
+          "self_seconds": 0.043700800000000005,
+          "cumulative_seconds": 0.2762923
+        },
+        {
+          "file": "decoder.py",
+          "line": 340,
+          "function": "decode",
+          "calls": 19200,
+          "self_seconds": 0.0277562,
+          "cumulative_seconds": 0.11366670000000001
+        },
+        {
+          "file": "__init__.py",
+          "line": 304,
+          "function": "loads",
+          "calls": 19200,
+          "self_seconds": 0.0093649,
+          "cumulative_seconds": 0.1263564
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'match' of 're.Pattern' objects>",
+          "calls": 38400,
+          "self_seconds": 0.007919,
+          "cumulative_seconds": 0.007919
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'end' of 're.Match' objects>",
+          "calls": 38400,
+          "self_seconds": 0.0036037,
+          "cumulative_seconds": 0.0036037
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'execute' of 'sqlite3.Connection' objects>",
+          "calls": 25,
+          "self_seconds": 0.0035377000000000004,
+          "cumulative_seconds": 0.0035377000000000004
+        },
+        {
+          "file": "store.py",
+          "line": 583,
+          "function": "snapshot_for_owner",
+          "calls": 1,
+          "self_seconds": 0.0026520000000000003,
+          "cumulative_seconds": 0.27894430000000003
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'append' of 'list' objects>",
+          "calls": 22400,
+          "self_seconds": 0.0026129,
+          "cumulative_seconds": 0.0026129
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'pop' of 'dict' objects>",
+          "calls": 19200,
+          "self_seconds": 0.0025193000000000004,
+          "cumulative_seconds": 0.0025193000000000004
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'get' of 'dict' objects>",
+          "calls": 9600,
+          "self_seconds": 0.0022284,
+          "cumulative_seconds": 0.0022284
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'setdefault' of 'dict' objects>",
+          "calls": 12800,
+          "self_seconds": 0.0021324,
+          "cumulative_seconds": 0.0021324
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'startswith' of 'str' objects>",
+          "calls": 19200,
+          "self_seconds": 0.0017900000000000001,
+          "cumulative_seconds": 0.0017900000000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.len>",
+          "calls": 19201,
+          "self_seconds": 0.0016038,
+          "cumulative_seconds": 0.0016038
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.isinstance>",
+          "calls": 19201,
+          "self_seconds": 0.0015352,
+          "cumulative_seconds": 0.0015352
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'close' of 'sqlite3.Connection' objects>",
+          "calls": 1,
+          "self_seconds": 0.0009307,
+          "cumulative_seconds": 0.0009307
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'join' of 'str' objects>",
+          "calls": 20,
+          "self_seconds": 0.0008776000000000001,
+          "cumulative_seconds": 0.0013928
+        },
+        {
+          "file": "store.py",
+          "line": 616,
+          "function": "<genexpr>",
+          "calls": 9620,
+          "self_seconds": 0.0005152000000000001,
+          "cumulative_seconds": 0.0005152000000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method _sqlite3.connect>",
+          "calls": 1,
+          "self_seconds": 0.0004906,
+          "cumulative_seconds": 0.0005147
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'disable' of '_lsprof.Profiler' objects>",
+          "calls": 1,
+          "self_seconds": 2.82e-05,
+          "cumulative_seconds": 2.82e-05
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'commit' of 'sqlite3.Connection' objects>",
+          "calls": 1,
+          "self_seconds": 2.33e-05,
+          "cumulative_seconds": 2.33e-05
+        },
+        {
+          "file": "store.py",
+          "line": 179,
+          "function": "connect",
+          "calls": 2,
+          "self_seconds": 1.22e-05,
+          "cumulative_seconds": 0.0015005
+        },
+        {
+          "file": "functools.py",
+          "line": 35,
+          "function": "update_wrapper",
+          "calls": 1,
+          "self_seconds": 6.8e-06,
+          "cumulative_seconds": 1.34e-05
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.getattr>",
+          "calls": 9,
+          "self_seconds": 5.9e-06,
+          "cumulative_seconds": 5.9e-06
+        }
+      ],
+      "snapshot_sql_statements": 22,
+      "query_plan": [
+        "MATERIALIZE archived",
+        "SCAN captured_memories",
+        "MATERIALIZE other_owners",
+        "SCAN captured_memories",
+        "USE TEMP B-TREE FOR DISTINCT",
+        "SCAN v USING INDEX sqlite_autoindex_revisions_1",
+        "SEARCH r USING INDEX sqlite_autoindex_records_1 (id=?)",
+        "SEARCH m USING INDEX memory_revision (revision_id=?)",
+        "SEARCH e USING INDEX sqlite_autoindex_embeddings_1 (memory_id=?)",
+        "SEARCH f USING INDEX sqlite_autoindex_facts_1 (memory_id=?) LEFT-JOIN",
+        "SEARCH a USING AUTOMATIC COVERING INDEX (record_id=?) LEFT-JOIN",
+        "SEARCH o USING AUTOMATIC COVERING INDEX (record_id=?) LEFT-JOIN",
+        "USE TEMP B-TREE FOR LAST TERM OF ORDER BY"
+      ],
+      "final_memory": {
+        "rss_mib": 155.70703125,
+        "peak_rss_mib": 334.171875
+      },
+      "count": 10000
+    },
+    {
+      "mode": "baseline",
+      "database_bytes": 164790272,
+      "initial_memory": {
+        "rss_mib": 55.94140625,
+        "peak_rss_mib": 55.94140625
+      },
+      "snapshot": {
+        "first_seconds": 4.481505399977323,
+        "median_seconds": 4.907159800000954,
+        "max_seconds": 5.121304599975701,
+        "samples_seconds": [
+          5.121304599975701,
+          4.912006900005508,
+          4.875842300010845,
+          4.907159800000954,
+          4.866717699973378
+        ],
+        "rss_mib": 445.21875,
+        "peak_rss_mib": 748.390625,
+        "rows": 24000,
+        "digest": "c5e650e1f9b1cdeb3005d1af522f422a2033b3293cd20dc7f86da0c8c8df9bda"
+      },
+      "vector": {
+        "first_seconds": 0.1311678999918513,
+        "median_seconds": 0.11076579999644309,
+        "max_seconds": 0.13553999998839572,
+        "samples_seconds": [
+          0.13553999998839572,
+          0.1309276000247337,
+          0.11076579999644309,
+          0.10609150002710521,
+          0.10531989997252822
+        ],
+        "rss_mib": 450.625,
+        "peak_rss_mib": 748.390625,
+        "digest": "90be418ea7a8d5af11ab601cd895aa38bfe5a2324471f366cdb9c9151f428a8c"
+      },
+      "all": {
+        "first_seconds": 5.803208800032735,
+        "median_seconds": 5.80098870000802,
+        "max_seconds": 5.911936099990271,
+        "samples_seconds": [
+          5.700430799974129,
+          5.80098870000802,
+          5.699342200008687,
+          5.827374099986628,
+          5.911936099990271
+        ],
+        "rss_mib": 127.34375,
+        "peak_rss_mib": 748.390625,
+        "digest": "4e737e1704e4e1dc92a6eccf6bdb5b90789a0310abe50b2c2e5082c0e1823c82",
+        "results": 8
+      },
+      "date_filtered": {
+        "first_seconds": 4.810051200038288,
+        "median_seconds": 4.955718900018837,
+        "max_seconds": 5.116226600017399,
+        "samples_seconds": [
+          4.955718900018837,
+          5.116226600017399,
+          4.974361000000499,
+          4.919540700037032,
+          4.828319500025827
+        ],
+        "rss_mib": 144.46484375,
+        "peak_rss_mib": 748.390625,
+        "digest": "80c2f3eed96c0059b1f6f80377f6c9e2526ac7ac224cee0f330cda418f81027e",
+        "results": 8
+      },
+      "profile": [
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'execute' of 'sqlite3.Connection' objects>",
+          "calls": 24013,
+          "self_seconds": 3.895795,
+          "cumulative_seconds": 3.895795
+        },
+        {
+          "file": "search_explain_before.py",
+          "line": 60,
+          "function": "normalize",
+          "calls": 744012,
+          "self_seconds": 1.7739247,
+          "cumulative_seconds": 3.0523129
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'endswith' of 'str' objects>",
+          "calls": 16704308,
+          "self_seconds": 1.1549120000000002,
+          "cumulative_seconds": 1.1549120000000002
+        },
+        {
+          "file": "search_explain_before.py",
+          "line": 92,
+          "function": "keyword_matches",
+          "calls": 24000,
+          "self_seconds": 0.5879924000000001,
+          "cumulative_seconds": 3.8347670000000003
+        },
+        {
+          "file": "decoder.py",
+          "line": 351,
+          "function": "raw_decode",
+          "calls": 48000,
+          "self_seconds": 0.30941290000000005,
+          "cumulative_seconds": 0.30941290000000005
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'fetchall' of 'sqlite3.Cursor' objects>",
+          "calls": 2,
+          "self_seconds": 0.2553629,
+          "cumulative_seconds": 0.2553629
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'group' of 're.Match' objects>",
+          "calls": 1536000,
+          "self_seconds": 0.1810044,
+          "cumulative_seconds": 0.1810044
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'casefold' of 'str' objects>",
+          "calls": 1488014,
+          "self_seconds": 0.1772073,
+          "cumulative_seconds": 0.1772073
+        },
+        {
+          "file": "store_before.py",
+          "line": 586,
+          "function": "snapshot",
+          "calls": 1,
+          "self_seconds": 0.1118948,
+          "cumulative_seconds": 4.6867488
+        },
+        {
+          "file": "service_before.py",
+          "line": 249,
+          "function": "_search",
+          "calls": 1,
+          "self_seconds": 0.10417180000000001,
+          "cumulative_seconds": 9.2229689
+        },
+        {
+          "file": "database_benchmark.py",
+          "line": 182,
+          "function": "<lambda>",
+          "calls": 1,
+          "self_seconds": 0.0667804,
+          "cumulative_seconds": 9.2897493
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'findall' of 're.Pattern' objects>",
+          "calls": 24003,
+          "self_seconds": 0.0452798,
+          "cumulative_seconds": 0.0452798
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.len>",
+          "calls": 696030,
+          "self_seconds": 0.0448362,
+          "cumulative_seconds": 0.0448362
+        },
+        {
+          "file": "models.py",
+          "line": 79,
+          "function": "normalized_vectors",
+          "calls": 2,
+          "self_seconds": 0.043464800000000005,
+          "cumulative_seconds": 0.0774234
+        },
+        {
+          "file": "decoder.py",
+          "line": 340,
+          "function": "decode",
+          "calls": 48000,
+          "self_seconds": 0.041749600000000005,
+          "cumulative_seconds": 0.3836337
+        },
+        {
+          "file": "facts.py",
+          "line": 437,
+          "function": "compatible",
+          "calls": 24000,
+          "self_seconds": 0.0402037,
+          "cumulative_seconds": 0.072719
+        },
+        {
+          "file": "shape_base.py",
+          "line": 378,
+          "function": "stack",
+          "calls": 1,
+          "self_seconds": 0.0300995,
+          "cumulative_seconds": 0.0314553
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'get' of 'dict' objects>",
+          "calls": 243611,
+          "self_seconds": 0.030019100000000003,
+          "cumulative_seconds": 0.030019100000000003
+        },
+        {
+          "file": "_linalg.py",
+          "line": 2615,
+          "function": "norm",
+          "calls": 2,
+          "self_seconds": 0.023902700000000002,
+          "cumulative_seconds": 0.032714400000000005
+        },
+        {
+          "file": "__init__.py",
+          "line": 304,
+          "function": "loads",
+          "calls": 48000,
+          "self_seconds": 0.023164300000000002,
+          "cumulative_seconds": 0.4151289
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'match' of 're.Pattern' objects>",
+          "calls": 96000,
+          "self_seconds": 0.0199134,
+          "cumulative_seconds": 0.0199134
+        },
+        {
+          "file": "search_explain_before.py",
+          "line": 73,
+          "function": "keyword_query",
+          "calls": 1,
+          "self_seconds": 0.018747,
+          "cumulative_seconds": 0.2079341
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'end' of 're.Match' objects>",
+          "calls": 192000,
+          "self_seconds": 0.0185004,
+          "cumulative_seconds": 0.0185004
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.max>",
+          "calls": 48001,
+          "self_seconds": 0.0184841,
+          "cumulative_seconds": 0.033919200000000004
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'append' of 'list' objects>",
+          "calls": 145156,
+          "self_seconds": 0.0170801,
+          "cumulative_seconds": 0.0170801
+        }
+      ],
+      "snapshot_profile": [
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'execute' of 'sqlite3.Connection' objects>",
+          "calls": 24005,
+          "self_seconds": 3.8716006000000003,
+          "cumulative_seconds": 3.8716006000000003
+        },
+        {
+          "file": "decoder.py",
+          "line": 351,
+          "function": "raw_decode",
+          "calls": 48000,
+          "self_seconds": 0.2684568,
+          "cumulative_seconds": 0.2684568
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'fetchall' of 'sqlite3.Cursor' objects>",
+          "calls": 1,
+          "self_seconds": 0.25530420000000004,
+          "cumulative_seconds": 0.25530420000000004
+        },
+        {
+          "file": "store_before.py",
+          "line": 586,
+          "function": "snapshot",
+          "calls": 1,
+          "self_seconds": 0.11682450000000001,
+          "cumulative_seconds": 4.6283183
+        },
+        {
+          "file": "decoder.py",
+          "line": 340,
+          "function": "decode",
+          "calls": 48000,
+          "self_seconds": 0.040175800000000005,
+          "cumulative_seconds": 0.34166480000000005
+        },
+        {
+          "file": "__init__.py",
+          "line": 304,
+          "function": "loads",
+          "calls": 48000,
+          "self_seconds": 0.023456,
+          "cumulative_seconds": 0.3734331
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'match' of 're.Pattern' objects>",
+          "calls": 96000,
+          "self_seconds": 0.0198427,
+          "cumulative_seconds": 0.0198427
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'end' of 're.Match' objects>",
+          "calls": 96000,
+          "self_seconds": 0.009348,
+          "cumulative_seconds": 0.009348
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'pop' of 'dict' objects>",
+          "calls": 48000,
+          "self_seconds": 0.0059324,
+          "cumulative_seconds": 0.0059324
+        },
+        {
+          "file": "store_before.py",
+          "line": 583,
+          "function": "snapshot_for_owner",
+          "calls": 1,
+          "self_seconds": 0.004687500000000001,
+          "cumulative_seconds": 4.6330058
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'startswith' of 'str' objects>",
+          "calls": 48000,
+          "self_seconds": 0.004440100000000001,
+          "cumulative_seconds": 0.004440100000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.isinstance>",
+          "calls": 48001,
+          "self_seconds": 0.0038725,
+          "cumulative_seconds": 0.0038725
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.len>",
+          "calls": 48000,
+          "self_seconds": 0.0038415000000000003,
+          "cumulative_seconds": 0.0038415000000000003
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'append' of 'list' objects>",
+          "calls": 24000,
+          "self_seconds": 0.0036493000000000003,
+          "cumulative_seconds": 0.0036493000000000003
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'close' of 'sqlite3.Connection' objects>",
+          "calls": 1,
+          "self_seconds": 0.0011747,
+          "cumulative_seconds": 0.0011747
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method _sqlite3.connect>",
+          "calls": 1,
+          "self_seconds": 0.0003309,
+          "cumulative_seconds": 0.00035180000000000004
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'disable' of '_lsprof.Profiler' objects>",
+          "calls": 1,
+          "self_seconds": 3.1100000000000004e-05,
+          "cumulative_seconds": 3.1100000000000004e-05
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'commit' of 'sqlite3.Connection' objects>",
+          "calls": 1,
+          "self_seconds": 1.4700000000000002e-05,
+          "cumulative_seconds": 1.4700000000000002e-05
+        },
+        {
+          "file": "store_before.py",
+          "line": 179,
+          "function": "connect",
+          "calls": 2,
+          "self_seconds": 1.2e-05,
+          "cumulative_seconds": 0.0015763
+        },
+        {
+          "file": "functools.py",
+          "line": 35,
+          "function": "update_wrapper",
+          "calls": 1,
+          "self_seconds": 5.9e-06,
+          "cumulative_seconds": 1.23e-05
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.getattr>",
+          "calls": 9,
+          "self_seconds": 5.8e-06,
+          "cumulative_seconds": 5.8e-06
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.next>",
+          "calls": 2,
+          "self_seconds": 5.2e-06,
+          "cumulative_seconds": 0.0015815
+        },
+        {
+          "file": "contextlib.py",
+          "line": 145,
+          "function": "__exit__",
+          "calls": 1,
+          "self_seconds": 4.000000000000001e-06,
+          "cumulative_seconds": 0.0012045
+        },
+        {
+          "file": "functools.py",
+          "line": 553,
+          "function": "lru_cache",
+          "calls": 1,
+          "self_seconds": 3.6000000000000003e-06,
+          "cumulative_seconds": 3.9e-06
+        },
+        {
+          "file": "functools.py",
+          "line": 593,
+          "function": "decorating_function",
+          "calls": 1,
+          "self_seconds": 3.4e-06,
+          "cumulative_seconds": 1.5700000000000002e-05
+        }
+      ],
+      "snapshot_sql_statements": 24002,
+      "query_plan": [
+        "SCAN e",
+        "SEARCH m USING INDEX sqlite_autoindex_memories_1 (id=?)",
+        "SEARCH v USING INDEX sqlite_autoindex_revisions_1 (id=?)",
+        "SEARCH r USING INDEX sqlite_autoindex_records_1 (id=?)",
+        "CORRELATED SCALAR SUBQUERY 1",
+        "SCAN c",
+        "CORRELATED SCALAR SUBQUERY 2",
+        "SCAN c",
+        "SEARCH f USING INDEX sqlite_autoindex_facts_1 (memory_id=?) LEFT-JOIN",
+        "USE TEMP B-TREE FOR ORDER BY"
+      ],
+      "final_memory": {
+        "rss_mib": 263.484375,
+        "peak_rss_mib": 748.390625
+      },
+      "count": 25000
+    },
+    {
+      "mode": "batch",
+      "database_bytes": 164790272,
+      "initial_memory": {
+        "rss_mib": 55.8125,
+        "peak_rss_mib": 55.8125
+      },
+      "snapshot": {
+        "first_seconds": 0.6562898000120185,
+        "median_seconds": 0.9398756999871694,
+        "max_seconds": 0.9596603999962099,
+        "samples_seconds": [
+          0.9398756999871694,
+          0.8021953999996185,
+          0.9596603999962099,
+          0.9340019000228494,
+          0.9533911000471562
+        ],
+        "rss_mib": 432.30078125,
+        "peak_rss_mib": 748.3046875,
+        "rows": 24000,
+        "digest": "c5e650e1f9b1cdeb3005d1af522f422a2033b3293cd20dc7f86da0c8c8df9bda"
+      },
+      "vector": {
+        "first_seconds": 0.134637399984058,
+        "median_seconds": 0.11890359997050837,
+        "max_seconds": 0.13831320003373548,
+        "samples_seconds": [
+          0.13831320003373548,
+          0.11890359997050837,
+          0.12082049995660782,
+          0.10605800000485033,
+          0.11225649999687448
+        ],
+        "rss_mib": 437.9296875,
+        "peak_rss_mib": 748.3046875,
+        "digest": "90be418ea7a8d5af11ab601cd895aa38bfe5a2324471f366cdb9c9151f428a8c"
+      },
+      "all": {
+        "first_seconds": 1.7485045000212267,
+        "median_seconds": 1.7972188999992795,
+        "max_seconds": 1.826852600031998,
+        "samples_seconds": [
+          1.7789166999864392,
+          1.818033799994737,
+          1.7611112000304274,
+          1.7972188999992795,
+          1.826852600031998
+        ],
+        "rss_mib": 113.19140625,
+        "peak_rss_mib": 748.3046875,
+        "digest": "4e737e1704e4e1dc92a6eccf6bdb5b90789a0310abe50b2c2e5082c0e1823c82",
+        "results": 8
+      },
+      "date_filtered": {
+        "first_seconds": 0.9361776000005193,
+        "median_seconds": 0.9407216000254266,
+        "max_seconds": 0.9768771000090055,
+        "samples_seconds": [
+          0.9768771000090055,
+          0.9099583000061102,
+          0.9407216000254266,
+          0.9137026999960653,
+          0.9536914999480359
+        ],
+        "rss_mib": 137.98828125,
+        "peak_rss_mib": 748.3046875,
+        "digest": "80c2f3eed96c0059b1f6f80377f6c9e2526ac7ac224cee0f330cda418f81027e",
+        "results": 8
+      },
+      "profile": [
+        {
+          "file": "search_explain_before.py",
+          "line": 60,
+          "function": "normalize",
+          "calls": 720000,
+          "self_seconds": 1.7342107000000002,
+          "cumulative_seconds": 2.9745540000000004
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'endswith' of 'str' objects>",
+          "calls": 16704308,
+          "self_seconds": 1.1614432000000001,
+          "cumulative_seconds": 1.1614432000000001
+        },
+        {
+          "file": "search_explain_before.py",
+          "line": 92,
+          "function": "keyword_matches",
+          "calls": 24000,
+          "self_seconds": 0.5910091000000001,
+          "cumulative_seconds": 3.8798046000000004
+        },
+        {
+          "file": "decoder.py",
+          "line": 351,
+          "function": "raw_decode",
+          "calls": 48000,
+          "self_seconds": 0.2645737,
+          "cumulative_seconds": 0.2645737
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'fetchall' of 'sqlite3.Cursor' objects>",
+          "calls": 2,
+          "self_seconds": 0.22333350000000002,
+          "cumulative_seconds": 0.22333350000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'group' of 're.Match' objects>",
+          "calls": 1536000,
+          "self_seconds": 0.1851757,
+          "cumulative_seconds": 0.1851757
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'casefold' of 'str' objects>",
+          "calls": 1488014,
+          "self_seconds": 0.1790479,
+          "cumulative_seconds": 0.1790479
+        },
+        {
+          "file": "store.py",
+          "line": 586,
+          "function": "snapshot",
+          "calls": 1,
+          "self_seconds": 0.10641160000000001,
+          "cumulative_seconds": 0.73741
+        },
+        {
+          "file": "service.py",
+          "line": 269,
+          "function": "_search",
+          "calls": 1,
+          "self_seconds": 0.08723260000000001,
+          "cumulative_seconds": 5.3917953
+        },
+        {
+          "file": "database_benchmark.py",
+          "line": 184,
+          "function": "<lambda>",
+          "calls": 1,
+          "self_seconds": 0.07237890000000001,
+          "cumulative_seconds": 5.4641742
+        },
+        {
+          "file": "search_explain.py",
+          "line": 60,
+          "function": "normalize",
+          "calls": 24012,
+          "self_seconds": 0.0646845,
+          "cumulative_seconds": 0.11105770000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'sort' of 'list' objects>",
+          "calls": 9,
+          "self_seconds": 0.0645048,
+          "cumulative_seconds": 0.0805566
+        },
+        {
+          "file": "models.py",
+          "line": 79,
+          "function": "normalized_vectors",
+          "calls": 2,
+          "self_seconds": 0.050906700000000006,
+          "cumulative_seconds": 0.08378200000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'findall' of 're.Pattern' objects>",
+          "calls": 24003,
+          "self_seconds": 0.045445900000000004,
+          "cumulative_seconds": 0.045445900000000004
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.len>",
+          "calls": 696032,
+          "self_seconds": 0.0454243,
+          "cumulative_seconds": 0.0454243
+        },
+        {
+          "file": "decoder.py",
+          "line": 340,
+          "function": "decode",
+          "calls": 48000,
+          "self_seconds": 0.0431893,
+          "cumulative_seconds": 0.34070690000000003
+        },
+        {
+          "file": "facts.py",
+          "line": 437,
+          "function": "compatible",
+          "calls": 24000,
+          "self_seconds": 0.041394,
+          "cumulative_seconds": 0.07542
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'get' of 'dict' objects>",
+          "calls": 267611,
+          "self_seconds": 0.0359121,
+          "cumulative_seconds": 0.0359121
+        },
+        {
+          "file": "shape_base.py",
+          "line": 378,
+          "function": "stack",
+          "calls": 1,
+          "self_seconds": 0.028998600000000003,
+          "cumulative_seconds": 0.030525800000000002
+        },
+        {
+          "file": "__init__.py",
+          "line": 304,
+          "function": "loads",
+          "calls": 48000,
+          "self_seconds": 0.023073800000000002,
+          "cumulative_seconds": 0.3719219
+        },
+        {
+          "file": "_linalg.py",
+          "line": 2615,
+          "function": "norm",
+          "calls": 2,
+          "self_seconds": 0.0212853,
+          "cumulative_seconds": 0.031735200000000005
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'match' of 're.Pattern' objects>",
+          "calls": 96000,
+          "self_seconds": 0.020289500000000002,
+          "cumulative_seconds": 0.020289500000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'append' of 'list' objects>",
+          "calls": 177156,
+          "self_seconds": 0.019964100000000002,
+          "cumulative_seconds": 0.019964100000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'end' of 're.Match' objects>",
+          "calls": 192000,
+          "self_seconds": 0.018597600000000002,
+          "cumulative_seconds": 0.018597600000000002
+        },
+        {
+          "file": "search_explain.py",
+          "line": 73,
+          "function": "keyword_query",
+          "calls": 1,
+          "self_seconds": 0.018449,
+          "cumulative_seconds": 0.2060883
+        }
+      ],
+      "snapshot_profile": [
+        {
+          "file": "decoder.py",
+          "line": 351,
+          "function": "raw_decode",
+          "calls": 48000,
+          "self_seconds": 0.2657051,
+          "cumulative_seconds": 0.2657051
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'fetchall' of 'sqlite3.Cursor' objects>",
+          "calls": 1,
+          "self_seconds": 0.229688,
+          "cumulative_seconds": 0.229688
+        },
+        {
+          "file": "store.py",
+          "line": 586,
+          "function": "snapshot",
+          "calls": 1,
+          "self_seconds": 0.10747780000000001,
+          "cumulative_seconds": 0.7709396000000001
+        },
+        {
+          "file": "decoder.py",
+          "line": 340,
+          "function": "decode",
+          "calls": 48000,
+          "self_seconds": 0.067848,
+          "cumulative_seconds": 0.36575050000000003
+        },
+        {
+          "file": "__init__.py",
+          "line": 304,
+          "function": "loads",
+          "calls": 48000,
+          "self_seconds": 0.0236566,
+          "cumulative_seconds": 0.3974686
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'match' of 're.Pattern' objects>",
+          "calls": 96000,
+          "self_seconds": 0.019767800000000002,
+          "cumulative_seconds": 0.019767800000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'end' of 're.Match' objects>",
+          "calls": 96000,
+          "self_seconds": 0.008739,
+          "cumulative_seconds": 0.008739
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'get' of 'dict' objects>",
+          "calls": 24000,
+          "self_seconds": 0.0072493,
+          "cumulative_seconds": 0.0072493
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'append' of 'list' objects>",
+          "calls": 56000,
+          "self_seconds": 0.0061555,
+          "cumulative_seconds": 0.0061555
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'pop' of 'dict' objects>",
+          "calls": 48000,
+          "self_seconds": 0.006133400000000001,
+          "cumulative_seconds": 0.006133400000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'execute' of 'sqlite3.Connection' objects>",
+          "calls": 53,
+          "self_seconds": 0.0061267000000000005,
+          "cumulative_seconds": 0.0061267000000000005
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'setdefault' of 'dict' objects>",
+          "calls": 32000,
+          "self_seconds": 0.005866700000000001,
+          "cumulative_seconds": 0.005866700000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'startswith' of 'str' objects>",
+          "calls": 48000,
+          "self_seconds": 0.0043568,
+          "cumulative_seconds": 0.0043568
+        },
+        {
+          "file": "store.py",
+          "line": 583,
+          "function": "snapshot_for_owner",
+          "calls": 1,
+          "self_seconds": 0.0037482,
+          "cumulative_seconds": 0.7746878
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.isinstance>",
+          "calls": 48001,
+          "self_seconds": 0.0037050000000000004,
+          "cumulative_seconds": 0.0037050000000000004
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.len>",
+          "calls": 48001,
+          "self_seconds": 0.0036918000000000003,
+          "cumulative_seconds": 0.0036918000000000003
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'join' of 'str' objects>",
+          "calls": 48,
+          "self_seconds": 0.0020939,
+          "cumulative_seconds": 0.0033309000000000004
+        },
+        {
+          "file": "store.py",
+          "line": 616,
+          "function": "<genexpr>",
+          "calls": 24048,
+          "self_seconds": 0.001237,
+          "cumulative_seconds": 0.001237
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'close' of 'sqlite3.Connection' objects>",
+          "calls": 1,
+          "self_seconds": 0.0009839,
+          "cumulative_seconds": 0.0009839
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method _sqlite3.connect>",
+          "calls": 1,
+          "self_seconds": 0.0003793,
+          "cumulative_seconds": 0.00040120000000000005
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'disable' of '_lsprof.Profiler' objects>",
+          "calls": 1,
+          "self_seconds": 2.9400000000000003e-05,
+          "cumulative_seconds": 2.9400000000000003e-05
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'commit' of 'sqlite3.Connection' objects>",
+          "calls": 1,
+          "self_seconds": 2.54e-05,
+          "cumulative_seconds": 2.54e-05
+        },
+        {
+          "file": "store.py",
+          "line": 179,
+          "function": "connect",
+          "calls": 2,
+          "self_seconds": 1.13e-05,
+          "cumulative_seconds": 0.0014416000000000001
+        },
+        {
+          "file": "functools.py",
+          "line": 35,
+          "function": "update_wrapper",
+          "calls": 1,
+          "self_seconds": 6.300000000000001e-06,
+          "cumulative_seconds": 1.29e-05
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.getattr>",
+          "calls": 9,
+          "self_seconds": 5.600000000000001e-06,
+          "cumulative_seconds": 5.600000000000001e-06
+        }
+      ],
+      "snapshot_sql_statements": 50,
+      "query_plan": [
+        "MATERIALIZE archived",
+        "SCAN captured_memories",
+        "MATERIALIZE other_owners",
+        "SCAN captured_memories",
+        "USE TEMP B-TREE FOR DISTINCT",
+        "SCAN v USING INDEX sqlite_autoindex_revisions_1",
+        "SEARCH r USING INDEX sqlite_autoindex_records_1 (id=?)",
+        "SEARCH m USING INDEX memory_revision (revision_id=?)",
+        "SEARCH e USING INDEX sqlite_autoindex_embeddings_1 (memory_id=?)",
+        "SEARCH f USING INDEX sqlite_autoindex_facts_1 (memory_id=?) LEFT-JOIN",
+        "SEARCH a USING AUTOMATIC COVERING INDEX (record_id=?) LEFT-JOIN",
+        "SEARCH o USING AUTOMATIC COVERING INDEX (record_id=?) LEFT-JOIN",
+        "USE TEMP B-TREE FOR LAST TERM OF ORDER BY"
+      ],
+      "final_memory": {
+        "rss_mib": 129.0859375,
+        "peak_rss_mib": 748.3046875
+      },
+      "count": 25000
+    },
+    {
+      "mode": "cached",
+      "database_bytes": 164790272,
+      "initial_memory": {
+        "rss_mib": 55.79296875,
+        "peak_rss_mib": 55.79296875
+      },
+      "snapshot": {
+        "first_seconds": 0.6541050000232644,
+        "median_seconds": 0.9387897999840789,
+        "max_seconds": 0.9680602999869734,
+        "samples_seconds": [
+          0.9387897999840789,
+          0.7708190000266768,
+          0.9168977999943309,
+          0.9432197000132874,
+          0.9680602999869734
+        ],
+        "rss_mib": 432.53125,
+        "peak_rss_mib": 748.91796875,
+        "rows": 24000,
+        "digest": "c5e650e1f9b1cdeb3005d1af522f422a2033b3293cd20dc7f86da0c8c8df9bda"
+      },
+      "vector": {
+        "first_seconds": 0.13540730002569035,
+        "median_seconds": 0.11570470000151545,
+        "max_seconds": 0.13224970002193004,
+        "samples_seconds": [
+          0.13224970002193004,
+          0.12078779999865219,
+          0.11491140001453459,
+          0.11570470000151545,
+          0.10651519999373704
+        ],
+        "rss_mib": 437.7890625,
+        "peak_rss_mib": 748.91796875,
+        "digest": "90be418ea7a8d5af11ab601cd895aa38bfe5a2324471f366cdb9c9151f428a8c"
+      },
+      "all": {
+        "first_seconds": 1.4286465999903157,
+        "median_seconds": 1.4556518000317737,
+        "max_seconds": 1.4939080000040121,
+        "samples_seconds": [
+          1.433053300017491,
+          1.4556518000317737,
+          1.4236905999714509,
+          1.4568570000119507,
+          1.4939080000040121
+        ],
+        "rss_mib": 117.78125,
+        "peak_rss_mib": 748.91796875,
+        "digest": "4e737e1704e4e1dc92a6eccf6bdb5b90789a0310abe50b2c2e5082c0e1823c82",
+        "results": 8
+      },
+      "date_filtered": {
+        "first_seconds": 0.8974949999828823,
+        "median_seconds": 0.9039707999909297,
+        "max_seconds": 0.9287261999561451,
+        "samples_seconds": [
+          0.9287261999561451,
+          0.8725215999875218,
+          0.924013800045941,
+          0.8810860000085086,
+          0.9039707999909297
+        ],
+        "rss_mib": 150.74609375,
+        "peak_rss_mib": 748.91796875,
+        "digest": "80c2f3eed96c0059b1f6f80377f6c9e2526ac7ac224cee0f330cda418f81027e",
+        "results": 8
+      },
+      "profile": [
+        {
+          "file": "search_explain.py",
+          "line": 92,
+          "function": "keyword_matches",
+          "calls": 24000,
+          "self_seconds": 0.5551954,
+          "cumulative_seconds": 1.3711762
+        },
+        {
+          "file": "decoder.py",
+          "line": 351,
+          "function": "raw_decode",
+          "calls": 48000,
+          "self_seconds": 0.22975640000000003,
+          "cumulative_seconds": 0.22975640000000003
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'fetchall' of 'sqlite3.Cursor' objects>",
+          "calls": 2,
+          "self_seconds": 0.22385560000000002,
+          "cumulative_seconds": 0.22385560000000002
+        },
+        {
+          "file": "search_explain.py",
+          "line": 95,
+          "function": "normalized",
+          "calls": 720000,
+          "self_seconds": 0.20062390000000002,
+          "cumulative_seconds": 0.5191475
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'group' of 're.Match' objects>",
+          "calls": 1536000,
+          "self_seconds": 0.17612760000000002,
+          "cumulative_seconds": 0.17612760000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'casefold' of 'str' objects>",
+          "calls": 1519646,
+          "self_seconds": 0.175549,
+          "cumulative_seconds": 0.175549
+        },
+        {
+          "file": "search_explain.py",
+          "line": 60,
+          "function": "normalize",
+          "calls": 55644,
+          "self_seconds": 0.1577685,
+          "cumulative_seconds": 0.27014760000000004
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'get' of 'dict' objects>",
+          "calls": 987611,
+          "self_seconds": 0.11253560000000001,
+          "cumulative_seconds": 0.11253560000000001
+        },
+        {
+          "file": "store.py",
+          "line": 586,
+          "function": "snapshot",
+          "calls": 1,
+          "self_seconds": 0.1069663,
+          "cumulative_seconds": 0.7368169
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'endswith' of 'str' objects>",
+          "calls": 1557961,
+          "self_seconds": 0.10668760000000001,
+          "cumulative_seconds": 0.10668760000000001
+        },
+        {
+          "file": "service.py",
+          "line": 269,
+          "function": "_search",
+          "calls": 1,
+          "self_seconds": 0.0898607,
+          "cumulative_seconds": 2.853075
+        },
+        {
+          "file": "decoder.py",
+          "line": 340,
+          "function": "decode",
+          "calls": 48000,
+          "self_seconds": 0.07787250000000001,
+          "cumulative_seconds": 0.33956640000000005
+        },
+        {
+          "file": "database_benchmark.py",
+          "line": 227,
+          "function": "<lambda>",
+          "calls": 1,
+          "self_seconds": 0.07138610000000001,
+          "cumulative_seconds": 2.9244611000000003
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'sort' of 'list' objects>",
+          "calls": 9,
+          "self_seconds": 0.0660107,
+          "cumulative_seconds": 0.0806235
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'findall' of 're.Pattern' objects>",
+          "calls": 24003,
+          "self_seconds": 0.045916500000000006,
+          "cumulative_seconds": 0.045916500000000006
+        },
+        {
+          "file": "facts.py",
+          "line": 437,
+          "function": "compatible",
+          "calls": 24000,
+          "self_seconds": 0.0425771,
+          "cumulative_seconds": 0.0774721
+        },
+        {
+          "file": "models.py",
+          "line": 79,
+          "function": "normalized_vectors",
+          "calls": 2,
+          "self_seconds": 0.0341187,
+          "cumulative_seconds": 0.0650227
+        },
+        {
+          "file": "shape_base.py",
+          "line": 378,
+          "function": "stack",
+          "calls": 1,
+          "self_seconds": 0.0285299,
+          "cumulative_seconds": 0.029842100000000003
+        },
+        {
+          "file": "__init__.py",
+          "line": 304,
+          "function": "loads",
+          "calls": 48000,
+          "self_seconds": 0.0231656,
+          "cumulative_seconds": 0.37074320000000005
+        },
+        {
+          "file": "_linalg.py",
+          "line": 2615,
+          "function": "norm",
+          "calls": 2,
+          "self_seconds": 0.0203675,
+          "cumulative_seconds": 0.029830400000000003
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'match' of 're.Pattern' objects>",
+          "calls": 96000,
+          "self_seconds": 0.019707000000000002,
+          "cumulative_seconds": 0.019707000000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'append' of 'list' objects>",
+          "calls": 177156,
+          "self_seconds": 0.0188069,
+          "cumulative_seconds": 0.0188069
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.max>",
+          "calls": 48001,
+          "self_seconds": 0.0183374,
+          "cumulative_seconds": 0.0339427
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'end' of 're.Match' objects>",
+          "calls": 192000,
+          "self_seconds": 0.0176718,
+          "cumulative_seconds": 0.0176718
+        },
+        {
+          "file": "search_explain.py",
+          "line": 73,
+          "function": "keyword_query",
+          "calls": 1,
+          "self_seconds": 0.0167777,
+          "cumulative_seconds": 0.2059156
+        }
+      ],
+      "snapshot_profile": [
+        {
+          "file": "decoder.py",
+          "line": 351,
+          "function": "raw_decode",
+          "calls": 48000,
+          "self_seconds": 0.28568180000000004,
+          "cumulative_seconds": 0.28568180000000004
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'fetchall' of 'sqlite3.Cursor' objects>",
+          "calls": 1,
+          "self_seconds": 0.22223210000000002,
+          "cumulative_seconds": 0.22223210000000002
+        },
+        {
+          "file": "store.py",
+          "line": 586,
+          "function": "snapshot",
+          "calls": 1,
+          "self_seconds": 0.10449040000000001,
+          "cumulative_seconds": 0.7530454000000001
+        },
+        {
+          "file": "decoder.py",
+          "line": 340,
+          "function": "decode",
+          "calls": 48000,
+          "self_seconds": 0.0419239,
+          "cumulative_seconds": 0.3599061
+        },
+        {
+          "file": "__init__.py",
+          "line": 304,
+          "function": "loads",
+          "calls": 48000,
+          "self_seconds": 0.0228777,
+          "cumulative_seconds": 0.39087740000000004
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'match' of 're.Pattern' objects>",
+          "calls": 96000,
+          "self_seconds": 0.019887500000000002,
+          "cumulative_seconds": 0.019887500000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'end' of 're.Match' objects>",
+          "calls": 96000,
+          "self_seconds": 0.0087649,
+          "cumulative_seconds": 0.0087649
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'get' of 'dict' objects>",
+          "calls": 24000,
+          "self_seconds": 0.0071383,
+          "cumulative_seconds": 0.0071383
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'append' of 'list' objects>",
+          "calls": 56000,
+          "self_seconds": 0.0061451000000000006,
+          "cumulative_seconds": 0.0061451000000000006
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'execute' of 'sqlite3.Connection' objects>",
+          "calls": 53,
+          "self_seconds": 0.0060991000000000005,
+          "cumulative_seconds": 0.0060991000000000005
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'pop' of 'dict' objects>",
+          "calls": 48000,
+          "self_seconds": 0.0057695,
+          "cumulative_seconds": 0.0057695
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'setdefault' of 'dict' objects>",
+          "calls": 32000,
+          "self_seconds": 0.00547,
+          "cumulative_seconds": 0.00547
+        },
+        {
+          "file": "store.py",
+          "line": 583,
+          "function": "snapshot_for_owner",
+          "calls": 1,
+          "self_seconds": 0.0046543,
+          "cumulative_seconds": 0.7576997000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'startswith' of 'str' objects>",
+          "calls": 48000,
+          "self_seconds": 0.0043829,
+          "cumulative_seconds": 0.0043829
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.isinstance>",
+          "calls": 48001,
+          "self_seconds": 0.0037110000000000003,
+          "cumulative_seconds": 0.0037110000000000003
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.len>",
+          "calls": 48001,
+          "self_seconds": 0.0036513,
+          "cumulative_seconds": 0.0036513
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'join' of 'str' objects>",
+          "calls": 48,
+          "self_seconds": 0.002089,
+          "cumulative_seconds": 0.0032640000000000004
+        },
+        {
+          "file": "store.py",
+          "line": 616,
+          "function": "<genexpr>",
+          "calls": 24048,
+          "self_seconds": 0.001175,
+          "cumulative_seconds": 0.001175
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'close' of 'sqlite3.Connection' objects>",
+          "calls": 1,
+          "self_seconds": 0.0010010000000000002,
+          "cumulative_seconds": 0.0010010000000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method _sqlite3.connect>",
+          "calls": 1,
+          "self_seconds": 0.0004734,
+          "cumulative_seconds": 0.0004943
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'disable' of '_lsprof.Profiler' objects>",
+          "calls": 1,
+          "self_seconds": 3.04e-05,
+          "cumulative_seconds": 3.04e-05
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'commit' of 'sqlite3.Connection' objects>",
+          "calls": 1,
+          "self_seconds": 2.58e-05,
+          "cumulative_seconds": 2.58e-05
+        },
+        {
+          "file": "store.py",
+          "line": 179,
+          "function": "connect",
+          "calls": 2,
+          "self_seconds": 1.1900000000000001e-05,
+          "cumulative_seconds": 0.0015525
+        },
+        {
+          "file": "contextlib.py",
+          "line": 108,
+          "function": "__init__",
+          "calls": 1,
+          "self_seconds": 6.900000000000001e-06,
+          "cumulative_seconds": 7.5e-06
+        },
+        {
+          "file": "functools.py",
+          "line": 35,
+          "function": "update_wrapper",
+          "calls": 1,
+          "self_seconds": 6.5000000000000004e-06,
+          "cumulative_seconds": 1.2e-05
+        }
+      ],
+      "snapshot_sql_statements": 50,
+      "query_plan": [
+        "MATERIALIZE archived",
+        "SCAN captured_memories",
+        "MATERIALIZE other_owners",
+        "SCAN captured_memories",
+        "USE TEMP B-TREE FOR DISTINCT",
+        "SCAN v USING INDEX sqlite_autoindex_revisions_1",
+        "SEARCH r USING INDEX sqlite_autoindex_records_1 (id=?)",
+        "SEARCH m USING INDEX memory_revision (revision_id=?)",
+        "SEARCH e USING INDEX sqlite_autoindex_embeddings_1 (memory_id=?)",
+        "SEARCH f USING INDEX sqlite_autoindex_facts_1 (memory_id=?) LEFT-JOIN",
+        "SEARCH a USING AUTOMATIC COVERING INDEX (record_id=?) LEFT-JOIN",
+        "SEARCH o USING AUTOMATIC COVERING INDEX (record_id=?) LEFT-JOIN",
+        "USE TEMP B-TREE FOR LAST TERM OF ORDER BY"
+      ],
+      "final_memory": {
+        "rss_mib": 128.84765625,
+        "peak_rss_mib": 748.91796875
+      },
+      "count": 25000
+    }
+  ],
+  "stages_25000": {
+    "baseline": {
+      "samples": [
+        {
+          "total_seconds": 5.728640399989672,
+          "stages": {
+            "query_understanding": 0.00018759997328743339,
+            "structure_filter": 0.17071280005620793,
+            "snapshot": 4.5490664999815635,
+            "vector_retrieval": 0.10537110001314431,
+            "keyword_retrieval": 0.8084441999671981,
+            "rank_fusion": 0.023720099998172373,
+            "relation_lookup": 0.0028968999977223575,
+            "source_validation": 0.0682282000198029
+          }
+        },
+        {
+          "total_seconds": 5.787258600001223,
+          "stages": {
+            "query_understanding": 0.0001365999924018979,
+            "structure_filter": 0.1699813000159338,
+            "snapshot": 4.575093799969181,
+            "vector_retrieval": 0.12773700000252575,
+            "keyword_retrieval": 0.819032600033097,
+            "rank_fusion": 0.024866699997801334,
+            "relation_lookup": 0.002699200005736202,
+            "source_validation": 0.06770709995180368
+          }
+        },
+        {
+          "total_seconds": 5.691759199951775,
+          "stages": {
+            "query_understanding": 0.0001294999965466559,
+            "structure_filter": 0.16247170005226508,
+            "snapshot": 4.552790299989283,
+            "vector_retrieval": 0.13337259995751083,
+            "keyword_retrieval": 0.7477592999930494,
+            "rank_fusion": 0.024549500027205795,
+            "relation_lookup": 0.0025064999936148524,
+            "source_validation": 0.06817649997537956
+          }
+        },
+        {
+          "total_seconds": 5.7401272999704815,
+          "stages": {
+            "query_understanding": 0.0001748999929986894,
+            "structure_filter": 0.16816599998855963,
+            "snapshot": 4.539229999994859,
+            "vector_retrieval": 0.13003719999687746,
+            "keyword_retrieval": 0.8089790000231005,
+            "rank_fusion": 0.024952200008556247,
+            "relation_lookup": 0.002574699989054352,
+            "source_validation": 0.06600819999584928
+          }
+        },
+        {
+          "total_seconds": 5.800311299972236,
+          "stages": {
+            "query_understanding": 0.0001365999924018979,
+            "structure_filter": 0.17102199996588752,
+            "snapshot": 4.5663719000294805,
+            "vector_retrieval": 0.13602489995537326,
+            "keyword_retrieval": 0.7593828000244685,
+            "rank_fusion": 0.09431660000700504,
+            "relation_lookup": 0.0034546999959275126,
+            "source_validation": 0.0695978999719955
+          }
+        }
+      ],
+      "median_total_seconds": 5.7401272999704815,
+      "stages_median_seconds": {
+        "keyword_retrieval": 0.8084441999671981,
+        "query_understanding": 0.0001365999924018979,
+        "rank_fusion": 0.024866699997801334,
+        "relation_lookup": 0.002699200005736202,
+        "snapshot": 4.552790299989283,
+        "source_validation": 0.06817649997537956,
+        "structure_filter": 0.1699813000159338,
+        "vector_retrieval": 0.13003719999687746
+      },
+      "digest": "4e737e1704e4e1dc92a6eccf6bdb5b90789a0310abe50b2c2e5082c0e1823c82",
+      "memory": {
+        "rss_mib": 124.328125,
+        "peak_rss_mib": 591.47265625
+      },
+      "retained_vector_bytes": 0
+    },
+    "cached": {
+      "samples": [
+        {
+          "total_seconds": 1.514114499965217,
+          "stages": {
+            "query_understanding": 0.0001479999627918005,
+            "structure_filter": 0.1603154999902472,
+            "snapshot": 0.6317126000067219,
+            "vector_retrieval": 0.12970069999573752,
+            "keyword_retrieval": 0.49409500003093854,
+            "rank_fusion": 0.023895999998785555,
+            "relation_lookup": 0.0026068000006489456,
+            "source_validation": 0.07163119997130707
+          }
+        },
+        {
+          "total_seconds": 1.522319499985315,
+          "stages": {
+            "query_understanding": 0.00013050000416114926,
+            "structure_filter": 0.16781540005467832,
+            "snapshot": 0.6355833999696188,
+            "vector_retrieval": 0.1319666999625042,
+            "keyword_retrieval": 0.49329260003287345,
+            "rank_fusion": 0.022949399950448424,
+            "relation_lookup": 0.00257800001418218,
+            "source_validation": 0.06799970002612099
+          }
+        },
+        {
+          "total_seconds": 1.493410800001584,
+          "stages": {
+            "query_understanding": 0.0001259999698959291,
+            "structure_filter": 0.16966289997799322,
+            "snapshot": 0.6548455000156537,
+            "vector_retrieval": 0.13442970003234223,
+            "keyword_retrieval": 0.43824549997225404,
+            "rank_fusion": 0.02244650002103299,
+            "relation_lookup": 0.00304320000577718,
+            "source_validation": 0.07060779997846112
+          }
+        },
+        {
+          "total_seconds": 1.4716975999763235,
+          "stages": {
+            "query_understanding": 0.0001653000363148749,
+            "structure_filter": 0.16638499993132427,
+            "snapshot": 0.632961500028614,
+            "vector_retrieval": 0.10663029999705032,
+            "keyword_retrieval": 0.47434890002477914,
+            "rank_fusion": 0.02314699999988079,
+            "relation_lookup": 0.002556599967647344,
+            "source_validation": 0.0654975000070408
+          }
+        },
+        {
+          "total_seconds": 1.5138715000357479,
+          "stages": {
+            "query_understanding": 0.00014680001186206937,
+            "structure_filter": 0.1612211000174284,
+            "snapshot": 0.64550759998383,
+            "vector_retrieval": 0.13022400002228096,
+            "keyword_retrieval": 0.41192990000126883,
+            "rank_fusion": 0.09453000000212342,
+            "relation_lookup": 0.002302900014910847,
+            "source_validation": 0.0680038999998942
+          }
+        }
+      ],
+      "median_total_seconds": 1.5138715000357479,
+      "stages_median_seconds": {
+        "keyword_retrieval": 0.47434890002477914,
+        "query_understanding": 0.00014680001186206937,
+        "rank_fusion": 0.02314699999988079,
+        "relation_lookup": 0.00257800001418218,
+        "snapshot": 0.6355833999696188,
+        "source_validation": 0.0680038999998942,
+        "structure_filter": 0.16638499993132427,
+        "vector_retrieval": 0.13022400002228096
+      },
+      "digest": "4e737e1704e4e1dc92a6eccf6bdb5b90789a0310abe50b2c2e5082c0e1823c82",
+      "memory": {
+        "rss_mib": 114.8671875,
+        "peak_rss_mib": 591.921875
+      },
+      "retained_vector_bytes": 0
+    }
+  },
+  "validation": {
+    "equal_snapshot_vector_and_full_search_digests": true,
+    "equal_stage_search_digests": true,
+    "private_database_used": false,
+    "models_invoked": false,
+    "source_schema_changed": false,
+    "tests_passed": 190,
+    "test_warnings": 1,
+    "test_seconds": 15.01,
+    "lint_passed": true,
+    "diff_check_passed": true
+  },
+  "cpp_review": {
+    "implemented": false,
+    "prototype_benchmarked": false,
+    "candidate": "Batch Unicode keyword matching, keeping Python offsets, exact/normalized match semantics and ordering",
+    "perfect_keyword_elimination_upper_bound": 0.3133349825355574,
+    "decision": "Retain SQL/batch/cache improvements; no measured native speedup exists to justify adopting a C++ extension."
+  }
+}

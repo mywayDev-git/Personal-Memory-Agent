@@ -126,8 +126,7 @@ def python_keyword_matches_batch(rows, terms, vocabulary):
 
 
 def keyword_matches_batch(rows, terms, vocabulary):
-    return [keyword_matches(row, terms, vocabulary) for row in rows]
-
+    return python_keyword_matches_batch(rows, terms, vocabulary)
 
 def condition_matches(row, plan, applied, locations, names, objects):
     fact = row["fact"]

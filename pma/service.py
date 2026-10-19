@@ -63,6 +63,10 @@ class Service:
         self.worker_paused = False
         self.worker_phase = "idle"
         self.diagnostic_sink = diagnostic_sink
+        # A single bounded entry: no query text or model outputs are retained.
+        self.vector_cache_bytes = 64 * 1024 * 1024
+        self._vector_cache = None
+        self._vector_cache_lock = threading.Lock()
     def trace(self, stage, **data):
         capture("legacy", stage, data)
         if self.diagnostic_sink is not None:
@@ -446,8 +450,7 @@ class Service:
                 self.models.embed([question]), 1, self.settings.embedding_dimensions
             )
         query = query_vectors[0]
-        matrix = np.stack([np.frombuffer(row["vector"], dtype="<f4") for row in candidates])
-        matrix = normalized_vectors(matrix, len(candidates), self.settings.embedding_dimensions)
+        matrix = self._candidate_matrix(generation, candidates)
         scores = matrix @ query
         vector_order = np.argsort(-scores, kind="stable")[:20].tolist()
         capture("retrieval", Stage.VECTOR_RETRIEVAL, candidates, vector_order, scores)
@@ -796,4 +799,21 @@ class Service:
         metrics[stage + "_seconds"] = metrics.get(stage + "_seconds", 0) + seconds
         for key, value in counts.items():
             metrics[key] = metrics.get(key, 0) + value
+
+
+    def _candidate_matrix(self, generation, candidates):
+        key = (generation, self.settings.embedding_key, self.settings.embedding_dimensions,
+               tuple(row["id"] for row in candidates))
+        with self._vector_cache_lock:
+            if self._vector_cache is not None and self._vector_cache[0] == key:
+                return self._vector_cache[1]
+            # Release the old generation/subset before allocating a replacement.
+            self._vector_cache = None
+            matrix = np.stack([np.frombuffer(row["vector"], dtype="<f4") for row in candidates])
+            matrix = normalized_vectors(matrix, len(candidates), self.settings.embedding_dimensions)
+            # Include a conservative allowance for retained candidate identifiers.
+            if matrix.nbytes + len(candidates) * 128 <= self.vector_cache_bytes:
+                matrix.setflags(write=False)
+                self._vector_cache = (key, matrix)
+            return matrix
 
