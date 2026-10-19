@@ -133,3 +133,13 @@ Qwen 임베딩은 `PMA_EMBEDDING_PROFILE=qwen3-retrieval-v1`로 문서와 질문
 실행기는 `-EmbeddingModel <파일> -EmbeddingProfile qwen3-retrieval-v1`을 제공한다.
 지시문을 바꾸면 프로필 버전도 바꿔야 한다. 다른 프로필의 벡터와 검색 결과를 혼용하지 않는다.
 실제 DB로 옮길 때는 먼저 백업하고 별도 색인을 검증해야 하며, 이번 평가는 그 전환을 실행하지 않는다.
+
+## 결과 보고서 재생성
+
+모든 실험이 완주한 뒤 다음처럼 표본·질문별 지표와 RST 보고서를 함께 만든다::
+
+    python -m evaluation.latency_publication D:/Codex-PMA-Response-Latency-20261020 --verification evaluation/response_latency_verification.json --output evaluation/response_latency_results.json
+
+회귀 검사 기록은 이 측정과 함께 실제 실행한 Python·화면·혼합 사건 검사 결과다.
+해당 기록 없이 전체 채택 조건을 통과로 표시하지 않는다. 핵심 복합 사례도 정해진
+10개 모두에서 준비 실행을 제외하고 최소 5회가 있어야 통과로 판정한다.

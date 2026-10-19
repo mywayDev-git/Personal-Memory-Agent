@@ -326,3 +326,45 @@ def test_cached_token_counts_still_enforce_context_limit_and_deadline(monkeypatc
         with pytest.raises(RequestDeadlineExceeded):
             models.budget(None, "same immutable input", 100)
     assert len(calls) == 1
+
+
+def test_publication_requires_all_critical_cases_and_five_samples():
+    from evaluation.latency_publication import CRITICAL_CASES, critical_gate
+
+    rows = {"planning/" + case: {"samples": 5, "quality_passes": 5, "failures": 0} for case in CRITICAL_CASES}
+    assert critical_gate(rows)
+    removed = rows.pop("planning/followup")
+    assert not critical_gate(rows)
+    rows["planning/followup"] = {**removed, "quality_passes": 4}
+    assert not critical_gate(rows)
+    rows["planning/followup"] = {"samples": 4, "quality_passes": 4, "failures": 0}
+    assert not critical_gate(rows)
+
+
+def test_publication_requires_recorded_python_ui_and_mixed_event_success():
+    from evaluation.latency_publication import verification_gate
+
+    record = {"python": {"passed": 355, "failed": 0}, "ui_all_passed": True, "ui_checks": [1, 2, 3, 4],
+              "mixed_event_summary": {"cases": 10, "exact_sets": 10, "wrong_filter_questions": 0,
+                                      "wrong_expansion_approvals": 0}}
+    assert verification_gate(record)
+    assert not verification_gate({})
+    assert not verification_gate({**record, "ui_all_passed": False})
+    assert not verification_gate({**record, "python": {"passed": 354, "failed": 1}})
+    assert not verification_gate({**record, "mixed_event_summary": {**record["mixed_event_summary"], "exact_sets": 9}})
+
+
+def test_study_stop_gold_rejects_denial_even_when_the_quitting_quote_is_present():
+    from evaluation.response_latency import CASES, quality
+
+    source = "파이썬 공부를 접었다."
+    evidence = [{"id": "m", "record_id": "r", "source_text": source}]
+    response = {"status": "answered", "validation": "model_checked",
+                "items": [{"text": "공부를 중단한 기록은 없습니다. 다만 파이썬 공부를 접었다고 기록되어 있습니다."}],
+                "citation_details": [{"memory_id": "m", "record_id": "r", "start": 0,
+                                      "end": len(source), "quote": source}]}
+    checked = quality(CASES["stopped"], response, evidence, {"r": "stopped"})
+    assert checked["citation_spans_valid"] and checked["answer_patterns_match"]
+    assert not checked["answer_contradiction_free"] and not checked["passed"]
+    response["items"][0]["text"] = "공부를 접었다는 기록이 있습니다. 중단한 정확한 날짜는 확인되지 않습니다."
+    assert quality(CASES["stopped"], response, evidence, {"r": "stopped"})["passed"]

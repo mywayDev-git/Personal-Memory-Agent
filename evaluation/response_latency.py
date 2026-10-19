@@ -50,6 +50,7 @@ DOCUMENTS = [
     ("long", "검색 프로젝트 메모. " + "원문 근거와 정확한 인용을 유지하며 검색을 검토했다. " * 40,
      "검토했다", "검색 프로젝트"),
 ]
+SCORING_VERSION = 5
 CASES = {
     "simple_search": {"question": "민수에게 무엇을 선물했어?", "search": True, "gold": ["gift"]},
     "alias_ko": {"question": "파이썬 공부 기록", "search": True, "gold": ["study", "stopped", "note"]},
@@ -58,7 +59,9 @@ CASES = {
     "simple_answer": {"question": "2026년 10월 12일 민수에게 무엇을 선물했어?", "gold": ["gift"],
                       "answer_patterns": [r"파란|파랑|푸른|청색|blue", r"책|도서|서적|book"]},
     "stopped": {"question": "파이썬 공부를 중단한 기록이 있어?", "gold": ["stopped"],
-                "answer_patterns": [r"접|중단|그만|포기"]},
+                "answer_patterns": [r"접|중단|그만|포기"],
+                "answer_excluded_patterns": [
+                    r"(?:중단(?:한|했다는|했던)?|접었다는|그만둔)\s*(?:기록|내용|사실|증거)(?:은|는|이|가)?\s*(?:없(?!지)|확인되지|찾을\s*수\s*없)"]},
     "negation": {"question": "지연에게 선물을 줬어?", "gold": ["negative"],
                  "answer_patterns": [r"않|안\s*(?:했|주|줬)|부정|미전달"]},
     "plan": {"question": "도서관 책은 실제로 반납했어?", "gold": ["plan"],
@@ -226,12 +229,14 @@ def quality(case, response, evidence, keys):
     cited = {keys.get(ref["record_id"]) for ref in citations}
     text = "\n".join(item["text"] for item in response.get("items", []))
     patterns_match = all(re.search(pattern, text, re.I) for pattern in case.get("answer_patterns", []))
+    contradiction_free = not any(re.search(pattern, text, re.I) for pattern in case.get("answer_excluded_patterns", []))
     scope_valid = "allowed_sources" not in case or cited <= set(case["allowed_sources"])
     passed = (status == "insufficient_evidence" if case.get("absent") else
               status == "needs_clarification" and gold <= cited if case.get("clarification") else
               status == "answered" and response.get("validation") == "model_checked" and gold <= cited)
-    return {"passed": bool(passed and valid and patterns_match and scope_valid), "citation_spans_valid": valid,
+    return {"passed": bool(passed and valid and patterns_match and scope_valid and contradiction_free), "citation_spans_valid": valid,
             "answer_patterns_match": bool(patterns_match),
+            "answer_contradiction_free": contradiction_free,
             "source_scope_valid": scope_valid,
             "gold_sources_cited": len(cited & gold), "gold_sources": len(gold),
             "status": status, "validation": response.get("validation")}
@@ -270,6 +275,7 @@ def main():
         parser.error("at least 512 MiB free space required for evaluation output")
     report = {"schema_version": 1, "personal_database_used": False, "configuration": vars(args).copy(),
               "measurement_scope": "response_return_before_quality_artifacts",
+              "quality_scoring_version": SCORING_VERSION,
               "repository_reference_revision": repository_reference(),
               "artifact_verification_seconds": artifact_verification_seconds,
               "hashes": hashes, "seed_policy": "hand-authored synthetic memories, real document embeddings",
