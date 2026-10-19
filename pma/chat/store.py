@@ -16,8 +16,9 @@ def changed():
 
 
 class ChatStore:
-    def __init__(self, store):
+    def __init__(self, store, owner_id="local-account"):
         self.store = store
+        self.owner_id = owner_id
 
     def recover(self):
         with self.store.connect(True) as db:
@@ -26,9 +27,14 @@ class ChatStore:
                 "WHERE state='running'"
             )
 
-    @staticmethod
-    def check_sources(db, rows):
+    def check_sources(self, db, rows):
         for row in rows:
+            foreign = db.execute(
+                "SELECT 1 FROM captured_memories WHERE record_id=? AND owner_id<>?",
+                (row["record_id"], self.owner_id),
+            ).fetchone()
+            if foreign:
+                raise AppError("NOT_FOUND", "근거 기록을 찾을 수 없습니다.", 404)
             source = db.execute(
                 "SELECT version,state FROM records WHERE id=?", (row["record_id"],)
             ).fetchone()
@@ -50,13 +56,15 @@ class ChatStore:
                 )
         return {**found, "search_id": sid}
 
-    def create_empty(self):
+    def create_empty(self, owner_id=None):
+        owner_id = owner_id or self.owner_id
         sid, ts = identifier(), self.store.clock()
         with self.store.connect(True) as db:
             db.execute(
                 "INSERT INTO chat_sessions VALUES(?,NULL,?,'active',?,?)", (sid, "새 대화", ts, ts)
             )
-        return self.get(sid)
+            db.execute("INSERT INTO capture_session_owners VALUES(?,?)", (sid, owner_id))
+        return ChatStore(self.store, owner_id).get(sid)
 
     def freeze(self, rows):
         """Resolve exact revisions before inference without persisting drafts."""
@@ -114,6 +122,7 @@ class ChatStore:
                 (sid, search_id, metadata["question"][:100], ts, ts),
             )
             db.execute("INSERT INTO chat_snapshots VALUES(?,?)", (sid, encode(metadata)))
+            db.execute("INSERT INTO capture_session_owners VALUES(?,?)", (sid, self.owner_id))
             for row in rows:
                 revision = db.execute(
                     "SELECT * FROM revisions WHERE record_id=? AND version=?",
@@ -134,9 +143,11 @@ class ChatStore:
                 )
         return self.get(sid)
 
-    @staticmethod
-    def require(db, sid):
-        row = db.execute("SELECT * FROM chat_sessions WHERE id=?", (sid,)).fetchone()
+    def require(self, db, sid):
+        row = db.execute(
+            "SELECT s.* FROM chat_sessions s JOIN capture_session_owners o "
+            "ON o.session_id=s.id WHERE s.id=? AND o.owner_id=?", (sid, self.owner_id)
+        ).fetchone()
         if not row:
             raise AppError("NOT_FOUND", "대화를 찾을 수 없습니다.", 404)
         return dict(row)
@@ -198,14 +209,15 @@ class ChatStore:
                 "items": [
                     dict(r)
                     for r in db.execute(
-                        "SELECT s.* FROM chat_sessions s WHERE ?='' OR instr(lower(s.title),lower(?))>0 "
+                        "SELECT s.* FROM chat_sessions s JOIN capture_session_owners o "
+                        "ON o.session_id=s.id WHERE o.owner_id=? AND (?='' OR instr(lower(s.title),lower(?))>0 "
                         "OR EXISTS(SELECT 1 FROM chat_messages m WHERE m.session_id=s.id AND "
                         "(instr(lower(m.question),lower(?))>0 OR "
                         "(m.state='completed' AND m.error_code IS NULL AND EXISTS "
                         "(SELECT 1 FROM json_each(m.response,'$.items') i "
                         "WHERE instr(lower(json_extract(i.value,'$.text')),lower(?))>0)))) "
-                        "ORDER BY s.updated_at DESC,s.id DESC",
-                        (query, query, query, query),
+                        ") ORDER BY s.updated_at DESC,s.id DESC",
+                        (self.owner_id, query, query, query, query),
                     )
                 ]
             }

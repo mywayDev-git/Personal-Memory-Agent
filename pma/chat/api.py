@@ -65,9 +65,26 @@ def router(input_type, query_type):
 
     @routes.post("/sessions/{sid}/messages")
     def message(sid: str, data: Message, request: Request):
-        return request.app.state.chat.message(
+        result = request.app.state.chat.message(
             sid, data.request_id, data.question, data.today, data.context_message_id, data.mode
         )
+
+        from ..memory.api import natural_candidates
+
+        try:
+            result["memory_candidates"] = natural_candidates(
+                request.app.state.chat.service.store,
+                sid,
+                result["message_id"],
+                data.question,
+                data.mode,
+            )
+        except Exception as exc:
+            # Capture failure never invalidates a completed chat response.
+            result["memory_candidates"] = []
+            result["memory_capture_error"] = getattr(exc, "code", "CAPTURE_FAILED")
+        return result
+
 
     @routes.get("/sessions/{sid}/requests/{request_id}")
     def progress(sid: str, request_id: str, request: Request):

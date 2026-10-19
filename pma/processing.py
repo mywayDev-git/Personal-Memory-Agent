@@ -14,6 +14,33 @@ PROCESSING_VERSION = 2
 
 
 def extract_record(service, job, context):
+    result, metadata = _extract_record(service, job, context)
+    # Capture labels survive extraction even when the local model drops them.
+    with service.store.connect() as db:
+        row = db.execute(
+            "SELECT payload FROM captured_memories WHERE record_id=? "
+            "AND (? IS NULL OR json_extract(payload,'$.record_version')=?) "
+            "ORDER BY rowid DESC LIMIT 1",
+            (job["record_id"], job.get("version"), job.get("version")),
+        ).fetchone()
+    if row:
+        capture = json.loads(row[0])
+        for memory in result["memories"]:
+            kind = capture["memory_type"]
+            if capture["epistemic_status"] == "ai_proposed" or kind in ("proposal", "hypothesis"):
+                memory["memory_type"] = "other"
+                memory["assertion_polarity"] = "uncertain"
+                memory["content_certainty"] = "uncertain"
+                memory["subject"] = {"kind": "unknown", "value": None, "value_type": "none"}
+                memory["content"] = (
+                    "[AI 제안 또는 미검증 가설 · 실행 사실 아님] " + capture["content"]
+                )
+            elif kind in ("plan", "project_decision"):
+                memory["memory_type"] = "plan" if kind == "plan" else "decision"
+    return result, metadata
+
+
+def _extract_record(service, job, context):
     model = service.models
     if not hasattr(model, "count_tokens"):
         return model.extract(job["text"], context)

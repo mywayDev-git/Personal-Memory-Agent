@@ -61,7 +61,7 @@
           <p id="chat-state" class="muted" role="status">편하게 이야기하세요. 필요할 때 기억을 찾아 함께 답합니다.</p>
           <div id="chat-context" class="chat-context"></div>
           <details id="chat-topics"><summary>이전 주제로 돌아가기</summary><p class="muted">선택한 대화는 질문의 대상 해석에만 사용하고, 사실은 기록에서 다시 확인합니다.</p><div id="chat-topic-list"></div></details>
-          <div id="chat-messages" role="log" aria-live="polite"></div>
+          <div id="memory-toolbar"></div><div id="chat-messages" role="log" aria-live="polite"></div>
           <form id="chat-form"><label for="chat-mode">대화 방식</label><select id="chat-mode" aria-describedby="chat-mode-help"><option value="auto">자동</option><option value="general">일반 대화</option><option value="memory">내 기억 사용</option></select><small id="chat-mode-help" class="muted">일반 대화는 개인 기록을 검색하지 않으며, 최근 대화 맥락은 사용합니다.</small><label for="chat-question">메시지</label><div class="chat-composer"><textarea id="chat-question" required maxlength="1000" rows="2" placeholder="오늘은 어떤 이야기를 나눌까요?"></textarea><button id="chat-send" class="primary">보내기</button><button id="chat-cancel" type="button" class="secondary" hidden>중단</button></div><small class="muted">Enter 전송 · Shift+Enter 줄바꿈 · 대화는 이 PC에 보관됩니다.</small></form>
           <details id="chat-diagnostics" hidden><summary>개발자 진단 · 대화 평가</summary><div id="chat-metrics"></div></details>
         </article>

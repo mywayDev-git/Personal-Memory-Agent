@@ -440,6 +440,10 @@ class ChatEngine:
                             else response.get("conversation_type", "memory")
                         )
                         response["requested_mode"] = mode
+                        from .memory_capture import capture_intent
+
+                        if capture_intent(question):
+                            response['memory_save_notice'] = '기억 후보를 확인하고 저장을 승인해 주세요. 승인 전에는 장기 기억에 등록되지 않습니다.'
                         response["elapsed_seconds"] = round(time.monotonic() - started, 3)
                         response["model"] = self.service.settings.llm.model or "server-default"
                         response["generation_revision"] = os.getenv(

@@ -89,3 +89,9 @@ main{padding:44px 5vw 28px;max-width:1500px;width:100%}header{display:flex;justi
 .search-audit-row .audit-stage{margin:8px 0;overflow-wrap:anywhere}
 
 .query-correction{margin:12px 0;padding:10px 14px;border:1px solid #c9d8ee;border-radius:10px;background:#f4f7fc;overflow-wrap:anywhere}.query-correction summary{cursor:pointer;font-weight:600;color:#29476d}.query-correction p,.query-correction li{font-size:.9rem}.query-correction .correction-query{white-space:pre-wrap}.query-correction ul{padding-left:22px}
+
+.memory-dialog { width:min(680px,calc(100vw - 32px)); max-height:88dvh; overflow:auto; border:1px solid var(--border); border-radius:10px; padding:28px; background:var(--surface); color:var(--text); }
+.memory-dialog::backdrop { background:#1e302955; }
+.memory-dialog pre { white-space:pre-wrap; overflow-wrap:anywhere; padding:14px; background:var(--soft); }
+.memory-dialog button { margin:6px 6px 6px 0; max-width:100%; }
+.memory-dialog select { margin-bottom:12px; }

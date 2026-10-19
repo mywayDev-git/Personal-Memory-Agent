@@ -421,6 +421,9 @@ def create_app(settings=None, models=None, run_worker=True, console_test=False):
     from .chat.api import router as chat_router
 
     app.include_router(chat_router(Input, QueryInput))
+    from .memory.api import router as memory_router
+
+    app.include_router(memory_router(Input))
 
     @app.post("/api/v1/answers")
     def answer(data: QueryInput):

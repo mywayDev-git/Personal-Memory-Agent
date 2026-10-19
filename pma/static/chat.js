@@ -1,5 +1,7 @@
 // Text-only rendering: model output never becomes HTML or executable content.
+import {setupMemory} from './memory.js';
 export function setupChat({api, node, action, notice, today}) {
+  const memory = setupMemory({api,node,action,notice});
   const $ = id => document.getElementById(id);
   let current = null, pending = null, sending = false, openVersion = 0, listVersion = 0;
   let contextId = null, evidenceTrigger = null, searchTimer = null;
@@ -157,6 +159,7 @@ export function setupChat({api, node, action, notice, today}) {
     }
   }
   function render(session) {
+    memory.session(session.id);
     const switched = current?.id !== session.id;
     if (switched) contextId = session.messages.filter(validTurn).at(-1)?.id || null;
     if (switched && globalThis.matchMedia?.('(max-width:900px)').matches) collapseSidebar();
@@ -208,6 +211,7 @@ export function setupChat({api, node, action, notice, today}) {
         }, 'link'));
         if (r.index_notice) ai.append(node('p',r.index_notice,'muted'));
       }
+      if(validTurn(message)) { memory.attach(user,message,'user_message',user); memory.attach(ai,message,'assistant_message',ai); }
       $('chat-messages').append(ai);
     }
     if (!session.messages.length) $('chat-messages').append(node('p','편하게 말을 걸어 보세요. 궁금한 기억도 함께 찾을 수 있어요.', 'chat-welcome'));
@@ -252,6 +256,7 @@ export function setupChat({api, node, action, notice, today}) {
     try {
       const result = await api('/chat/sessions/' + sid + '/messages','POST',{question,request_id:req,today:requestDate,context_message_id:anchor || null,mode});
       if (current?.id === sid) { pending = null; contextId = result.message_id || null; if ($('chat-question').value === question) $('chat-question').value = ''; await open(sid); }
+      memory.candidates(result.memory_candidates);
       await list(); notice('');
     } catch (error) {
       fail(error); if (current?.id === sid) { try { await open(sid); } catch { clear(); } }

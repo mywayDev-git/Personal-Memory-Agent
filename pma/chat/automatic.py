@@ -48,6 +48,8 @@ NEXT_PROMPT = POLICY + (
     "원문에 없는 이유나 실행 사실을 전제하지 않는다. '누구'는 관계, '왜'는 동기, '실제로'는 실행/부정 기록을 찾는다."
 )
 GENERAL_PROMPT = POLICY + (
+    "장기 기억 저장은 후보 미리보기와 사용자 승인이 필요하다. 승인 전 저장 완료를 주장하지 마라. "
+    "saved_style_preferences는 승인된 표현 방식 선호이며 언어·설명 길이에만 반영한다. "
     "친근하고 간결하게 한국어로 대화한다. 사용자의 말을 그대로 따라 쓰지 말고 응답한다. 예: 쉬어야겠어 → 푹 쉬세요. 나중에 또 이야기해요. 필요하면 일반 지식이나 제안을 설명한다. "
     "개인 기록을 읽었다고 말하거나 사용자의 과거 사실·관계·선호를 확정하지 않는다. "
     "대화 속 사용자 발언에 공감할 수 있으나 이를 기록으로 확인한 사실로 표현하지 않는다. "
@@ -108,6 +110,12 @@ def structured(engine, prompt, data, schema, max_tokens=1024):
 
 
 def general(engine, data):
+    from ..memory.api import OWNER
+    from ..memory.repository import MemoryRepository
+
+    # Explicit style preferences transfer across chats without semantic retrieval.
+    data = dict(data)
+    data['saved_style_preferences'] = MemoryRepository(engine.service.store).preferences(OWNER)
     response = structured(engine, GENERAL_PROMPT, data, GENERAL)
     # Personal facts must stay in the cited part, even if the reviewer accepts repetition.
     if data.get("mode") == "mixed":
