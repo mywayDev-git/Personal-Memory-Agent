@@ -47,7 +47,7 @@ PyObject* match_batch(PyObject*, PyObject* args) {
         Ref rows(checked(PySequence_Fast(input, "rows must be a sequence")));
         Ref terms(checked(PySequence_Fast(term_input, "terms must be a sequence")));
         Ref norm_cache(checked(PyDict_New()));
-        Ref expressions(checked(PyImport_ImportModule("pma.search_explain")));
+        Ref expressions(checked(PyImport_ImportModule("pma.search_expressions")));
         Ref tokenizer(checked(PyObject_GetAttrString(expressions.value, "token_spans")));
         Ref result(checked(PyList_New(0)));
         const char* names[] = {"term", "kind", "field", "start", "end", "quote"};
@@ -144,7 +144,7 @@ PyModuleDef module = {PyModuleDef_HEAD_INIT, "_keyword_native", nullptr, -1, met
 PyModuleDef expressions_module = {PyModuleDef_HEAD_INIT, "_keyword_native_expressions", nullptr, -1, methods};
 PyObject* initialize(PyModuleDef* definition) {
     auto* result = PyModule_Create(definition);
-    if (result && PyModule_AddIntConstant(result, "TOKENIZER_VERSION", 1) < 0) {
+    if (result && PyModule_AddIntConstant(result, "TOKENIZER_VERSION", 2) < 0) {
         Py_DECREF(result); return nullptr;
     }
     return result;

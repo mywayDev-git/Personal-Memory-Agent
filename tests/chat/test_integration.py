@@ -102,7 +102,7 @@ def test_migration_json_fk_and_source_preservation(chat):
 
 @pytest.mark.parametrize("question,mode,reason", [
     ("안녕", "CHAT_ONLY", "GREETING"),
-    ("python이 뭐야", "CHAT_ONLY", "GENERAL_KNOWLEDGE"),
+    ("파이썬이 뭐야", "CHAT_ONLY", "GENERAL_KNOWLEDGE"),
     ("전에 뭐 했지?", "MEMORY_REQUIRED", "PERSONAL_HISTORY"),
     ("그때 어떻게 했었지?", "MEMORY_REQUIRED", "PERSONAL_HISTORY"),
     ("지난달 기록에서 찾아줘", "MEMORY_REQUIRED", "EXPLICIT_RECALL"),

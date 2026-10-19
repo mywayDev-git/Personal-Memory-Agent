@@ -1,6 +1,6 @@
 // Text-only rendering: model output never becomes HTML or executable content.
 import {setupMemory} from './memory.js';
-import {explanation, auditView, answerAuditView, correctionView} from './search-explanation.js';
+import {explanation, auditView, answerAuditView, correctionView, expansionView} from './search-explanation.js';
 export function setupChat({api, node, action, notice, today}) {
   const memory = setupMemory({api,node,action,notice});
   const $ = id => document.getElementById(id);
@@ -38,7 +38,7 @@ export function setupChat({api, node, action, notice, today}) {
     const citedIds=new Set((message.response?.items || []).flatMap(item=>item.citations || []));
     for(const search of searches) {
       wrap.append(node('p','검색 질문: '+search.question));
-      
+      const expansion=expansionView(node,search.query_expansion);if(expansion)wrap.append(expansion);
       wrap.append(node('small',search.query_source==='current_question'?'현재 질문 그대로':'검색용 재구성 · 대화 해석 또는 추가 검색','muted'));
       const audit=auditView({node,action,api},search.audit,citedIds,message.evidence || [],answerAudit);if(audit)wrap.append(audit);
       const tags=node('div',undefined,'search-tags');

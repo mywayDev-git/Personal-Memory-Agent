@@ -13,7 +13,9 @@ from pma.search_explain import keyword_query, python_keyword_matches_batch
 def cpp_matcher():
     root = Path(__file__).resolve().parents[1]
     suffix = sysconfig.get_config_var("EXT_SUFFIX")
-    path = root / ".local/native-pre-multilingual" / ("_keyword_native" + suffix)
+    path = root / ".local/native-keyword" / ("_keyword_native" + suffix)
+    if not path.exists():
+        path = root / "pma" / ("_keyword_native_expressions" + suffix)
     if not path.exists():
         pytest.skip("optional C++ matcher has not been built")
     return native(path)
@@ -31,8 +33,20 @@ def test_cpp_exact_precedes_normalized_per_field(cpp_matcher):
     assert all(match["kind"] == "exact" for match in found[0] if match["term"] == "제주")
 
 
+def test_cpp_python_aliases_match_python_backend(cpp_matcher):
+    rows = [row(1, "😀 파이썬을 Python python으로 파이썬입문 pythonista")]
+    for question in ("파이썬", "python", "Python을"):
+        terms, vocabulary = keyword_query(question, rows)
+        assert cpp_matcher(rows, terms, vocabulary) == python_keyword_matches_batch(
+            rows, terms, vocabulary)
 
 
+def test_cpp_shared_phrase_symbol_and_fullwidth_boundaries(cpp_matcher):
+    rows = [row(1, "😀 Ｐｙｔｈｏｎ으로도 에이 피 아이 기계 학습 C C++ C# .NET Node.js"),
+            row(2, "pythonista 파이썬입문 happy net node js")]
+    for question in ("파이선", "API", "머신 러닝", "Ｃ＋＋", "C#", ".net", "Node.js"):
+        terms, vocabulary = keyword_query(question, rows)
+        assert cpp_matcher(rows, terms, vocabulary) == python_keyword_matches_batch(rows, terms, vocabulary)
 
 
 def test_cpp_corrected_query_and_date_filters_are_identical(monkeypatch, cpp_matcher):

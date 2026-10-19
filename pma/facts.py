@@ -335,6 +335,7 @@ def explicit_dates(question, today):
 
 @observed_facts(Stage.QUERY_PLAN)
 def query_plan(question, understood, today):
+    from .search_expressions import canonical_query
     # Model roles remain hints. A source substring proves provenance, not semantics.
     hints = {}
     for role in ("actor", "recipient"):
@@ -351,8 +352,11 @@ def query_plan(question, understood, today):
             and not re.search(r"누구|누가|언제", evidence)
         ):
             hints[role] = {"value": name(value), "evidence": evidence, "verified": False}
-    rel = relation(question)
-    if re.search(r"달린|달렸|달려|달리", question):
+    # Registered noun phrases (e.g. 머신러닝) must not trigger an activity
+    # condition merely because they contain 러닝. Keep the original question.
+    relation_question = canonical_query(question)
+    rel = relation(relation_question)
+    if re.search(r"달린|달렸|달려|달리", relation_question):
         rel = "run"
     kind = (
         "why"

@@ -44,7 +44,7 @@ def main():
         destination = root / "pma" / target.name
         # A running app may hold the previous extension open on Windows.
         # A distinct filename lets the next app process load the new tokenizer.
-        destination = destination.with_name("_keyword_native" + suffix)
+        destination = destination.with_name("_keyword_native_expressions" + suffix)
         if destination.resolve() != target:
             shutil.copy2(target, destination)
         print("Installed optional matcher:", destination)

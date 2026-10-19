@@ -17,6 +17,7 @@ from .diagnostics import Stage
 from .errors import AppError
 from .model_diagnostics import observe, observed_model
 from .query_correction import EDIT_SCHEMA
+from .search_expressions import EXPANSION_SCHEMA
 
 QUERY_SCHEMA = {
     "type": "object",
@@ -24,6 +25,7 @@ QUERY_SCHEMA = {
     "required": ["intent", "date_from", "date_to"],
     "properties": {
         "corrections": EDIT_SCHEMA,
+        "expansions": EXPANSION_SCHEMA,
         "intent": {"enum": ["recall", "aggregate"]},
         "date_from": {"type": ["string", "null"], "format": "date"},
         "date_to": {"type": ["string", "null"], "format": "date"},
@@ -47,6 +49,10 @@ QUERY_SCHEMA = {
         }
     },
 }
+# The application accepts older understanders without expansions; the local
+# constrained decoder must explicitly consider this field rather than omit it.
+UNDERSTANDING_SCHEMA = deepcopy(QUERY_SCHEMA)
+UNDERSTANDING_SCHEMA["required"] = [*QUERY_SCHEMA["required"], "expansions"]
 ANSWER_SCHEMA = {
     "type": "object",
     "additionalProperties": False,
@@ -201,20 +207,44 @@ class LocalModels:
                 output_schema=schema,
             )
         result = extract_json(raw)
-        query_schema = schema is QUERY_SCHEMA
+        query_schema = schema is QUERY_SCHEMA or schema is UNDERSTANDING_SCHEMA
         # An optional misspelled/malformed edit must not discard valid date/role analysis.
         if query_schema and isinstance(result, dict) and "corrections" in result:
             if schema_errors(result["corrections"], EDIT_SCHEMA):
                 result = {**result, "corrections": []}
+        invalid_expansions = False
+        if schema is UNDERSTANDING_SCHEMA and isinstance(result, dict) and "expansions" not in result:
+            result = {**result, "expansions": []}
+            invalid_expansions = True
+        if query_schema and isinstance(result, dict) and "expansions" in result:
+            if schema_errors(result["expansions"], EXPANSION_SCHEMA):
+                result = {**result, "expansions": []}
+                invalid_expansions = True
         observe(parse_succeeded=True, validation_type="schema", passed=False)
         if schema_errors(result, schema):
             raise ValueError("INVALID_MODEL_SCHEMA")
         observe(passed=True)
+        if invalid_expansions:
+            result["expansions_invalid"] = True
         return result
 
     @observed_model(Stage.MODEL_UNDERSTANDING)
-    def understand(self, question, today):
+    def understand(self, question, today, *, expand=True):
+        expansion_prompt = (
+            "검색용 expansions를 최대 4개 제안하라. 각 항목은 start,end,before,after,kind다. "
+            "start/end는 질문 원문 문자 구간이며 before는 원문 그대로다. "
+            "한국어·영어 일반 주제의 확실한 번역은 translation, 영어 발음의 한글 표기나 약어 읽기는 "
+            "transliteration, 가까운 의미의 보조 표현은 similar다. 대응 단어 또는 짧은 명사구만 출력하라. "
+            "예: '쿠버네티스 배포'의 쿠버네티스 → Kubernetes. '학습 자료'의 학습 → 공부. "
+            "영수증 → receipt, receipt → 영수증처럼 명확한 핵심 주제어는 번역 후보를 포함하라. "
+            "자료·내용·기록 같은 일반 검색 지시어 대신 질문의 구체적인 대상을 우선하라. "
+            "모호한 Java/자바, code/cord/chord/코드는 질문 문맥이 의미를 특정할 때만 확장하라. "
+            "기계적으로 발음이 비슷하다는 이유만으로 다른 단어로 확장하지 마라. "
+            "인물·장소 이름, 날짜, 숫자, 부정, 동사, 조사, 상태는 확장하지 마라. 확실하지 않으면 빈 배열이다. "
+            "확장으로 질문의 사실·조건을 추가하거나 변경하지 마라. "
+        )
         return self.structured(
+            (expansion_prompt if expand else "") +
             "오타가 명확한 일반 명사만 corrections에 최대 두 곳 제안하라. 없으면 빈 배열이다. "
             "start/end는 원문 유니코드 문자 기준 0부터 시작하는 반개방 구간이며 before는 정확한 원문이다. "
             "after는 교정 표현, kind는 spelling 또는 spacing이다. 이름, 장소, 날짜, 숫자, 부정, 동사, 조사, 상태는 변경하지 마라. "
@@ -230,7 +260,7 @@ class LocalModels:
             "누가/누구에게/언제처럼 알아내려는 값은 역할 조건에 넣지 말고 requested_slots에 넣는다. "
             "예: '민수가 누구에게 줬어?'는 actor 민수, recipient null, requested_slots [recipient]다.",
             {"question": question, "today": today},
-            QUERY_SCHEMA,
+            UNDERSTANDING_SCHEMA if expand else QUERY_SCHEMA,
         )
 
     @observed_model(Stage.MODEL_ANSWER)

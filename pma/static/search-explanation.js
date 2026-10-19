@@ -1,5 +1,5 @@
 const reasons={direct_answer:'AI 판단: 질문에 직접 답하는 근거',supporting_context:'AI 판단: 배경 정보',conflicting_evidence:'AI 판단: 전제·실행 여부를 반박하는 근거',irrelevant:'AI 판단: 질문과 관련성 부족',unverified_selection:'관련성 판단의 원문 인용을 확인하지 못함',combined_rank:'통합 순위로 선택',coverage_and_rank:'통합 순위·근거 다양성을 고려해 선택',model_selected:'AI 관련성 검토에서 선택 · 세부 사유 미수집',model_not_selected:'AI 관련성 검토에서 선택되지 않음 · 세부 사유 미수집',event_time_order:'사건 날짜 순으로 선택',evidence_limit:'검색별 근거 개수 제한',global_evidence_limit:'전체 검색 통합 후 근거 개수 제한',facts_pending:'검색 정보 정리 대기',relation_mismatch:'사건 종류 불일치',person_mismatch:'인물 조건 불일치',place_mismatch:'장소 조건 불일치',time_unknown:'사건 날짜 확인 불가',time_mismatch:'기간 조건 불일치',quantity_mismatch:'수량 조건 불일치',status_mismatch:'계획·실행 상태 불일치',requested_object:'대상 조건 불일치',preference_change:'선호 변화와 관련 없는 사건 종류',activity_state:'실행된 활동 조건 불일치',location:'장소 조건 불일치',explicit_named_person:'인물 조건 불일치',unknown_filtered_date:'사건 날짜 확인 불가',date_range:'기간 조건 불일치'};
-const methods={keyword:'키워드 검색',semantic:'의미 검색 후보',structure:'조건 검색'};
+const methods={keyword:'키워드 검색',semantic:'의미 검색 후보',structure:'조건 검색',expansion:'번역·발음·유사어 보조 검색'};
 const conditions={relation:'사건 종류',place:'장소',person:'인물',time:'사건 기간',quantity:'거리(m)',object:'대상',state:'계획·실행 상태',self:'본인'};
 const values={self:'본인',observed:'실행 관찰',planned:'계획',negated:'부정',uncertain:'불확실',visit:'방문',run:'달리기',give:'전달',receive:'받음',prefer:'선호',desire:'바람'};
 const valueText=value=>Array.isArray(value)?value.map(v=>values[v] || v).join(', '):value&&typeof value==='object'?(value.amount!==undefined?`${value.amount}m ${({eq:'일치',ge:'이상',gt:'초과',le:'이하',lt:'미만'})[value.operator] || ''}`:value.raw || `${value.start || '시작 제한 없음'} ~ ${value.end || '종료 제한 없음'}`):(values[value] || String(value));
@@ -18,6 +18,7 @@ const correctionReasons={
   embedding_failed:'보정 표현의 검색 처리가 실패해 원문으로 검색했습니다.',
   unsupported_intent:'전체 횟수나 순위 집계는 지원하지 않아 검색을 실행하지 않았습니다.',
 };
+const expansionReasons={...correctionReasons,embedding_failed:'확장 표현의 검색 처리가 실패해 원문으로 검색했습니다.'};
 
 export function correctionView(node, correction, {originalQuery='', evidence=[], retry=null}={}) {
   if(!correction)return null; // Older answers have no correction history.
@@ -70,6 +71,19 @@ export function highlight(node, text, matches=[], className='keyword-highlight')
   target.append(document.createTextNode(chars.slice(cursor).join('')));return target;
 }
 
+export function expansionView(node, expansion) {
+  if(!expansion)return null;
+  const kinds={translation:'번역',transliteration:'발음 표기',similar:'유사어'};
+  const panel=node('details',undefined,'query-expansion');
+  panel.append(node('summary',`번역·발음·유사어 검색 · ${expansion.searched?'실행':expansion.status==='rejected'?'미적용':expansion.edits?.length?'미실행':'추가 확장 없음'}`));
+  for(const edit of expansion.edits || [])panel.append(node('p',`${edit.before} → ${edit.after} · ${kinds[edit.kind] || edit.kind}`));
+  for(const item of expansion.rejected || [])panel.append(node('p',`${item.before} · ${correctionReasons[item.reason] || (item.reason==='ambiguous_expression'?'여러 의미로 해석될 수 있어 확장하지 않았습니다.':item.reason==='query_limit'?'보조 검색 개수 제한으로 적용하지 않았습니다.':item.reason==='language_mismatch'?'한영 대응 표현으로 확인되지 않아 적용하지 않았습니다.':'검색 표현을 확인하지 못해 적용하지 않았습니다.')}`,'muted'));
+  if(expansion.reason)panel.append(node('p',expansionReasons[expansion.reason] || '확장 표현을 확인하지 못해 원문 검색을 유지했습니다.','muted'));
+  if(expansion.edits?.length && !expansion.searched && !expansion.reason)panel.append(node('p','검색 조건에 맞는 후보가 없어 확장 검색을 실행하지 않았습니다.','muted'));
+  panel.append(node('small','검색 표현은 사실 근거가 아닙니다. 답변은 원문 질문과 기록으로 확인합니다.','muted'));
+  return panel;
+}
+
 export function explanation(node,row) {
   const info=row.search_explanation;
   if(!info)return null;
@@ -77,6 +91,19 @@ export function explanation(node,row) {
   const tags=node('div',undefined,'search-tags');
   for(const method of info.methods || [])tags.append(node('span',methods[method] || method,'search-tag'));
   section.append(tags);
+  const expansion=info.query_expansion;
+  if(expansion){
+    const kinds={translation:'번역',transliteration:'발음 표기',similar:'유사어'};
+    for(const edit of expansion.edits || [])section.append(node('p',`${edit.before} → ${edit.after} · ${kinds[edit.kind] || edit.kind} · ${expansion.searched?'보조 검색 실행':'미실행'}`,'muted'));
+    if(expansion.status==='rejected')section.append(node('p',`확장 미적용 · ${expansionReasons[expansion.reason] || '검색 표현을 확인하지 못해 원문 검색을 유지했습니다.'}`,'muted'));
+    for(const run of expansion.retrieval || []){
+      section.append(node('p',`${kinds[run.kind]} 검색: ${run.query} · 가중치 ${run.weight} · ${run.contributed?'통합 순위에 반영':'기존 순위 유지'}`,'muted'));
+      for(const field of ['source_text','content']){
+        const spans=(run.keyword_matches || []).filter(m=>m.field===field);
+        if(spans.length && typeof row[field]==='string'){const line=node('p');line.append(node('small',`${kinds[run.kind]} 표현 일치 · `),highlight(node,row[field],spans));section.append(line);}
+      }
+    }
+  }
   const corrected=info.corrected_retrieval;
   if(corrected?.query){
     section.append(node('p',`보조 검색: ${corrected.query} · 의미 순위 ${corrected.semantic_rank ?? '없음'} · 키워드 순위 ${corrected.keyword_rank ?? '없음'} · 가중치 0.8 · ${corrected.contributed?'결합 순위에 반영':'원문 순위 유지'}`,'muted'));

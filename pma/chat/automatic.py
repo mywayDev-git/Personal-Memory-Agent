@@ -308,6 +308,7 @@ def run(engine, question, session, today, requested_mode="auto"):
             {
                 "question": query,
                 "query_correction": found.get("query_correction"),
+                "query_expansion": found.get("query_expansion"),
                 "keywords": found.get("search_keywords", []),
                 "keyword_terms": found.get("keyword_terms", []),
                 "audit": found.get("search_audit", {}),

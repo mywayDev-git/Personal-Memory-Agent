@@ -136,6 +136,26 @@ def service(records):
     return Service(store, models, SimpleNamespace(embedding_key="test", embedding_dimensions=2))
 
 
+def test_python_aliases_preserve_spans_and_search_ranking():
+    from pma.search_explain import canonical_query, keyword_matches_batch
+
+    records = [row(1, "파이썬을 공부했다"), row(2, "Python 공부 자료"),
+               row(3, "pythonista와 파이썬입문")]
+    embedded = []
+    search = service(records)
+    search.models.embed = lambda texts: embedded.extend(texts) or [[1, 0] for _ in texts]
+    results = []
+    for question in ("파이썬", "python", "Python", "파이썬을", "python을"):
+        terms, vocabulary = keyword_query(question, records)
+        matches = keyword_matches_batch(records, terms, vocabulary)
+        assert matches[0] and matches[1] and not matches[2]
+        for record, found in zip(records, matches):
+            assert all(record["text"][m["start"]:m["end"]] == m["quote"] for m in found)
+        _, result = search._search(question, today="2026-10-19")
+        results.append([(r["id"], r["score"]) for r in result["results"]])
+    assert all(result == results[0] for result in results)
+    assert embedded == ["python"] * 3 + ["python을"] * 2
+    assert canonical_query("pythonista 파이썬입문") == "pythonista 파이썬입문"
 
 
 def test_search_explanations_work_without_diagnostic_mode():

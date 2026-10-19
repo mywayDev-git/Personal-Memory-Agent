@@ -4,6 +4,7 @@ import re
 from dataclasses import dataclass
 from enum import StrEnum
 
+from ..search_expressions import canonical_query
 
 
 class RoutingMode(StrEnum):
@@ -40,7 +41,7 @@ class RetrievalRouter:
             mode = latest.get("conversation_mode", latest.get("conversation_type"))
             if mode in {"memory", "mixed", "hybrid"}:
                 return Route(RoutingMode.MEMORY_REQUIRED, "MEMORY_FOLLOWUP", question)
-        if re.search(r"일반적으로|일반적인|python.*(?:뭐|설명)|광합성|번역해", question):
+        if re.search(r"일반적으로|일반적인|python.*(?:뭐|설명)|광합성|번역해", canonical_query(question)):
             return Route(RoutingMode.CHAT_ONLY, "GENERAL_KNOWLEDGE")
         if classify is not None:
             try:

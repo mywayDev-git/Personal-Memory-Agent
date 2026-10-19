@@ -22,12 +22,19 @@ from .processing import extract_record
 from .query_correction import fuse as fuse_queries
 from .query_correction import validate as validate_correction
 from .search_explain import (
+    canonical_query,
     condition_matches,
     failed_condition,
     keyword_matches_batch,
     keyword_query,
     keyword_weight,
     select_evidence,
+)
+from .search_expressions import (
+    EXPANSION_SCHEMA,
+    build_expansion,
+    describe_matches,
+    location_terms,
 )
 from .service_diagnostics import capture, filter_reason, traced_request
 
@@ -274,10 +281,15 @@ class Service:
         try:
             understood = self.models.understand(question, today)
             understood = dict(understood)
+            invalid_expansions = understood.pop("expansions_invalid", False)
+            if "expansions" in understood and schema_errors(understood["expansions"], EXPANSION_SCHEMA):
+                understood["expansions"] = []
+                invalid_expansions = True
             if schema_errors(understood, QUERY_SCHEMA):
                 raise ValueError("INVALID_QUERY")
         except (TypeError, ValueError, requests.RequestException, AppError) as exc:
             understood = {"intent": "recall", "date_from": None, "date_to": None}
+            invalid_expansions = False
             self.trace("understand_fallback", error=type(exc).__name__)
         plan = query_plan(question, understood, today)
         self.trace("question", question=question, understood=understood, plan=plan)
@@ -303,12 +315,18 @@ class Service:
                                          today, rows, enabled=correction_enabled)
         correction.update(original_query=question, searched=False)
         corrected = correction["query"] if correction["status"] == "applied" else None
+        expansion = build_expansion(question, understood.get("expansions") if correction_enabled else None, rows, understood)
+        if not correction_enabled:
+            expansion["reason"] = "disabled"
+        if invalid_expansions and correction_enabled:
+            expansion.update(status="rejected", reason="invalid_expansions")
         if understood["intent"] == "aggregate" and re.search(
             r"총|몇\s*번|횟수|가장|최초|최후|제일|처음|마지막", question
         ):
             correction["reason"] = "unsupported_intent"
             return generation, {"status": "unsupported_intent", "filters": applied, "results": [],
-                                "query_correction": correction}
+                                "query_correction": correction,
+                                "query_expansion": {**expansion, "reason": "unsupported_intent"}}
         capture("begin", Stage.STRUCTURE_FILTER)
         candidates = []
         exclusions = []
@@ -325,7 +343,7 @@ class Service:
                 },
             })
 
-        locations = [m[1] for m in re.finditer(r"([가-힣A-Za-z]+?)(?:에서|에\s+가서)", question)]
+        locations = location_terms(question, rows)
         known_names = {
             value
             for r in rows
@@ -453,6 +471,7 @@ class Service:
                 "results": [],
                 "query_plan": plan,
                 "query_correction": correction,
+                "query_expansion": expansion,
                 "search_keywords": [term["text"] for term in term_specs],
                 "keyword_terms": term_specs,
                 "search_audit": {"candidates": exclusions[:100], "excluded_count": len(exclusions), "truncated": len(exclusions) > 100},
@@ -460,12 +479,15 @@ class Service:
                 "connections": [],
             }
         capture("begin", Stage.VECTOR_RETRIEVAL)
-        queries = [question]
+        queries = [canonical_query(question)]
         def query_index(text):
+            text = canonical_query(text)
             if text not in queries:
                 queries.append(text)
             return queries.index(text)
         corrected_index = query_index(corrected) if corrected else None
+        expanded_queries = [{**item, "index": query_index(item["query"])}
+                            for item in expansion["queries"]]
         try:
             query_vectors = normalized_vectors(
                 self.models.embed(queries), len(queries), self.settings.embedding_dimensions
@@ -476,9 +498,12 @@ class Service:
             if corrected:
                 correction = {"status": "rejected", "query": question, "edits": [],
                               "reason": "embedding_failed", "original_query": question, "searched": False}
+            if expanded_queries:
+                expansion.update(status="rejected", reason="embedding_failed")
+            expanded_queries = []
             corrected = None
             query_vectors = normalized_vectors(
-                self.models.embed([question]), 1, self.settings.embedding_dimensions
+                self.models.embed([canonical_query(question)]), 1, self.settings.embedding_dimensions
             )
         query = query_vectors[0]
         matrix = self._candidate_matrix(generation, candidates)
@@ -512,11 +537,27 @@ class Service:
                 for term in corrected_terms) for found in corrected_matches]
             corrected_keyword_order = sorted((i for i, score in enumerate(corrected_keyword) if score),
                 key=lambda i: (-corrected_keyword[i], candidates[i]["id"]))[:20]
+        expansion_runs = []
+        for item in expanded_queries:
+            expanded_terms, expanded_vocab = keyword_query(item["query"], candidates)
+            expanded_matches = keyword_matches_batch(candidates, expanded_terms, expanded_vocab)
+            expanded_keyword = [sum(max((keyword_weight(m) for m in found
+                if m["term"] == term["text"]), default=0) for term in expanded_terms)
+                for found in expanded_matches]
+            expanded_scores = matrix @ query_vectors[item["index"]]
+            expansion_runs.append({**item, "matches": expanded_matches,
+                "vector": np.argsort(-expanded_scores, kind="stable")[:20].tolist(),
+                "keyword": sorted((i for i, score in enumerate(expanded_keyword) if score),
+                                  key=lambda i: (-expanded_keyword[i], candidates[i]["id"]))[:20]})
+        expansion["searched"] = bool(expansion_runs)
         ranks = {}
         contributions = {}
         for component, order in (("vector", vector_order), ("keyword", keyword_order)):
             alternate = corrected_vector_order if component == "vector" else corrected_keyword_order
             merged = fuse_queries(order, alternate)
+            for run in expansion_runs:
+                for rank, i in enumerate(run[component], 1):
+                    merged[i] = max(merged.get(i, 0), run["weight"] / (60 + rank))
             contributions[component] = merged
             for i, contribution in merged.items():
                 ranks[i] = ranks.get(i, 0) + contribution
@@ -568,10 +609,23 @@ class Service:
                     "score": ranks[i],
                     "search_explanation": {
                         "query": question,
+                        "query_expansion": {**expansion, "retrieval": [
+                            {"query": run["query"], "kind": run["kind"], "weight": run["weight"],
+                             "keyword_matches": describe_matches(run["matches"][i]),
+                             "semantic_rank": run["vector"].index(i) + 1 if i in run["vector"] else None,
+                             "keyword_rank": run["keyword"].index(i) + 1 if i in run["keyword"] else None,
+                             "contributed": any(i in run[component] and
+                                 run["weight"] / (61 + run[component].index(i)) >
+                                 fuse_queries(original, alternate).get(i, 0)
+                                 and run["weight"] / (61 + run[component].index(i)) == contributions[component].get(i)
+                                 for component, original, alternate in (
+                                     ("vector", vector_order, corrected_vector_order),
+                                     ("keyword", keyword_order, corrected_keyword_order)))}
+                            for run in expansion_runs]},
                         "query_correction": correction,
                         "corrected_retrieval": {
                             "query": corrected,
-                            "keyword_matches": corrected_matches[i],
+                            "keyword_matches": describe_matches(corrected_matches[i]),
                             "semantic_rank": corrected_vector_order.index(i) + 1 if i in corrected_vector_order else None,
                             "keyword_rank": corrected_keyword_order.index(i) + 1 if i in corrected_keyword_order else None,
                             "semantic_score": float(corrected_scores[i]) if corrected_scores is not None else None,
@@ -582,8 +636,8 @@ class Service:
                                 for component, orig, alt in (("vector", vector_order, corrected_vector_order), ("keyword", keyword_order, corrected_keyword_order))),
                         },
                         "conditions": condition_matches(row, plan, applied, locations, known_names, requested_objects),
-                        "keyword_matches": matches[i],
-                        "methods": [name for name, ranking in (("keyword", keyword_order), ("semantic", vector_order)) if i in ranking] + (["structure"] if plan["relation"] != "other" or known_names else []),
+                        "keyword_matches": describe_matches(matches[i]),
+                        "methods": [name for name, ranking in (("keyword", keyword_order), ("semantic", vector_order)) if i in ranking] + (["expansion"] if any(i in run["keyword"] or i in run["vector"] for run in expansion_runs) else []) + (["structure"] if plan["relation"] != "other" or known_names else []),
                         "ranks": {"keyword": keyword_order.index(i) + 1 if i in keyword_order else None, "semantic": vector_order.index(i) + 1 if i in vector_order else None, "combined": order.index(i) + 1},
                         "scores": {"keyword": keyword[i], "semantic": float(scores[i]), "combined": ranks[i]},
                         "selection": {"status": "candidate", "reason": "combined_rank"},
@@ -680,6 +734,7 @@ class Service:
             "results": results,
             "query_plan": plan,
             "query_correction": correction,
+            "query_expansion": expansion,
             "search_keywords": sorted(terms),
             "keyword_terms": term_specs,
             "search_audit": {"candidates": audit_candidates + exclusions[:100], "excluded_count": len(exclusions), "truncated": len(exclusions) > 100, "eligible_count": len(candidates), "candidate_limit_count": max(0, len(order) - 24)},

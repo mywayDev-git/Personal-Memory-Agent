@@ -5,12 +5,20 @@ import re
 from copy import deepcopy
 from functools import lru_cache
 
-TOKEN = re.compile(r"[\w가-힣]+")
-PARTICLES = ('에서부터', '으로부터', '에게서', '에서는', '으로는', '에게는', '에서도', '까지는', '부터는', '으로도', '로부터', '로는', '로도', '에서', '에게', '한테', '으로', '까지', '부터', '처럼', '보다', '에', '은', '는', '이', '가', '을', '를', '와', '과', '도', '만', '로')
-
-def keyword_weight(match):
-    return 1.0 if match["kind"] == "exact" else 0.7
-
+from .search_expressions import (
+    ALIASES,
+    PARTICLES,
+    TOKEN,
+    alias_parts,
+    canonical_word,
+    fold,
+)
+from .search_expressions import (
+    canonical_query as canonical_query,
+)
+from .search_expressions import (
+    keyword_weight as keyword_weight,
+)
 
 STOP = {"언제", "어디", "누구", "무엇", "어떤", "어떻게", "왜", "알려줘", "했어", "있어", "기록", "검색"}
 VERBS = {
@@ -36,7 +44,10 @@ VERBS = {
 
 
 def normalize(word, vocabulary):
-    word = word.casefold()
+    word = fold(word)
+    equivalent = canonical_word(word)
+    if equivalent != word or word in ALIASES:
+        return equivalent
     if word in VERBS:
         return VERBS[word]
     for suffix in PARTICLES:
@@ -49,11 +60,11 @@ def normalize(word, vocabulary):
 
 
 def keyword_query(question, rows):
-    vocabulary = {t.casefold() for t in TOKEN.findall(question)}
+    vocabulary = {fold(t) for t in TOKEN.findall(question)}
     for row in rows:
-        vocabulary.update(t.casefold() for t in TOKEN.findall(row["text"] + " " + row["memory"]["content"]))
+        vocabulary.update(fold(t) for t in TOKEN.findall(row["text"] + " " + row["memory"]["content"]))
     vocabulary.update(normalize(token, set()) for token in list(vocabulary))
-    tokens = [t.casefold() for t in TOKEN.findall(question)]
+    tokens = [fold(t) for t in TOKEN.findall(question)]
     terms = sorted({
         token for index, token in enumerate(tokens)
         if token not in STOP
@@ -70,7 +81,7 @@ def keyword_query(question, rows):
         if normalized in seen:
             continue
         seen.add(normalized)
-        specs.append({"text": term, "normalized": normalized})
+        specs.append({"text": alias_parts(term)[0] or term, "normalized": normalized})
     return specs, vocabulary
 
 
@@ -80,7 +91,7 @@ def keyword_matches(row, terms, vocabulary, *, normalization_cache=None):
     def normalized(word):
         if normalization_cache is None:
             return normalize(word, vocabulary)
-        key = word.casefold()
+        key = fold(word)
         value = normalization_cache.get(key)
         if value is None:
             value = normalize(key, vocabulary)
@@ -92,7 +103,7 @@ def keyword_matches(row, terms, vocabulary, *, normalization_cache=None):
     for field, text in (("source_text", row["text"]), ("content", row["memory"]["content"])):
         tokens = list(TOKEN.finditer(text))
         for term in terms:
-            exact = [match for match in tokens if match.group().casefold() == term["text"]]
+            exact = [match for match in tokens if fold(match.group()) == term["text"]]
             for match in exact:
                 matches.append(
                     {
@@ -128,8 +139,11 @@ def python_keyword_matches_batch(rows, terms, vocabulary):
 @lru_cache(maxsize=1)
 def _native_matcher():
     try:
-        from . import _keyword_native as module
-        return module.match_batch if getattr(module, "TOKENIZER_VERSION", 0) == 1 else None
+        try:
+            from . import _keyword_native_expressions as module
+        except ImportError:
+            from . import _keyword_native as module
+        return module.match_batch if getattr(module, "TOKENIZER_VERSION", 0) >= 2 else None
     except (ImportError, OSError):
         # The optional binary is interpreter/platform specific. Source-only and
         # CPU-only installations keep the same Python matching implementation.
@@ -267,7 +281,3 @@ def select_evidence(rows, limit=8, prefer_recent=False):
         seen_sources.add(row["record_id"])
         covered.add(coverage)
     return selected
-
-
-def token_spans(text):
-    return [(m.start(), m.end(), m.group(), m.group().casefold()) for m in TOKEN.finditer(text)]
