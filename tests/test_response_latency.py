@@ -302,3 +302,25 @@ def test_gold_checks_reject_wrong_occupation_even_with_correct_source_and_review
     checked = quality(CASES["followup"], response, evidence, {"r": "coworker", "other-r": "club"})
     assert checked["citation_spans_valid"] and checked["answer_patterns_match"]
     assert not checked["source_scope_valid"] and not checked["passed"]
+
+
+def test_cached_token_counts_still_enforce_context_limit_and_deadline(monkeypatch):
+    from pma.errors import AppError
+    from pma.models import LocalModels
+    from scripts.memory_agent.llm_client import RequestDeadlineExceeded
+
+    calls = []
+    def post(*args):
+        calls.append(1)
+        return {"tokens": list(range(80))}
+    monkeypatch.setattr("scripts.memory_agent.llm_client.post_json", post)
+    settings = replace(AppSettings(), request_token_cache=True, context_tokens=1024)
+    models = LocalModels(settings)
+    with request_budget(10) as budget:
+        models.budget(None, "same immutable input", 100)
+        with pytest.raises(AppError, match="CONTEXT_LIMIT"):
+            models.budget(None, "same immutable input", 900)
+        budget.deadline = 0
+        with pytest.raises(RequestDeadlineExceeded):
+            models.budget(None, "same immutable input", 100)
+    assert len(calls) == 1
