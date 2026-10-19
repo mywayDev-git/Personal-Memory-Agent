@@ -3,6 +3,35 @@
 import re
 from copy import deepcopy
 
+from scripts.memory_agent.meaning import meaning_conflict
+
+from ..relevance import study_topic, topic_supported
+
+
+def quoted_topic_answer(question, evidence):
+    """A bounded repair draft: exact source quotes, never an opposite paraphrase.
+
+    This draft must still pass the normal independent answer review. It is used
+    only after a failed meaning check for an explicit topic, not as acceptance.
+    """
+    if not study_topic(question):
+        return None
+    items, seen = [], set()
+    for row in evidence:
+        if not topic_supported(question, row):
+            continue
+        for ref in row.get("evidence", []):
+            quote = ref.get("quote", "")
+            key = (row.get("record_id"), quote)
+            if quote and quote in row["source_text"] and key not in seen:
+                seen.add(key)
+                items.append({"text": "기록 원문: “" + quote + "”", "citations": [row["id"]]})
+                if len(items) == 8:
+                    break
+        if len(items) == 8:
+            break
+    return {"status": "answered", "items": items} if items else None
+
 
 def asks_identity(question):
     return bool(
@@ -56,6 +85,8 @@ def semantic_issue(question, item, evidence):
     """Reject narrow, checkable meaning changes even if the model approves them."""
     cited = [row["source_text"] for row in evidence if row["id"] in item["citations"]]
     text = item["text"]
+    if meaning_conflict(text, "\n".join(cited)):
+        return "other"
     if not causal_claims_supported(question, {"items": [item]}, evidence):
         return "cause"
     if re.search(r"때문|덕분|탓으로|원인이|이유로", text) and not any(

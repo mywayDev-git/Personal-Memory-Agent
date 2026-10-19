@@ -16,12 +16,14 @@ from ..answer_review import accepted, validate_review
 from ..errors import AppError
 from ..grounding import claims_supported
 from ..models import LocalModels
+from ..relevance import study_topic, topic_supported
 from .answer_audit import answer_audit, attach_answer_audit, review_attempt
 from .evidence import (
     causal_claims_supported,
     direct_statement,
     identity_alternatives,
     preserve_overview,
+    quoted_topic_answer,
     reviewed_citations,
     selected_alternative,
 )
@@ -256,8 +258,8 @@ class ChatEngine:
                 + "\n참조 해석(새 사실의 근거가 아님): "
                 + resolved["question"]
             )
-        evidence = session["evidence"]
-        if hasattr(models, "select"):
+        evidence = [row for row in session["evidence"] if topic_supported(intent_question, row)]
+        if hasattr(models, "select") and not study_topic(intent_question):
             selected = models.select(question, evidence)
             if not isinstance(selected, list) or not set(selected) <= {r["id"] for r in evidence}:
                 raise ValueError("INVALID_SELECTION")
@@ -268,9 +270,11 @@ class ChatEngine:
                     "validation": "no_relevant_evidence",
                     "history_turns": history_count,
                 }, "no_relevant_evidence")
-            # Keep the complete frozen bundle for conflict detection; relevance gating
-            # must not silently hide a contradictory selected record.
-            evidence = sorted(evidence, key=lambda row: row["id"] not in selected)
+            # Preserve explicit conflicting sources, but do not promote every
+            # unselected background candidate into the answer's source bundle.
+            evidence = [row for row in evidence if row["id"] in selected or
+                        (row.get("search_explanation", {}).get("model_assessment") or {}).get(
+                            "category") == "conflicting_evidence"]
         response = direct_statement(question, evidence, intent_question) or models.answer(
             question, evidence
         )
@@ -329,7 +333,7 @@ class ChatEngine:
                 })
             if not attempt and not review.get("error"):
                 generation_index += 1
-                response = models.answer(
+                response = (quoted_topic_answer(intent_question, evidence) if not attributes else None) or models.answer(
                     question,
                     evidence,
                     feedback={

@@ -1,4 +1,5 @@
 import calendar
+import inspect
 import logging
 import re
 import threading
@@ -21,6 +22,7 @@ from .models import ANSWER_SCHEMA, QUERY_SCHEMA, normalized_vectors
 from .processing import extract_record
 from .query_correction import fuse as fuse_queries
 from .query_correction import validate as validate_correction
+from .relevance import topic_supported
 from .search_explain import (
     canonical_query,
     condition_matches,
@@ -278,8 +280,18 @@ class Service:
     def _search(self, question, filters=None, today=None, *, defer_limit=False, selection_question=None, correction_enabled=True):
         today = today or datetime.now(timezone.utc).astimezone().date().isoformat()
         capture("begin", Stage.QUERY_UNDERSTANDING)
+        controls_expansion = False
         try:
-            understood = self.models.understand(question, today)
+            understand = self.models.understand
+            # Inspect capability, rather than retrying a model after an internal TypeError.
+            try:
+                parameters = inspect.signature(understand).parameters.values()
+            except (ValueError, TypeError):
+                parameters = ()
+            controls_expansion = any(p.name == "expand" and p.kind != p.POSITIONAL_ONLY
+                                     or p.kind == p.VAR_KEYWORD for p in parameters)
+            understood = understand(question, today, **({"expand": False}
+                                     if not correction_enabled and controls_expansion else {}))
             understood = dict(understood)
             invalid_expansions = understood.pop("expansions_invalid", False)
             if "expansions" in understood and schema_errors(understood["expansions"], EXPANSION_SCHEMA):
@@ -315,7 +327,9 @@ class Service:
                                          today, rows, enabled=correction_enabled)
         correction.update(original_query=question, searched=False)
         corrected = correction["query"] if correction["status"] == "applied" else None
-        expansion = build_expansion(question, understood.get("expansions") if correction_enabled else None, rows, understood)
+        expansion = build_expansion(question, understood.get("expansions") if correction_enabled else None,
+                                    rows, understood, today=today, original_plan=plan)
+        expansion["generation_control_supported"] = controls_expansion
         if not correction_enabled:
             expansion["reason"] = "disabled"
         if invalid_expansions and correction_enabled:
@@ -551,8 +565,11 @@ class Service:
                                   key=lambda i: (-expanded_keyword[i], candidates[i]["id"]))[:20]})
         expansion["searched"] = bool(expansion_runs)
         ranks = {}
+        original_ranks = {}
         contributions = {}
         for component, order in (("vector", vector_order), ("keyword", keyword_order)):
+            for rank, i in enumerate(order, 1):
+                original_ranks[i] = original_ranks.get(i, 0) + 1 / (60 + rank)
             alternate = corrected_vector_order if component == "vector" else corrected_keyword_order
             merged = fuse_queries(order, alternate)
             for run in expansion_runs:
@@ -569,6 +586,8 @@ class Service:
                 if candidates[i]["fact"].get(role) == hint["value"]
             )
             ranks[i] += bonus
+            if i in original_ranks:
+                original_ranks[i] += bonus
             capture("component", i, "role", bonus)
         results = []
         # Structural matches are eligible independently of dense top-k. Stable ties
@@ -576,6 +595,7 @@ class Service:
         if plan["relation"] != "other" or known_names:
             for i in range(len(candidates)):
                 ranks[i] = ranks.get(i, 0) + 1 / 60
+                original_ranks[i] = original_ranks.get(i, 0) + 1 / 60
                 capture("component", i, "structure", 1 / 60)
         order = sorted(
             ranks,
@@ -586,7 +606,17 @@ class Service:
             ),
         )
         capture("fusion", candidates, order, ranks)
-        for i in order[:24]:
+        original_order = sorted(original_ranks, key=lambda i: (
+            -original_ranks[i], candidates[i]["memory"]["content"],
+            candidates[i]["fact"]["event_time"].get("start") or ""))
+        reserved = set(original_order[:8])
+        pool = set(order[:24]) | reserved
+        for i in reversed(order):
+            if len(pool) <= 24:
+                break
+            if i in pool and i not in reserved:
+                pool.remove(i)
+        for i in (i for i in order if i in pool):
             row = candidates[i]
             results.append(
                 {
@@ -609,6 +639,8 @@ class Service:
                     "score": ranks[i],
                     "search_explanation": {
                         "query": question,
+                        "original_rank": original_order.index(i) + 1 if i in original_ranks else None,
+                        "original_candidate_reserved": i in reserved,
                         "query_expansion": {**expansion, "retrieval": [
                             {"query": run["query"], "kind": run["kind"], "weight": run["weight"],
                              "keyword_matches": describe_matches(run["matches"][i]),
@@ -655,6 +687,9 @@ class Service:
         selection_pool = list(results)
         model_selected = None
         model_decisions = {}
+        topic_excluded = {row["id"] for row in results
+                          if not topic_supported(selection_question or question, row)}
+        results = [row for row in results if row["id"] not in topic_excluded]
         capture("selection_input", results)
         if plan["kind"] in {"current", "change", "compare"}:
             results.sort(key=lambda r: (r["time"].get("start") or "", r["content"]), reverse=True)
@@ -678,12 +713,12 @@ class Service:
         ):
             capture("selecting")
             if hasattr(self.models, "select_explained"):
-                model_decisions = self.models.select_explained(selection_question or question, results)
+                model_decisions = self.models.select_explained(canonical_query(selection_question or question), results)
                 selected = [mid for mid, decision in model_decisions.items() if decision["category"] not in {"irrelevant", "unverified_selection"}]
                 for row in results:
                     row["search_explanation"]["model_assessment"] = model_decisions.get(row["id"])
             else:
-                selected = self.models.select(selection_question or question, results)
+                selected = self.models.select(canonical_query(selection_question or question), results)
             allowed = {r["id"] for r in results}
             if not set(selected) <= allowed:
                 raise ValueError("INVALID_SELECTION")
@@ -704,6 +739,8 @@ class Service:
         audit_candidates = []
         for row in selection_pool:
             reason = "model_not_selected" if model_selected is not None and row["id"] not in model_selected else "evidence_limit" if row["id"] not in selected_ids else "model_selected" if model_selected is not None else selection_reason
+            if row["id"] in topic_excluded:
+                reason = "topic_mismatch"
             if row["id"] in model_decisions and reason in {"model_selected", "model_not_selected"}:
                 reason = model_decisions[row["id"]]["category"]
             decision = {"status": "selected" if row["id"] in selected_ids else "excluded", "reason": reason}

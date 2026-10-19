@@ -1,0 +1,687 @@
+{
+  "baseline_commit": "ec39bdf1b53dcf3d28853874c23c127a0333a737",
+  "personal_database_used": false,
+  "offline": {
+    "scope": "offline production projection/search with deterministic model doubles",
+    "baseline_summary": {
+      "cases": 10,
+      "exact_sets": 7,
+      "mean_recall_at_8": 0.875,
+      "wrong_filter_questions": 2,
+      "wrong_expansion_approvals": 5,
+      "valid_expansion_rejections": 2,
+      "mean_seconds": 0.0010779299947898835,
+      "p95_seconds": 0.0030573999974876642
+    },
+    "current": {
+      "scope": "offline production projection/search with deterministic model doubles",
+      "personal_database_used": false,
+      "reverse_translation_calls": 0,
+      "records": [
+        {
+          "id": "study-ko",
+          "relation": "other"
+        },
+        {
+          "id": "study-en",
+          "relation": "other"
+        },
+        {
+          "id": "run",
+          "relation": "run"
+        },
+        {
+          "id": "purchase",
+          "relation": "other"
+        },
+        {
+          "id": "meeting",
+          "relation": "other"
+        },
+        {
+          "id": "other",
+          "relation": "other"
+        },
+        {
+          "id": "uncertain",
+          "relation": "other"
+        },
+        {
+          "id": "pending",
+          "relation": null
+        }
+      ],
+      "cases": [
+        {
+          "question": "머신러닝이란 공부 기록",
+          "gold": [
+            "study-en",
+            "study-ko"
+          ],
+          "ids": [
+            "study-en",
+            "study-ko"
+          ],
+          "recall_at_8": 1.0,
+          "precision_returned": 1.0,
+          "mrr": 1.0,
+          "exact_set": true,
+          "wrong_filter": false,
+          "seconds": 0.003757899976335466,
+          "calls": {
+            "understanding": 1,
+            "embedding": 1,
+            "verification": 0
+          }
+        },
+        {
+          "question": "머신러닝과는 관련된 공부",
+          "gold": [
+            "study-en",
+            "study-ko"
+          ],
+          "ids": [
+            "study-en",
+            "study-ko"
+          ],
+          "recall_at_8": 1.0,
+          "precision_returned": 1.0,
+          "mrr": 1.0,
+          "exact_set": true,
+          "wrong_filter": false,
+          "seconds": 0.0010728000197559595,
+          "calls": {
+            "understanding": 1,
+            "embedding": 1,
+            "verification": 0
+          }
+        },
+        {
+          "question": "machine learning 자료",
+          "gold": [
+            "study-en",
+            "study-ko"
+          ],
+          "ids": [
+            "study-en",
+            "study-ko"
+          ],
+          "recall_at_8": 1.0,
+          "precision_returned": 1.0,
+          "mrr": 1.0,
+          "exact_set": true,
+          "wrong_filter": false,
+          "seconds": 0.0009839999838732183,
+          "calls": {
+            "understanding": 1,
+            "embedding": 1,
+            "verification": 0
+          }
+        },
+        {
+          "question": "달린 기록",
+          "gold": [
+            "run"
+          ],
+          "ids": [
+            "run"
+          ],
+          "recall_at_8": 1.0,
+          "precision_returned": 1.0,
+          "mrr": 1.0,
+          "exact_set": true,
+          "wrong_filter": false,
+          "seconds": 0.00039170001400634646,
+          "calls": {
+            "understanding": 1,
+            "embedding": 1,
+            "verification": 0
+          }
+        },
+        {
+          "question": "노트북 구매",
+          "gold": [
+            "purchase"
+          ],
+          "ids": [
+            "purchase"
+          ],
+          "recall_at_8": 1.0,
+          "precision_returned": 1.0,
+          "mrr": 1.0,
+          "exact_set": true,
+          "wrong_filter": false,
+          "seconds": 0.0008162999874912202,
+          "calls": {
+            "understanding": 1,
+            "embedding": 1,
+            "verification": 0
+          }
+        },
+        {
+          "question": "팀 회의 내용",
+          "gold": [
+            "meeting"
+          ],
+          "ids": [
+            "meeting"
+          ],
+          "recall_at_8": 1.0,
+          "precision_returned": 1.0,
+          "mrr": 1.0,
+          "exact_set": true,
+          "wrong_filter": false,
+          "seconds": 0.0008440999663434923,
+          "calls": {
+            "understanding": 1,
+            "embedding": 1,
+            "verification": 0
+          }
+        },
+        {
+          "question": "식물 자료",
+          "gold": [
+            "other"
+          ],
+          "ids": [
+            "other"
+          ],
+          "recall_at_8": 1.0,
+          "precision_returned": 1.0,
+          "mrr": 1.0,
+          "exact_set": true,
+          "wrong_filter": false,
+          "seconds": 0.0008216999704018235,
+          "calls": {
+            "understanding": 1,
+            "embedding": 1,
+            "verification": 0
+          }
+        },
+        {
+          "question": "불확실한 내용",
+          "gold": [
+            "uncertain"
+          ],
+          "ids": [
+            "uncertain"
+          ],
+          "recall_at_8": 1.0,
+          "precision_returned": 1.0,
+          "mrr": 1.0,
+          "exact_set": true,
+          "wrong_filter": false,
+          "seconds": 0.0009757999796420336,
+          "calls": {
+            "understanding": 1,
+            "embedding": 1,
+            "verification": 0
+          }
+        },
+        {
+          "question": "대기 기록",
+          "gold": [],
+          "ids": [],
+          "recall_at_8": null,
+          "precision_returned": null,
+          "mrr": 0,
+          "exact_set": true,
+          "wrong_filter": false,
+          "seconds": 0.0007530999719165266,
+          "calls": {
+            "understanding": 1,
+            "embedding": 1,
+            "verification": 0
+          }
+        },
+        {
+          "question": "천문 관측",
+          "gold": [],
+          "ids": [],
+          "recall_at_8": null,
+          "precision_returned": null,
+          "mrr": 0,
+          "exact_set": true,
+          "wrong_filter": false,
+          "seconds": 0.0007473999867215753,
+          "calls": {
+            "understanding": 1,
+            "embedding": 1,
+            "verification": 0
+          }
+        }
+      ],
+      "expansion_checks": [
+        {
+          "before": "学習",
+          "after": "learning",
+          "expected_valid": false,
+          "approved": false,
+          "reason": [
+            {
+              "before": "学習",
+              "after": "learning",
+              "kind": "translation",
+              "reason": "protected_expression"
+            }
+          ]
+        },
+        {
+          "before": "학습",
+          "after": "notebook",
+          "expected_valid": false,
+          "approved": false,
+          "reason": [
+            {
+              "before": "학습",
+              "after": "notebook",
+              "kind": "translation",
+              "reason": "verification_required"
+            }
+          ]
+        },
+        {
+          "before": "학습",
+          "after": " ",
+          "expected_valid": false,
+          "approved": false,
+          "reason": [
+            {
+              "before": "학습",
+              "after": " ",
+              "kind": "similar",
+              "reason": "empty_expression"
+            }
+          ]
+        },
+        {
+          "before": "학습",
+          "after": "...",
+          "expected_valid": false,
+          "approved": false,
+          "reason": [
+            {
+              "before": "학습",
+              "after": "...",
+              "kind": "similar",
+              "reason": "empty_expression"
+            }
+          ]
+        },
+        {
+          "before": "민수",
+          "after": "Minsu",
+          "expected_valid": false,
+          "approved": false,
+          "reason": [
+            {
+              "before": "민수",
+              "after": "Minsu",
+              "kind": "translation",
+              "reason": "verification_required"
+            }
+          ]
+        },
+        {
+          "before": "서울",
+          "after": "Seoul",
+          "expected_valid": false,
+          "approved": false,
+          "reason": [
+            {
+              "before": "서울",
+              "after": "Seoul",
+              "kind": "translation",
+              "reason": "verification_required"
+            }
+          ]
+        },
+        {
+          "before": "식물",
+          "after": "plant",
+          "expected_valid": true,
+          "approved": true,
+          "reason": []
+        },
+        {
+          "before": "planet",
+          "after": "행성",
+          "expected_valid": true,
+          "approved": true,
+          "reason": []
+        },
+        {
+          "before": "쿠버네티스",
+          "after": "Kubernetes",
+          "expected_valid": true,
+          "approved": true,
+          "reason": []
+        },
+        {
+          "before": "영수증",
+          "after": "receipt",
+          "expected_valid": true,
+          "approved": true,
+          "reason": []
+        },
+        {
+          "before": "학습",
+          "after": "공부",
+          "expected_valid": true,
+          "approved": true,
+          "reason": []
+        }
+      ],
+      "summary": {
+        "cases": 10,
+        "exact_sets": 10,
+        "mean_recall_at_8": 1.0,
+        "wrong_filter_questions": 0,
+        "wrong_expansion_approvals": 0,
+        "valid_expansion_rejections": 0,
+        "mean_seconds": 0.0011164799856487662,
+        "p95_seconds": 0.003757899976335466
+      }
+    }
+  },
+  "real_embedding_replay": {
+    "scope": "production top-8 retrieval before optional LLM relevance review",
+    "understanding_times_reused": true,
+    "understanding_regenerated": false,
+    "original_summary": {
+      "completed": 90,
+      "errors": 0,
+      "positive": {
+        "baseline": {
+          "precision_at_8": 0.8395833333333333,
+          "recall_at_8": 0.7145833333333333,
+          "search_seconds": 0.062469463328792094,
+          "understanding_seconds": 2.208993005001685,
+          "total_seconds": 2.2714624683304767
+        },
+        "expanded": {
+          "precision_at_8": 0.925,
+          "recall_at_8": 0.8,
+          "search_seconds": 0.08549388166575227,
+          "understanding_seconds": 3.5795371133310256,
+          "total_seconds": 3.6650309949967776
+        }
+      },
+      "negative": {
+        "baseline": {
+          "precision_at_8": 1.0,
+          "recall_at_8": 1.0,
+          "search_seconds": 0.06100158333041084,
+          "understanding_seconds": 2.3627113466655527,
+          "total_seconds": 2.4237129299959634
+        },
+        "expanded": {
+          "precision_at_8": 1.0,
+          "recall_at_8": 1.0,
+          "search_seconds": 0.06848072999273427,
+          "understanding_seconds": 4.1818971666701445,
+          "total_seconds": 4.250377896662879
+        }
+      }
+    },
+    "current_summary": {
+      "completed": 90,
+      "errors": 0,
+      "positive": {
+        "baseline": {
+          "precision_at_8": 0.8395833333333333,
+          "recall_at_8": 0.7145833333333333,
+          "search_seconds": 0.04727109499993579,
+          "understanding_seconds": 2.208993005001685,
+          "total_seconds": 2.2562641000016206
+        },
+        "expanded": {
+          "precision_at_8": 0.925,
+          "recall_at_8": 0.8,
+          "search_seconds": 0.05774891166365705,
+          "understanding_seconds": 3.5795371133310256,
+          "total_seconds": 3.6372860249946823
+        }
+      },
+      "negative": {
+        "baseline": {
+          "precision_at_8": 1.0,
+          "recall_at_8": 1.0,
+          "search_seconds": 0.06311918666857916,
+          "understanding_seconds": 2.3627113466655527,
+          "total_seconds": 2.4258305333341315
+        },
+        "expanded": {
+          "precision_at_8": 1.0,
+          "recall_at_8": 1.0,
+          "search_seconds": 0.0611464666610118,
+          "understanding_seconds": 4.1818971666701445,
+          "total_seconds": 4.2430436333311565
+        }
+      }
+    },
+    "alias_checks": {
+      "python": {
+        "baseline": true,
+        "expanded": true
+      },
+      "api": {
+        "baseline": true,
+        "expanded": true
+      },
+      "ml": {
+        "baseline": true,
+        "expanded": true
+      }
+    },
+    "raw_output": ".local/multilingual-accuracy-replay-final.json"
+  },
+  "fresh_local_understanding": [
+    {
+      "question": "쿠버네티스를 공부했었나?",
+      "expand": false,
+      "seconds": 2.2987288999720477,
+      "result": {
+        "intent": "recall",
+        "date_from": null,
+        "date_to": null,
+        "corrections": [],
+        "actor": null,
+        "recipient": null,
+        "requested_slots": []
+      },
+      "validated_expansion": {
+        "status": "none",
+        "original_query": "쿠버네티스를 공부했었나?",
+        "edits": [],
+        "queries": [],
+        "searched": false,
+        "reason": null,
+        "rejected": [],
+        "ignored": [],
+        "verification": "reviewed_lexicon_v1"
+      }
+    },
+    {
+      "question": "쿠버네티스를 공부했었나?",
+      "expand": true,
+      "seconds": 3.6961637000204064,
+      "result": {
+        "expansions": [
+          {
+            "start": 0,
+            "end": 6,
+            "before": "쿠버네티스",
+            "after": "Kubernetes",
+            "kind": "translation"
+          }
+        ],
+        "intent": "recall",
+        "date_from": null,
+        "date_to": null,
+        "actor": {
+          "value": "질문자",
+          "evidence": "쿠버네티스를 공부했었나?"
+        },
+        "recipient": null,
+        "requested_slots": []
+      },
+      "validated_expansion": {
+        "status": "applied",
+        "original_query": "쿠버네티스를 공부했었나?",
+        "edits": [
+          {
+            "start": 0,
+            "end": 5,
+            "before": "쿠버네티스",
+            "after": "Kubernetes",
+            "kind": "translation",
+            "verification": "reviewed_lexicon_v1",
+            "span_source": "unique_quote"
+          }
+        ],
+        "queries": [
+          {
+            "query": "kubernetes를 공부했었나?",
+            "kind": "translation",
+            "weight": 0.8
+          }
+        ],
+        "searched": false,
+        "reason": null,
+        "rejected": [],
+        "ignored": [],
+        "verification": "reviewed_lexicon_v1"
+      }
+    },
+    {
+      "question": "지난주 민수에게 받은 영수증 기록",
+      "expand": false,
+      "seconds": 2.1962297999998555,
+      "result": {
+        "intent": "recall",
+        "date_from": "2026-10-12",
+        "date_to": "2026-10-18",
+        "actor": {
+          "value": "민수",
+          "evidence": "민수에게"
+        },
+        "recipient": null,
+        "requested_slots": [
+          "recipient"
+        ]
+      },
+      "validated_expansion": {
+        "status": "none",
+        "original_query": "지난주 민수에게 받은 영수증 기록",
+        "edits": [],
+        "queries": [],
+        "searched": false,
+        "reason": null,
+        "rejected": [],
+        "ignored": [],
+        "verification": "reviewed_lexicon_v1"
+      }
+    },
+    {
+      "question": "지난주 민수에게 받은 영수증 기록",
+      "expand": true,
+      "seconds": 6.573045999975875,
+      "result": {
+        "expansions": [
+          {
+            "start": 0,
+            "end": 3,
+            "before": "지난",
+            "after": "지난주",
+            "kind": "translation"
+          },
+          {
+            "start": 4,
+            "end": 7,
+            "before": "민수에게",
+            "after": "민수에게",
+            "kind": "similar"
+          },
+          {
+            "start": 8,
+            "end": 11,
+            "before": "받은",
+            "after": "받은",
+            "kind": "similar"
+          },
+          {
+            "start": 12,
+            "end": 15,
+            "before": "영수증",
+            "after": "영수증",
+            "kind": "translation"
+          }
+        ],
+        "intent": "recall",
+        "date_from": "2026-10-12",
+        "date_to": "2026-10-18",
+        "actor": {
+          "value": "민수",
+          "evidence": "민수에게"
+        },
+        "recipient": null,
+        "requested_slots": [
+          "recipient"
+        ]
+      },
+      "validated_expansion": {
+        "status": "rejected",
+        "original_query": "지난주 민수에게 받은 영수증 기록",
+        "edits": [],
+        "queries": [],
+        "searched": false,
+        "reason": null,
+        "rejected": [
+          {
+            "before": "민수에게",
+            "after": "민수에게",
+            "kind": "similar",
+            "reason": "protected_entity"
+          },
+          {
+            "before": "영수증",
+            "after": "영수증",
+            "kind": "translation",
+            "reason": "language_mismatch"
+          },
+          {
+            "before": "지난",
+            "after": "지난주",
+            "kind": "translation",
+            "reason": "protected_expression"
+          }
+        ],
+        "ignored": [
+          {
+            "before": "받은",
+            "reason": "equivalent_original"
+          }
+        ],
+        "verification": "reviewed_lexicon_v1"
+      }
+    }
+  ],
+  "verification_calls_added": 0,
+  "reverse_translation_calls": 0,
+  "final_replay_validation_differences": [],
+  "verification": {
+    "python_tests": 293,
+    "new_regression_cases": 40,
+    "ruff": "passed",
+    "ui_checks": [
+      "multilingual_ui",
+      "search_explain_ui",
+      "query_correction_ui",
+      "search_highlight"
+    ],
+    "derived_fact_version": 9,
+    "migration_test": "isolated v8 backup, read-through, batch rebuild, source/evidence/vector preservation, idempotency",
+    "running_app_restarted": false
+  }
+}

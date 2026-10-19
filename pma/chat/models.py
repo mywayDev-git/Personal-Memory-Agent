@@ -6,16 +6,21 @@ from copy import deepcopy
 import requests
 
 from scripts.memory_agent.llm_client import model_phase, optional_request_budget
+from scripts.memory_agent.meaning import meaning_conflict
 from scripts.memory_agent.validator import schema_errors
 
 from ..answer_review import FACT_REVIEW_POLICY, REVIEW_SCHEMA, accepted, validate_review
 from ..errors import AppError
 from ..models import LocalModels
+from ..relevance import topic_supported
 from .evidence import semantic_issue
 from .presentation import DISPLAY_POLICY, DISPLAY_SCHEMA
 from .review_sources import source_catalog
 
 FACT_POLICY = (
+    "공부 이력 질문에는 명시된 공부 주제의 기록만 사용한다. 선물·산책·담당 업무를 공부 사실로 연결하지 않는다. "
+    "원문이 공부를 접었다/그만뒀다이면 중단 사실을 보존한다. 시작했다로 바꾸지 않는다. "
+    "과거 공부 기록과 날짜 불명 중단 기록은 함께 설명하되 현재 상태나 사건 순서를 추측하지 않는다. "
     "원래 질문의 목적만 평가한다. 인물에 대해 이야기해 달라는 요청은 관련 경험·발언·선물 등 확인된 사실의 요약으로 충분하다. "
     "사용자가 관계나 직업을 묻지 않았다면 이를 필수 답변으로 요구하지 않는다. "
     "날짜·최신·순서를 묻지 않았다면 날짜 없는 사건도 원문으로 확인되면 답할 수 있다. 저장일을 사건 날짜로 대신하지 않는다. "
@@ -91,10 +96,18 @@ class ChatLocalModels(LocalModels):
                 ref["quote"] = span["quote"]
         validate_review(result, response, evidence)
         for item in result["items"]:
-            issue = semantic_issue(question, response["items"][item["index"]], evidence)
+            claim = response["items"][item["index"]]
+            issue = semantic_issue(question, claim, evidence)
+            # Check the exact spans approved by review, not an unrelated sentence
+            # elsewhere in the same source that happens to contain the verb.
+            if meaning_conflict(claim["text"], "\n".join(ref["quote"] for ref in item["evidence"])):
+                issue = "other"
+            cited = [row for row in evidence if row["id"] in claim["citations"]]
+            if cited and any(not topic_supported(question, row) for row in cited):
+                item["relevant"] = False
             if issue:
                 item.update(support="unsupported", issue=issue)
-                result["reason"] = "원문에 명시되지 않은 인과관계 또는 부정 범위 변형"
+                result["reason"] = "원문과 답변의 동작·인과·부정 범위가 일치하지 않음"
         result["presentation_valid"] = False
         # A presentation failure must never affect the already decided factual review.
         if accepted(result, response) and response.get("display"):

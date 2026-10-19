@@ -9,6 +9,7 @@ from jsonschema import Draft202012Validator, FormatChecker
 from .diagnostics import ProcessingError
 from .exceptions import SchemaValidationError
 from .extractor import extract_memories
+from .meaning import action_assertions, extraction_conflicts
 from .postprocess import build_final_result
 from .provenance import normalize_time
 from .validator import schema_errors, validate_extraction, validate_final_result
@@ -117,6 +118,38 @@ def process_text(
             repair_meta["latency_seconds"] += latency
             return repaired, repair_meta
         raise ProcessingError("INVALID_EXTRACTION_SCHEMA", "schema", issues=issues[:20])
+    conflicts = extraction_conflicts(extraction["memories"])
+    if conflicts:
+        diagnostic = dict(code="EXTRACTION_MEANING_MISMATCH", stage="meaning", issues=conflicts)
+        if not _repair_attempt:
+            repaired, repair_meta = process_text(
+                source_text, source_context,
+                prompt=prompt + "\n이전 추출의 content와 predicate가 원문의 동작을 반대로 표현했다. "
+                "접었다/그만뒀다/중단했다를 시작했다로, 실패를 성공으로, 퇴사를 입사로, 판매를 구매로 바꾸지 마라. "
+                "원문을 다시 읽고 content와 predicate를 일치시켜라. 불확실하면 추측하지 마라. "
+                + json.dumps(diagnostic, ensure_ascii=False),
+                output_schema=output_schema, final_schema=final_schema, session=session,
+                settings=settings, source_units=source_units, target_ids=target_ids, _repair_attempt=True,
+            )
+            repair_meta.setdefault("repair_attempts", []).append(diagnostic)
+            repair_meta["latency_seconds"] += latency
+            return repaired, repair_meta
+        # A model can repeat a fluent but opposite summary after repair. If its
+        # predicate is explicitly supported, use the complete original quote as
+        # the summary instead of publishing that paraphrase. Never repair an
+        # unsupported predicate or invent an action/role through this fallback.
+        for issue in conflicts:
+            memory = extraction["memories"][issue["index"]]
+            quote = "\n".join(e["quote"] for e in memory["evidence"])
+            predicate = action_assertions(memory.get("predicate", ""))
+            original = action_assertions(quote)
+            if not predicate or any(not states <= original.get(family, set())
+                                    for family, states in predicate.items()):
+                raise ProcessingError("EXTRACTION_MEANING_MISMATCH", "meaning", issues=conflicts)
+            memory["content"] = quote
+        if extraction_conflicts(extraction["memories"]):
+            raise ProcessingError("EXTRACTION_MEANING_MISMATCH", "meaning", issues=conflicts)
+        metadata["summary_fallback"] = "verbatim_supported_predicate"
     result = build_final_result(extraction, source_context)
     report = validate_final_result(result, final_schema, source_text)
     if not report["valid"]:

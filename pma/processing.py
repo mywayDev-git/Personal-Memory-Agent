@@ -12,7 +12,7 @@ from scripts.memory_agent.provenance import sentences
 
 from .errors import AppError
 
-PROCESSING_VERSION = 2
+PROCESSING_VERSION = 3
 
 
 def extract_record(service, job, context):

@@ -3,6 +3,8 @@
 import re
 from decimal import Decimal
 
+from scripts.memory_agent.meaning import meaning_conflict
+
 from .diagnostics import Reason, Stage
 from .facts import COLORS, distance_values
 from .validation_diagnostics import check, compatible_evidence, observed_validation
@@ -14,6 +16,11 @@ def claims_supported(items, evidence, plan=None):
     by_id = {r["id"]: r for r in evidence}
     for item in items:
         cited = [by_id[c] for c in item["citations"] if c in by_id]
+        quoted = "\n".join(
+            e.get("quote", "") for row in cited for e in row.get("evidence", [])
+        ) or "\n".join(row.get("source_text", "") for row in cited)
+        if meaning_conflict(item["text"], quoted):
+            return False
         if plan and re.search(r"누가|누구|준\s*사람|주는\s*사람", plan.get("question", "")):
             # A second-person quotation without a stated addressee cannot certify
             # a named actor. Keep it searchable, but don't promote it to a role fact.

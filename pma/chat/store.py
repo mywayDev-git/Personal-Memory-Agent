@@ -40,6 +40,12 @@ class ChatStore:
             ).fetchone()
             if not source or source["state"] != "active" or source["version"] != row["version"]:
                 raise changed()
+            if db.execute(
+                "SELECT 1 FROM jobs j, json_each(CASE WHEN json_valid(j.metadata) "
+                "THEN j.metadata ELSE '{}' END,'$.replaced_memory_ids') old "
+                "WHERE j.status='succeeded' AND old.value=? LIMIT 1", (row["id"],)
+            ).fetchone():
+                raise changed()
 
     def save_search(self, found, metadata):
         sid = identifier()
@@ -254,7 +260,7 @@ class ChatStore:
             ):
                 raise AppError("REQUEST_CONFLICT", "같은 요청 ID의 입력 조건이 다릅니다.", 409)
             if previous and previous["state"] == "completed":
-                if previous["error_code"] == "SOURCE_MODIFIED":
+                if previous["error_code"] in {"SOURCE_MODIFIED", "SOURCE_REPROCESSED"}:
                     raise changed()
                 return previous["id"], (
                     json.loads(previous["response"])
@@ -475,7 +481,7 @@ class ChatStore:
             if not message:
                 raise AppError("NOT_FOUND", "인용을 찾을 수 없습니다.", 404)
             self.require(db, message["session_id"])
-            if message["error_code"] in {"SOURCE_MODIFIED", "SOURCE_DELETED"}:
+            if message["error_code"] in {"SOURCE_MODIFIED", "SOURCE_DELETED", "SOURCE_REPROCESSED"}:
                 raise changed()
             citation = db.execute(
                 "SELECT payload FROM chat_citations WHERE message_id=? AND item_index=? AND memory_id=?",

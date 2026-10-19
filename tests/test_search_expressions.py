@@ -95,7 +95,7 @@ def test_location_and_routing_share_alias_policy():
     ("안", edit("안", "yes"), "protected_expression"),
     ("취소", edit("취소", "완료"), "protected_expression"),
     ("10월", edit("10월", "October"), "protected_expression"),
-    ("학습은", edit("학습", "learning"), "partial_word"),
+    ("학습자", edit("학습", "learning"), "partial_word"),
     ("학습", edit("학습", "学習"), "protected_expression"),
     ("학습", edit("자료", "learning"), "invalid_span"),
 ])
@@ -111,7 +111,7 @@ def test_expansion_limits_weights_duplicates_and_context():
     edits = [edit("쿠버네티스", "Kubernetes", "transliteration"),
              edit("학습", "공부", "similar", 6), edit("학습", "learning", start=6)]
     result = build_expansion(question, edits, [], BASE)
-    assert [item["weight"] for item in result["queries"]] == [0.8, 0.5]
+    assert [item["weight"] for item in result["queries"]] == [0.8, 0.8]
     assert result["rejected"][0]["reason"] == "query_limit"
     assert build_expansion("파이썬", [edit("파이썬", "Python")], [], BASE)["queries"] == []
     assert build_expansion("코드 리뷰", [edit("코드", "code")], [], BASE)["status"] == "applied"

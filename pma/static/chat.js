@@ -275,7 +275,7 @@ export function setupChat({api, node, action, notice, today}) {
         await api('/chat/sessions/'+session.id+'/requests/'+message.request_id+'/cancel','POST',{}); await open(session.id);
       })); }
       else if (message.response) {
-        if (message.error_code === 'SOURCE_MODIFIED') ai.append(node('p','이전 기록 기준 · 원본이 변경되었습니다.', 'chat-warning'));
+        if (['SOURCE_MODIFIED','SOURCE_REPROCESSED'].includes(message.error_code)) ai.append(node('p',message.error_code==='SOURCE_REPROCESSED'?'이전 추출 기준 · 기억을 재처리했습니다. 현재 기록으로 다시 질문해 주세요.':'이전 기록 기준 · 원본이 변경되었습니다.', 'chat-warning'));
         const r = message.response;
         if(Number.isFinite(r.elapsed_seconds)) ai.append(node("p",timingText(r,true),"chat-timing"));
         const correctionSearches=message.snapshot?.searches || (r.query_corrections || []).map(c=>({question:c.original_query,query_correction:c}));
@@ -288,11 +288,11 @@ export function setupChat({api, node, action, notice, today}) {
         if(r.memory_save_notice) ai.append(node('p',r.memory_save_notice,'chat-warning'));
         if (r.status === 'needs_clarification') ai.append(node('p',r.clarification));
         if (r.status === 'insufficient_evidence') ai.append(node('p',r.notice || '관련 기록에서 답변을 뒷받침할 근거를 확인하지 못했습니다.'));
-        if (r.status !== 'needs_clarification') content(ai, r, message.evidence || [],message.error_code==='SOURCE_MODIFIED');
+        if (r.status !== 'needs_clarification') content(ai, r, message.evidence || [],['SOURCE_MODIFIED','SOURCE_REPROCESSED'].includes(message.error_code));
         if (r.status === 'needs_clarification') {
           const card = node('div',undefined,'chat-clarification');
           const expired = !!message.error_code || session.messages.at(-1)?.id !== message.id;
-          if (expired) { card.append(node('p','이 선택은 만료되었습니다. 현재 기록으로 다시 질문해 주세요.', 'muted')); content(card,r,message.evidence || [],message.error_code==='SOURCE_MODIFIED'); }
+          if (expired) { card.append(node('p','이 선택은 만료되었습니다. 현재 기록으로 다시 질문해 주세요.', 'muted')); content(card,r,message.evidence || [],['SOURCE_MODIFIED','SOURCE_REPROCESSED'].includes(message.error_code)); }
           else {
             for (let i=0;i<r.items.length;i++) {
               const groups=validRefs(r,message.evidence || [],i);
@@ -307,7 +307,7 @@ export function setupChat({api, node, action, notice, today}) {
           ai.append(card);
         }
         if (r.validation === 'rejected') ai.append(node('p','근거 검증을 통과하지 못한 답변은 표시하지 않았습니다.', 'chat-warning'));
-        const evidenceView=answerEvidence(r,message.evidence || [],message.error_code==='SOURCE_MODIFIED');
+        const evidenceView=answerEvidence(r,message.evidence || [],['SOURCE_MODIFIED','SOURCE_REPROCESSED'].includes(message.error_code));
         if(evidenceView) ai.append(evidenceView);
         const utilities=node('div',undefined,'chat-message-actions'); ai.append(utilities);
         utilities.append(action('답변 복사', async () => {

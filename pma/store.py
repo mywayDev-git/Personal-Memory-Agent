@@ -484,8 +484,13 @@ class Store:
             is not None
         )
 
-    def publish(self, job, memories, vectors, model_key, metadata):
+    def publish(self, job, memories, vectors, model_key, metadata, *, replace_memory_ids=None):
+        from scripts.memory_agent.meaning import extraction_conflicts
+
         from .models import normalized_vectors
+
+        if extraction_conflicts(memories):
+            raise ValueError("EXTRACTION_MEANING_MISMATCH")
 
         if len(memories) != len(vectors):
             raise ValueError("VECTOR_COUNT_MISMATCH")
@@ -494,6 +499,21 @@ class Store:
         with self.connect(True) as db:
             if not self.current_job(db, job):
                 return False
+            if replace_memory_ids is not None:
+                existing = {r[0] for r in db.execute(
+                    "SELECT id FROM memories WHERE revision_id=?", (job["revision_id"],)
+                )}
+                if existing != set(replace_memory_ids):
+                    raise AppError("SOURCE_CHANGED", "기억이 변경되어 재처리를 적용하지 않았습니다.", 409)
+                metadata = {**metadata, "replaced_memory_ids": sorted(existing)}
+                # Frozen answers are retained for history but cannot be reused as
+                # current proof after their derived memories have been replaced.
+                db.execute(
+                    "UPDATE chat_messages SET error_code='SOURCE_REPROCESSED' WHERE id IN "
+                    "(SELECT message_id FROM chat_message_evidence WHERE memory_id IN "
+                    "(SELECT id FROM memories WHERE revision_id=?))", (job["revision_id"],)
+                )
+                db.execute("DELETE FROM memories WHERE revision_id=?", (job["revision_id"],))
             for index, (m, vector) in enumerate(zip(memories, vectors)):
                 mid = identifier()
                 db.execute(
@@ -596,16 +616,16 @@ class Store:
                 "other_owners AS MATERIALIZED (SELECT DISTINCT record_id FROM captured_memories "
                 "WHERE ? IS NOT NULL AND owner_id<>?) "
                 "SELECT m.id,m.payload,e.vector,e.dimensions,v.record_id,v.version,v.text,"
-                "v.reference_time,v.created_at,f.payload AS fact_payload "
+                "v.reference_time,v.created_at,f.payload AS fact_payload,f.projection_version AS fact_version "
                 "FROM memories m JOIN embeddings e ON e.memory_id=m.id "
                 "JOIN revisions v ON v.id=m.revision_id JOIN records r ON r.id=v.record_id "
-                "LEFT JOIN facts f ON f.memory_id=m.id AND f.projection_version=? "
+                "LEFT JOIN facts f ON f.memory_id=m.id "
                 "LEFT JOIN archived a ON a.record_id=r.id AND a.version=r.version "
                 "LEFT JOIN other_owners o ON o.record_id=r.id "
                 "WHERE r.state='active' AND r.status='ready' AND r.version=v.version "
                 "AND a.record_id IS NULL AND o.record_id IS NULL "
                 "AND e.model_key=? ORDER BY v.id,m.local_id",
-                (owner_id, owner_id, FACT_VERSION, model_key),
+                (owner_id, owner_id, model_key),
             ).fetchall()
             # Keep the same read transaction and evidence ordering, but avoid one
             # SQL round trip per memory. Small batches also support SQLite builds
@@ -626,8 +646,15 @@ class Store:
                 item = dict(row)
                 item["memory"] = json.loads(item.pop("payload"))
                 fact = item.pop("fact_payload")
+                fact_version = item.pop("fact_version")
                 item["fact"] = json.loads(fact) if fact else None
                 item["evidence"] = evidence.get(row["id"], [])
+                if fact and fact_version != FACT_VERSION:
+                    # Keep records searchable during the bounded background rebuild.
+                    # This read-only projection never rewrites source data or embeddings.
+                    item["fact"] = project(item["memory"], item["text"],
+                                           item["reference_time"], item["created_at"],
+                                           evidence=item["evidence"])
                 result.append(item)
         _observe_read(Stage.SNAPSHOT, observation, result)
         return generation, result

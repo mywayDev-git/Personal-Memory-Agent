@@ -28,4 +28,8 @@ const rejected=expansionView(node,{status:'rejected',searched:false,reason:'embe
 assert.match(rejected.textContent,/원문으로 검색/);
 assert.match(rejected.textContent,/여러 의미/);
 assert.ok(explanation(node,{search_explanation:{methods:['keyword']}}));
+const held=expansionView(node,{status:'rejected',searched:false,verification:'reviewed_lexicon_v1',
+  rejected:[{before:'학습',reason:'verification_required'},{before:'C',reason:'protected_identifier'},
+    {before:'학습',reason:'empty_expression'}],ignored:[{reason:'duplicate_query'}]});
+for(const label of ['보류','기술 식별자','내용이 없는','통합'])assert.ok(held.textContent.includes(label),label);
 console.log('Multilingual explanation checks passed: aliases, translations, pronunciation, similar terms, original offsets, fallback, legacy results');

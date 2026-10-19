@@ -11,12 +11,14 @@ import re
 from datetime import date, timedelta
 from decimal import Decimal
 
+from scripts.memory_agent.meaning import extraction_conflicts
 from scripts.memory_agent.provenance import normalize_time, sentences
 
 from .diagnostics import Reason, Stage
 from .facts_diagnostics import comparison_check, comparison_reason, observed_facts
+from .search_expressions import event_text
 
-FACT_VERSION = 8
+FACT_VERSION = 10
 RELATIONS = (
     "desire",
     "give",
@@ -74,6 +76,7 @@ def distance_values(text):
 
 
 def relation(text):
+    text = event_text(text)
     # Cancellation overrides an embedded visit. Desire overrides its embedded receive.
     for key in ("cancel", "desire", "prefer", "give", "receive", "run", "eat", "conflict", "visit"):
         if re.search(PATTERNS[key], text):
@@ -109,6 +112,8 @@ def project(memory, source, reference_time, recorded_at, evidence=None):
     actor = "self" if subject.get("kind") == "self" else name(subject.get("value"))
     quote_text = " ".join(quotes)
     review = []
+    if extraction_conflicts([memory]):
+        review.append("extraction_meaning_mismatch")
     if rel in {"give", "receive"} and actor and actor != "self" and actor not in quote_text:
         review.append("actor_needs_context")
     if re.search(r'["“”「」]', quote_text) or (
@@ -260,7 +265,7 @@ def project(memory, source, reference_time, recorded_at, evidence=None):
             (
                 key
                 for key in ("give", "receive", "run", "visit")
-                if re.search(PATTERNS[key], focused)
+                if re.search(PATTERNS[key], event_text(focused))
             ),
             rel,
         ),
@@ -356,7 +361,7 @@ def query_plan(question, understood, today):
     # condition merely because they contain 러닝. Keep the original question.
     relation_question = canonical_query(question)
     rel = relation(relation_question)
-    if re.search(r"달린|달렸|달려|달리", relation_question):
+    if re.search(r"달린|달렸|달려|달리", event_text(relation_question)):
         rel = "run"
     kind = (
         "why"
