@@ -55,20 +55,26 @@ CASES = {
     "alias_ko": {"question": "파이썬 공부 기록", "search": True, "gold": ["study", "stopped", "note"]},
     "alias_en": {"question": "Python 공부 기록", "search": True, "gold": ["study", "stopped", "note"]},
     "typo": {"question": "파이선 공부 기록", "search": True, "gold": ["study", "stopped", "note"]},
-    "simple_answer": {"question": "2026년 10월 12일 민수에게 무엇을 선물했어?", "gold": ["gift"]},
-    "stopped": {"question": "파이썬 공부를 중단한 기록이 있어?", "gold": ["stopped"]},
-    "negation": {"question": "지연에게 선물을 줬어?", "gold": ["negative"]},
-    "plan": {"question": "도서관 책은 실제로 반납했어?", "gold": ["plan"]},
+    "simple_answer": {"question": "2026년 10월 12일 민수에게 무엇을 선물했어?", "gold": ["gift"],
+                      "answer_patterns": [r"파란|파랑|푸른|청색|blue", r"책|도서|서적|book"]},
+    "stopped": {"question": "파이썬 공부를 중단한 기록이 있어?", "gold": ["stopped"],
+                "answer_patterns": [r"접|중단|그만|포기"]},
+    "negation": {"question": "지연에게 선물을 줬어?", "gold": ["negative"],
+                 "answer_patterns": [r"않|안\s*(?:했|주|줬)|부정|미전달"]},
+    "plan": {"question": "도서관 책은 실제로 반납했어?", "gold": ["plan"],
+             "answer_patterns": [r"계획|예정", r"확인|알\s*수\s*없|불명|불확실|실제|실행"]},
     "identity": {"question": "민수는 누구야?", "clarification": True, "gold": ["coworker", "club"]},
-    "followup": {"question": "그 사람 직업은 뭐야?", "anchor": "회사 동료 민수는 누구야?", "gold": ["coworker"]},
-    "additional_search": {"question": "부산 여행은 왜 취소했어?", "gold": ["cancel"]},
+    "followup": {"question": "그 사람 직업은 뭐야?", "anchor": "회사 동료 민수는 누구야?", "gold": ["coworker"],
+                 "answer_patterns": [r"프론트|프런트|front[- ]?end"]},
+    "additional_search": {"question": "부산 여행은 왜 취소했어?", "gold": ["cancel"],
+                          "answer_patterns": [r"비|우천|rain"]},
     "no_evidence": {"question": "지연의 혈액형이 뭐야?", "absent": True, "gold": []},
     "long_evidence": {"question": "검색 프로젝트에서 무엇을 검토했어?", "gold": ["long"]},
     "concurrent": {"question": "민수에게 무엇을 선물했어?", "gold": ["gift"], "background": True},
     "selection_batch": {"question": "기록에 담긴 내용을 모두 찾아줘", "search": True, "selection": True,
                         "gold": [key for key, *_ in DOCUMENTS]},
     "multi_hop": {"question": "회사 동료 민수의 직업과 부산 여행을 취소한 이유는 뭐야?",
-                  "gold": ["coworker", "cancel"]},
+                  "gold": ["coworker", "cancel"], "answer_patterns": [r"프론트|프런트|front[- ]?end", r"비|우천|rain"]},
 }
 
 
@@ -209,10 +215,13 @@ def quality(case, response, evidence, keys):
                     row["source_text"][ref["start"]:ref["end"]] == ref["quote"]
                     for row in evidence) for ref in citations)
     cited = {keys.get(ref["record_id"]) for ref in citations}
+    text = "\n".join(item["text"] for item in response.get("items", []))
+    patterns_match = all(re.search(pattern, text, re.I) for pattern in case.get("answer_patterns", []))
     passed = (status == "insufficient_evidence" if case.get("absent") else
               status == "needs_clarification" and gold <= cited if case.get("clarification") else
               status == "answered" and response.get("validation") == "model_checked" and gold <= cited)
-    return {"passed": passed and valid, "citation_spans_valid": valid,
+    return {"passed": bool(passed and valid and patterns_match), "citation_spans_valid": valid,
+            "answer_patterns_match": bool(patterns_match),
             "gold_sources_cited": len(cited & gold), "gold_sources": len(gold),
             "status": status, "validation": response.get("validation")}
 

@@ -283,3 +283,15 @@ def test_planning_trial_preserves_all_semantic_source_fields_and_stored_audit(mo
         automatic.structured(None, "", data, automatic.ROUTE)
         assert seen[-1] is data
     assert automatic.structured is structured and data == before
+
+
+def test_gold_checks_reject_wrong_occupation_even_with_correct_source_and_review_label():
+    from evaluation.response_latency import CASES, quality
+
+    evidence = [{"id": "m", "record_id": "r", "source_text": "프론트엔드 개발자"}]
+    response = {"status": "answered", "validation": "model_checked", "items": [{"text": "수학 교사입니다."}],
+                "citation_details": [{"memory_id": "m", "record_id": "r", "start": 0, "end": 9,
+                                      "quote": "프론트엔드 개발자"}]}
+    assert not quality(CASES["followup"], response, evidence, {"r": "coworker"})["passed"]
+    response["items"][0]["text"] = "프론트엔드 개발자입니다."
+    assert quality(CASES["followup"], response, evidence, {"r": "coworker"})["passed"]
