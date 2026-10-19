@@ -54,6 +54,15 @@ GPU는 RTX 3060 8GB 중 기존 앱이 약 7.6GB를 사용하므로 동시 실험
 고정 ID와 시각을 사용한다. 실제 추출 품질 전체를 평가하는 데이터는 아니며 동시 실행
 시나리오에서 별도 합성 기록의 실제 추출·저장 성공을 확인한다.
 
+이번 실제 측정에 사용한 정확한 합성 스냅샷은 `evaluation/response_latency_seed.json`이다.
+SQLite의 사용하지 않는 페이지를 복사하지 않고 허용된 합성 행만 내보냈다. 다음과 같이
+새 DB로 복원한 뒤 모든 비교에 같은 `--seed-template`을 지정한다::
+
+    python -m evaluation.latency_seed restore evaluation/response_latency_seed.json D:/pma-evaluation/seed.db
+
+이 파일에는 평가용 11개 원문·임의 ID·고정 측정 시각·BGE 벡터만 들어 있다. 임베딩 모델을
+바꾸는 비교는 같은 원문과 ID를 유지하며 해당 실험 DB에만 새 벡터를 생성한다.
+
 `--variants baseline cached batch8 plain combined`로 요청 단위 토큰 캐시, 8개 판정 배치,
 간단한 표시와 조합을 비교한다. 단독 후보는 해당 변경만 활성화한다. 모든 후보에서
 전체 후보 검토·추가 검색·독립 근거 검증·재검증을 유지한다. `selection_batch`는 관련성
