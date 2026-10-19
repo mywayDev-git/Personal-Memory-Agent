@@ -53,7 +53,9 @@ def publish(root, *, allow_partial=False):
         "runtime": {"version": "0.6.0-dev", "build": 11524, "commit": "86a283532", "compiler": "Clang 20.1.8"},
         "original_work_preserved_commit": "5a57d39", "profiled_product_commit": "9a3c24d",
         "candidate_artifacts": MODELS, "conversion_tool_revision_disclosed": False,
-        "synthetic_seed_json_sha256": digest(Path("evaluation/response_latency_seed.json")),
+        "synthetic_seed_canonical_json_sha256": hashlib.sha256(json.dumps(
+            json.loads(Path("evaluation/response_latency_seed.json").read_text(encoding="utf-8")),
+            sort_keys=True, ensure_ascii=False, separators=(",", ":")).encode("utf-8")).hexdigest(),
         "trials": {}, "missing_or_incomplete": [],
         "excluded": ["C-drive interrupted CPU run (disk full)", "screen1/2 invalid fixture",
                      "pilot screen3 (old scorer; separate rescoring exists, not pooled with final trials)"],
@@ -116,7 +118,7 @@ def publish(root, *, allow_partial=False):
         if multilingual_path.exists():
             multi = json.loads(multilingual_path.read_text(encoding="utf-8"))
             trial["multilingual"] = {key: multi.get(key) for key in (
-                "replayed_model_outputs", "documents", "document_embedding_seconds", "evaluated_modes", "summary", "alias_checks")}
+                "scope", "replayed_model_outputs", "documents", "document_embedding_seconds", "evaluated_modes", "summary", "alias_checks")}
             trial["multilingual"]["per_question"] = [{"id": row["id"], **{key: row.get("expanded", {}).get(key) for key in (
                 "precision_at_8", "recall_at_8", "understanding_error", "search_seconds", "understanding_seconds", "total_seconds")}}
                 for row in multi["cases"]]
@@ -173,7 +175,8 @@ def render_report(report):
                     "후보별 준비 실행 1회를 제외하고 5회, 최종 비교는 같은 서버·질문·DB의 두 변형을 "
                     "반복마다 역순으로 실행해 각각 20회 측정했다. P95는 nearest-rank 방식이며 "
                     "5회 P95는 최댓값이다. 서로 다른 실행의 표본을 합치지 않았다. "
-                    "실패는 성공 지연 통계와 분리하고 실패율·품질 실패에 포함했다.\n\n")
+                    "실행 실패는 완주 지연 통계와 분리하고 실패율·품질 실패에 포함했다. "
+                    "품질 실패한 완주 요청의 시간도 표에는 남기지만, 품질 조건을 통과한 속도 개선으로 세지 않는다.\n\n")
     sections.append("최종 20회 교차 비교\n-------------------\n\n")
     final = trials.get("planning-final20", {}).get("summary", {})
     sections.append(rst_table(["변형/사례", "중앙값 초", "P95 초", "품질/표본", "실행 실패", "RAM/VRAM MiB"], [
@@ -182,6 +185,11 @@ def render_report(report):
     sections.append("planning은 평가기에만 있는 실험이다. 추가 검색 판단의 중복 query_plan·순위 점수·화면 설명을 "
                     "줄이고 질문·전체 원문·인용·시간·사실 검토 경고·필터·대화 이력은 유지한다. 추가 검색 판단, "
                     "관련성 판정과 독립 근거 검증을 생략하지 않는다. 제품에는 이 입력 축소를 적용하지 않았다.\n\n")
+    sections.append("앞선 5회 교차 실험(최종 20회와 합산하지 않음)\n\n")
+    pilot = trials.get("baseline-current-comparison", {}).get("summary", {})
+    sections.append(rst_table(["변형/사례", "중앙값 초", "P95 초", "품질/표본"], [
+        [key, seconds(row["median_seconds"]), seconds(row["p95_seconds"]), f"{row['quality_passes']}/{row['samples']}"]
+        for key, row in pilot.items()]))
     sections.append("기준선과 복합 품질\n-----------------\n\n")
     for name in ("baseline-gpu-full", "planning-critical"):
         sections.append(name + "\n\n")
@@ -207,7 +215,19 @@ def render_report(report):
                            len((trial.get("retrieval_gate") or {}).get("regressed_cases", [])),
                            trial.get("screen_rejected", False)])
     sections.append(rst_table(["실험", "양성 P@8", "양성 R@8", "음성 P/R", "회귀 질문 수", "제외"], model_rows))
-    sections.append("각 모델의 90개 질문 이해를 새로 실행했다. 평균이 아니라 질문별 P@8·R@8 비하락과 "
+    sections.append("모델별 기본 응답 5회(별도 서버 실행 간 비율을 최종 개선율로 사용하지 않음)\n\n")
+    model_timing_rows = []
+    for name in ("baseline-current-comparison", "q4-gpu-full", "q8-gpu-full", "qwen-embedding-gpu-full"):
+        for case in ("simple_search", "simple_answer"):
+            row = trials.get(name, {}).get("summary", {}).get("baseline/" + case)
+            if row:
+                model_timing_rows.append([f"{name}/{case}", seconds(row["median_seconds"]), seconds(row["p95_seconds"]),
+                                          f"{row['quality_passes']}/{row['samples']}", row["failures"],
+                                          f"{seconds(row['peak_ram_mb'])}/{seconds(row['peak_gpu_total_mb'])}"])
+    sections.append(rst_table(["실험/사례", "중앙값 초", "P95 초", "품질/표본", "실행 실패", "RAM/VRAM MiB"], model_timing_rows))
+    sections.append("각 모델의 90개 질문 이해를 새로 실행했다. 이 지표는 기존 다국어 평가와 같은 "
+                    "선택적 LLM 관련성 검토 전의 검색·융합·상위 8개 단계다. 전체 관련성 판정과 답변·독립 검증은 "
+                    "별도 11원문 시나리오에서 측정한다. 평균이 아니라 질문별 P@8·R@8 비하락과 "
                     "Python/API/ML 별칭 동등성을 검사했다. 회귀한 모델은 단순 검색·답변 5회만 추가 측정하고 "
                     "복합 사례는 생략했다. 실행하지 않은 사례는 통과로 세지 않는다. 설정·코드·모델을 함께 바꾼 "
                     "조합은 개별 후보가 품질을 통과한 뒤에만 채택 평가 대상이다.\n\n")
@@ -237,7 +257,9 @@ def render_report(report):
                              f"{row['quality_passes']}/{row['samples']}", row["failures"],
                              f"{seconds(row['peak_ram_mb'])}/{seconds(row['peak_gpu_total_mb'])}"])
         sections.append(rst_table(["변형/사례", "중앙값 초", "P95 초", "품질/표본", "실행 실패", "RAM/VRAM MiB"], rows))
-    sections.append("selection_batch는 11개 전체 원문을 판정하는 구성 요소 실험이며 최종 답변 지연이 아니다. "
+    sections.append("selection_batch는 11개 모든 후보를 기존 인용 문맥 범위로 판정하는 구성 요소 실험이며 최종 답변 지연이 아니다. "
+                    "관련성 판정은 기존 compact_evidence의 인용 시작 200자 전부터 600자 뒤까지인 범위를 유지한다. "
+                    "추가 검색 판단의 전체 source_text와 최종 원문 인용 검증 범위는 줄이지 않았다. "
                     "cached는 정확히 같은 토큰 계산 입력에만 요청 내부 128개 LRU를 적용한다. "
                     "질문·원문 버전·정책이 달라진 판정 결과를 재사용하는 캐시는 추가하지 않았다. "
                     "plain은 별도의 5회 교차 실험에서 planning 17.670초 대비 15.812초였지만 단순 답변의 "

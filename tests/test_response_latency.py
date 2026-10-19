@@ -98,7 +98,7 @@ def test_token_cache_is_exact_bounded_and_request_local():
 
 
 @pytest.mark.parametrize("batch_size", [4, 8])
-def test_selection_batches_review_every_candidate_without_truncating_sources(batch_size):
+def test_selection_batches_review_every_candidate_with_prior_source_context(batch_size):
     from pma.models import LocalModels
 
     settings = replace(AppSettings(), selection_batch_size=batch_size)
