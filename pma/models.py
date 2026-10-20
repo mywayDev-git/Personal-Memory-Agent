@@ -17,6 +17,7 @@ from scripts.memory_agent.validator import load_schema, schema_errors
 from .diagnostics import Stage
 from .errors import AppError
 from .model_diagnostics import observe, observed_model
+from .model_reuse import reuse_selection
 from .query_correction import EDIT_SCHEMA
 from .search_expressions import EXPANSION_SCHEMA
 
@@ -323,6 +324,7 @@ class LocalModels:
 
     @observed_model(Stage.EVIDENCE_SELECTION_BATCH)
     @measured("relevance_selection")
+    @reuse_selection
     def select_explained(self, question, evidence):
         """Review every candidate before applying a global limit; retain verifiable excerpts."""
         batch_size = getattr(getattr(self, "settings", None), "selection_batch_size", 4)

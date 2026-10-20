@@ -131,6 +131,13 @@ class ChatEngine:
             for m in session["messages"]
             if m["state"] == "completed" and m["response"] and not m.get("error_code")
         ][-6:]
+        from .identity import explicit_person_lookup
+
+        if (getattr(self.service.settings, "request_reuse", False)
+                and explicit_person_lookup(question, session["evidence"])):
+            count("explicit_context_calls_saved")
+            return {"question": question, "needs_clarification": False,
+                    "alternatives": [], "clarification": ""}, len(history)
         # Full immutable sources are budgeted; history is discarded oldest first.
         data = {
             "question": question,
@@ -292,7 +299,11 @@ class ChatEngine:
             evidence = [row for row in evidence if row["id"] in selected or
                         (row.get("search_explanation", {}).get("model_assessment") or {}).get(
                             "category") == "conflicting_evidence"]
-        response = direct_statement(question, evidence, intent_question) or models.answer(
+        from .semantics import stop_record_draft
+
+        draft = (stop_record_draft(intent_question, evidence)
+                 if getattr(getattr(self.service, "settings", None), "request_reuse", False) else None)
+        response = draft or direct_statement(question, evidence, intent_question) or models.answer(
             question, evidence
         )
         generation_index = 1

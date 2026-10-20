@@ -49,12 +49,26 @@ class RequestBudget:
         self.deadline = time.monotonic() + seconds
         self.calls = []
         self.token_counts = OrderedDict()
+        self.selection_decisions = OrderedDict()
 
     def remaining(self):
         remaining = self.deadline - time.monotonic()
         if remaining <= 0:
             raise RequestDeadlineExceeded("CHAT_TIMEOUT")
         return remaining
+
+
+def current_request_budget():
+    return _request_budget.get()
+
+
+def check_request_active():
+    budget = _request_budget.get()
+    if budget is not None:
+        budget.remaining()
+    listener = _phase_listener.get()
+    if listener is not None:
+        listener(_model_phase.get())
 
 
 @contextmanager

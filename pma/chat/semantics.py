@@ -20,3 +20,26 @@ def denies_stopping(question, text, sources):
         r"(?:중단|포기)하지\s*않|그만두지\s*않|접지\s*않|(?:중단|포기)했다면", source
     ) for source in sources)
     return affirmative and bool(DENIAL.search(text))
+
+
+def stop_record_draft(question, evidence):
+    """Exact single stop sentence as a draft; normal independent review is mandatory."""
+    if (not study_topic(question) or not re.search(r"중단|그만|접", question)
+            or not re.search(r"기록.*(?:있|찾|알려)", question)
+            or re.search(r"왜|이유|언제|날짜|현재|지금|순서", question)):
+        return None
+    from scripts.memory_agent.provenance import sentences
+
+    from ..relevance import topic_supported
+
+    candidates = {}
+    for row in evidence:
+        if not topic_supported(question, row):
+            continue
+        for span in sentences(row["source_text"]):
+            quote = span["text"].strip()
+            if re.search(r"(?:접었다|그만뒀다|그만두었다|중단했다|포기했다)[.!]?$", quote):
+                candidates[(row["id"], quote)] = {"text": "기록 원문: “" + quote + "”", "citations": [row["id"]]}
+    if len(candidates) != 1:
+        return None
+    return {"status": "answered", "items": list(candidates.values())}

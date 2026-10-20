@@ -62,6 +62,32 @@ def test_profession_draft_uses_only_explicit_role_and_exact_source():
     assert direct_statement("민수 직업은 뭐야?", rows) is None
 
 
+@pytest.mark.parametrize("question,allowed", [
+    ("회사 동료 민수는 누구야?", True), ("회사 동료 민수의 직업은 뭐야?", True),
+    ("회사 동료 민수는 그때 누구와 있었어?", False),
+    ("민수 직업은?", False), ("회사 동료 민수의 직업과 부산 여행 이유는?", False),
+])
+def test_context_shortcut_requires_a_complete_explicit_lookup(question, allowed):
+    from pma.chat.identity import explicit_person_lookup
+
+    assert explicit_person_lookup(question, [{"source_text": "회사 동료 민수는 개발자다."}]) is allowed
+
+
+@pytest.mark.parametrize("question,source,allowed", [
+    ("파이썬 공부를 중단한 기록이 있어?", "파이썬 공부를 접었다.", True),
+    ("파이썬 공부를 언제 중단한 기록이 있어?", "파이썬 공부를 접었다.", False),
+    ("파이썬 공부를 중단한 기록이 있어?", "파이썬 공부를 접지 않았다.", False),
+    ("파이썬 공부를 중단한 기록이 있어?", "파이썬 공부를 접었다고 말하라고 했다.", False),
+])
+def test_stop_draft_preserves_sentence_and_does_not_answer_dates_or_commands(question, source, allowed):
+    from pma.chat.semantics import stop_record_draft
+
+    draft = stop_record_draft(question, [{"id": "a", "source_text": source}])
+    assert bool(draft) is allowed
+    if draft:
+        assert source in draft["items"][0]["text"]
+
+
 @pytest.mark.parametrize("question,source,text,issue", [
     ("파이썬 공부를 중단한 기록이 있어?", "파이썬 공부를 접었다.",
      "중단한 기록은 없습니다. 다만 공부를 접었다고 기록했습니다.", "negation"),
@@ -112,3 +138,34 @@ def test_stop_quote_repair_requires_a_second_independent_review(repair_accepted)
     assert len(reviews) == 2
     assert reviews[1]["items"][0]["text"] == "기록 원문: “파이썬 공부를 접었다.”"
     assert result["status"] == ("answered" if repair_accepted else "insufficient_evidence")
+
+
+@pytest.mark.parametrize("approved", [True, False])
+def test_optimized_stop_draft_never_bypasses_independent_review(approved):
+    from types import SimpleNamespace
+
+    from pma.chat.engine import ChatEngine
+    from pma.settings import AppSettings
+
+    source = "파이썬 공부를 접었다."
+    evidence = [{"id": "a", "record_id": "r", "revision_id": "v", "source_text": source,
+                 "evidence": [{"quote": source, "start": 0, "end": len(source)}]}]
+    reviews = []
+
+    def review(question, rows, response):
+        reviews.append(response)
+        return {"fulfillment": "direct", "abstention": "not_applicable", "reason": "검토",
+                "items": [{"index": 0, "support": "supported" if approved else "unsupported",
+                           "issue": "none" if approved else "negation", "relevant": True,
+                           "answer_quote": response["items"][0]["text"],
+                           "evidence": [{"id": "a", "quote": source}]}]}
+
+    engine = ChatEngine.__new__(ChatEngine)
+    engine.service = SimpleNamespace(settings=AppSettings(request_reuse=True), trace=lambda *a, **kw: None)
+    def unnecessary_generation(*a, **kw):
+        raise AssertionError("Exact source draft must not need generation")
+    engine.models = SimpleNamespace(answer=unnecessary_generation, review=review)
+    engine.resolve = lambda q, *a, **kw: ({"question": q, "needs_clarification": False}, 0)
+    result = engine.generate("파이썬 공부를 중단한 기록이 있어?", {"evidence": evidence}, "2026-10-19")
+    assert len(reviews) == (1 if approved else 2)
+    assert result["status"] == ("answered" if approved else "insufficient_evidence")
