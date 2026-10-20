@@ -161,7 +161,7 @@ ROWS = [
     (
         "NAT-T30",
         "Python Part 2 완료했었나?",
-        ["이전 AI는 Part 2 완료라고 잘못 답했다. 실제로는 Part 1만 공부했다."],
+        ["이전 AI는 Python Part 2 완료라고 잘못 답했다. 실제로는 Python Part 1만 공부했다."],
         ["Part 1|잘못|완료 여부|확인"],
         ["Part 2를 완료했습니다"],
     ),

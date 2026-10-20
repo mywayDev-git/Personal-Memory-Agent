@@ -1,0 +1,4640 @@
+{
+  "synthetic_only": true,
+  "scoring_version": 2,
+  "dataset_sha256": "d385ed92dbe9b35be318883b84f1163dca54fdf2a3f3a485307e0d6c955b7181",
+  "evaluator_sha256": "9c5f89e7e117bb804c03cd892a593829333e00057bf9dbd6c6183c021dc05168",
+  "implementation_root": ".local\\conversation-baseline-code",
+  "source_hashes": {
+    "pma/answer_review.py": "f6797c02c4fc6127c9e5a04f06d3e0469d73121bafb5d730e626a33db4e3a2c6",
+    "pma/console_trace.py": "e8946889eb838654bce08322ccdea5ecc09f06e02ab29bd31ac818f83575ee06",
+    "pma/diagnostics.py": "917ac6546229c4ff4010c20ebc0310c397be3a7683823f4941b9d2a168d8c3d2",
+    "pma/errors.py": "4ca8bb36105d933b79d5b0a822a17b32166ca414336e50096948d58ddff528bc",
+    "pma/evaluation_api.py": "c7c491ffa63f749ed5cad3f9160f03271d49f37da201b30018b4f06049816f61",
+    "pma/facts.py": "fc4b91c2edb24cf3d9455d02d15752aca1abefd7891fb5bc8844b4e067a6ae21",
+    "pma/facts_diagnostics.py": "4a1e51d8eabbeb7af8fc8a1cbfbc201cfd83ebdf81cc9b2f4518e9eea6b6fa3d",
+    "pma/grounding.py": "52ba5311642b6439973af721ad52aa16944055052e24789dad68de2221ce4830",
+    "pma/legacy_answer.py": "60e0b44a58379992f91f11bbbb1e92101dc0cb3a311a777595d2ca11d493bdaa",
+    "pma/lock.py": "1896ced02498d759e24ee5a2359f479199d78358cddd5cd5bbc27ee6519ed088",
+    "pma/models.py": "3f89fc5b6714cd2fcb50d511d0989f4df00403affa9063cb05918a2b21f8bdfc",
+    "pma/model_diagnostics.py": "90061ae5dbe642d6c806712b3e3b3401bf52224c4a6a731e2d3d8441b7717a09",
+    "pma/model_reuse.py": "46d223bcc2ae2228853dee35aa32672f94a4b2802412013266571d08a08c7603",
+    "pma/processing.py": "cf42888f61d6219ea369e9a1e151a4c0c778b5cd6c8fc73474d095f3cfffa9fa",
+    "pma/query_correction.py": "61a752d4fa1fe207b3664ce924e9bd5e678120dd7c99530241cc758a789204df",
+    "pma/relevance.py": "98b81101e37a4c7495e055d75a4da7b9fe8a44438f1da31b50d5f6ee7ae168e5",
+    "pma/search_explain.py": "4da5ee2a4206b0b0f9f08c361e261b6123a644699c637c7acc1b732d91c88f17",
+    "pma/search_expressions.py": "f9c7a043b665cc340845fb732f4d039daaee94ab1d8cc83337b37cf1e42f273f",
+    "pma/service.py": "3b0a7f31981907a78b6d54e1afb51a1226233dce23ddeabba360f99014073a20",
+    "pma/service_diagnostics.py": "39a2233ac5fc8bc9eb0f8bf657293b988823835601eae794fc19afde02d6cf78",
+    "pma/settings.py": "ece9ac9a3d662f5aa5e0768ac57a4e55758e1be55d8002c5e3375ea2557f043b",
+    "pma/store.py": "3f6b1a209b1076557899a80be2c203dca72ef6a370b394dc0493086ec6fa047c",
+    "pma/validation_diagnostics.py": "e4da13d9dee0182f54a1c8b5657ebd8c743450736929195224cba92f4874eff6",
+    "pma/web.py": "c833bb9e8412b0e328c9fbad6bfd0708fa902e3989a1c76c97843b7212a1faff",
+    "pma/web_diagnostics.py": "e8a86e4ef567bf31976f8cb3351ba45aabdc1cb1f3d702bfa90fe9e057d9540f",
+    "pma/worker_errors.py": "3667453b7c1d5e1e186185ee4c99759c261dd64d6e63c359ee71043a4247e0a2",
+    "pma/__init__.py": "9fdb3b658908adda73bd55fd59e0e0cf531996968c5fd3c4b65ed370ef183552",
+    "pma/__main__.py": "ade29e2dc193ccc0b2d3a0d8c07ff82133596378af283a3b76e45b9b0493fb2e",
+    "pma/chat/answer_audit.py": "9aea62dca27a796d377270ff9a58f151837f813008aba900a986d5a582835e1c",
+    "pma/chat/api.py": "dc4849bb6005cd0eab59c54923b8f2512a27f6de5aaea9f0ff6429d705285e08",
+    "pma/chat/automatic.py": "9a78f13c5f9d7961054935b4536e1b2aa16c673bb0560cc64bbb0b36ce6a356d",
+    "pma/chat/context.py": "612fd3bee3052065e23fc87bb225cab7488452122b67bc5af188eafe4b014d58",
+    "pma/chat/engine.py": "042bbf1d52b182769d20a05382ce49ea66dcf9603bf17644103ac7113af901ac",
+    "pma/chat/evidence.py": "5009174dfa8e98ac287fff76e7f4705c4fd24c99c3e5b4fbf98485889ecd1fec",
+    "pma/chat/execution.py": "f0b73c86ee1964c95df8ca04c8ade6ee66e5323780a51368de6a10ba2944ef5b",
+    "pma/chat/generator.py": "f0b2d3b3fee0e7a65f14500f56633515e64b1f666ca3761518e63845b066c184",
+    "pma/chat/identity.py": "5aaaab0a1e36416f47595797b17f559ab52bf99f68ac4fda665297540b8db485",
+    "pma/chat/memory_capture.py": "7d90f2035e81b16bbf31930bede95f9577ff0796cae7e6de2147f1729c390e9e",
+    "pma/chat/models.py": "aac21e52ac2676baf176416f01ee6d4d6b8df088f59c79547326316119095e78",
+    "pma/chat/orchestrator.py": "89f692f6389462f6372c2354e88512eb129704a56ef993284c48ba24c12e85d2",
+    "pma/chat/presentation.py": "8968cb01583221b4851455cb7276b84330c03f54acbfdef5feff0c2b5d73e271",
+    "pma/chat/questions.py": "12101b1382516f3e504ed06910566d9160b9cfcec36f91ed0a4c55a63af2c8a6",
+    "pma/chat/retrieval.py": "d8b8ea6f8b9d94f49836c80f87ab599d5419d74c10be8edeba5fd71f3703cca2",
+    "pma/chat/review_sources.py": "b7f2cc56faf83bfaaeba1e8f740f1229512fcc6099fce216cb230a22f0d9cc8c",
+    "pma/chat/router.py": "2d25570ea7202d551e08083415ee282db16d403f7b96627983a4fa9320674447",
+    "pma/chat/schema.py": "53d8a6173998ecd0e986592bc6cf0d8aea84ad64acd1d2734a030e0286cb4ef8",
+    "pma/chat/schemas.py": "c7e67a90619a6cb0b952713418f6f2309b3a4e671d82d24f514e82d9a45b06a6",
+    "pma/chat/semantics.py": "8f0ec0b8b66cbf73940958ad81ca2966c4aa44d519d6c183fca7818ad881fd56",
+    "pma/chat/store.py": "65d882cd4219f68590a23262c311422586e31884d69be9eaf303275bec834079",
+    "pma/chat/__init__.py": "ecfdc27c301b8377a6bded45f881664862fffd112f8affa2aeb22231578d0eda",
+    "pma/memory/api.py": "e857c1385d66094e3ab698ded99e24dd0194948e673399e61b59dca4d9bc58d9",
+    "pma/memory/conflict_resolver.py": "06fa3bb9d16171a0c7dfdaf0e2372cd748b2231c86942cdb0a1f32d99122c20e",
+    "pma/memory/deduplication.py": "bd7d6efa39a84783286f2c8c5eb2de6721784008a859fbf6aace950df116197a",
+    "pma/memory/manager.py": "cfb3d31f3562185e7bf9e81ec890d0369b5b29ee7e1e27cdb655f9c12dda6e01",
+    "pma/memory/provenance.py": "87074a02269b4a76e781a1407678988ef51d6cfe6e103a5c9b3780963f3aab80",
+    "pma/memory/repository.py": "362bf46d6827b9d4239d5502585f3a1bd5e30a1970242217fd023093c7e0dce7",
+    "pma/memory/schemas.py": "52ac51e0520ee91a4d62fa54ffc40b88e4b8c55f2575dd10c016830e972bb746",
+    "pma/memory/__init__.py": "6cdb0775d01add5e0c245a55b64798c850d7f90b266f10edb1e1dbae844fd18c",
+    "pma/chat/migrations/__init__.py": "6f8c150cdc85ec3ee715252d9af593a5d6756bb6905dd41abfde938068a41ce7",
+    "scripts/main.py": "48391da7d6d1f28f5dde4c30d3c6c5490af7be3db2f9eb3cffacbe7304d2db90",
+    "scripts/__init__.py": "a2b02e8367738c3344d432545a90f911eda30b98659f49a518cc1d45cd72fab6",
+    "scripts/memory_agent/diagnostics.py": "1cbe0170e26cbdc508d44effb66ebc5c429da0360483647a0eabee1980fd8fd5",
+    "scripts/memory_agent/exceptions.py": "3dd2d3db0df1b6892d133f156a1811d12a491909c9aade1bc453da95cf6fd755",
+    "scripts/memory_agent/extractor.py": "bcc91e13da7f5b5385231de4b7c55239a0723ff90cdfccdf93f43e4cd9331b73",
+    "scripts/memory_agent/llm_client.py": "b0b094fa20031a09c819b2d11babef41354e21ad2a57ed094cef7e1d1543f34b",
+    "scripts/memory_agent/meaning.py": "b8cbd2c63dca311095fd9aa57740973fea41cd6e7c47ffdb196d82634a37c13e",
+    "scripts/memory_agent/performance.py": "53ecc669f30b66ac8e5a63985f3cc5f9e7bcbd7206dc82b8b62aeafe9418eb61",
+    "scripts/memory_agent/pipeline.py": "890a8af7ce166a72687dd1d2fba1b53ca2f81567f57ceed6d21007ef1d59001f",
+    "scripts/memory_agent/postprocess.py": "40641c592bfdb01cb8a2afbbff39f9a73b026bd6e1d0d6bbe2434f9c846b547e",
+    "scripts/memory_agent/provenance.py": "ebed55dfe98e3c953f46f2abf08522c1bebc8a12fcbd56226b2f9eba4416c041",
+    "scripts/memory_agent/validator.py": "279530427ce7ef51b2aaac22d610bc44917ec21f4fbd350035423709a598bc59",
+    "scripts/memory_agent/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "config/settings.py": "72f84d74975c04ec2c3dae857039d90a37ab4ac3d63cf005bf0b56fd84398576",
+    "config/__init__.py": "98b9af3fbe00e1fe2a16bb8e97c0c35a835e09e27b95778da53dba92e7196938"
+  },
+  "settings": {
+    "context_tokens": 16384,
+    "chat_timeout": 300,
+    "generation_endpoint": "http://127.0.0.1:8081/v1/chat/completions",
+    "embedding_endpoint": "http://127.0.0.1:18082/v1/embeddings",
+    "model_pids": [
+      27520,
+      6256
+    ]
+  },
+  "passed": 9,
+  "measured": 14,
+  "requested": 14,
+  "latency_including_failures": {
+    "p50": 7.229471749975346,
+    "p95": 28.871144199976698,
+    "p99": 34.63231580005959
+  },
+  "naturalness_evaluation": "사람 검토 필요; 자동 사실 검사와 구분",
+  "cases": [
+    {
+      "id": "NAT-T01",
+      "message": "Python 다시 공부하려고",
+      "expected": {
+        "id": "NAT-T01",
+        "message": "Python 다시 공부하려고",
+        "records": [
+          {
+            "id": "NAT-T01-r0",
+            "text": "2026-10-10 Python Part 1을 완료했다."
+          },
+          {
+            "id": "NAT-T01-r1",
+            "text": "Python 커리큘럼은 Part 1 다음 Part 2, 그다음 Part 3이다."
+          }
+        ],
+        "previous_context": [],
+        "required_concepts": [
+          "Part 1",
+          "완료"
+        ],
+        "forbidden_claims": [
+          "Part\\s*2를?\\s*완료(?:했|하셨|한\\s*상태|한\\s*기록)"
+        ],
+        "expected_search": true,
+        "expected_interpretation": "원문·상태·시점을 보존하며 현재 요청에 필요한 사실만 사용",
+        "expected_response_type": "RESUME_ACTIVITY",
+        "expected_buttons": [],
+        "required_sources": [],
+        "failure_code": null,
+        "evaluation_boundary": "실제 모델 평가는 의미·출처 검사, 계약 테스트는 개별 정책·액션 경계 검사"
+      },
+      "mode": "auto",
+      "started_at_utc": "2026-10-20T04:14:21.281602+00:00",
+      "response": {
+        "message_id": "2436a560-3805-44ab-a03c-4ebc3a9ec39b",
+        "status": "insufficient_evidence",
+        "items": [
+          {
+            "text": "Python 다시 공부하려고",
+            "citations": [],
+            "source_type": "inference"
+          }
+        ],
+        "notice": "관련 기록에서 확인할 근거를 찾지 못했습니다.",
+        "conversation_type": "mixed",
+        "blocks": [
+          {
+            "type": "paragraph",
+            "item_indices": [
+              0
+            ]
+          }
+        ],
+        "query_corrections": [
+          {
+            "status": "none",
+            "query": "Python 다시 공부하려고",
+            "edits": [],
+            "reason": null,
+            "original_query": "Python 다시 공부하려고",
+            "searched": false
+          }
+        ],
+        "conversation_mode": "hybrid",
+        "requested_mode": "auto",
+        "elapsed_seconds": 5.601,
+        "model": "server-default",
+        "generation_revision": "unconfigured",
+        "chat_prompt_version": 5,
+        "presentation": [
+          {
+            "type": "text",
+            "item_indices": [
+              0
+            ]
+          }
+        ],
+        "phase_seconds": 0.623,
+        "phase_timings": {
+          "resolving_context": 2.152,
+          "searching": 2.113,
+          "generating": 0.712,
+          "validating": 0.623
+        }
+      },
+      "evidence_ids": [],
+      "checks": {
+        "required_concepts": false,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      },
+      "passed": false,
+      "failure_code": "NAT_EXPECTATION_FAILED",
+      "performance": {
+        "lock_wait_seconds": 0.01,
+        "model_http_calls": [
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.003694
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "routing",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.001756
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "routing",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 2.117974,
+            "usage": {
+              "prompt_tokens": 516,
+              "completion_tokens": 30,
+              "total_tokens": 546
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.008424
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 1.422772,
+            "usage": {
+              "prompt_tokens": 776,
+              "completion_tokens": 53,
+              "total_tokens": 829
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.026476
+          },
+          {
+            "operation": "/v1/embeddings",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.032284,
+            "usage": {
+              "prompt_tokens": 7,
+              "total_tokens": 7
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.021287
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "search_planning",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.001836
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "search_planning",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.430716,
+            "usage": {
+              "prompt_tokens": 646,
+              "completion_tokens": 6,
+              "total_tokens": 652
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.00269
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "general",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.021357
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "general",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.681407,
+            "usage": {
+              "prompt_tokens": 441,
+              "completion_tokens": 20,
+              "total_tokens": 461
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.00686
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.00131
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.619719,
+            "usage": {
+              "prompt_tokens": 338,
+              "completion_tokens": 16,
+              "total_tokens": 354
+            }
+          }
+        ],
+        "profile": {
+          "schema_version": 1,
+          "outcome": "completed",
+          "elapsed_seconds": 5.595052,
+          "stages": {
+            "model_wait": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.002111,
+              "exclusive_seconds": 0.002111
+            },
+            "token_count": {
+              "calls": 4,
+              "failures": 0,
+              "inclusive_seconds": 0.03531,
+              "exclusive_seconds": 0.03531
+            },
+            "token_budget": {
+              "calls": 6,
+              "failures": 0,
+              "inclusive_seconds": 0.061633,
+              "exclusive_seconds": 0.061633
+            },
+            "routing": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 2.121734,
+              "exclusive_seconds": 2.119893
+            },
+            "question_understanding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 1.431713,
+              "exclusive_seconds": 1.423188
+            },
+            "candidate_snapshot": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.002816,
+              "exclusive_seconds": 0.002816
+            },
+            "embedding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.059385,
+              "exclusive_seconds": 0.032862
+            },
+            "candidate_matrix": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.000302,
+              "exclusive_seconds": 0.000302
+            },
+            "keyword_ranking": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.00043,
+              "exclusive_seconds": 0.00043
+            },
+            "relevance_selection": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 4e-06,
+              "exclusive_seconds": 4e-06
+            },
+            "retrieval": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 1.504384,
+              "exclusive_seconds": 0.009735
+            },
+            "search": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 1.505396,
+              "exclusive_seconds": 0.001012
+            },
+            "search_planning": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.433012,
+              "exclusive_seconds": 0.431083
+            },
+            "general": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.703169,
+              "exclusive_seconds": 0.681732
+            },
+            "review": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.621454,
+              "exclusive_seconds": 0.620075
+            },
+            "final_save": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.001805,
+              "exclusive_seconds": 0.001805
+            }
+          },
+          "counts": {
+            "search_iterations": 1
+          }
+        }
+      },
+      "elapsed_seconds": 5.615376999950968,
+      "python_cpu_seconds": 0.15625,
+      "finished_at_utc": "2026-10-20T04:14:26.894721+00:00",
+      "combined_process_cpu_seconds": 6.34375,
+      "cpu_percent_machine": 4.707126817468795,
+      "combined_process_ram_peak_mb": 2969.0703125,
+      "whole_gpu_vram_peak_mb": 7642.0,
+      "python_working_set_mb": 64.88671875
+    },
+    {
+      "id": "NAT-T02",
+      "message": "Python 어디까지 했지?",
+      "expected": {
+        "id": "NAT-T02",
+        "message": "Python 어디까지 했지?",
+        "records": [
+          {
+            "id": "NAT-T02-r0",
+            "text": "2026-10-10 Python Part 1을 공부했다. 완료 여부는 기록하지 않았다."
+          }
+        ],
+        "previous_context": [],
+        "required_concepts": [
+          "확인|불명|기록|모르"
+        ],
+        "forbidden_claims": [
+          "Part 1을 완료했"
+        ],
+        "expected_search": true,
+        "expected_interpretation": "원문·상태·시점을 보존하며 현재 요청에 필요한 사실만 사용",
+        "expected_response_type": "PROGRESS_REVIEW",
+        "expected_buttons": [],
+        "required_sources": [],
+        "failure_code": null,
+        "evaluation_boundary": "실제 모델 평가는 의미·출처 검사, 계약 테스트는 개별 정책·액션 경계 검사"
+      },
+      "mode": "auto",
+      "started_at_utc": "2026-10-20T04:14:27.034303+00:00",
+      "response": {
+        "message_id": "f224368f-2103-40be-a5be-99efe999bb03",
+        "status": "answered",
+        "items": [
+          {
+            "text": "기록에 따르면 2026년 10월 10일에 Python Part 1을 공부했다. 완료 여부는 기록하지 않았습니다.",
+            "citations": [
+              "ed63cdd2-c739-4aa5-b260-08a861036d97"
+            ],
+            "source_type": "personal_memory"
+          }
+        ],
+        "display": {
+          "kind": "plain",
+          "items": [
+            {
+              "index": 0,
+              "state": "confirmed",
+              "event": "Python Part 1 공부",
+              "event_date": "2026-10-10"
+            }
+          ],
+          "verified": true
+        },
+        "citation_details": [
+          {
+            "item_index": 0,
+            "memory_id": "ed63cdd2-c739-4aa5-b260-08a861036d97",
+            "record_id": "db951eae-041a-4603-a8a6-555221091578",
+            "revision_id": "bb90fa38-f267-4e3a-8c8d-5780137494a7",
+            "quote": "2026-10-10 Python Part 1을 공부했다.",
+            "start": 0,
+            "end": 31,
+            "citation_id": "f224368f-2103-40be-a5be-99efe999bb03:0:ed63cdd2-c739-4aa5-b260-08a861036d97"
+          },
+          {
+            "item_index": 0,
+            "memory_id": "ed63cdd2-c739-4aa5-b260-08a861036d97",
+            "record_id": "db951eae-041a-4603-a8a6-555221091578",
+            "revision_id": "bb90fa38-f267-4e3a-8c8d-5780137494a7",
+            "quote": "완료 여부는 기록하지 않았다.",
+            "start": 32,
+            "end": 48,
+            "citation_id": "f224368f-2103-40be-a5be-99efe999bb03:0:ed63cdd2-c739-4aa5-b260-08a861036d97"
+          }
+        ],
+        "validation": "model_checked",
+        "history_turns": 0,
+        "conversation_type": "memory",
+        "blocks": [
+          {
+            "type": "paragraph",
+            "item_indices": [
+              0
+            ]
+          }
+        ],
+        "query_corrections": [
+          {
+            "status": "none",
+            "query": "Python 어디까지 했지?",
+            "edits": [],
+            "reason": null,
+            "original_query": "Python 어디까지 했지?",
+            "searched": false
+          }
+        ],
+        "conversation_mode": "memory",
+        "requested_mode": "auto",
+        "elapsed_seconds": 19.274,
+        "model": "server-default",
+        "generation_revision": "unconfigured",
+        "chat_prompt_version": 5,
+        "presentation": [
+          {
+            "type": "text",
+            "item_indices": [
+              0
+            ]
+          }
+        ],
+        "phase_seconds": 6.427,
+        "phase_timings": {
+          "resolving_context": 1.536,
+          "searching": 6.829,
+          "generating": 4.483,
+          "validating": 6.427
+        }
+      },
+      "evidence_ids": [
+        "NAT-T02-r0"
+      ],
+      "checks": {
+        "required_concepts": true,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      },
+      "passed": true,
+      "failure_code": null,
+      "performance": {
+        "lock_wait_seconds": 0.009,
+        "model_http_calls": [
+          {
+            "operation": "/tokenize",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.024944
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 1.344452,
+            "usage": {
+              "prompt_tokens": 776,
+              "completion_tokens": 53,
+              "total_tokens": 829
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.011059
+          },
+          {
+            "operation": "/v1/embeddings",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.025294,
+            "usage": {
+              "prompt_tokens": 9,
+              "total_tokens": 9
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.009449
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 2.41376,
+            "usage": {
+              "prompt_tokens": 853,
+              "completion_tokens": 85,
+              "total_tokens": 938
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.021749
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "search_planning",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.023653
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "search_planning",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 1.020379,
+            "usage": {
+              "prompt_tokens": 1845,
+              "completion_tokens": 6,
+              "total_tokens": 1851
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.017921
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.005622
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 1.895064,
+            "usage": {
+              "prompt_tokens": 1657,
+              "completion_tokens": 35,
+              "total_tokens": 1692
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "context_selection",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.002374
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "context_selection",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 1.509188,
+            "usage": {
+              "prompt_tokens": 570,
+              "completion_tokens": 38,
+              "total_tokens": 608
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "generation",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.239603
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "generation",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 4.241025,
+            "usage": {
+              "prompt_tokens": 2672,
+              "completion_tokens": 147,
+              "total_tokens": 2819
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.038053
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 5.665636,
+            "usage": {
+              "prompt_tokens": 1959,
+              "completion_tokens": 210,
+              "total_tokens": 2169
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "display_review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.013763
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "display_review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.702922,
+            "usage": {
+              "prompt_tokens": 1148,
+              "completion_tokens": 13,
+              "total_tokens": 1161
+            }
+          }
+        ],
+        "profile": {
+          "schema_version": 1,
+          "outcome": "completed",
+          "elapsed_seconds": 19.269115,
+          "stages": {
+            "model_wait": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.001945,
+              "exclusive_seconds": 0.001945
+            },
+            "token_budget": {
+              "calls": 9,
+              "failures": 0,
+              "inclusive_seconds": 0.369807,
+              "exclusive_seconds": 0.369807
+            },
+            "question_understanding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 1.369906,
+              "exclusive_seconds": 1.344856
+            },
+            "candidate_snapshot": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.001921,
+              "exclusive_seconds": 0.001921
+            },
+            "embedding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.036863,
+              "exclusive_seconds": 0.025756
+            },
+            "candidate_matrix": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 4e-05,
+              "exclusive_seconds": 4e-05
+            },
+            "keyword_ranking": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.000183,
+              "exclusive_seconds": 0.000183
+            },
+            "relevance_selection": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 2.423745,
+              "exclusive_seconds": 2.414191
+            },
+            "retrieval": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 3.836722,
+              "exclusive_seconds": 0.004063
+            },
+            "search": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 3.836742,
+              "exclusive_seconds": 2e-05
+            },
+            "token_count": {
+              "calls": 2,
+              "failures": 0,
+              "inclusive_seconds": 0.040192,
+              "exclusive_seconds": 0.040192
+            },
+            "search_planning": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 1.044666,
+              "exclusive_seconds": 1.020787
+            },
+            "context_resolution": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 1.92072,
+              "exclusive_seconds": 1.896793
+            },
+            "context_selection": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 1.512071,
+              "exclusive_seconds": 1.509613
+            },
+            "answer_selection": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 1.513667,
+              "exclusive_seconds": 0.001596
+            },
+            "generation": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 4.481416,
+              "exclusive_seconds": 4.24156
+            },
+            "answer_generation": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 4.487306,
+              "exclusive_seconds": 0.00589
+            },
+            "review": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 5.704512,
+              "exclusive_seconds": 5.666254
+            },
+            "display_review": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.717133,
+              "exclusive_seconds": 0.703242
+            },
+            "independent_review": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 6.426022,
+              "exclusive_seconds": 0.004378
+            },
+            "final_save": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.001876,
+              "exclusive_seconds": 0.001876
+            }
+          },
+          "counts": {
+            "search_iterations": 1,
+            "generation_attempts": 1,
+            "review_attempts": 1
+          }
+        }
+      },
+      "elapsed_seconds": 19.285702100023627,
+      "python_cpu_seconds": 0.015625,
+      "finished_at_utc": "2026-10-20T04:14:46.319797+00:00",
+      "combined_process_cpu_seconds": 19.984375,
+      "cpu_percent_machine": 4.317614610803547,
+      "combined_process_ram_peak_mb": 2861.41796875,
+      "whole_gpu_vram_peak_mb": 7642.0,
+      "python_working_set_mb": 62.62109375
+    },
+    {
+      "id": "NAT-T03",
+      "message": "Python 마지막 진도 알려줘",
+      "expected": {
+        "id": "NAT-T03",
+        "message": "Python 마지막 진도 알려줘",
+        "records": [
+          {
+            "id": "NAT-T03-r0",
+            "text": "2026-10-10 Python Part 1을 완료했다."
+          },
+          {
+            "id": "NAT-T03-r1",
+            "text": "2026-10-15 Python Part 2를 완료했다."
+          }
+        ],
+        "previous_context": [],
+        "required_concepts": [
+          "Part 2"
+        ],
+        "forbidden_claims": [
+          "현재 Part 1까지"
+        ],
+        "expected_search": true,
+        "expected_interpretation": "원문·상태·시점을 보존하며 현재 요청에 필요한 사실만 사용",
+        "expected_response_type": null,
+        "expected_buttons": [],
+        "required_sources": [],
+        "failure_code": null,
+        "evaluation_boundary": "실제 모델 평가는 의미·출처 검사, 계약 테스트는 개별 정책·액션 경계 검사"
+      },
+      "mode": "auto",
+      "started_at_utc": "2026-10-20T04:14:46.510223+00:00",
+      "response": {
+        "message_id": "e7836a92-efef-4a2c-8a74-705a8d14a8ee",
+        "status": "answered",
+        "items": [
+          {
+            "text": "Python 마지막 진도 알려줘",
+            "citations": [],
+            "source_type": "general"
+          }
+        ],
+        "notice": "",
+        "conversation_type": "general",
+        "blocks": [
+          {
+            "type": "paragraph",
+            "item_indices": [
+              0
+            ]
+          }
+        ],
+        "conversation_mode": "general",
+        "requested_mode": "auto",
+        "elapsed_seconds": 1.995,
+        "model": "server-default",
+        "generation_revision": "unconfigured",
+        "chat_prompt_version": 5,
+        "presentation": [
+          {
+            "type": "text",
+            "item_indices": [
+              0
+            ]
+          }
+        ],
+        "phase_seconds": 0.543,
+        "phase_timings": {
+          "resolving_context": 0.745,
+          "generating": 0.706,
+          "validating": 0.543
+        }
+      },
+      "evidence_ids": [],
+      "checks": {
+        "required_concepts": false,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      },
+      "passed": false,
+      "failure_code": "NAT_EXPECTATION_FAILED",
+      "performance": {
+        "lock_wait_seconds": 0.01,
+        "model_http_calls": [
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.01694
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "routing",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.012825
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "routing",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.696585,
+            "usage": {
+              "prompt_tokens": 515,
+              "completion_tokens": 22,
+              "total_tokens": 537
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.001898
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "general",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.017264
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "general",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.661946,
+            "usage": {
+              "prompt_tokens": 435,
+              "completion_tokens": 22,
+              "total_tokens": 457
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.024531
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.001227
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.539307,
+            "usage": {
+              "prompt_tokens": 236,
+              "completion_tokens": 16,
+              "total_tokens": 252
+            }
+          }
+        ],
+        "profile": {
+          "schema_version": 1,
+          "outcome": "completed",
+          "elapsed_seconds": 1.988386,
+          "stages": {
+            "model_wait": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.00191,
+              "exclusive_seconds": 0.00191
+            },
+            "token_count": {
+              "calls": 3,
+              "failures": 0,
+              "inclusive_seconds": 0.043957,
+              "exclusive_seconds": 0.043957
+            },
+            "token_budget": {
+              "calls": 3,
+              "failures": 0,
+              "inclusive_seconds": 0.031591,
+              "exclusive_seconds": 0.031591
+            },
+            "routing": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.709879,
+              "exclusive_seconds": 0.696918
+            },
+            "general": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.679643,
+              "exclusive_seconds": 0.662305
+            },
+            "review": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.540974,
+              "exclusive_seconds": 0.539681
+            },
+            "final_save": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.001425,
+              "exclusive_seconds": 0.001425
+            }
+          },
+          "counts": {}
+        }
+      },
+      "elapsed_seconds": 2.0099721000296995,
+      "python_cpu_seconds": 0.03125,
+      "finished_at_utc": "2026-10-20T04:14:48.519909+00:00",
+      "combined_process_cpu_seconds": 2.25,
+      "cpu_percent_machine": 4.664243846897912,
+      "combined_process_ram_peak_mb": 2954.72265625,
+      "whole_gpu_vram_peak_mb": 7642.0,
+      "python_working_set_mb": 62.7578125
+    },
+    {
+      "id": "NAT-T04",
+      "message": "Python 어디까지 했더라?",
+      "expected": {
+        "id": "NAT-T04",
+        "message": "Python 어디까지 했더라?",
+        "records": [
+          {
+            "id": "NAT-T04-r0",
+            "text": "2026-10-10 Python Part 1을 완료했다."
+          },
+          {
+            "id": "NAT-T04-r1",
+            "text": "2026-10-10 Python Part 1은 완료하지 않았다."
+          }
+        ],
+        "previous_context": [],
+        "required_concepts": [
+          "충돌|상반|다른|확정|확인"
+        ],
+        "forbidden_claims": [],
+        "expected_search": true,
+        "expected_interpretation": "원문·상태·시점을 보존하며 현재 요청에 필요한 사실만 사용",
+        "expected_response_type": "CONFLICT",
+        "expected_buttons": [],
+        "required_sources": [],
+        "failure_code": null,
+        "evaluation_boundary": "실제 모델 평가는 의미·출처 검사, 계약 테스트는 개별 정책·액션 경계 검사"
+      },
+      "mode": "auto",
+      "started_at_utc": "2026-10-20T04:14:48.680195+00:00",
+      "response": {
+        "message_id": "132db251-3b2d-40f2-8359-6aaabbd49325",
+        "status": "answered",
+        "items": [
+          {
+            "text": "기록에 따르면 2026-10-10에 Python Part 1을 완료했다고 기록했으나, 동일 날짜에 완료하지 않았다고 기록한 것으로 보입니다. 이 두 기록은 상충하며, 현재 상태는 이 기록만으로 확인되지 않습니다.",
+            "citations": [
+              "0733f895-ad75-4c9a-89a4-b96e7c1d08cb",
+              "eba6711d-eec2-4c28-be8f-6c8c29002ae3"
+            ],
+            "source_type": "personal_memory"
+          }
+        ],
+        "citation_details": [
+          {
+            "item_index": 0,
+            "memory_id": "0733f895-ad75-4c9a-89a4-b96e7c1d08cb",
+            "record_id": "93020d02-86da-4bd3-9256-94289fbb0117",
+            "revision_id": "fada7287-56fc-483c-943c-3519656a5910",
+            "quote": "2026-10-10 Python Part 1을 완료했다.",
+            "start": 0,
+            "end": 31,
+            "citation_id": "132db251-3b2d-40f2-8359-6aaabbd49325:0:0733f895-ad75-4c9a-89a4-b96e7c1d08cb"
+          },
+          {
+            "item_index": 0,
+            "memory_id": "eba6711d-eec2-4c28-be8f-6c8c29002ae3",
+            "record_id": "84450372-354b-46ac-9f37-2931a737d753",
+            "revision_id": "1c4c8edc-b72c-4adf-a56f-7f264f133d18",
+            "quote": "2026-10-10 Python Part 1은 완료하지 않았다.",
+            "start": 0,
+            "end": 35,
+            "citation_id": "132db251-3b2d-40f2-8359-6aaabbd49325:0:eba6711d-eec2-4c28-be8f-6c8c29002ae3"
+          }
+        ],
+        "validation": "model_checked",
+        "history_turns": 0,
+        "conversation_type": "memory",
+        "blocks": [
+          {
+            "type": "paragraph",
+            "item_indices": [
+              0
+            ]
+          }
+        ],
+        "query_corrections": [
+          {
+            "status": "none",
+            "query": "Python 공부 어디까지 했더라?",
+            "edits": [],
+            "reason": null,
+            "original_query": "Python 공부 어디까지 했더라?",
+            "searched": false
+          }
+        ],
+        "conversation_mode": "memory",
+        "requested_mode": "auto",
+        "elapsed_seconds": 34.621,
+        "model": "server-default",
+        "generation_revision": "unconfigured",
+        "chat_prompt_version": 5,
+        "presentation": [
+          {
+            "type": "text",
+            "item_indices": [
+              0
+            ]
+          }
+        ],
+        "phase_seconds": 5.504,
+        "phase_timings": {
+          "resolving_context": 2.504,
+          "searching": 19.376,
+          "generating": 7.237,
+          "validating": 5.504
+        }
+      },
+      "evidence_ids": [
+        "NAT-T04-r0",
+        "NAT-T04-r1"
+      ],
+      "checks": {
+        "required_concepts": true,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      },
+      "passed": true,
+      "failure_code": null,
+      "performance": {
+        "lock_wait_seconds": 0.01,
+        "model_http_calls": [
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.002198
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "routing",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.001437
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "routing",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.872648,
+            "usage": {
+              "prompt_tokens": 517,
+              "completion_tokens": 32,
+              "total_tokens": 549
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.002202
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 5.360424,
+            "usage": {
+              "prompt_tokens": 778,
+              "completion_tokens": 224,
+              "total_tokens": 1002
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.024718
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.010562
+          },
+          {
+            "operation": "/v1/embeddings",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.037054,
+            "usage": {
+              "prompt_tokens": 20,
+              "total_tokens": 20
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.022626
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 4.454272,
+            "usage": {
+              "prompt_tokens": 1183,
+              "completion_tokens": 167,
+              "total_tokens": 1350
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.014675
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "search_planning",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.028969
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "search_planning",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 2.416114,
+            "usage": {
+              "prompt_tokens": 3783,
+              "completion_tokens": 12,
+              "total_tokens": 3795
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.003755
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.016402
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 6.961087,
+            "usage": {
+              "prompt_tokens": 3439,
+              "completion_tokens": 194,
+              "total_tokens": 3633
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "context_selection",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.016201
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "context_selection",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 1.593196,
+            "usage": {
+              "prompt_tokens": 898,
+              "completion_tokens": 39,
+              "total_tokens": 937
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "generation",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.064574
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "generation",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 7.169584,
+            "usage": {
+              "prompt_tokens": 2985,
+              "completion_tokens": 257,
+              "total_tokens": 3242
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.028154
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 4.67815,
+            "usage": {
+              "prompt_tokens": 2091,
+              "completion_tokens": 167,
+              "total_tokens": 2258
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "display_review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.017097
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "display_review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.775187,
+            "usage": {
+              "prompt_tokens": 1326,
+              "completion_tokens": 13,
+              "total_tokens": 1339
+            }
+          }
+        ],
+        "profile": {
+          "schema_version": 1,
+          "outcome": "completed",
+          "elapsed_seconds": 34.614323,
+          "stages": {
+            "model_wait": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.001761,
+              "exclusive_seconds": 0.001761
+            },
+            "token_count": {
+              "calls": 3,
+              "failures": 0,
+              "inclusive_seconds": 0.021605,
+              "exclusive_seconds": 0.021605
+            },
+            "token_budget": {
+              "calls": 11,
+              "failures": 0,
+              "inclusive_seconds": 0.234833,
+              "exclusive_seconds": 0.234833
+            },
+            "routing": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.874557,
+              "exclusive_seconds": 0.87304
+            },
+            "question_understanding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 5.36345,
+              "exclusive_seconds": 5.361147
+            },
+            "candidate_snapshot": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.001923,
+              "exclusive_seconds": 0.001923
+            },
+            "embedding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.073162,
+              "exclusive_seconds": 0.037769
+            },
+            "candidate_matrix": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 5.2e-05,
+              "exclusive_seconds": 5.2e-05
+            },
+            "keyword_ranking": {
+              "calls": 2,
+              "failures": 0,
+              "inclusive_seconds": 0.000457,
+              "exclusive_seconds": 0.000457
+            },
+            "relevance_selection": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 4.477501,
+              "exclusive_seconds": 4.45475
+            },
+            "retrieval": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 9.925992,
+              "exclusive_seconds": 0.009446
+            },
+            "search": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 9.926012,
+              "exclusive_seconds": 2e-05
+            },
+            "search_planning": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 2.445976,
+              "exclusive_seconds": 2.416591
+            },
+            "context_resolution": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 6.982719,
+              "exclusive_seconds": 6.96197
+            },
+            "context_selection": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 1.609973,
+              "exclusive_seconds": 1.593655
+            },
+            "answer_selection": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 1.612186,
+              "exclusive_seconds": 0.002213
+            },
+            "generation": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 7.235031,
+              "exclusive_seconds": 7.170101
+            },
+            "answer_generation": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 7.236681,
+              "exclusive_seconds": 0.00165
+            },
+            "review": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 4.706962,
+              "exclusive_seconds": 4.678602
+            },
+            "display_review": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.792747,
+              "exclusive_seconds": 0.775514
+            },
+            "independent_review": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 5.504004,
+              "exclusive_seconds": 0.004295
+            },
+            "final_save": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.001971,
+              "exclusive_seconds": 0.001971
+            }
+          },
+          "counts": {
+            "search_iterations": 1,
+            "generation_attempts": 1,
+            "review_attempts": 1
+          }
+        }
+      },
+      "elapsed_seconds": 34.63231580005959,
+      "python_cpu_seconds": 0.09375,
+      "finished_at_utc": "2026-10-20T04:15:23.312302+00:00",
+      "combined_process_cpu_seconds": 37.015625,
+      "cpu_percent_machine": 4.453406226824369,
+      "combined_process_ram_peak_mb": 3167.6796875,
+      "whole_gpu_vram_peak_mb": 7642.0,
+      "python_working_set_mb": 63.3984375
+    },
+    {
+      "id": "NAT-T05",
+      "message": "Python 다시 공부할까?",
+      "expected": {
+        "id": "NAT-T05",
+        "message": "Python 다시 공부할까?",
+        "records": [
+          {
+            "id": "NAT-T05-r0",
+            "text": "2026-10-10 Python Part 1을 완료했다."
+          }
+        ],
+        "previous_context": [],
+        "required_concepts": [
+          "Part 1"
+        ],
+        "forbidden_claims": [
+          "다음 과정은 Part 2입니다",
+          "Part 2부터 해야"
+        ],
+        "expected_search": true,
+        "expected_interpretation": "원문·상태·시점을 보존하며 현재 요청에 필요한 사실만 사용",
+        "expected_response_type": null,
+        "expected_buttons": [],
+        "required_sources": [],
+        "failure_code": null,
+        "evaluation_boundary": "실제 모델 평가는 의미·출처 검사, 계약 테스트는 개별 정책·액션 경계 검사"
+      },
+      "mode": "auto",
+      "started_at_utc": "2026-10-20T04:15:23.456948+00:00",
+      "response": {
+        "message_id": "d9bc7131-3b5a-4703-b989-2479a997931d",
+        "status": "insufficient_evidence",
+        "items": [
+          {
+            "text": "Python 다시 공부할까?",
+            "citations": [],
+            "source_type": "inference"
+          }
+        ],
+        "notice": "관련 기록에서 확인할 근거를 찾지 못했습니다.",
+        "conversation_type": "mixed",
+        "blocks": [
+          {
+            "type": "paragraph",
+            "item_indices": [
+              0
+            ]
+          }
+        ],
+        "query_corrections": [
+          {
+            "status": "none",
+            "query": "Python을 다시 공부할 계획이야. 어떤 주제부터 시작해야 할까?",
+            "edits": [],
+            "reason": null,
+            "original_query": "Python을 다시 공부할 계획이야. 어떤 주제부터 시작해야 할까?",
+            "searched": false
+          }
+        ],
+        "conversation_mode": "hybrid",
+        "requested_mode": "auto",
+        "elapsed_seconds": 8.833,
+        "model": "server-default",
+        "generation_revision": "unconfigured",
+        "chat_prompt_version": 5,
+        "presentation": [
+          {
+            "type": "text",
+            "item_indices": [
+              0
+            ]
+          }
+        ],
+        "phase_seconds": 0.698,
+        "phase_timings": {
+          "resolving_context": 1.249,
+          "searching": 6.118,
+          "generating": 0.769,
+          "validating": 0.698
+        }
+      },
+      "evidence_ids": [],
+      "checks": {
+        "required_concepts": false,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      },
+      "passed": false,
+      "failure_code": "NAT_EXPECTATION_FAILED",
+      "performance": {
+        "lock_wait_seconds": 0.012,
+        "model_http_calls": [
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.01999
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "routing",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.001969
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "routing",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 1.208405,
+            "usage": {
+              "prompt_tokens": 516,
+              "completion_tokens": 42,
+              "total_tokens": 558
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.005478
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 5.367655,
+            "usage": {
+              "prompt_tokens": 788,
+              "completion_tokens": 224,
+              "total_tokens": 1012
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.010959
+          },
+          {
+            "operation": "/v1/embeddings",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.058549,
+            "usage": {
+              "prompt_tokens": 20,
+              "total_tokens": 20
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.002427
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "search_planning",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.001852
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "search_planning",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.632382,
+            "usage": {
+              "prompt_tokens": 892,
+              "completion_tokens": 6,
+              "total_tokens": 898
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.026078
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "general",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.011752
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "general",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.751958,
+            "usage": {
+              "prompt_tokens": 441,
+              "completion_tokens": 22,
+              "total_tokens": 463
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.002986
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.001352
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.694636,
+            "usage": {
+              "prompt_tokens": 337,
+              "completion_tokens": 16,
+              "total_tokens": 353
+            }
+          }
+        ],
+        "profile": {
+          "schema_version": 1,
+          "outcome": "completed",
+          "elapsed_seconds": 8.826114,
+          "stages": {
+            "model_wait": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.003111,
+              "exclusive_seconds": 0.003111
+            },
+            "token_count": {
+              "calls": 4,
+              "failures": 0,
+              "inclusive_seconds": 0.052336,
+              "exclusive_seconds": 0.052336
+            },
+            "token_budget": {
+              "calls": 6,
+              "failures": 0,
+              "inclusive_seconds": 0.033848,
+              "exclusive_seconds": 0.033848
+            },
+            "routing": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 1.210818,
+              "exclusive_seconds": 1.208755
+            },
+            "question_understanding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 5.37387,
+              "exclusive_seconds": 5.368294
+            },
+            "candidate_snapshot": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.001857,
+              "exclusive_seconds": 0.001857
+            },
+            "embedding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.069998,
+              "exclusive_seconds": 0.058991
+            },
+            "candidate_matrix": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 3.6e-05,
+              "exclusive_seconds": 3.6e-05
+            },
+            "keyword_ranking": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.000185,
+              "exclusive_seconds": 0.000185
+            },
+            "relevance_selection": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 3e-06,
+              "exclusive_seconds": 3e-06
+            },
+            "retrieval": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 5.449254,
+              "exclusive_seconds": 0.003305
+            },
+            "search": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 5.449273,
+              "exclusive_seconds": 1.9e-05
+            },
+            "search_planning": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.634744,
+              "exclusive_seconds": 0.632797
+            },
+            "general": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.764117,
+              "exclusive_seconds": 0.752279
+            },
+            "review": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.696354,
+              "exclusive_seconds": 0.694936
+            },
+            "final_save": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.001243,
+              "exclusive_seconds": 0.001243
+            }
+          },
+          "counts": {
+            "search_iterations": 1
+          }
+        }
+      },
+      "elapsed_seconds": 8.843566499999724,
+      "python_cpu_seconds": 0.0625,
+      "finished_at_utc": "2026-10-20T04:15:32.300203+00:00",
+      "combined_process_cpu_seconds": 9.984375,
+      "cpu_percent_machine": 4.704161211429947,
+      "combined_process_ram_peak_mb": 3389.3203125,
+      "whole_gpu_vram_peak_mb": 7642.0,
+      "python_working_set_mb": 63.59765625
+    },
+    {
+      "id": "NAT-T07",
+      "message": "PMA 검색 방식 마지막 결정 알려줘",
+      "expected": {
+        "id": "NAT-T07",
+        "message": "PMA 검색 방식 마지막 결정 알려줘",
+        "records": [
+          {
+            "id": "NAT-T07-r0",
+            "text": "2026-10-10 PMA 검색은 A를 선택했다."
+          },
+          {
+            "id": "NAT-T07-r1",
+            "text": "2026-10-15 PMA 검색은 A에서 B로 변경하기로 결정했다."
+          }
+        ],
+        "previous_context": [],
+        "required_concepts": [
+          "B"
+        ],
+        "forbidden_claims": [],
+        "expected_search": true,
+        "expected_interpretation": "원문·상태·시점을 보존하며 현재 요청에 필요한 사실만 사용",
+        "expected_response_type": null,
+        "expected_buttons": [],
+        "required_sources": [],
+        "failure_code": null,
+        "evaluation_boundary": "실제 모델 평가는 의미·출처 검사, 계약 테스트는 개별 정책·액션 경계 검사"
+      },
+      "mode": "auto",
+      "started_at_utc": "2026-10-20T04:15:33.099377+00:00",
+      "response": {
+        "message_id": "35b70db8-6f07-4202-9758-4003311d9832",
+        "status": "answered",
+        "items": [
+          {
+            "text": "PMA 검색 방식의 마지막 결정에 대한 구체적인 정보를 제공해 드릴 수 없습니다. PMA(Privacy by Design, Privacy by Default)는 데이터 보호를 위한 원칙으로, 검색 방식과 같은 구체적인 기술적 결정은 조직이나 시스템에 따라 달라질 수 있습니다. 보다 정확한 정보를 얻으려면 관련 기관이나 시스템 운영자에게 문의하는 것이 좋습니다.",
+            "citations": [],
+            "source_type": "general"
+          }
+        ],
+        "notice": "",
+        "conversation_type": "general",
+        "blocks": [
+          {
+            "type": "paragraph",
+            "item_indices": [
+              0
+            ]
+          }
+        ],
+        "conversation_mode": "general",
+        "requested_mode": "auto",
+        "elapsed_seconds": 5.109,
+        "model": "server-default",
+        "generation_revision": "unconfigured",
+        "chat_prompt_version": 5,
+        "presentation": [
+          {
+            "type": "text",
+            "item_indices": [
+              0
+            ]
+          }
+        ],
+        "phase_seconds": 0.304,
+        "phase_timings": {
+          "resolving_context": 1.837,
+          "generating": 2.968,
+          "validating": 0.304
+        }
+      },
+      "evidence_ids": [],
+      "checks": {
+        "required_concepts": true,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      },
+      "passed": true,
+      "failure_code": null,
+      "performance": {
+        "lock_wait_seconds": 0.011,
+        "model_http_calls": [
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.003262
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "routing",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.013894
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "routing",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 1.747073,
+            "usage": {
+              "prompt_tokens": 519,
+              "completion_tokens": 22,
+              "total_tokens": 541
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.052863
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "general",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.001858
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "general",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 2.941041,
+            "usage": {
+              "prompt_tokens": 439,
+              "completion_tokens": 117,
+              "total_tokens": 556
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.022085
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.001909
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.299855,
+            "usage": {
+              "prompt_tokens": 335,
+              "completion_tokens": 6,
+              "total_tokens": 341
+            }
+          }
+        ],
+        "profile": {
+          "schema_version": 1,
+          "outcome": "completed",
+          "elapsed_seconds": 5.10125,
+          "stages": {
+            "model_wait": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.002368,
+              "exclusive_seconds": 0.002368
+            },
+            "token_count": {
+              "calls": 3,
+              "failures": 0,
+              "inclusive_seconds": 0.078855,
+              "exclusive_seconds": 0.078855
+            },
+            "token_budget": {
+              "calls": 3,
+              "failures": 0,
+              "inclusive_seconds": 0.017917,
+              "exclusive_seconds": 0.017917
+            },
+            "routing": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 1.761391,
+              "exclusive_seconds": 1.747404
+            },
+            "general": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 2.943436,
+              "exclusive_seconds": 2.941499
+            },
+            "review": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.302169,
+              "exclusive_seconds": 0.300176
+            },
+            "final_save": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.001354,
+              "exclusive_seconds": 0.001354
+            }
+          },
+          "counts": {}
+        }
+      },
+      "elapsed_seconds": 5.119367800070904,
+      "python_cpu_seconds": 0.046875,
+      "finished_at_utc": "2026-10-20T04:15:38.218523+00:00",
+      "combined_process_cpu_seconds": 5.046875,
+      "cpu_percent_machine": 4.107664589569455,
+      "combined_process_ram_peak_mb": 3981.1875,
+      "whole_gpu_vram_peak_mb": 7642.0,
+      "python_working_set_mb": 44.88671875
+    },
+    {
+      "id": "NAT-T08",
+      "message": "안녕",
+      "expected": {
+        "id": "NAT-T08",
+        "message": "안녕",
+        "records": [
+          {
+            "id": "NAT-T08-r0",
+            "text": "2026-10-10 Python Part 1을 완료했다."
+          }
+        ],
+        "previous_context": [],
+        "required_concepts": [],
+        "forbidden_claims": [
+          "Python",
+          "Part 1"
+        ],
+        "expected_search": false,
+        "expected_interpretation": "원문·상태·시점을 보존하며 현재 요청에 필요한 사실만 사용",
+        "expected_response_type": "GENERAL",
+        "expected_buttons": [],
+        "required_sources": [],
+        "failure_code": null,
+        "evaluation_boundary": "실제 모델 평가는 의미·출처 검사, 계약 테스트는 개별 정책·액션 경계 검사"
+      },
+      "mode": "auto",
+      "started_at_utc": "2026-10-20T04:15:38.358743+00:00",
+      "response": {
+        "message_id": "7f148e3d-200f-477d-8410-84f034489c26",
+        "status": "answered",
+        "items": [
+          {
+            "text": "안녕하세요! 오늘은 2026년 10월 20일이에요. 어떻게 지내세요? 😊",
+            "citations": [],
+            "source_type": "general"
+          }
+        ],
+        "notice": "",
+        "conversation_type": "general",
+        "blocks": [
+          {
+            "type": "paragraph",
+            "item_indices": [
+              0
+            ]
+          }
+        ],
+        "conversation_mode": "general",
+        "requested_mode": "auto",
+        "elapsed_seconds": 1.462,
+        "model": "server-default",
+        "generation_revision": "unconfigured",
+        "chat_prompt_version": 5,
+        "presentation": [
+          {
+            "type": "text",
+            "item_indices": [
+              0
+            ]
+          }
+        ],
+        "phase_seconds": 0.278,
+        "phase_timings": {
+          "resolving_context": 0.02,
+          "generating": 1.165,
+          "validating": 0.278
+        }
+      },
+      "evidence_ids": [],
+      "checks": {
+        "required_concepts": true,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      },
+      "passed": true,
+      "failure_code": null,
+      "performance": {
+        "lock_wait_seconds": 0.011,
+        "model_http_calls": [
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.00264
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "general",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.017282
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "general",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 1.127777,
+            "usage": {
+              "prompt_tokens": 431,
+              "completion_tokens": 41,
+              "total_tokens": 472
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.017437
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.011087
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.264129,
+            "usage": {
+              "prompt_tokens": 257,
+              "completion_tokens": 6,
+              "total_tokens": 263
+            }
+          }
+        ],
+        "profile": {
+          "schema_version": 1,
+          "outcome": "completed",
+          "elapsed_seconds": 1.45529,
+          "stages": {
+            "model_wait": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.002275,
+              "exclusive_seconds": 0.002275
+            },
+            "token_count": {
+              "calls": 2,
+              "failures": 0,
+              "inclusive_seconds": 0.020497,
+              "exclusive_seconds": 0.020497
+            },
+            "token_budget": {
+              "calls": 2,
+              "failures": 0,
+              "inclusive_seconds": 0.028542,
+              "exclusive_seconds": 0.028542
+            },
+            "general": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 1.145508,
+              "exclusive_seconds": 1.128127
+            },
+            "review": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.275663,
+              "exclusive_seconds": 0.264502
+            },
+            "final_save": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.001466,
+              "exclusive_seconds": 0.001466
+            }
+          },
+          "counts": {}
+        }
+      },
+      "elapsed_seconds": 1.4733031999785453,
+      "python_cpu_seconds": 0.015625,
+      "finished_at_utc": "2026-10-20T04:15:39.831759+00:00",
+      "combined_process_cpu_seconds": 1.828125,
+      "cpu_percent_machine": 5.17014250706231,
+      "combined_process_ram_peak_mb": 3465.28125,
+      "whole_gpu_vram_peak_mb": 7642.0,
+      "python_working_set_mb": 44.93359375
+    },
+    {
+      "id": "NAT-T09",
+      "message": "내 기록 말고 일반적으로 Python 공부 방법 알려줘",
+      "expected": {
+        "id": "NAT-T09",
+        "message": "내 기록 말고 일반적으로 Python 공부 방법 알려줘",
+        "records": [
+          {
+            "id": "NAT-T09-r0",
+            "text": "2026-10-10 Python Part 1을 완료했다."
+          }
+        ],
+        "previous_context": [],
+        "required_concepts": [],
+        "forbidden_claims": [
+          "Part 1을 완료",
+          "기록을 보니"
+        ],
+        "expected_search": false,
+        "expected_interpretation": "원문·상태·시점을 보존하며 현재 요청에 필요한 사실만 사용",
+        "expected_response_type": "MEMORY_SUPPRESSED",
+        "expected_buttons": [],
+        "required_sources": [],
+        "failure_code": null,
+        "evaluation_boundary": "실제 모델 평가는 의미·출처 검사, 계약 테스트는 개별 정책·액션 경계 검사"
+      },
+      "mode": "auto",
+      "started_at_utc": "2026-10-20T04:15:39.945714+00:00",
+      "response": {
+        "message_id": "95ce9be1-239c-40b6-8e93-1bfe469d7f6f",
+        "status": "answered",
+        "items": [
+          {
+            "text": "Python을 효과적으로 공부하는 방법을 알려드릴게요. 아래에 몇 가지 추천 방법을 정리해두었어요.\n\n1. **기초부터 차근차근 공부하기**\n   - Python의 기본 문법, 데이터 타입, 조건문, 반복문 등을 먼저 익히세요. 초보자에게는 'Python Crash Course'나 'Automate the Boring Stuff with Python' 같은 책이 추천입니다.\n\n2. **실습 중심으로 학습하기**\n   - 이론만 공부해도 부족합니다. 실습을 통해 개념을 익히세요. 예를 들어, 간단한 프로그램을 작성하거나, 웹 스크래핑, 데이터 분석 등 실무에 가까운 프로젝트를 해보는 것이 좋습니다.\n\n3. **온라인 강의와 코스 활용하기**\n   - Coursera, Udemy, YouTube 등에서 제공하는 Python 강의를 활용해보세요. 특히 실습 중심의 코스가 도움이 됩니다.\n\n4. **커뮤니티와 소통하기**\n   - Python 커뮤니티(예: Reddit의 r/learnpython, Stack Overflow)에서 질문을 하고, 다른 사람의 코드를 참고해보세요. 이는 학습에 큰 도움이 됩니다.\n\n5. **프로젝트를 통해 실력 키우기**\n   - 작은 프로젝트부터 시작해보세요. 예를 들어, 웹사이트 만들기, 데이터 분석, 게임 개발 등. 이는 실무 경험을 쌓는 좋은 방법입니다.\n\n6. **오류를 통해 배우기**\n   - 오류 메시지를 보고, 그에 대한 해결책을 찾아보는 과정이 학습에 큰 도움이 됩니다. 오류는 학습의 일부로 받아들이세요.\n\n7. **정기적으로 복습하기**\n   - 학습한 내용을 정리하고, 주기적으로 복습해보세요. 이는 개념을 오래 기억하는 데 도움이 됩니다.\n\n8. **책과 문서를 활용하기**\n   - Python 공식 문서나 명확한 설명이 담긴 책을 읽으며 개념을 깊이 이해해보세요.\n\n이러한 방법들을 통해 Python을 효과적으로 공부할 수 있을 거예요. 궁금한 점이 있으면 언제든지 물어보세요! 😊",
+            "citations": [],
+            "source_type": "general"
+          }
+        ],
+        "notice": "",
+        "conversation_type": "general",
+        "blocks": [
+          {
+            "type": "paragraph",
+            "item_indices": [
+              0
+            ]
+          }
+        ],
+        "conversation_mode": "general",
+        "requested_mode": "auto",
+        "elapsed_seconds": 14.8,
+        "model": "server-default",
+        "generation_revision": "unconfigured",
+        "chat_prompt_version": 5,
+        "presentation": [
+          {
+            "type": "text",
+            "item_indices": [
+              0
+            ]
+          }
+        ],
+        "phase_seconds": 0.76,
+        "phase_timings": {
+          "resolving_context": 0.018,
+          "generating": 14.023,
+          "validating": 0.76
+        }
+      },
+      "evidence_ids": [],
+      "checks": {
+        "required_concepts": true,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      },
+      "passed": true,
+      "failure_code": null,
+      "performance": {
+        "lock_wait_seconds": 0.009,
+        "model_http_calls": [
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.002722
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "general",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.002277
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "general",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 13.989384,
+            "usage": {
+              "prompt_tokens": 442,
+              "completion_tokens": 593,
+              "total_tokens": 1035
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.028142
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.005243
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.751324,
+            "usage": {
+              "prompt_tokens": 814,
+              "completion_tokens": 13,
+              "total_tokens": 827
+            }
+          }
+        ],
+        "profile": {
+          "schema_version": 1,
+          "outcome": "completed",
+          "elapsed_seconds": 14.794054,
+          "stages": {
+            "model_wait": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.002143,
+              "exclusive_seconds": 0.002143
+            },
+            "token_count": {
+              "calls": 2,
+              "failures": 0,
+              "inclusive_seconds": 0.031295,
+              "exclusive_seconds": 0.031295
+            },
+            "token_budget": {
+              "calls": 2,
+              "failures": 0,
+              "inclusive_seconds": 0.007695,
+              "exclusive_seconds": 0.007695
+            },
+            "general": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 13.992157,
+              "exclusive_seconds": 13.989806
+            },
+            "review": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.75716,
+              "exclusive_seconds": 0.751816
+            },
+            "final_save": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.001387,
+              "exclusive_seconds": 0.001387
+            }
+          },
+          "counts": {}
+        }
+      },
+      "elapsed_seconds": 14.810472999932244,
+      "python_cpu_seconds": 0.0,
+      "finished_at_utc": "2026-10-20T04:15:54.756036+00:00",
+      "combined_process_cpu_seconds": 15.109375,
+      "cpu_percent_machine": 4.250757498896536,
+      "combined_process_ram_peak_mb": 3454.60546875,
+      "whole_gpu_vram_peak_mb": 7642.0,
+      "python_working_set_mb": 44.359375
+    },
+    {
+      "id": "NAT-T11",
+      "message": "또 캐시 오류야",
+      "expected": {
+        "id": "NAT-T11",
+        "message": "또 캐시 오류야",
+        "records": [
+          {
+            "id": "NAT-T11-r0",
+            "text": "이전 Linux 환경의 캐시 오류는 갱신 로직을 수정해 해결했다."
+          }
+        ],
+        "previous_context": [],
+        "required_concepts": [
+          "확인|환경|같은|이전"
+        ],
+        "forbidden_claims": [
+          "이번에도 원인은 동일"
+        ],
+        "expected_search": true,
+        "expected_interpretation": "원문·상태·시점을 보존하며 현재 요청에 필요한 사실만 사용",
+        "expected_response_type": "PAST_EXPERIENCE",
+        "expected_buttons": [],
+        "required_sources": [],
+        "failure_code": null,
+        "evaluation_boundary": "실제 모델 평가는 의미·출처 검사, 계약 테스트는 개별 정책·액션 경계 검사"
+      },
+      "mode": "auto",
+      "started_at_utc": "2026-10-20T04:15:54.921292+00:00",
+      "response": {
+        "message_id": "8daf1223-9c58-4095-a75e-a0f7e5ae689f",
+        "status": "answered",
+        "items": [
+          {
+            "text": "기록에 따르면 이전 Linux 환경의 캐시 오류는 갱신 로직을 수정해 해결했다고 기록되어 있습니다.",
+            "citations": [
+              "c8f6c2e3-e924-4306-b789-a1d92c9225c7"
+            ],
+            "source_type": "personal_memory"
+          }
+        ],
+        "display": {
+          "kind": "plain",
+          "items": [
+            {
+              "index": 0,
+              "state": "confirmed",
+              "event": "이전 Linux 환경의 캐시 오류 해결",
+              "event_date": ""
+            }
+          ],
+          "verified": true
+        },
+        "citation_details": [
+          {
+            "item_index": 0,
+            "memory_id": "c8f6c2e3-e924-4306-b789-a1d92c9225c7",
+            "record_id": "fafa3a8b-846d-4e25-b9fa-635c92ebdc4c",
+            "revision_id": "017b582e-f9d1-4d09-b3e9-f19c68185bd7",
+            "quote": "이전 Linux 환경의 캐시 오류는 갱신 로직을 수정해 해결했다.",
+            "start": 0,
+            "end": 36,
+            "citation_id": "8daf1223-9c58-4095-a75e-a0f7e5ae689f:0:c8f6c2e3-e924-4306-b789-a1d92c9225c7"
+          }
+        ],
+        "validation": "model_checked",
+        "history_turns": 0,
+        "conversation_type": "memory",
+        "blocks": [
+          {
+            "type": "paragraph",
+            "item_indices": [
+              0
+            ]
+          }
+        ],
+        "query_corrections": [
+          {
+            "status": "none",
+            "query": "지난번 캐시 오류는 언제 발생했고, 어떤 해결 방법을 시도했었나?",
+            "edits": [],
+            "reason": null,
+            "original_query": "지난번 캐시 오류는 언제 발생했고, 어떤 해결 방법을 시도했었나?",
+            "searched": false
+          }
+        ],
+        "conversation_mode": "memory",
+        "requested_mode": "auto",
+        "elapsed_seconds": 27.382,
+        "model": "server-default",
+        "generation_revision": "unconfigured",
+        "chat_prompt_version": 5,
+        "presentation": [
+          {
+            "type": "text",
+            "item_indices": [
+              0
+            ]
+          }
+        ],
+        "phase_seconds": 4.719,
+        "phase_timings": {
+          "resolving_context": 2.446,
+          "searching": 16.271,
+          "generating": 3.946,
+          "validating": 4.719
+        }
+      },
+      "evidence_ids": [
+        "NAT-T11-r0"
+      ],
+      "checks": {
+        "required_concepts": true,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      },
+      "passed": true,
+      "failure_code": null,
+      "performance": {
+        "lock_wait_seconds": 0.01,
+        "model_http_calls": [
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.020631
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "routing",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.019698
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "routing",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.987733,
+            "usage": {
+              "prompt_tokens": 517,
+              "completion_tokens": 37,
+              "total_tokens": 554
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.051169
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 6.054017,
+            "usage": {
+              "prompt_tokens": 793,
+              "completion_tokens": 252,
+              "total_tokens": 1045
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.01701
+          },
+          {
+            "operation": "/v1/embeddings",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.051283,
+            "usage": {
+              "prompt_tokens": 20,
+              "total_tokens": 20
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.032024
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 2.775816,
+            "usage": {
+              "prompt_tokens": 835,
+              "completion_tokens": 96,
+              "total_tokens": 931
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.027338
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "search_planning",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.02479
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "search_planning",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 1.363218,
+            "usage": {
+              "prompt_tokens": 2353,
+              "completion_tokens": 6,
+              "total_tokens": 2359
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.00925
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.013536
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 5.834247,
+            "usage": {
+              "prompt_tokens": 1864,
+              "completion_tokens": 195,
+              "total_tokens": 2059
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "context_selection",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.024274
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "context_selection",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 1.375393,
+            "usage": {
+              "prompt_tokens": 536,
+              "completion_tokens": 40,
+              "total_tokens": 576
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "generation",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.029681
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "generation",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 3.913706,
+            "usage": {
+              "prompt_tokens": 2638,
+              "completion_tokens": 140,
+              "total_tokens": 2778
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.021988
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 4.059429,
+            "usage": {
+              "prompt_tokens": 1932,
+              "completion_tokens": 149,
+              "total_tokens": 2081
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "display_review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.011719
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "display_review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.62107,
+            "usage": {
+              "prompt_tokens": 1118,
+              "completion_tokens": 9,
+              "total_tokens": 1127
+            }
+          }
+        ],
+        "profile": {
+          "schema_version": 1,
+          "outcome": "completed",
+          "elapsed_seconds": 27.376642,
+          "stages": {
+            "model_wait": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.002504,
+              "exclusive_seconds": 0.002504
+            },
+            "token_count": {
+              "calls": 3,
+              "failures": 0,
+              "inclusive_seconds": 0.058182,
+              "exclusive_seconds": 0.058182
+            },
+            "token_budget": {
+              "calls": 10,
+              "failures": 0,
+              "inclusive_seconds": 0.247399,
+              "exclusive_seconds": 0.247399
+            },
+            "routing": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 1.008023,
+              "exclusive_seconds": 0.988233
+            },
+            "question_understanding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 6.105969,
+              "exclusive_seconds": 6.05467
+            },
+            "candidate_snapshot": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.001871,
+              "exclusive_seconds": 0.001871
+            },
+            "embedding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.068839,
+              "exclusive_seconds": 0.05178
+            },
+            "candidate_matrix": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 3.7e-05,
+              "exclusive_seconds": 3.7e-05
+            },
+            "keyword_ranking": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.000239,
+              "exclusive_seconds": 0.000239
+            },
+            "relevance_selection": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 2.808414,
+              "exclusive_seconds": 2.776281
+            },
+            "retrieval": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 8.990031,
+              "exclusive_seconds": 0.004662
+            },
+            "search": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 8.990055,
+              "exclusive_seconds": 2.4e-05
+            },
+            "search_planning": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 1.388732,
+              "exclusive_seconds": 1.363662
+            },
+            "context_resolution": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 5.858496,
+              "exclusive_seconds": 5.835271
+            },
+            "context_selection": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 1.400154,
+              "exclusive_seconds": 1.375785
+            },
+            "answer_selection": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 1.402073,
+              "exclusive_seconds": 0.001919
+            },
+            "generation": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 3.944122,
+              "exclusive_seconds": 3.914197
+            },
+            "answer_generation": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 3.945939,
+              "exclusive_seconds": 0.001817
+            },
+            "review": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 4.082113,
+              "exclusive_seconds": 4.059919
+            },
+            "display_review": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.633258,
+              "exclusive_seconds": 0.621403
+            },
+            "independent_review": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 4.719302,
+              "exclusive_seconds": 0.003931
+            },
+            "final_save": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.002139,
+              "exclusive_seconds": 0.002139
+            }
+          },
+          "counts": {
+            "search_iterations": 1,
+            "generation_attempts": 1,
+            "review_attempts": 1
+          }
+        }
+      },
+      "elapsed_seconds": 27.394122599973343,
+      "python_cpu_seconds": 0.03125,
+      "finished_at_utc": "2026-10-20T04:16:22.315206+00:00",
+      "combined_process_cpu_seconds": 28.546875,
+      "cpu_percent_machine": 4.34200117437292,
+      "combined_process_ram_peak_mb": 3580.99609375,
+      "whole_gpu_vram_peak_mb": 7642.0,
+      "python_working_set_mb": 36.18359375
+    },
+    {
+      "id": "NAT-T13",
+      "message": "PMA 또 메모리 부족이야",
+      "expected": {
+        "id": "NAT-T13",
+        "message": "PMA 또 메모리 부족이야",
+        "records": [
+          {
+            "id": "NAT-T13-r0",
+            "text": "PMA에서 배치 크기를 32로 줄여도 메모리 부족 해결에 실패했다."
+          }
+        ],
+        "previous_context": [],
+        "required_concepts": [
+          "실패|해결되지|부족"
+        ],
+        "forbidden_claims": [
+          "32로 줄이면 해결됩니다"
+        ],
+        "expected_search": true,
+        "expected_interpretation": "원문·상태·시점을 보존하며 현재 요청에 필요한 사실만 사용",
+        "expected_response_type": null,
+        "expected_buttons": [],
+        "required_sources": [],
+        "failure_code": null,
+        "evaluation_boundary": "실제 모델 평가는 의미·출처 검사, 계약 테스트는 개별 정책·액션 경계 검사"
+      },
+      "mode": "auto",
+      "started_at_utc": "2026-10-20T04:16:22.454759+00:00",
+      "response": {
+        "message_id": "0a71e6e2-6d62-4e3a-9cd2-603c8f4747b5",
+        "status": "answered",
+        "items": [
+          {
+            "text": "기록에 따르면 PMA에서 배치 크기를 32로 줄여도 메모리 부족 해결에 실패했다.",
+            "citations": [
+              "e65a0556-a09e-4424-8c42-28ba2e08d79e"
+            ],
+            "source_type": "personal_memory"
+          }
+        ],
+        "citation_details": [
+          {
+            "item_index": 0,
+            "memory_id": "e65a0556-a09e-4424-8c42-28ba2e08d79e",
+            "record_id": "1f3462dd-580c-4da5-a8a0-53656678dd5b",
+            "revision_id": "a237e773-1078-4884-b617-ae6a565ca748",
+            "quote": "PMA에서 배치 크기를 32로 줄여도 메모리 부족 해결에 실패했다.",
+            "start": 0,
+            "end": 37,
+            "citation_id": "0a71e6e2-6d62-4e3a-9cd2-603c8f4747b5:0:e65a0556-a09e-4424-8c42-28ba2e08d79e"
+          }
+        ],
+        "validation": "model_checked",
+        "history_turns": 0,
+        "conversation_type": "memory",
+        "blocks": [
+          {
+            "type": "paragraph",
+            "item_indices": [
+              0
+            ]
+          }
+        ],
+        "query_corrections": [
+          {
+            "status": "none",
+            "query": "PMA에서 메모리 부족 문제는 어떤 원인으로 발생할 수 있으며, 어떻게 해결할 수 있을까?",
+            "edits": [],
+            "reason": null,
+            "original_query": "PMA에서 메모리 부족 문제는 어떤 원인으로 발생할 수 있으며, 어떻게 해결할 수 있을까?",
+            "searched": false
+          }
+        ],
+        "conversation_mode": "memory",
+        "requested_mode": "auto",
+        "elapsed_seconds": 28.86,
+        "model": "server-default",
+        "generation_revision": "unconfigured",
+        "chat_prompt_version": 5,
+        "presentation": [
+          {
+            "type": "text",
+            "item_indices": [
+              0
+            ]
+          }
+        ],
+        "phase_seconds": 4.672,
+        "phase_timings": {
+          "resolving_context": 2.634,
+          "searching": 17.492,
+          "generating": 4.062,
+          "validating": 4.672
+        }
+      },
+      "evidence_ids": [
+        "NAT-T13-r0"
+      ],
+      "checks": {
+        "required_concepts": true,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      },
+      "passed": true,
+      "failure_code": null,
+      "performance": {
+        "lock_wait_seconds": 0.009,
+        "model_http_calls": [
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.002439
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "routing",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.001752
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "routing",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 1.295751,
+            "usage": {
+              "prompt_tokens": 519,
+              "completion_tokens": 48,
+              "total_tokens": 567
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.003374
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 6.330546,
+            "usage": {
+              "prompt_tokens": 794,
+              "completion_tokens": 265,
+              "total_tokens": 1059
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.007337
+          },
+          {
+            "operation": "/v1/embeddings",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.064666,
+            "usage": {
+              "prompt_tokens": 24,
+              "total_tokens": 24
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.00282
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 2.348636,
+            "usage": {
+              "prompt_tokens": 840,
+              "completion_tokens": 85,
+              "total_tokens": 925
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.004275
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "search_planning",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.014451
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "search_planning",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 1.717022,
+            "usage": {
+              "prompt_tokens": 2515,
+              "completion_tokens": 12,
+              "total_tokens": 2527
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.011736
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.015124
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 6.955776,
+            "usage": {
+              "prompt_tokens": 1989,
+              "completion_tokens": 237,
+              "total_tokens": 2226
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "context_selection",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.001672
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "context_selection",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 1.314478,
+            "usage": {
+              "prompt_tokens": 542,
+              "completion_tokens": 41,
+              "total_tokens": 583
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "generation",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.006603
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "generation",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 4.052563,
+            "usage": {
+              "prompt_tokens": 2644,
+              "completion_tokens": 149,
+              "total_tokens": 2793
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.021119
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 3.952858,
+            "usage": {
+              "prompt_tokens": 1934,
+              "completion_tokens": 141,
+              "total_tokens": 2075
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "display_review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.004328
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "display_review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.688157,
+            "usage": {
+              "prompt_tokens": 1131,
+              "completion_tokens": 13,
+              "total_tokens": 1144
+            }
+          }
+        ],
+        "profile": {
+          "schema_version": 1,
+          "outcome": "completed",
+          "elapsed_seconds": 28.854698,
+          "stages": {
+            "model_wait": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.002093,
+              "exclusive_seconds": 0.002093
+            },
+            "token_count": {
+              "calls": 3,
+              "failures": 0,
+              "inclusive_seconds": 0.019243,
+              "exclusive_seconds": 0.019243
+            },
+            "token_budget": {
+              "calls": 10,
+              "failures": 0,
+              "inclusive_seconds": 0.080183,
+              "exclusive_seconds": 0.080183
+            },
+            "routing": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 1.298071,
+              "exclusive_seconds": 1.296236
+            },
+            "question_understanding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 6.334776,
+              "exclusive_seconds": 6.331289
+            },
+            "candidate_snapshot": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.001852,
+              "exclusive_seconds": 0.001852
+            },
+            "embedding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.072535,
+              "exclusive_seconds": 0.065149
+            },
+            "candidate_matrix": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 3.6e-05,
+              "exclusive_seconds": 3.6e-05
+            },
+            "keyword_ranking": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.000274,
+              "exclusive_seconds": 0.000274
+            },
+            "relevance_selection": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 2.352018,
+              "exclusive_seconds": 2.34909
+            },
+            "retrieval": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 8.76651,
+              "exclusive_seconds": 0.00502
+            },
+            "search": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 8.76653,
+              "exclusive_seconds": 2e-05
+            },
+            "search_planning": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 1.732143,
+              "exclusive_seconds": 1.717462
+            },
+            "context_resolution": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 6.983821,
+              "exclusive_seconds": 6.956508
+            },
+            "context_selection": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 1.316597,
+              "exclusive_seconds": 1.314844
+            },
+            "answer_selection": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 1.318109,
+              "exclusive_seconds": 0.001513
+            },
+            "generation": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 4.060198,
+              "exclusive_seconds": 4.053216
+            },
+            "answer_generation": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 4.061822,
+              "exclusive_seconds": 0.001623
+            },
+            "review": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 3.974655,
+              "exclusive_seconds": 3.953294
+            },
+            "display_review": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.69297,
+              "exclusive_seconds": 0.688492
+            },
+            "independent_review": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 4.671691,
+              "exclusive_seconds": 0.004066
+            },
+            "final_save": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.00236,
+              "exclusive_seconds": 0.00236
+            }
+          },
+          "counts": {
+            "search_iterations": 1,
+            "generation_attempts": 1,
+            "review_attempts": 1
+          }
+        }
+      },
+      "elapsed_seconds": 28.871144199976698,
+      "python_cpu_seconds": 0.046875,
+      "finished_at_utc": "2026-10-20T04:16:51.325693+00:00",
+      "combined_process_cpu_seconds": 30.609375,
+      "cpu_percent_machine": 4.417527120386969,
+      "combined_process_ram_peak_mb": 3282.484375,
+      "whole_gpu_vram_peak_mb": 7642.0,
+      "python_working_set_mb": 30.15625
+    },
+    {
+      "id": "NAT-T15",
+      "message": "Python 지난 기록 자연스럽게 설명해줘",
+      "expected": {
+        "id": "NAT-T15",
+        "message": "Python 지난 기록 자연스럽게 설명해줘",
+        "records": [
+          {
+            "id": "NAT-T15-r0",
+            "text": "2026-10-10 Python Part 1을 공부했다. 완료 여부는 기록하지 않았다."
+          }
+        ],
+        "previous_context": [],
+        "required_concepts": [
+          "공부|학습"
+        ],
+        "forbidden_claims": [
+          "Part 1을 완료했"
+        ],
+        "expected_search": true,
+        "expected_interpretation": "원문·상태·시점을 보존하며 현재 요청에 필요한 사실만 사용",
+        "expected_response_type": null,
+        "expected_buttons": [],
+        "required_sources": [],
+        "failure_code": null,
+        "evaluation_boundary": "실제 모델 평가는 의미·출처 검사, 계약 테스트는 개별 정책·액션 경계 검사"
+      },
+      "mode": "auto",
+      "started_at_utc": "2026-10-20T04:16:51.476549+00:00",
+      "response": {
+        "message_id": "1beb83f5-4730-4702-afe3-bd64dc6f3730",
+        "status": "answered",
+        "items": [
+          {
+            "text": "지난 기록에 대한 자연스러운 설명을 드리겠습니다. 현재까지의 대화 기록은 비어 있으며, 이는 처음으로 대화를 시작하는 경우입니다. 이후에 어떤 주제로 이야기를 나누든, 자연스럽고 친근하게 도와드릴게요. 궁금한 점이나 도움이 필요하시면 언제든지 말씀해주세요!",
+            "citations": [],
+            "source_type": "general"
+          }
+        ],
+        "notice": "",
+        "conversation_type": "general",
+        "blocks": [
+          {
+            "type": "paragraph",
+            "item_indices": [
+              0
+            ]
+          }
+        ],
+        "conversation_mode": "general",
+        "requested_mode": "auto",
+        "elapsed_seconds": 3.304,
+        "model": "server-default",
+        "generation_revision": "unconfigured",
+        "chat_prompt_version": 5,
+        "presentation": [
+          {
+            "type": "text",
+            "item_indices": [
+              0
+            ]
+          }
+        ],
+        "phase_seconds": 0.618,
+        "phase_timings": {
+          "resolving_context": 0.021,
+          "generating": 2.665,
+          "validating": 0.618
+        }
+      },
+      "evidence_ids": [],
+      "checks": {
+        "required_concepts": false,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      },
+      "passed": false,
+      "failure_code": "NAT_EXPECTATION_FAILED",
+      "performance": {
+        "lock_wait_seconds": 0.01,
+        "model_http_calls": [
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.006021
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "general",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.024498
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "general",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 2.634703,
+            "usage": {
+              "prompt_tokens": 440,
+              "completion_tokens": 102,
+              "total_tokens": 542
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.002834
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.001524
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.61481,
+            "usage": {
+              "prompt_tokens": 321,
+              "completion_tokens": 16,
+              "total_tokens": 337
+            }
+          }
+        ],
+        "profile": {
+          "schema_version": 1,
+          "outcome": "completed",
+          "elapsed_seconds": 3.297214,
+          "stages": {
+            "model_wait": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.002038,
+              "exclusive_seconds": 0.002038
+            },
+            "token_count": {
+              "calls": 2,
+              "failures": 0,
+              "inclusive_seconds": 0.009228,
+              "exclusive_seconds": 0.009228
+            },
+            "token_budget": {
+              "calls": 2,
+              "failures": 0,
+              "inclusive_seconds": 0.026177,
+              "exclusive_seconds": 0.026177
+            },
+            "general": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 2.659643,
+              "exclusive_seconds": 2.635056
+            },
+            "review": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.616698,
+              "exclusive_seconds": 0.615108
+            },
+            "final_save": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.00113,
+              "exclusive_seconds": 0.00113
+            }
+          },
+          "counts": {}
+        }
+      },
+      "elapsed_seconds": 3.315185899962671,
+      "python_cpu_seconds": 0.03125,
+      "finished_at_utc": "2026-10-20T04:16:54.791562+00:00",
+      "combined_process_cpu_seconds": 3.671875,
+      "cpu_percent_machine": 4.614968701103289,
+      "combined_process_ram_peak_mb": 2737.14453125,
+      "whole_gpu_vram_peak_mb": 7642.0,
+      "python_working_set_mb": 29.96484375
+    },
+    {
+      "id": "NAT-T17",
+      "message": "고마워",
+      "expected": {
+        "id": "NAT-T17",
+        "message": "고마워",
+        "records": [
+          {
+            "id": "NAT-T17-r0",
+            "text": "2026-10-10 Python Part 1을 완료했다."
+          }
+        ],
+        "previous_context": [],
+        "required_concepts": [],
+        "forbidden_claims": [
+          "Python",
+          "Part 1"
+        ],
+        "expected_search": false,
+        "expected_interpretation": "원문·상태·시점을 보존하며 현재 요청에 필요한 사실만 사용",
+        "expected_response_type": null,
+        "expected_buttons": [],
+        "required_sources": [],
+        "failure_code": null,
+        "evaluation_boundary": "실제 모델 평가는 의미·출처 검사, 계약 테스트는 개별 정책·액션 경계 검사"
+      },
+      "mode": "auto",
+      "started_at_utc": "2026-10-20T04:16:54.907265+00:00",
+      "response": {
+        "message_id": "65bdc89f-c833-4cb0-a6d9-627925259f7f",
+        "status": "answered",
+        "items": [
+          {
+            "text": "전혀 문제 없습니다! 도움이 필요하시면 언제든지 말씀해주세요. 😊",
+            "citations": [],
+            "source_type": "general"
+          }
+        ],
+        "notice": "",
+        "conversation_type": "general",
+        "blocks": [
+          {
+            "type": "paragraph",
+            "item_indices": [
+              0
+            ]
+          }
+        ],
+        "conversation_mode": "general",
+        "requested_mode": "auto",
+        "elapsed_seconds": 1.027,
+        "model": "server-default",
+        "generation_revision": "unconfigured",
+        "chat_prompt_version": 5,
+        "presentation": [
+          {
+            "type": "text",
+            "item_indices": [
+              0
+            ]
+          }
+        ],
+        "phase_seconds": 0.307,
+        "phase_timings": {
+          "resolving_context": 0.039,
+          "generating": 0.681,
+          "validating": 0.307
+        }
+      },
+      "evidence_ids": [],
+      "checks": {
+        "required_concepts": true,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      },
+      "passed": true,
+      "failure_code": null,
+      "performance": {
+        "lock_wait_seconds": 0.011,
+        "model_http_calls": [
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.023048
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "general",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.013642
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "general",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.662117,
+            "usage": {
+              "prompt_tokens": 432,
+              "completion_tokens": 25,
+              "total_tokens": 457
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.002222
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.004648
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.300455,
+            "usage": {
+              "prompt_tokens": 246,
+              "completion_tokens": 6,
+              "total_tokens": 252
+            }
+          }
+        ],
+        "profile": {
+          "schema_version": 1,
+          "outcome": "completed",
+          "elapsed_seconds": 1.019259,
+          "stages": {
+            "model_wait": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.002227,
+              "exclusive_seconds": 0.002227
+            },
+            "token_count": {
+              "calls": 2,
+              "failures": 0,
+              "inclusive_seconds": 0.025624,
+              "exclusive_seconds": 0.025624
+            },
+            "token_budget": {
+              "calls": 2,
+              "failures": 0,
+              "inclusive_seconds": 0.018466,
+              "exclusive_seconds": 0.018466
+            },
+            "general": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.67628,
+              "exclusive_seconds": 0.662523
+            },
+            "review": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.305515,
+              "exclusive_seconds": 0.300806
+            },
+            "final_save": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.001112,
+              "exclusive_seconds": 0.001112
+            }
+          },
+          "counts": {}
+        }
+      },
+      "elapsed_seconds": 1.0369484999682754,
+      "python_cpu_seconds": 0.0,
+      "finished_at_utc": "2026-10-20T04:16:55.944017+00:00",
+      "combined_process_cpu_seconds": 1.328125,
+      "cpu_percent_machine": 5.336672136404045,
+      "combined_process_ram_peak_mb": 2737.62890625,
+      "whole_gpu_vram_peak_mb": 7642.0,
+      "python_working_set_mb": 30.52734375
+    },
+    {
+      "id": "NAT-T20",
+      "message": "오랜만에 Python 다시 공부하려고",
+      "expected": {
+        "id": "NAT-T20",
+        "message": "오랜만에 Python 다시 공부하려고",
+        "records": [
+          {
+            "id": "NAT-T20-r0",
+            "text": "2026-10-10 Python Part 1을 완료했다."
+          },
+          {
+            "id": "NAT-T20-r1",
+            "text": "Python 커리큘럼은 Part 1 다음 Part 2, 그다음 Part 3이다."
+          }
+        ],
+        "previous_context": [],
+        "required_concepts": [
+          "Part 1"
+        ],
+        "forbidden_claims": [],
+        "expected_search": true,
+        "expected_interpretation": "원문·상태·시점을 보존하며 현재 요청에 필요한 사실만 사용",
+        "expected_response_type": null,
+        "expected_buttons": [],
+        "required_sources": [],
+        "failure_code": null,
+        "evaluation_boundary": "실제 모델 평가는 의미·출처 검사, 계약 테스트는 개별 정책·액션 경계 검사"
+      },
+      "mode": "auto",
+      "started_at_utc": "2026-10-20T04:16:56.662763+00:00",
+      "response": {
+        "message_id": "f2b00aa8-a714-4b01-8311-2e89884a8df6",
+        "status": "answered",
+        "items": [
+          {
+            "text": "오랜만에 Python 다시 공부하려고",
+            "citations": [],
+            "source_type": "general"
+          }
+        ],
+        "notice": "",
+        "conversation_type": "general",
+        "blocks": [
+          {
+            "type": "paragraph",
+            "item_indices": [
+              0
+            ]
+          }
+        ],
+        "conversation_mode": "general",
+        "requested_mode": "auto",
+        "elapsed_seconds": 3.018,
+        "model": "server-default",
+        "generation_revision": "unconfigured",
+        "chat_prompt_version": 5,
+        "presentation": [
+          {
+            "type": "text",
+            "item_indices": [
+              0
+            ]
+          }
+        ],
+        "phase_seconds": 0.514,
+        "phase_timings": {
+          "resolving_context": 1.74,
+          "generating": 0.763,
+          "validating": 0.514
+        }
+      },
+      "evidence_ids": [],
+      "checks": {
+        "required_concepts": false,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      },
+      "passed": false,
+      "failure_code": "NAT_EXPECTATION_FAILED",
+      "performance": {
+        "lock_wait_seconds": 0.01,
+        "model_http_calls": [
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.004109
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "routing",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.015831
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "routing",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 1.699887,
+            "usage": {
+              "prompt_tokens": 520,
+              "completion_tokens": 22,
+              "total_tokens": 542
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.001857
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "general",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.025172
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "general",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.710522,
+            "usage": {
+              "prompt_tokens": 440,
+              "completion_tokens": 24,
+              "total_tokens": 464
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.025204
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.001262
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.510745,
+            "usage": {
+              "prompt_tokens": 246,
+              "completion_tokens": 16,
+              "total_tokens": 262
+            }
+          }
+        ],
+        "profile": {
+          "schema_version": 1,
+          "outcome": "completed",
+          "elapsed_seconds": 3.011215,
+          "stages": {
+            "model_wait": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.002002,
+              "exclusive_seconds": 0.002002
+            },
+            "token_count": {
+              "calls": 3,
+              "failures": 0,
+              "inclusive_seconds": 0.031693,
+              "exclusive_seconds": 0.031693
+            },
+            "token_budget": {
+              "calls": 3,
+              "failures": 0,
+              "inclusive_seconds": 0.042509,
+              "exclusive_seconds": 0.042509
+            },
+            "routing": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 1.716183,
+              "exclusive_seconds": 1.70026
+            },
+            "general": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.736169,
+              "exclusive_seconds": 0.710908
+            },
+            "review": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.512405,
+              "exclusive_seconds": 0.511081
+            },
+            "final_save": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.001486,
+              "exclusive_seconds": 0.001486
+            }
+          },
+          "counts": {}
+        }
+      },
+      "elapsed_seconds": 3.028233600081876,
+      "python_cpu_seconds": 0.0,
+      "finished_at_utc": "2026-10-20T04:16:59.690734+00:00",
+      "combined_process_cpu_seconds": 2.90625,
+      "cpu_percent_machine": 3.9988245951939088,
+      "combined_process_ram_peak_mb": 3426.484375,
+      "whole_gpu_vram_peak_mb": 7642.0,
+      "python_working_set_mb": 25.8046875
+    },
+    {
+      "id": "NAT-T30",
+      "message": "Python Part 2 완료했었나?",
+      "expected": {
+        "id": "NAT-T30",
+        "message": "Python Part 2 완료했었나?",
+        "records": [
+          {
+            "id": "NAT-T30-r0",
+            "text": "이전 AI는 Python Part 2 완료라고 잘못 답했다. 실제로는 Python Part 1만 공부했다."
+          }
+        ],
+        "previous_context": [],
+        "required_concepts": [
+          "Part 1|잘못|완료 여부|확인"
+        ],
+        "forbidden_claims": [
+          "Part 2를 완료했습니다"
+        ],
+        "expected_search": true,
+        "expected_interpretation": "원문·상태·시점을 보존하며 현재 요청에 필요한 사실만 사용",
+        "expected_response_type": null,
+        "expected_buttons": [],
+        "required_sources": [],
+        "failure_code": null,
+        "evaluation_boundary": "실제 모델 평가는 의미·출처 검사, 계약 테스트는 개별 정책·액션 경계 검사"
+      },
+      "mode": "auto",
+      "started_at_utc": "2026-10-20T04:16:59.833266+00:00",
+      "response": {
+        "message_id": "afb3573c-129d-4ff0-bdb4-2d7d2f92a8e2",
+        "status": "answered",
+        "items": [
+          {
+            "text": "기록에 따르면 Python Part 2는 완료하지 않았습니다. 실제로는 Python Part 1만 공부했습니다.",
+            "citations": [
+              "d7b3f35b-4d40-4702-b7a4-da8b9218b479"
+            ],
+            "source_type": "personal_memory"
+          }
+        ],
+        "citation_details": [
+          {
+            "item_index": 0,
+            "memory_id": "d7b3f35b-4d40-4702-b7a4-da8b9218b479",
+            "record_id": "064e7aef-28b4-47a8-b128-3b8c9f1744a0",
+            "revision_id": "a6625e52-4018-4e73-888c-b12c55deb13d",
+            "quote": "이전 AI는 Python Part 2 완료라고 잘못 답했다.",
+            "start": 0,
+            "end": 33,
+            "citation_id": "afb3573c-129d-4ff0-bdb4-2d7d2f92a8e2:0:d7b3f35b-4d40-4702-b7a4-da8b9218b479"
+          },
+          {
+            "item_index": 0,
+            "memory_id": "d7b3f35b-4d40-4702-b7a4-da8b9218b479",
+            "record_id": "064e7aef-28b4-47a8-b128-3b8c9f1744a0",
+            "revision_id": "a6625e52-4018-4e73-888c-b12c55deb13d",
+            "quote": "실제로는 Python Part 1만 공부했다.",
+            "start": 34,
+            "end": 59,
+            "citation_id": "afb3573c-129d-4ff0-bdb4-2d7d2f92a8e2:0:d7b3f35b-4d40-4702-b7a4-da8b9218b479"
+          }
+        ],
+        "validation": "model_checked",
+        "history_turns": 0,
+        "conversation_type": "memory",
+        "blocks": [
+          {
+            "type": "paragraph",
+            "item_indices": [
+              0
+            ]
+          }
+        ],
+        "query_corrections": [
+          {
+            "status": "none",
+            "query": "Python Part 2 완료했었나?",
+            "edits": [],
+            "reason": null,
+            "original_query": "Python Part 2 완료했었나?",
+            "searched": false
+          }
+        ],
+        "conversation_mode": "memory",
+        "requested_mode": "auto",
+        "elapsed_seconds": 23.796,
+        "model": "server-default",
+        "generation_revision": "unconfigured",
+        "chat_prompt_version": 5,
+        "presentation": [
+          {
+            "type": "text",
+            "item_indices": [
+              0
+            ]
+          }
+        ],
+        "phase_seconds": 5.775,
+        "phase_timings": {
+          "resolving_context": 1.923,
+          "searching": 12.236,
+          "generating": 3.862,
+          "validating": 5.775
+        }
+      },
+      "evidence_ids": [
+        "NAT-T30-r0"
+      ],
+      "checks": {
+        "required_concepts": true,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      },
+      "passed": true,
+      "failure_code": null,
+      "performance": {
+        "lock_wait_seconds": 0.011,
+        "model_http_calls": [
+          {
+            "operation": "/tokenize",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.002281
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 2.047439,
+            "usage": {
+              "prompt_tokens": 779,
+              "completion_tokens": 82,
+              "total_tokens": 861
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.013944
+          },
+          {
+            "operation": "/v1/embeddings",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.025544,
+            "usage": {
+              "prompt_tokens": 11,
+              "total_tokens": 11
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.01939
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 2.292321,
+            "usage": {
+              "prompt_tokens": 827,
+              "completion_tokens": 85,
+              "total_tokens": 912
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.018495
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "search_planning",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.002582
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "search_planning",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 1.349771,
+            "usage": {
+              "prompt_tokens": 2208,
+              "completion_tokens": 6,
+              "total_tokens": 2214
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.002912
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.002321
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 6.443041,
+            "usage": {
+              "prompt_tokens": 1984,
+              "completion_tokens": 214,
+              "total_tokens": 2198
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "context_selection",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.017186
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "context_selection",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 1.888676,
+            "usage": {
+              "prompt_tokens": 544,
+              "completion_tokens": 40,
+              "total_tokens": 584
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "generation",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.120631
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "generation",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 3.739094,
+            "usage": {
+              "prompt_tokens": 2646,
+              "completion_tokens": 129,
+              "total_tokens": 2775
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.018272
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 4.981058,
+            "usage": {
+              "prompt_tokens": 1948,
+              "completion_tokens": 185,
+              "total_tokens": 2133
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "display_review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.014045
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "display_review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.756132,
+            "usage": {
+              "prompt_tokens": 1130,
+              "completion_tokens": 13,
+              "total_tokens": 1143
+            }
+          }
+        ],
+        "profile": {
+          "schema_version": 1,
+          "outcome": "completed",
+          "elapsed_seconds": 23.789698,
+          "stages": {
+            "model_wait": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.001946,
+              "exclusive_seconds": 0.001946
+            },
+            "token_budget": {
+              "calls": 9,
+              "failures": 0,
+              "inclusive_seconds": 0.212088,
+              "exclusive_seconds": 0.212088
+            },
+            "question_understanding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 2.05037,
+              "exclusive_seconds": 2.047978
+            },
+            "candidate_snapshot": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.002026,
+              "exclusive_seconds": 0.002026
+            },
+            "embedding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.039976,
+              "exclusive_seconds": 0.02599
+            },
+            "candidate_matrix": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 3.4e-05,
+              "exclusive_seconds": 3.4e-05
+            },
+            "keyword_ranking": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.000207,
+              "exclusive_seconds": 0.000207
+            },
+            "relevance_selection": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 2.312608,
+              "exclusive_seconds": 2.293085
+            },
+            "retrieval": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 4.409129,
+              "exclusive_seconds": 0.003908
+            },
+            "search": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 4.409148,
+              "exclusive_seconds": 1.8e-05
+            },
+            "token_count": {
+              "calls": 2,
+              "failures": 0,
+              "inclusive_seconds": 0.022141,
+              "exclusive_seconds": 0.022141
+            },
+            "search_planning": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 1.353075,
+              "exclusive_seconds": 1.35025
+            },
+            "context_resolution": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 6.449516,
+              "exclusive_seconds": 6.443812
+            },
+            "context_selection": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 1.906433,
+              "exclusive_seconds": 1.88914
+            },
+            "answer_selection": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 1.908501,
+              "exclusive_seconds": 0.002068
+            },
+            "generation": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 3.860461,
+              "exclusive_seconds": 3.739573
+            },
+            "answer_generation": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 3.862971,
+              "exclusive_seconds": 0.00251
+            },
+            "review": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 5.000113,
+              "exclusive_seconds": 4.98161
+            },
+            "display_review": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.770675,
+              "exclusive_seconds": 0.756483
+            },
+            "independent_review": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 5.774548,
+              "exclusive_seconds": 0.003759
+            },
+            "final_save": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.002448,
+              "exclusive_seconds": 0.002448
+            }
+          },
+          "counts": {
+            "search_iterations": 1,
+            "generation_attempts": 1,
+            "review_attempts": 1
+          }
+        }
+      },
+      "elapsed_seconds": 23.80857069999911,
+      "python_cpu_seconds": 0.0625,
+      "finished_at_utc": "2026-10-20T04:17:23.641626+00:00",
+      "combined_process_cpu_seconds": 25.125,
+      "cpu_percent_machine": 4.397051016590589,
+      "combined_process_ram_peak_mb": 3315.375,
+      "whole_gpu_vram_peak_mb": 7642.0,
+      "python_working_set_mb": 31.8046875
+    }
+  ]
+}

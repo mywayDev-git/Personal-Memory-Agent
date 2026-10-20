@@ -1,0 +1,2669 @@
+{
+  "synthetic_only": true,
+  "scoring_version": 3,
+  "dataset_sha256": "487de87acdbf927232372a7deba6e0b4dd7c16fd3a153278af90d2990626c615",
+  "evaluator_sha256": "7ade8903624b32ee4ed72c465a82d51d5f34dbb077b55877e7c60ee5e2d86535",
+  "implementation_root": "C:\\development\\Personal-Memory-Agent",
+  "source_hashes": {
+    "pma/answer_review.py": "277d7cada9562f325f26dfd1d1e55c163d660f67c8019019251307e3c439aaa9",
+    "pma/console_trace.py": "29dec460563f852b626ffedd0201c1ff3ad151c0e7bcb23f0d8064d5ccbe2788",
+    "pma/diagnostics.py": "a1e46b0c3503e9f11fbfe0a833de3f6d85a86125afd55167b63bbd9829766478",
+    "pma/errors.py": "103413d68ec99127c8bb6111986925889eeeb47beaf73581fa7774e9488f671e",
+    "pma/evaluation_api.py": "43a21e70b6ef7c62255bfa6c6925b386e2580a85c37d41a08522b9e144135191",
+    "pma/facts.py": "fc4b91c2edb24cf3d9455d02d15752aca1abefd7891fb5bc8844b4e067a6ae21",
+    "pma/facts_diagnostics.py": "4b2d6c51b561c4f2173d7089bb76061c0f5b0a4ec0522c999219c9d9205ed711",
+    "pma/grounding.py": "52ba5311642b6439973af721ad52aa16944055052e24789dad68de2221ce4830",
+    "pma/imports.py": "5b2ba6a3ad204c0570e884a254de39229ca974be29cd5bff095b967bd4fb1420",
+    "pma/legacy_answer.py": "d498240fddf4fe909a407cbcffd02061025ccdbcbdb61287eaf0529d6e84ac83",
+    "pma/lock.py": "1896ced02498d759e24ee5a2359f479199d78358cddd5cd5bbc27ee6519ed088",
+    "pma/models.py": "3f89fc5b6714cd2fcb50d511d0989f4df00403affa9063cb05918a2b21f8bdfc",
+    "pma/model_diagnostics.py": "90061ae5dbe642d6c806712b3e3b3401bf52224c4a6a731e2d3d8441b7717a09",
+    "pma/model_reuse.py": "46d223bcc2ae2228853dee35aa32672f94a4b2802412013266571d08a08c7603",
+    "pma/processing.py": "cf42888f61d6219ea369e9a1e151a4c0c778b5cd6c8fc73474d095f3cfffa9fa",
+    "pma/query_correction.py": "868a4f0e120a4a8019e7ab8e4ed17f8ae3b5dc69e9e1a3301ad73648375d21fa",
+    "pma/relevance.py": "c3206938e7133c8b878961461f66d6aa5aabf09c597d7191fecebfe802925981",
+    "pma/search_explain.py": "4da5ee2a4206b0b0f9f08c361e261b6123a644699c637c7acc1b732d91c88f17",
+    "pma/search_expressions.py": "f9c7a043b665cc340845fb732f4d039daaee94ab1d8cc83337b37cf1e42f273f",
+    "pma/service.py": "3b0a7f31981907a78b6d54e1afb51a1226233dce23ddeabba360f99014073a20",
+    "pma/service_diagnostics.py": "39a2233ac5fc8bc9eb0f8bf657293b988823835601eae794fc19afde02d6cf78",
+    "pma/settings.py": "ece9ac9a3d662f5aa5e0768ac57a4e55758e1be55d8002c5e3375ea2557f043b",
+    "pma/store.py": "02b99eb8eee0884f852455b70275ed78b5ede301712b1719aa42b5d409699981",
+    "pma/validation_diagnostics.py": "8ca590408e601beeed338b1c3f0bc8ab9735f7df6c47b71eb8a141ba7ec0c7be",
+    "pma/web.py": "d57ec5af1f2172bc820d4c97772783d5458a7444314ebad66c89f214e4e9378d",
+    "pma/web_diagnostics.py": "2ef3463b383bcd1bdb4f3d2898d7384757c0aef0b32d78e7a21c24f9b38891a1",
+    "pma/worker_errors.py": "3667453b7c1d5e1e186185ee4c99759c261dd64d6e63c359ee71043a4247e0a2",
+    "pma/__init__.py": "86bdc1364e2cf177bbfc745e6f2e35b75d1f8adefd5a65a0ebfadd214d2a54d7",
+    "pma/__main__.py": "ade29e2dc193ccc0b2d3a0d8c07ff82133596378af283a3b76e45b9b0493fb2e",
+    "pma/chat/actions.py": "9af370428a5ed3f690360f7f2239d24e13a1d28d95184d54af644e47b975ed7a",
+    "pma/chat/answer_audit.py": "bc7a14e485f8a94b2450465b07cfb5e27232c98416adf2bbede3a4caade3440b",
+    "pma/chat/api.py": "56f90d410d9836a96329dcbe87569aa2c0e1b8e6b6995053db281409790581fd",
+    "pma/chat/automatic.py": "ef99078b2f219f1eeb3555b39240e7910539a6af2b325f59a554eebdea72ba88",
+    "pma/chat/context.py": "99c5f3199acd840ba7b83270d20d963bfe0bda3504112e3a96bbd1ed644dfbc6",
+    "pma/chat/engine.py": "7f0cf82583456f9a55862717b5c9f364b136b59bd6e6df41f36ff50c19b9ab08",
+    "pma/chat/evidence.py": "f993cde0316b7b620f962fc4bb85a4c74a5f121237c52d7f0b3ddb00125cb585",
+    "pma/chat/execution.py": "f0b73c86ee1964c95df8ca04c8ade6ee66e5323780a51368de6a10ba2944ef5b",
+    "pma/chat/generator.py": "9cdf9965b7a2aa9614d864e64e3c5844a3f9f6c377b9f888fe0d0bb8174be0a4",
+    "pma/chat/identity.py": "5aaaab0a1e36416f47595797b17f559ab52bf99f68ac4fda665297540b8db485",
+    "pma/chat/interpretation.py": "c6be1b0104023711c1c043d473cca6650cc683cf574d2a875481c5ab70a2e6f2",
+    "pma/chat/memory_capture.py": "f977f25760595789bdf05096928498071728f977b7851bd4d5dc5c436528425c",
+    "pma/chat/models.py": "1379bf05302b6797401256ced9985bfe3b878489c3c780e9895433f277b70a89",
+    "pma/chat/orchestrator.py": "249e9e3f1cb68825a49700a5ad25849a1962609f4c25b6926c00cb2ca68b3936",
+    "pma/chat/planner.py": "022be1c0010072349f2d34abe96356835774cb72c8788ba60e042b52b95ab2cc",
+    "pma/chat/policy.py": "341f49ace5e72ad4b98877fd30b016f9c0b43351b6c350225a7e5a6c444121a7",
+    "pma/chat/presentation.py": "d536eb4b2749de3556edce6dd1369fcc66566aaff274c368bd9058782309ad31",
+    "pma/chat/questions.py": "12101b1382516f3e504ed06910566d9160b9cfcec36f91ed0a4c55a63af2c8a6",
+    "pma/chat/retrieval.py": "b6318af32dd456ab2bc32201b9a8882377e00660d5a8b68befb2a321ae26c0ce",
+    "pma/chat/review_sources.py": "4146b7484e787fd00cf018a10e59dd1131e97853c30447b9ea7d746ef1b51731",
+    "pma/chat/router.py": "5edfd80a59be9beeb544a3ea690cad7f7f05d08c87263aefa59223e107f11366",
+    "pma/chat/schema.py": "089b262c7937a9af5de0231f10672045f4b905160ac786064b44d839c40290bd",
+    "pma/chat/schemas.py": "51ad1f7dea61a21936f9f2ae9dbe6b895b946df11902255182c8e249de2d74e2",
+    "pma/chat/semantics.py": "8f0ec0b8b66cbf73940958ad81ca2966c4aa44d519d6c183fca7818ad881fd56",
+    "pma/chat/store.py": "3d7b08319eae31f92880ea08aea63395be31f894a376b43bf59ba2622febdf08",
+    "pma/chat/__init__.py": "95a4377ba9f030a2dbf1cf6db4ab0b8b21b06da07d742a44b1bb6c8fa945b0f5",
+    "pma/memory/api.py": "320f149d064bfda666517747b8db2e1bd79fd43b1bfc96b4ad8787666a5788cb",
+    "pma/memory/conflict_resolver.py": "88aa43f8085d8765bf41b165788dea7080173033ba71f0562fc799530de440ee",
+    "pma/memory/deduplication.py": "d20832eb4e39efa7f416621ddd6fcae418c51367abfb3cc8e811bcf0a262df86",
+    "pma/memory/manager.py": "50150cd963cb88aed5eb39dc8e07b83cabea23629bf53e0b6b049083c53c6547",
+    "pma/memory/provenance.py": "8e9417b7b1b78789fce56a994313a13e437c875981af74f48027c9ad65835256",
+    "pma/memory/repository.py": "aaa7cb9f2d629a64dc45916cba1ce376ee8a05a5a26bfe4f4c2ee4014417472c",
+    "pma/memory/schemas.py": "da679c53554962523a5c5ac9ecb25911e35f034edbc6d607e4df2a7777cf1a54",
+    "pma/memory/__init__.py": "eec4b7b99f1a9987fc689ad85eafad5fc9196acc457833d895e4768df7b3d572",
+    "pma/chat/migrations/__init__.py": "cdc98648c903b9ea96cdc2e02c0296e3635a74cdf3cf16ab669698c5e367efba",
+    "scripts/main.py": "df15b0facb67f1490a3ddc910e2354194119f89b4fc427a957f4958aa7466d97",
+    "scripts/__init__.py": "9d74237e773cf8f2195f387ec361ac420de5276485ab2352cf2f96f0bc97dac4",
+    "scripts/memory_agent/diagnostics.py": "2887f6ee0ebaacbf325f40128beec2a020b1d53b786948a8069ecf0ae1a72b12",
+    "scripts/memory_agent/exceptions.py": "36e2331366c28a5b0fc192473daea89c9058ddb4aa52fd84138eac6350093e0d",
+    "scripts/memory_agent/extractor.py": "604de6028d845dd013b5a6f53eedfcd9fef26e0c36380a3f4859c92deda00dff",
+    "scripts/memory_agent/llm_client.py": "b0b094fa20031a09c819b2d11babef41354e21ad2a57ed094cef7e1d1543f34b",
+    "scripts/memory_agent/meaning.py": "b8cbd2c63dca311095fd9aa57740973fea41cd6e7c47ffdb196d82634a37c13e",
+    "scripts/memory_agent/performance.py": "53ecc669f30b66ac8e5a63985f3cc5f9e7bcbd7206dc82b8b62aeafe9418eb61",
+    "scripts/memory_agent/pipeline.py": "890a8af7ce166a72687dd1d2fba1b53ca2f81567f57ceed6d21007ef1d59001f",
+    "scripts/memory_agent/postprocess.py": "548579780d7ee6c6a18d7b1e2ccc0d06a72f40cdb9f2e56694196aa7702013bc",
+    "scripts/memory_agent/provenance.py": "0482f234dec1f97209f9e65021232ac7d895395daa48b786dbcd324fa733e661",
+    "scripts/memory_agent/validator.py": "41b6196c9e1d4601bbc83cd1ef2d7a2555f1d3fb03bd77d1ae55833a0915c25f",
+    "scripts/memory_agent/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "config/settings.py": "d484ac6bd487bab00e20e5b3423f95071045d8cbee1893f44fca03795f9f838f",
+    "config/__init__.py": "78291d5f6b3a6fd25c3782ffdaa7797866cb7f8bc86b356a071004e175526bf7"
+  },
+  "settings": {
+    "context_tokens": 16384,
+    "chat_timeout": 300,
+    "generation_endpoint": "http://127.0.0.1:8081/v1/chat/completions",
+    "embedding_endpoint": "http://127.0.0.1:18082/v1/embeddings",
+    "model_pids": [
+      27520,
+      6256
+    ]
+  },
+  "passed": 4,
+  "measured": 4,
+  "requested": 4,
+  "latency_including_failures": {
+    "p50": 25.809033300029114,
+    "p95": 34.991044600028545,
+    "p99": 34.991044600028545
+  },
+  "naturalness_evaluation": "사람 검토 필요; 자동 사실 검사와 구분",
+  "cases": [
+    {
+      "id": "NAT-T02",
+      "message": "Python 어디까지 했지?",
+      "expected": {
+        "id": "NAT-T02",
+        "message": "Python 어디까지 했지?",
+        "records": [
+          {
+            "id": "NAT-T02-r0",
+            "text": "2026-10-10 Python Part 1을 공부했다. 완료 여부는 기록하지 않았다."
+          }
+        ],
+        "previous_context": [],
+        "required_concepts": [
+          "확인|불명|기록|모르"
+        ],
+        "forbidden_claims": [
+          "Part 1을 완료했"
+        ],
+        "expected_search": true,
+        "expected_interpretation": "원문·상태·시점을 보존하며 현재 요청에 필요한 사실만 사용",
+        "expected_response_type": "PROGRESS_REVIEW",
+        "expected_buttons": [],
+        "required_sources": [],
+        "failure_code": null,
+        "evaluation_boundary": "실제 모델 평가는 의미·출처 검사, 계약 테스트는 개별 정책·액션 경계 검사"
+      },
+      "mode": "auto",
+      "started_at_utc": "2026-10-20T04:48:37.547647+00:00",
+      "response": {
+        "message_id": "d14adb7a-5d2b-4e28-b492-a619036d3242",
+        "status": "answered",
+        "items": [
+          {
+            "text": "기록에 따르면 2026년 10월 10일 Python Part 1을 공부했다고 기록되어 있지만, 완료 여부는 기록하지 않았습니다.",
+            "citations": [
+              "09d8d12a-1ad9-40a6-8124-ae986dd4bf2b"
+            ],
+            "source_type": "personal_memory"
+          }
+        ],
+        "display": {
+          "kind": "plain",
+          "items": [
+            {
+              "index": 0,
+              "state": "confirmed",
+              "event": "Python Part 1 공부",
+              "event_date": "2026-10-10"
+            }
+          ],
+          "verified": true
+        },
+        "citation_details": [
+          {
+            "item_index": 0,
+            "memory_id": "09d8d12a-1ad9-40a6-8124-ae986dd4bf2b",
+            "record_id": "4e221a43-3163-4c63-87d8-961cc869a308",
+            "revision_id": "016169d1-8f69-499d-898c-a7c4a4b30c97",
+            "quote": "2026-10-10 Python Part 1을 공부했다.",
+            "start": 0,
+            "end": 31,
+            "citation_id": "d14adb7a-5d2b-4e28-b492-a619036d3242:0:09d8d12a-1ad9-40a6-8124-ae986dd4bf2b"
+          },
+          {
+            "item_index": 0,
+            "memory_id": "09d8d12a-1ad9-40a6-8124-ae986dd4bf2b",
+            "record_id": "4e221a43-3163-4c63-87d8-961cc869a308",
+            "revision_id": "016169d1-8f69-499d-898c-a7c4a4b30c97",
+            "quote": "완료 여부는 기록하지 않았다.",
+            "start": 32,
+            "end": 48,
+            "citation_id": "d14adb7a-5d2b-4e28-b492-a619036d3242:0:09d8d12a-1ad9-40a6-8124-ae986dd4bf2b"
+          }
+        ],
+        "validation": "model_checked",
+        "history_turns": 0,
+        "conversation_type": "memory",
+        "blocks": [
+          {
+            "type": "paragraph",
+            "item_indices": [
+              0
+            ]
+          }
+        ],
+        "query_corrections": [
+          {
+            "status": "none",
+            "query": "Python 어디까지 했지?",
+            "edits": [],
+            "reason": null,
+            "original_query": "Python 어디까지 했지?",
+            "searched": false
+          }
+        ],
+        "conversation_mode": "memory",
+        "requested_mode": "auto",
+        "elapsed_seconds": 22.505,
+        "model": "server-default",
+        "generation_revision": "unconfigured",
+        "chat_prompt_version": 6,
+        "presentation": [
+          {
+            "type": "text",
+            "item_indices": [
+              0
+            ]
+          }
+        ],
+        "response_id": "d14adb7a-5d2b-4e28-b492-a619036d3242",
+        "conversation_id": "7b48c45a-323b-4d09-9581-c3f3341721b8",
+        "response_version": 1,
+        "primary_response_type": "PROGRESS_REVIEW",
+        "response_features": [
+          "MEMORY_CONNECTED",
+          "ACTION_CHOICES"
+        ],
+        "answer_text": "기록에 따르면 2026년 10월 10일 Python Part 1을 공부했다고 기록되어 있지만, 완료 여부는 기록하지 않았습니다.",
+        "grounding_status": "verified",
+        "evidence_refs": [
+          {
+            "memory_id": "09d8d12a-1ad9-40a6-8124-ae986dd4bf2b",
+            "record_id": "4e221a43-3163-4c63-87d8-961cc869a308",
+            "record_version": 1,
+            "source_type": "personal_memory",
+            "source_location": "016169d1-8f69-499d-898c-a7c4a4b30c97",
+            "event_time": {
+              "raw": "2026-10-10",
+              "start": "2026-10-10",
+              "end": null,
+              "precision": "day",
+              "certainty": "explicit"
+            },
+            "created_at": "2026-10-20T09:00:00+09:00",
+            "updated_at": null,
+            "relevance": 0.03278688524590164,
+            "support_type": "cited",
+            "spans": [
+              {
+                "item_index": 0,
+                "memory_id": "09d8d12a-1ad9-40a6-8124-ae986dd4bf2b",
+                "record_id": "4e221a43-3163-4c63-87d8-961cc869a308",
+                "revision_id": "016169d1-8f69-499d-898c-a7c4a4b30c97",
+                "quote": "2026-10-10 Python Part 1을 공부했다.",
+                "start": 0,
+                "end": 31,
+                "citation_id": "d14adb7a-5d2b-4e28-b492-a619036d3242:0:09d8d12a-1ad9-40a6-8124-ae986dd4bf2b"
+              },
+              {
+                "item_index": 0,
+                "memory_id": "09d8d12a-1ad9-40a6-8124-ae986dd4bf2b",
+                "record_id": "4e221a43-3163-4c63-87d8-961cc869a308",
+                "revision_id": "016169d1-8f69-499d-898c-a7c4a4b30c97",
+                "quote": "완료 여부는 기록하지 않았다.",
+                "start": 32,
+                "end": 48,
+                "citation_id": "d14adb7a-5d2b-4e28-b492-a619036d3242:0:09d8d12a-1ad9-40a6-8124-ae986dd4bf2b"
+              }
+            ]
+          }
+        ],
+        "uncertainty": [],
+        "interpretation": {
+          "intent": "progress",
+          "observations": [
+            {
+              "claim": "2026-10-10 Python Part 1을 공부했다. 완료 여부는 기록하지 않았다.",
+              "evidence_ids": [
+                "09d8d12a-1ad9-40a6-8124-ae986dd4bf2b"
+              ],
+              "record_id": "4e221a43-3163-4c63-87d8-961cc869a308",
+              "record_version": 1,
+              "status": "unknown",
+              "event_time": "2026-10-10",
+              "subject": "Python Part 1",
+              "event": "공부했다",
+              "condition": "",
+              "assessment": "source_interpretation"
+            }
+          ],
+          "relations": [],
+          "facts": [
+            {
+              "claim": "기록에 따르면 2026년 10월 10일 Python Part 1을 공부했다고 기록되어 있지만, 완료 여부는 기록하지 않았습니다.",
+              "evidence_ids": [
+                "09d8d12a-1ad9-40a6-8124-ae986dd4bf2b"
+              ]
+            }
+          ],
+          "inferences": [],
+          "suggestions": [],
+          "uncertainties": [],
+          "next_step": null,
+          "next_step_evidence_ids": [],
+          "policy": "원문에 없는 다음 과정·완료·현재 상태를 확정하지 않는다."
+        },
+        "memory_context": {
+          "enabled": true,
+          "source_ids": [
+            "09d8d12a-1ad9-40a6-8124-ae986dd4bf2b"
+          ],
+          "status_as_of": [
+            "2026-10-10"
+          ]
+        },
+        "ui_actions": [
+          {
+            "action_id": "d14adb7a-5d2b-4e28-b492-a619036d3242:0",
+            "type": "SHOW_HISTORY",
+            "label": "진행 이력",
+            "target_id": "d14adb7a-5d2b-4e28-b492-a619036d3242",
+            "target_ids": [],
+            "pending_query_id": null,
+            "session_id": "7b48c45a-323b-4d09-9581-c3f3341721b8",
+            "message_id": "d14adb7a-5d2b-4e28-b492-a619036d3242",
+            "required_permissions": [
+              "chat_read"
+            ],
+            "state": "ACTIVE",
+            "context_version": 1,
+            "expiration_policy": "context_and_source_version",
+            "query": null,
+            "source_versions": {
+              "4e221a43-3163-4c63-87d8-961cc869a308": 1
+            }
+          },
+          {
+            "action_id": "d14adb7a-5d2b-4e28-b492-a619036d3242:1",
+            "type": "CONFIRM_PROGRESS",
+            "label": "진도 확인·정정",
+            "target_id": "d14adb7a-5d2b-4e28-b492-a619036d3242",
+            "target_ids": [],
+            "pending_query_id": null,
+            "session_id": "7b48c45a-323b-4d09-9581-c3f3341721b8",
+            "message_id": "d14adb7a-5d2b-4e28-b492-a619036d3242",
+            "required_permissions": [
+              "memory_write"
+            ],
+            "state": "ACTIVE",
+            "context_version": 1,
+            "expiration_policy": "context_and_source_version",
+            "query": null,
+            "source_versions": {
+              "4e221a43-3163-4c63-87d8-961cc869a308": 1
+            }
+          }
+        ],
+        "context_update": {
+          "version": 1
+        },
+        "error_state": null,
+        "phase_seconds": 6.114,
+        "phase_timings": {
+          "resolving_context": 1.446,
+          "searching": 5.104,
+          "generating": 9.84,
+          "validating": 6.114
+        }
+      },
+      "evidence_ids": [
+        "NAT-T02-r0"
+      ],
+      "checks": {
+        "required_concepts": true,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "required_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      },
+      "passed": true,
+      "failure_code": null,
+      "performance": {
+        "lock_wait_seconds": 0.016,
+        "model_http_calls": [
+          {
+            "operation": "/tokenize",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.01901
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 1.538389,
+            "usage": {
+              "prompt_tokens": 776,
+              "completion_tokens": 53,
+              "total_tokens": 829
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.005466
+          },
+          {
+            "operation": "/v1/embeddings",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.021397,
+            "usage": {
+              "prompt_tokens": 9,
+              "total_tokens": 9
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.00413
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 2.321556,
+            "usage": {
+              "prompt_tokens": 854,
+              "completion_tokens": 86,
+              "total_tokens": 940
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.009829
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "search_planning",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.00277
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "search_planning",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 1.143594,
+            "usage": {
+              "prompt_tokens": 1854,
+              "completion_tokens": 6,
+              "total_tokens": 1860
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.017046
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "general",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.00193
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "general",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 3.422069,
+            "usage": {
+              "prompt_tokens": 319,
+              "completion_tokens": 141,
+              "total_tokens": 460
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.008317
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.006279
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 1.752038,
+            "usage": {
+              "prompt_tokens": 1662,
+              "completion_tokens": 35,
+              "total_tokens": 1697
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "context_selection",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.028904
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "context_selection",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 1.382081,
+            "usage": {
+              "prompt_tokens": 571,
+              "completion_tokens": 39,
+              "total_tokens": 610
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "generation",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.012995
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "generation",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 4.628596,
+            "usage": {
+              "prompt_tokens": 3065,
+              "completion_tokens": 152,
+              "total_tokens": 3217
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.045013
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 5.494642,
+            "usage": {
+              "prompt_tokens": 2052,
+              "completion_tokens": 195,
+              "total_tokens": 2247
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "display_review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.005819
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "display_review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.561297,
+            "usage": {
+              "prompt_tokens": 1241,
+              "completion_tokens": 6,
+              "total_tokens": 1247
+            }
+          }
+        ],
+        "profile": {
+          "schema_version": 1,
+          "outcome": "completed",
+          "elapsed_seconds": 22.493682,
+          "stages": {
+            "model_wait": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.001972,
+              "exclusive_seconds": 0.001972
+            },
+            "token_budget": {
+              "calls": 10,
+              "failures": 0,
+              "inclusive_seconds": 0.133732,
+              "exclusive_seconds": 0.133732
+            },
+            "question_understanding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 1.558175,
+              "exclusive_seconds": 1.539036
+            },
+            "candidate_snapshot": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.002008,
+              "exclusive_seconds": 0.002008
+            },
+            "embedding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.027371,
+              "exclusive_seconds": 0.021857
+            },
+            "candidate_matrix": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.000204,
+              "exclusive_seconds": 0.000204
+            },
+            "keyword_ranking": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.002346,
+              "exclusive_seconds": 0.002346
+            },
+            "relevance_selection": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 2.326246,
+              "exclusive_seconds": 2.322013
+            },
+            "retrieval": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 3.923106,
+              "exclusive_seconds": 0.006756
+            },
+            "search": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 3.923611,
+              "exclusive_seconds": 0.000505
+            },
+            "token_count": {
+              "calls": 3,
+              "failures": 0,
+              "inclusive_seconds": 0.035984,
+              "exclusive_seconds": 0.035984
+            },
+            "search_planning": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 1.146952,
+              "exclusive_seconds": 1.144013
+            },
+            "general": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 3.424586,
+              "exclusive_seconds": 3.422589
+            },
+            "context_resolution": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 1.769055,
+              "exclusive_seconds": 1.753968
+            },
+            "context_selection": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 1.411559,
+              "exclusive_seconds": 1.382553
+            },
+            "answer_selection": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 1.413239,
+              "exclusive_seconds": 0.00168
+            },
+            "generation": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 4.642457,
+              "exclusive_seconds": 4.629191
+            },
+            "answer_generation": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 4.644305,
+              "exclusive_seconds": 0.001848
+            },
+            "review": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 5.540431,
+              "exclusive_seconds": 5.495209
+            },
+            "display_review": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.567586,
+              "exclusive_seconds": 0.561626
+            },
+            "independent_review": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 6.11329,
+              "exclusive_seconds": 0.005273
+            },
+            "final_save": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.002554,
+              "exclusive_seconds": 0.002554
+            }
+          },
+          "counts": {
+            "search_iterations": 1,
+            "generation_attempts": 1,
+            "review_attempts": 1
+          }
+        }
+      },
+      "elapsed_seconds": 22.52050599991344,
+      "python_cpu_seconds": 0.140625,
+      "finished_at_utc": "2026-10-20T04:49:00.065831+00:00",
+      "combined_process_cpu_seconds": 23.703125,
+      "cpu_percent_machine": 4.385470772002766,
+      "combined_process_ram_peak_mb": 3029.09765625,
+      "whole_gpu_vram_peak_mb": 7642.0,
+      "python_working_set_mb": 63.640625
+    },
+    {
+      "id": "NAT-T03",
+      "message": "Python 마지막 진도 알려줘",
+      "expected": {
+        "id": "NAT-T03",
+        "message": "Python 마지막 진도 알려줘",
+        "records": [
+          {
+            "id": "NAT-T03-r0",
+            "text": "2026-10-10 Python Part 1을 완료했다."
+          },
+          {
+            "id": "NAT-T03-r1",
+            "text": "2026-10-15 Python Part 2를 완료했다."
+          }
+        ],
+        "previous_context": [],
+        "required_concepts": [
+          "Part 2"
+        ],
+        "forbidden_claims": [
+          "현재 Part 1까지"
+        ],
+        "expected_search": true,
+        "expected_interpretation": "원문·상태·시점을 보존하며 현재 요청에 필요한 사실만 사용",
+        "expected_response_type": null,
+        "expected_buttons": [],
+        "required_sources": [],
+        "failure_code": null,
+        "evaluation_boundary": "실제 모델 평가는 의미·출처 검사, 계약 테스트는 개별 정책·액션 경계 검사"
+      },
+      "mode": "auto",
+      "started_at_utc": "2026-10-20T04:49:00.387656+00:00",
+      "response": {
+        "message_id": "88292763-0bfc-40d7-8bf3-6d5c93efa88e",
+        "status": "answered",
+        "items": [
+          {
+            "text": "선택된 근거 중 사건 날짜가 가장 최근인 기록은 “2026-10-15 Python Part 2를 완료했다.”입니다.",
+            "citations": [
+              "ca15cb04-6f56-40b3-8652-ae20058cdebb"
+            ],
+            "source_type": "personal_memory"
+          }
+        ],
+        "citation_details": [
+          {
+            "item_index": 0,
+            "memory_id": "ca15cb04-6f56-40b3-8652-ae20058cdebb",
+            "record_id": "fc666553-4312-4959-95c0-aaab3067cfad",
+            "revision_id": "1d5728cb-3d7b-42d1-ab2b-fc6701323b94",
+            "quote": "2026-10-15 Python Part 2를 완료했다.",
+            "start": 0,
+            "end": 31,
+            "citation_id": "88292763-0bfc-40d7-8bf3-6d5c93efa88e:0:ca15cb04-6f56-40b3-8652-ae20058cdebb"
+          }
+        ],
+        "validation": "model_checked",
+        "history_turns": 0,
+        "conversation_type": "memory",
+        "blocks": [
+          {
+            "type": "paragraph",
+            "item_indices": [
+              0
+            ]
+          }
+        ],
+        "query_corrections": [
+          {
+            "status": "none",
+            "query": "Python 마지막 진도 알려줘",
+            "edits": [],
+            "reason": null,
+            "original_query": "Python 마지막 진도 알려줘",
+            "searched": false
+          }
+        ],
+        "conversation_mode": "memory",
+        "requested_mode": "auto",
+        "elapsed_seconds": 26.54,
+        "model": "server-default",
+        "generation_revision": "unconfigured",
+        "chat_prompt_version": 6,
+        "presentation": [
+          {
+            "type": "text",
+            "item_indices": [
+              0
+            ]
+          }
+        ],
+        "response_id": "88292763-0bfc-40d7-8bf3-6d5c93efa88e",
+        "conversation_id": "72888da0-b9f0-47df-ba01-9cc9708e8f04",
+        "response_version": 1,
+        "primary_response_type": "PROGRESS_REVIEW",
+        "response_features": [
+          "MEMORY_CONNECTED",
+          "ACTION_CHOICES"
+        ],
+        "answer_text": "선택된 근거 중 사건 날짜가 가장 최근인 기록은 “2026-10-15 Python Part 2를 완료했다.”입니다.",
+        "grounding_status": "verified",
+        "evidence_refs": [
+          {
+            "memory_id": "ca15cb04-6f56-40b3-8652-ae20058cdebb",
+            "record_id": "fc666553-4312-4959-95c0-aaab3067cfad",
+            "record_version": 1,
+            "source_type": "personal_memory",
+            "source_location": "1d5728cb-3d7b-42d1-ab2b-fc6701323b94",
+            "event_time": {
+              "raw": "2026-10-15",
+              "start": "2026-10-15",
+              "end": null,
+              "precision": "day",
+              "certainty": "explicit"
+            },
+            "created_at": "2026-10-20T09:00:00+09:00",
+            "updated_at": null,
+            "relevance": 0.03252247488101534,
+            "support_type": "cited",
+            "spans": [
+              {
+                "item_index": 0,
+                "memory_id": "ca15cb04-6f56-40b3-8652-ae20058cdebb",
+                "record_id": "fc666553-4312-4959-95c0-aaab3067cfad",
+                "revision_id": "1d5728cb-3d7b-42d1-ab2b-fc6701323b94",
+                "quote": "2026-10-15 Python Part 2를 완료했다.",
+                "start": 0,
+                "end": 31,
+                "citation_id": "88292763-0bfc-40d7-8bf3-6d5c93efa88e:0:ca15cb04-6f56-40b3-8652-ae20058cdebb"
+              }
+            ]
+          }
+        ],
+        "uncertainty": [],
+        "interpretation": {
+          "intent": "progress",
+          "observations": [
+            {
+              "claim": "2026-10-15 Python Part 2를 완료했다.",
+              "evidence_ids": [
+                "ca15cb04-6f56-40b3-8652-ae20058cdebb"
+              ],
+              "record_id": "fc666553-4312-4959-95c0-aaab3067cfad",
+              "record_version": 1,
+              "status": "completed",
+              "event_time": "2026-10-15",
+              "subject": "Python Part 2",
+              "event": "완료",
+              "condition": "",
+              "assessment": "source_interpretation"
+            }
+          ],
+          "relations": [],
+          "facts": [
+            {
+              "claim": "선택된 근거 중 사건 날짜가 가장 최근인 기록은 “2026-10-15 Python Part 2를 완료했다.”입니다.",
+              "evidence_ids": [
+                "ca15cb04-6f56-40b3-8652-ae20058cdebb"
+              ]
+            }
+          ],
+          "inferences": [],
+          "suggestions": [],
+          "uncertainties": [],
+          "next_step": null,
+          "next_step_evidence_ids": [],
+          "policy": "원문에 없는 다음 과정·완료·현재 상태를 확정하지 않는다."
+        },
+        "memory_context": {
+          "enabled": true,
+          "source_ids": [
+            "ca15cb04-6f56-40b3-8652-ae20058cdebb"
+          ],
+          "status_as_of": [
+            "2026-10-15"
+          ]
+        },
+        "ui_actions": [
+          {
+            "action_id": "88292763-0bfc-40d7-8bf3-6d5c93efa88e:0",
+            "type": "SHOW_HISTORY",
+            "label": "진행 이력",
+            "target_id": "88292763-0bfc-40d7-8bf3-6d5c93efa88e",
+            "target_ids": [],
+            "pending_query_id": null,
+            "session_id": "72888da0-b9f0-47df-ba01-9cc9708e8f04",
+            "message_id": "88292763-0bfc-40d7-8bf3-6d5c93efa88e",
+            "required_permissions": [
+              "chat_read"
+            ],
+            "state": "ACTIVE",
+            "context_version": 1,
+            "expiration_policy": "context_and_source_version",
+            "query": null,
+            "source_versions": {
+              "fc666553-4312-4959-95c0-aaab3067cfad": 1
+            }
+          },
+          {
+            "action_id": "88292763-0bfc-40d7-8bf3-6d5c93efa88e:1",
+            "type": "CONFIRM_PROGRESS",
+            "label": "진도 확인·정정",
+            "target_id": "88292763-0bfc-40d7-8bf3-6d5c93efa88e",
+            "target_ids": [],
+            "pending_query_id": null,
+            "session_id": "72888da0-b9f0-47df-ba01-9cc9708e8f04",
+            "message_id": "88292763-0bfc-40d7-8bf3-6d5c93efa88e",
+            "required_permissions": [
+              "memory_write"
+            ],
+            "state": "ACTIVE",
+            "context_version": 1,
+            "expiration_policy": "context_and_source_version",
+            "query": null,
+            "source_versions": {
+              "fc666553-4312-4959-95c0-aaab3067cfad": 1
+            }
+          }
+        ],
+        "context_update": {
+          "version": 1
+        },
+        "error_state": null,
+        "phase_seconds": 4.604,
+        "phase_timings": {
+          "resolving_context": 1.648,
+          "searching": 11.703,
+          "generating": 8.585,
+          "validating": 4.604
+        }
+      },
+      "evidence_ids": [
+        "NAT-T03-r0",
+        "NAT-T03-r1"
+      ],
+      "checks": {
+        "required_concepts": true,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "required_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      },
+      "passed": true,
+      "failure_code": null,
+      "performance": {
+        "lock_wait_seconds": 0.012,
+        "model_http_calls": [
+          {
+            "operation": "/tokenize",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.024299
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 5.541074,
+            "usage": {
+              "prompt_tokens": 775,
+              "completion_tokens": 227,
+              "total_tokens": 1002
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.008121
+          },
+          {
+            "operation": "/v1/embeddings",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.023555,
+            "usage": {
+              "prompt_tokens": 9,
+              "total_tokens": 9
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.018653
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 3.84518,
+            "usage": {
+              "prompt_tokens": 1173,
+              "completion_tokens": 139,
+              "total_tokens": 1312
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.033093
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "search_planning",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.003382
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "search_planning",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 2.167875,
+            "usage": {
+              "prompt_tokens": 3259,
+              "completion_tokens": 12,
+              "total_tokens": 3271
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.020078
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "general",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.001515
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "general",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 5.924906,
+            "usage": {
+              "prompt_tokens": 365,
+              "completion_tokens": 240,
+              "total_tokens": 605
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.030402
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.007188
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 2.610046,
+            "usage": {
+              "prompt_tokens": 2991,
+              "completion_tokens": 34,
+              "total_tokens": 3025
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "context_selection",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.033563
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "context_selection",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 1.594775,
+            "usage": {
+              "prompt_tokens": 890,
+              "completion_tokens": 38,
+              "total_tokens": 928
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.09128
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 4.508704,
+            "usage": {
+              "prompt_tokens": 2008,
+              "completion_tokens": 167,
+              "total_tokens": 2175
+            }
+          }
+        ],
+        "profile": {
+          "schema_version": 1,
+          "outcome": "completed",
+          "elapsed_seconds": 26.533535,
+          "stages": {
+            "model_wait": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.002153,
+              "exclusive_seconds": 0.002153
+            },
+            "token_budget": {
+              "calls": 8,
+              "failures": 0,
+              "inclusive_seconds": 0.18919,
+              "exclusive_seconds": 0.18919
+            },
+            "question_understanding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 5.566146,
+              "exclusive_seconds": 5.541733
+            },
+            "candidate_snapshot": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.002043,
+              "exclusive_seconds": 0.002043
+            },
+            "embedding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.03218,
+              "exclusive_seconds": 0.024007
+            },
+            "candidate_matrix": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 5.6e-05,
+              "exclusive_seconds": 5.6e-05
+            },
+            "keyword_ranking": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.000159,
+              "exclusive_seconds": 0.000159
+            },
+            "relevance_selection": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 3.864456,
+              "exclusive_seconds": 3.845678
+            },
+            "retrieval": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 9.472556,
+              "exclusive_seconds": 0.007515
+            },
+            "search": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 9.472577,
+              "exclusive_seconds": 2.1e-05
+            },
+            "token_count": {
+              "calls": 3,
+              "failures": 0,
+              "inclusive_seconds": 0.084539,
+              "exclusive_seconds": 0.084539
+            },
+            "search_planning": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 2.171944,
+              "exclusive_seconds": 2.168328
+            },
+            "general": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 5.927042,
+              "exclusive_seconds": 5.925457
+            },
+            "context_resolution": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 2.649013,
+              "exclusive_seconds": 2.610779
+            },
+            "context_selection": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 1.628872,
+              "exclusive_seconds": 1.59518
+            },
+            "answer_selection": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 1.636425,
+              "exclusive_seconds": 0.007553
+            },
+            "review": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 4.600737,
+              "exclusive_seconds": 4.509231
+            },
+            "independent_review": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 4.604473,
+              "exclusive_seconds": 0.003736
+            },
+            "final_save": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.002964,
+              "exclusive_seconds": 0.002964
+            }
+          },
+          "counts": {
+            "search_iterations": 1,
+            "source_progress_drafts": 1,
+            "generation_attempts": 1,
+            "review_attempts": 1
+          }
+        }
+      },
+      "elapsed_seconds": 26.559375599958003,
+      "python_cpu_seconds": 0.09375,
+      "finished_at_utc": "2026-10-20T04:49:26.946825+00:00",
+      "combined_process_cpu_seconds": 27.890625,
+      "cpu_percent_machine": 4.3755146676032455,
+      "combined_process_ram_peak_mb": 2200.22265625,
+      "whole_gpu_vram_peak_mb": 7642.0,
+      "python_working_set_mb": 27.421875
+    },
+    {
+      "id": "NAT-T04",
+      "message": "Python 어디까지 했더라?",
+      "expected": {
+        "id": "NAT-T04",
+        "message": "Python 어디까지 했더라?",
+        "records": [
+          {
+            "id": "NAT-T04-r0",
+            "text": "2026-10-10 Python Part 1을 완료했다."
+          },
+          {
+            "id": "NAT-T04-r1",
+            "text": "2026-10-10 Python Part 1은 완료하지 않았다."
+          }
+        ],
+        "previous_context": [],
+        "required_concepts": [
+          "충돌|상반|다른|확정|확인"
+        ],
+        "forbidden_claims": [],
+        "expected_search": true,
+        "expected_interpretation": "원문·상태·시점을 보존하며 현재 요청에 필요한 사실만 사용",
+        "expected_response_type": "CONFLICT",
+        "expected_buttons": [],
+        "required_sources": [],
+        "failure_code": null,
+        "evaluation_boundary": "실제 모델 평가는 의미·출처 검사, 계약 테스트는 개별 정책·액션 경계 검사"
+      },
+      "mode": "auto",
+      "started_at_utc": "2026-10-20T04:49:27.197449+00:00",
+      "response": {
+        "message_id": "55de854c-19f1-4ffb-a642-d984beb2aec2",
+        "status": "answered",
+        "items": [
+          {
+            "text": "같은 날짜의 완료 여부가 서로 달라 현재 진도를 확정할 수 없습니다.",
+            "citations": [
+              "2e58778c-e235-4d68-8e8d-ae498e062966",
+              "e9ae167f-ef20-42df-9019-6562d2e470fe"
+            ],
+            "source_type": "personal_memory"
+          },
+          {
+            "text": "한 기록에는 “2026-10-10 Python Part 1은 완료하지 않았다.”라고 적혀 있습니다.",
+            "citations": [
+              "2e58778c-e235-4d68-8e8d-ae498e062966"
+            ],
+            "source_type": "personal_memory"
+          },
+          {
+            "text": "한 기록에는 “2026-10-10 Python Part 1을 완료했다.”라고 적혀 있습니다.",
+            "citations": [
+              "e9ae167f-ef20-42df-9019-6562d2e470fe"
+            ],
+            "source_type": "personal_memory"
+          }
+        ],
+        "display": {
+          "kind": "conflict",
+          "verified": true,
+          "verification": "exact_dated_opposite_completion",
+          "items": [
+            {
+              "index": 0,
+              "state": "confirmed",
+              "event": "",
+              "event_date": ""
+            },
+            {
+              "index": 1,
+              "state": "confirmed",
+              "event": "",
+              "event_date": ""
+            },
+            {
+              "index": 2,
+              "state": "confirmed",
+              "event": "",
+              "event_date": ""
+            }
+          ]
+        },
+        "citation_details": [
+          {
+            "item_index": 0,
+            "memory_id": "2e58778c-e235-4d68-8e8d-ae498e062966",
+            "record_id": "d1acf3ee-bf7f-4f8a-813a-d7c5e334adb4",
+            "revision_id": "f2a29c5f-09b0-4f80-a7fe-cacb9962023d",
+            "quote": "2026-10-10 Python Part 1은 완료하지 않았다.",
+            "start": 0,
+            "end": 35,
+            "citation_id": "55de854c-19f1-4ffb-a642-d984beb2aec2:0:2e58778c-e235-4d68-8e8d-ae498e062966"
+          },
+          {
+            "item_index": 0,
+            "memory_id": "e9ae167f-ef20-42df-9019-6562d2e470fe",
+            "record_id": "2d7ccf1d-81f0-4088-b354-214d1cdb55eb",
+            "revision_id": "b6b20d5c-c84f-4baf-af18-dae99905e0fd",
+            "quote": "2026-10-10 Python Part 1을 완료했다.",
+            "start": 0,
+            "end": 31,
+            "citation_id": "55de854c-19f1-4ffb-a642-d984beb2aec2:0:e9ae167f-ef20-42df-9019-6562d2e470fe"
+          },
+          {
+            "item_index": 1,
+            "memory_id": "2e58778c-e235-4d68-8e8d-ae498e062966",
+            "record_id": "d1acf3ee-bf7f-4f8a-813a-d7c5e334adb4",
+            "revision_id": "f2a29c5f-09b0-4f80-a7fe-cacb9962023d",
+            "quote": "2026-10-10 Python Part 1은 완료하지 않았다.",
+            "start": 0,
+            "end": 35,
+            "citation_id": "55de854c-19f1-4ffb-a642-d984beb2aec2:1:2e58778c-e235-4d68-8e8d-ae498e062966"
+          },
+          {
+            "item_index": 2,
+            "memory_id": "e9ae167f-ef20-42df-9019-6562d2e470fe",
+            "record_id": "2d7ccf1d-81f0-4088-b354-214d1cdb55eb",
+            "revision_id": "b6b20d5c-c84f-4baf-af18-dae99905e0fd",
+            "quote": "2026-10-10 Python Part 1을 완료했다.",
+            "start": 0,
+            "end": 31,
+            "citation_id": "55de854c-19f1-4ffb-a642-d984beb2aec2:2:e9ae167f-ef20-42df-9019-6562d2e470fe"
+          }
+        ],
+        "validation": "model_checked",
+        "history_turns": 0,
+        "conversation_type": "memory",
+        "blocks": [
+          {
+            "type": "list",
+            "item_indices": [
+              0,
+              1,
+              2
+            ]
+          }
+        ],
+        "query_corrections": [
+          {
+            "status": "none",
+            "query": "Python 어디까지 했더라?",
+            "edits": [],
+            "reason": null,
+            "original_query": "Python 어디까지 했더라?",
+            "searched": false
+          }
+        ],
+        "conversation_mode": "memory",
+        "requested_mode": "auto",
+        "elapsed_seconds": 34.955,
+        "model": "server-default",
+        "generation_revision": "unconfigured",
+        "chat_prompt_version": 6,
+        "presentation": [
+          {
+            "type": "evidence_comparison",
+            "item_indices": [
+              0,
+              1,
+              2
+            ]
+          }
+        ],
+        "notice": "같은 시점의 완료 여부가 충돌해 상태를 확정할 수 없습니다. 두 원문을 비교해 주세요.",
+        "response_id": "55de854c-19f1-4ffb-a642-d984beb2aec2",
+        "conversation_id": "c583b68c-5baa-4008-81b1-c209ffade19d",
+        "response_version": 1,
+        "primary_response_type": "CONFLICT",
+        "response_features": [
+          "MEMORY_CONNECTED",
+          "ACTION_CHOICES"
+        ],
+        "answer_text": "같은 시점의 완료 여부가 충돌해 상태를 확정할 수 없습니다. 두 원문을 비교해 주세요.\n\n같은 날짜의 완료 여부가 서로 달라 현재 진도를 확정할 수 없습니다.\n\n한 기록에는 “2026-10-10 Python Part 1은 완료하지 않았다.”라고 적혀 있습니다.\n\n한 기록에는 “2026-10-10 Python Part 1을 완료했다.”라고 적혀 있습니다.",
+        "grounding_status": "verified",
+        "evidence_refs": [
+          {
+            "memory_id": "2e58778c-e235-4d68-8e8d-ae498e062966",
+            "record_id": "d1acf3ee-bf7f-4f8a-813a-d7c5e334adb4",
+            "record_version": 1,
+            "source_type": "personal_memory",
+            "source_location": "f2a29c5f-09b0-4f80-a7fe-cacb9962023d",
+            "event_time": {
+              "raw": "2026-10-10",
+              "start": "2026-10-10",
+              "end": null,
+              "precision": "day",
+              "certainty": "explicit"
+            },
+            "created_at": "2026-10-20T09:00:00+09:00",
+            "updated_at": null,
+            "relevance": 0.03278688524590164,
+            "support_type": "cited",
+            "spans": [
+              {
+                "item_index": 0,
+                "memory_id": "2e58778c-e235-4d68-8e8d-ae498e062966",
+                "record_id": "d1acf3ee-bf7f-4f8a-813a-d7c5e334adb4",
+                "revision_id": "f2a29c5f-09b0-4f80-a7fe-cacb9962023d",
+                "quote": "2026-10-10 Python Part 1은 완료하지 않았다.",
+                "start": 0,
+                "end": 35,
+                "citation_id": "55de854c-19f1-4ffb-a642-d984beb2aec2:0:2e58778c-e235-4d68-8e8d-ae498e062966"
+              },
+              {
+                "item_index": 1,
+                "memory_id": "2e58778c-e235-4d68-8e8d-ae498e062966",
+                "record_id": "d1acf3ee-bf7f-4f8a-813a-d7c5e334adb4",
+                "revision_id": "f2a29c5f-09b0-4f80-a7fe-cacb9962023d",
+                "quote": "2026-10-10 Python Part 1은 완료하지 않았다.",
+                "start": 0,
+                "end": 35,
+                "citation_id": "55de854c-19f1-4ffb-a642-d984beb2aec2:1:2e58778c-e235-4d68-8e8d-ae498e062966"
+              }
+            ]
+          },
+          {
+            "memory_id": "e9ae167f-ef20-42df-9019-6562d2e470fe",
+            "record_id": "2d7ccf1d-81f0-4088-b354-214d1cdb55eb",
+            "record_version": 1,
+            "source_type": "personal_memory",
+            "source_location": "b6b20d5c-c84f-4baf-af18-dae99905e0fd",
+            "event_time": {
+              "raw": "2026-10-10",
+              "start": "2026-10-10",
+              "end": null,
+              "precision": "day",
+              "certainty": "explicit"
+            },
+            "created_at": "2026-10-20T09:00:00+09:00",
+            "updated_at": null,
+            "relevance": 0.03225806451612903,
+            "support_type": "cited",
+            "spans": [
+              {
+                "item_index": 0,
+                "memory_id": "e9ae167f-ef20-42df-9019-6562d2e470fe",
+                "record_id": "2d7ccf1d-81f0-4088-b354-214d1cdb55eb",
+                "revision_id": "b6b20d5c-c84f-4baf-af18-dae99905e0fd",
+                "quote": "2026-10-10 Python Part 1을 완료했다.",
+                "start": 0,
+                "end": 31,
+                "citation_id": "55de854c-19f1-4ffb-a642-d984beb2aec2:0:e9ae167f-ef20-42df-9019-6562d2e470fe"
+              },
+              {
+                "item_index": 2,
+                "memory_id": "e9ae167f-ef20-42df-9019-6562d2e470fe",
+                "record_id": "2d7ccf1d-81f0-4088-b354-214d1cdb55eb",
+                "revision_id": "b6b20d5c-c84f-4baf-af18-dae99905e0fd",
+                "quote": "2026-10-10 Python Part 1을 완료했다.",
+                "start": 0,
+                "end": 31,
+                "citation_id": "55de854c-19f1-4ffb-a642-d984beb2aec2:2:e9ae167f-ef20-42df-9019-6562d2e470fe"
+              }
+            ]
+          }
+        ],
+        "uncertainty": [],
+        "interpretation": {
+          "intent": "progress",
+          "observations": [
+            {
+              "claim": "2026-10-10 Python Part 1은 완료하지 않았다.",
+              "evidence_ids": [
+                "2e58778c-e235-4d68-8e8d-ae498e062966"
+              ],
+              "record_id": "d1acf3ee-bf7f-4f8a-813a-d7c5e334adb4",
+              "record_version": 1,
+              "status": "unknown",
+              "event_time": "2026-10-10",
+              "subject": "Python Part 1",
+              "event": "완료하지 않았다",
+              "condition": "",
+              "assessment": "source_interpretation"
+            },
+            {
+              "claim": "2026-10-10 Python Part 1을 완료했다.",
+              "evidence_ids": [
+                "e9ae167f-ef20-42df-9019-6562d2e470fe"
+              ],
+              "record_id": "2d7ccf1d-81f0-4088-b354-214d1cdb55eb",
+              "record_version": 1,
+              "status": "completed",
+              "event_time": "2026-10-10",
+              "subject": "Python Part 1",
+              "event": "완료했다",
+              "condition": "",
+              "assessment": "source_interpretation"
+            }
+          ],
+          "relations": [
+            {
+              "left_ids": [
+                "2e58778c-e235-4d68-8e8d-ae498e062966"
+              ],
+              "right_ids": [
+                "e9ae167f-ef20-42df-9019-6562d2e470fe"
+              ],
+              "type": "unresolved",
+              "assessment": "requires_answer_review"
+            }
+          ],
+          "facts": [
+            {
+              "claim": "같은 날짜의 완료 여부가 서로 달라 현재 진도를 확정할 수 없습니다.",
+              "evidence_ids": [
+                "2e58778c-e235-4d68-8e8d-ae498e062966",
+                "e9ae167f-ef20-42df-9019-6562d2e470fe"
+              ]
+            },
+            {
+              "claim": "한 기록에는 “2026-10-10 Python Part 1은 완료하지 않았다.”라고 적혀 있습니다.",
+              "evidence_ids": [
+                "2e58778c-e235-4d68-8e8d-ae498e062966"
+              ]
+            },
+            {
+              "claim": "한 기록에는 “2026-10-10 Python Part 1을 완료했다.”라고 적혀 있습니다.",
+              "evidence_ids": [
+                "e9ae167f-ef20-42df-9019-6562d2e470fe"
+              ]
+            }
+          ],
+          "inferences": [],
+          "suggestions": [],
+          "uncertainties": [],
+          "next_step": null,
+          "next_step_evidence_ids": [],
+          "policy": "원문에 없는 다음 과정·완료·현재 상태를 확정하지 않는다."
+        },
+        "memory_context": {
+          "enabled": true,
+          "source_ids": [
+            "2e58778c-e235-4d68-8e8d-ae498e062966",
+            "e9ae167f-ef20-42df-9019-6562d2e470fe"
+          ],
+          "status_as_of": [
+            "2026-10-10",
+            "2026-10-10"
+          ]
+        },
+        "ui_actions": [
+          {
+            "action_id": "55de854c-19f1-4ffb-a642-d984beb2aec2:0",
+            "type": "COMPARE",
+            "label": "기록 비교",
+            "target_id": "55de854c-19f1-4ffb-a642-d984beb2aec2",
+            "target_ids": [],
+            "pending_query_id": null,
+            "session_id": "c583b68c-5baa-4008-81b1-c209ffade19d",
+            "message_id": "55de854c-19f1-4ffb-a642-d984beb2aec2",
+            "required_permissions": [
+              "chat_read"
+            ],
+            "state": "ACTIVE",
+            "context_version": 1,
+            "expiration_policy": "context_and_source_version",
+            "query": null,
+            "source_versions": {
+              "d1acf3ee-bf7f-4f8a-813a-d7c5e334adb4": 1,
+              "2d7ccf1d-81f0-4088-b354-214d1cdb55eb": 1
+            }
+          },
+          {
+            "action_id": "55de854c-19f1-4ffb-a642-d984beb2aec2:1",
+            "type": "SHOW_HISTORY",
+            "label": "변경 이력",
+            "target_id": "55de854c-19f1-4ffb-a642-d984beb2aec2",
+            "target_ids": [],
+            "pending_query_id": null,
+            "session_id": "c583b68c-5baa-4008-81b1-c209ffade19d",
+            "message_id": "55de854c-19f1-4ffb-a642-d984beb2aec2",
+            "required_permissions": [
+              "chat_read"
+            ],
+            "state": "ACTIVE",
+            "context_version": 1,
+            "expiration_policy": "context_and_source_version",
+            "query": null,
+            "source_versions": {
+              "d1acf3ee-bf7f-4f8a-813a-d7c5e334adb4": 1,
+              "2d7ccf1d-81f0-4088-b354-214d1cdb55eb": 1
+            }
+          }
+        ],
+        "context_update": {
+          "version": 1
+        },
+        "error_state": null,
+        "phase_seconds": 10.94,
+        "phase_timings": {
+          "resolving_context": 1.714,
+          "searching": 9.303,
+          "generating": 12.998,
+          "validating": 10.94
+        }
+      },
+      "evidence_ids": [
+        "NAT-T04-r1",
+        "NAT-T04-r0"
+      ],
+      "checks": {
+        "required_concepts": true,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "required_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      },
+      "passed": true,
+      "failure_code": null,
+      "performance": {
+        "lock_wait_seconds": 0.017,
+        "model_http_calls": [
+          {
+            "operation": "/tokenize",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.029533
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 1.977959,
+            "usage": {
+              "prompt_tokens": 776,
+              "completion_tokens": 53,
+              "total_tokens": 829
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.005311
+          },
+          {
+            "operation": "/v1/embeddings",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.033867,
+            "usage": {
+              "prompt_tokens": 9,
+              "total_tokens": 9
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.081472
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 4.714933,
+            "usage": {
+              "prompt_tokens": 1186,
+              "completion_tokens": 172,
+              "total_tokens": 1358
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.223584
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "search_planning",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.016966
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "search_planning",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 2.177341,
+            "usage": {
+              "prompt_tokens": 2956,
+              "completion_tokens": 12,
+              "total_tokens": 2968
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.016871
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "general",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.001777
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "general",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 6.464658,
+            "usage": {
+              "prompt_tokens": 375,
+              "completion_tokens": 252,
+              "total_tokens": 627
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.031912
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.007728
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 6.472601,
+            "usage": {
+              "prompt_tokens": 2796,
+              "completion_tokens": 199,
+              "total_tokens": 2995
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "context_selection",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.031176
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "context_selection",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 1.658577,
+            "usage": {
+              "prompt_tokens": 903,
+              "completion_tokens": 41,
+              "total_tokens": 944
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.073754
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 9.885787,
+            "usage": {
+              "prompt_tokens": 2300,
+              "completion_tokens": 381,
+              "total_tokens": 2681
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "display_review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.010059
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "display_review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.961104,
+            "usage": {
+              "prompt_tokens": 1506,
+              "completion_tokens": 13,
+              "total_tokens": 1519
+            }
+          }
+        ],
+        "profile": {
+          "schema_version": 1,
+          "outcome": "completed",
+          "elapsed_seconds": 34.947393,
+          "stages": {
+            "model_wait": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.002459,
+              "exclusive_seconds": 0.002459
+            },
+            "token_budget": {
+              "calls": 9,
+              "failures": 0,
+              "inclusive_seconds": 0.259406,
+              "exclusive_seconds": 0.259406
+            },
+            "question_understanding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 2.008357,
+              "exclusive_seconds": 1.978712
+            },
+            "candidate_snapshot": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.003303,
+              "exclusive_seconds": 0.003303
+            },
+            "embedding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.039755,
+              "exclusive_seconds": 0.03439
+            },
+            "candidate_matrix": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.000839,
+              "exclusive_seconds": 0.000839
+            },
+            "keyword_ranking": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.000572,
+              "exclusive_seconds": 0.000572
+            },
+            "relevance_selection": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 4.797209,
+              "exclusive_seconds": 4.7156
+            },
+            "retrieval": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 6.859333,
+              "exclusive_seconds": 0.009299
+            },
+            "search": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 6.859356,
+              "exclusive_seconds": 2.3e-05
+            },
+            "token_count": {
+              "calls": 3,
+              "failures": 0,
+              "inclusive_seconds": 0.273456,
+              "exclusive_seconds": 0.273456
+            },
+            "search_planning": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 2.195138,
+              "exclusive_seconds": 2.177921
+            },
+            "general": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 6.467049,
+              "exclusive_seconds": 6.465192
+            },
+            "context_resolution": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 6.514279,
+              "exclusive_seconds": 6.473996
+            },
+            "context_selection": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 1.690526,
+              "exclusive_seconds": 1.659108
+            },
+            "answer_selection": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 1.702185,
+              "exclusive_seconds": 0.011659
+            },
+            "review": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 9.961955,
+              "exclusive_seconds": 9.887836
+            },
+            "display_review": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.971657,
+              "exclusive_seconds": 0.961438
+            },
+            "independent_review": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 10.939363,
+              "exclusive_seconds": 0.005751
+            },
+            "final_save": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.006813,
+              "exclusive_seconds": 0.006813
+            }
+          },
+          "counts": {
+            "search_iterations": 1,
+            "source_conflict_drafts": 1,
+            "generation_attempts": 1,
+            "review_attempts": 1
+          }
+        }
+      },
+      "elapsed_seconds": 34.991044600028545,
+      "python_cpu_seconds": 0.0625,
+      "finished_at_utc": "2026-10-20T04:50:02.188416+00:00",
+      "combined_process_cpu_seconds": 35.65625,
+      "cpu_percent_machine": 4.245878053415191,
+      "combined_process_ram_peak_mb": 1782.41015625,
+      "whole_gpu_vram_peak_mb": 7651.0,
+      "python_working_set_mb": 21.4921875
+    },
+    {
+      "id": "NAT-T30",
+      "message": "Python Part 2 완료했었나?",
+      "expected": {
+        "id": "NAT-T30",
+        "message": "Python Part 2 완료했었나?",
+        "records": [
+          {
+            "id": "NAT-T30-r0",
+            "text": "이전 AI는 Python Part 2 완료라고 잘못 답했다. 실제로는 Python Part 1만 공부했다."
+          }
+        ],
+        "previous_context": [],
+        "required_concepts": [
+          "Part 1|잘못|완료 여부|확인"
+        ],
+        "forbidden_claims": [
+          "Part 2를 완료했습니다"
+        ],
+        "expected_search": true,
+        "expected_interpretation": "원문·상태·시점을 보존하며 현재 요청에 필요한 사실만 사용",
+        "expected_response_type": null,
+        "expected_buttons": [],
+        "required_sources": [],
+        "failure_code": null,
+        "evaluation_boundary": "실제 모델 평가는 의미·출처 검사, 계약 테스트는 개별 정책·액션 경계 검사"
+      },
+      "mode": "auto",
+      "started_at_utc": "2026-10-20T04:50:02.668021+00:00",
+      "response": {
+        "message_id": "d7309a41-36c7-4f24-9aaf-e0338c2a65e0",
+        "status": "answered",
+        "items": [
+          {
+            "text": "기록에 따르면 Python Part 2는 완료하지 않았습니다. 실제로는 Python Part 1만 공부했습니다.",
+            "citations": [
+              "1c95de81-41e4-40c2-80b7-ed807227cf5d"
+            ],
+            "source_type": "personal_memory"
+          }
+        ],
+        "citation_details": [
+          {
+            "item_index": 0,
+            "memory_id": "1c95de81-41e4-40c2-80b7-ed807227cf5d",
+            "record_id": "29b55d0e-b716-4838-bac6-489731399c94",
+            "revision_id": "307e510e-4cae-45af-a2c7-33170c3226bb",
+            "quote": "실제로는 Python Part 1만 공부했다.",
+            "start": 34,
+            "end": 59,
+            "citation_id": "d7309a41-36c7-4f24-9aaf-e0338c2a65e0:0:1c95de81-41e4-40c2-80b7-ed807227cf5d"
+          }
+        ],
+        "validation": "model_checked",
+        "history_turns": 0,
+        "conversation_type": "memory",
+        "blocks": [
+          {
+            "type": "paragraph",
+            "item_indices": [
+              0
+            ]
+          }
+        ],
+        "query_corrections": [
+          {
+            "status": "none",
+            "query": "Python Part 2 완료했었나?",
+            "edits": [],
+            "reason": null,
+            "original_query": "Python Part 2 완료했었나?",
+            "searched": false
+          }
+        ],
+        "conversation_mode": "memory",
+        "requested_mode": "auto",
+        "elapsed_seconds": 25.031,
+        "model": "server-default",
+        "generation_revision": "unconfigured",
+        "chat_prompt_version": 6,
+        "presentation": [
+          {
+            "type": "text",
+            "item_indices": [
+              0
+            ]
+          }
+        ],
+        "response_id": "d7309a41-36c7-4f24-9aaf-e0338c2a65e0",
+        "conversation_id": "0435626b-98e3-49b3-b81f-7a831a813668",
+        "response_version": 1,
+        "primary_response_type": "PROGRESS_REVIEW",
+        "response_features": [
+          "MEMORY_CONNECTED",
+          "ACTION_CHOICES"
+        ],
+        "answer_text": "기록에 따르면 Python Part 2는 완료하지 않았습니다. 실제로는 Python Part 1만 공부했습니다.",
+        "grounding_status": "verified",
+        "evidence_refs": [
+          {
+            "memory_id": "1c95de81-41e4-40c2-80b7-ed807227cf5d",
+            "record_id": "29b55d0e-b716-4838-bac6-489731399c94",
+            "record_version": 1,
+            "source_type": "personal_memory",
+            "source_location": "307e510e-4cae-45af-a2c7-33170c3226bb",
+            "event_time": {
+              "raw": null,
+              "start": null,
+              "end": null,
+              "precision": "unknown",
+              "certainty": "uncertain"
+            },
+            "created_at": "2026-10-20T09:00:00+09:00",
+            "updated_at": null,
+            "relevance": 0.03278688524590164,
+            "support_type": "cited",
+            "spans": [
+              {
+                "item_index": 0,
+                "memory_id": "1c95de81-41e4-40c2-80b7-ed807227cf5d",
+                "record_id": "29b55d0e-b716-4838-bac6-489731399c94",
+                "revision_id": "307e510e-4cae-45af-a2c7-33170c3226bb",
+                "quote": "실제로는 Python Part 1만 공부했다.",
+                "start": 34,
+                "end": 59,
+                "citation_id": "d7309a41-36c7-4f24-9aaf-e0338c2a65e0:0:1c95de81-41e4-40c2-80b7-ed807227cf5d"
+              }
+            ]
+          }
+        ],
+        "uncertainty": [],
+        "interpretation": {
+          "intent": "progress",
+          "observations": [
+            {
+              "claim": "이전 AI는 Python Part 2 완료라고 잘못 답했다. 실제로는 Python Part 1만 공부했다.",
+              "evidence_ids": [
+                "1c95de81-41e4-40c2-80b7-ed807227cf5d"
+              ],
+              "record_id": "29b55d0e-b716-4838-bac6-489731399c94",
+              "record_version": 1,
+              "status": "unknown",
+              "event_time": null,
+              "subject": "Python Part 2",
+              "event": "완료",
+              "condition": "",
+              "assessment": "source_interpretation"
+            }
+          ],
+          "relations": [],
+          "facts": [
+            {
+              "claim": "기록에 따르면 Python Part 2는 완료하지 않았습니다. 실제로는 Python Part 1만 공부했습니다.",
+              "evidence_ids": [
+                "1c95de81-41e4-40c2-80b7-ed807227cf5d"
+              ]
+            }
+          ],
+          "inferences": [],
+          "suggestions": [],
+          "uncertainties": [],
+          "next_step": null,
+          "next_step_evidence_ids": [],
+          "policy": "원문에 없는 다음 과정·완료·현재 상태를 확정하지 않는다."
+        },
+        "memory_context": {
+          "enabled": true,
+          "source_ids": [
+            "1c95de81-41e4-40c2-80b7-ed807227cf5d"
+          ],
+          "status_as_of": []
+        },
+        "ui_actions": [
+          {
+            "action_id": "d7309a41-36c7-4f24-9aaf-e0338c2a65e0:0",
+            "type": "SHOW_HISTORY",
+            "label": "진행 이력",
+            "target_id": "d7309a41-36c7-4f24-9aaf-e0338c2a65e0",
+            "target_ids": [],
+            "pending_query_id": null,
+            "session_id": "0435626b-98e3-49b3-b81f-7a831a813668",
+            "message_id": "d7309a41-36c7-4f24-9aaf-e0338c2a65e0",
+            "required_permissions": [
+              "chat_read"
+            ],
+            "state": "ACTIVE",
+            "context_version": 1,
+            "expiration_policy": "context_and_source_version",
+            "query": null,
+            "source_versions": {
+              "29b55d0e-b716-4838-bac6-489731399c94": 1
+            }
+          },
+          {
+            "action_id": "d7309a41-36c7-4f24-9aaf-e0338c2a65e0:1",
+            "type": "CONFIRM_PROGRESS",
+            "label": "진도 확인·정정",
+            "target_id": "d7309a41-36c7-4f24-9aaf-e0338c2a65e0",
+            "target_ids": [],
+            "pending_query_id": null,
+            "session_id": "0435626b-98e3-49b3-b81f-7a831a813668",
+            "message_id": "d7309a41-36c7-4f24-9aaf-e0338c2a65e0",
+            "required_permissions": [
+              "memory_write"
+            ],
+            "state": "ACTIVE",
+            "context_version": 1,
+            "expiration_policy": "context_and_source_version",
+            "query": null,
+            "source_versions": {
+              "29b55d0e-b716-4838-bac6-489731399c94": 1
+            }
+          }
+        ],
+        "context_update": {
+          "version": 1
+        },
+        "error_state": null,
+        "phase_seconds": 4.368,
+        "phase_timings": {
+          "resolving_context": 1.358,
+          "searching": 5.911,
+          "generating": 13.393,
+          "validating": 4.368
+        }
+      },
+      "evidence_ids": [
+        "NAT-T30-r0"
+      ],
+      "checks": {
+        "required_concepts": true,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "required_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      },
+      "passed": true,
+      "failure_code": null,
+      "performance": {
+        "lock_wait_seconds": 0.02,
+        "model_http_calls": [
+          {
+            "operation": "/tokenize",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.025315
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 2.095486,
+            "usage": {
+              "prompt_tokens": 779,
+              "completion_tokens": 82,
+              "total_tokens": 861
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.003672
+          },
+          {
+            "operation": "/v1/embeddings",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.025976,
+            "usage": {
+              "prompt_tokens": 11,
+              "total_tokens": 11
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.022408
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "search",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 2.314564,
+            "usage": {
+              "prompt_tokens": 826,
+              "completion_tokens": 84,
+              "total_tokens": 910
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.003571
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "search_planning",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.002359
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "search_planning",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 1.39144,
+            "usage": {
+              "prompt_tokens": 2212,
+              "completion_tokens": 6,
+              "total_tokens": 2218
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.007655
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "general",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.002722
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "general",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 3.091028,
+            "usage": {
+              "prompt_tokens": 318,
+              "completion_tokens": 125,
+              "total_tokens": 443
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.030191
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.002319
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 6.156744,
+            "usage": {
+              "prompt_tokens": 1980,
+              "completion_tokens": 212,
+              "total_tokens": 2192
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "context_selection",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.002142
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "context_selection",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 1.330266,
+            "usage": {
+              "prompt_tokens": 543,
+              "completion_tokens": 39,
+              "total_tokens": 582
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "generation",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.031878
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "generation",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 4.07104,
+            "usage": {
+              "prompt_tokens": 3020,
+              "completion_tokens": 126,
+              "total_tokens": 3146
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.022297
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 3.708267,
+            "usage": {
+              "prompt_tokens": 2033,
+              "completion_tokens": 136,
+              "total_tokens": 2169
+            }
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "display_review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.022064
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "display_review",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.608354,
+            "usage": {
+              "prompt_tokens": 1213,
+              "completion_tokens": 13,
+              "total_tokens": 1226
+            }
+          }
+        ],
+        "profile": {
+          "schema_version": 1,
+          "outcome": "completed",
+          "elapsed_seconds": 25.015012,
+          "stages": {
+            "model_wait": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.001859,
+              "exclusive_seconds": 0.001859
+            },
+            "token_budget": {
+              "calls": 10,
+              "failures": 0,
+              "inclusive_seconds": 0.139178,
+              "exclusive_seconds": 0.139178
+            },
+            "question_understanding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 2.121357,
+              "exclusive_seconds": 2.095927
+            },
+            "candidate_snapshot": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.002278,
+              "exclusive_seconds": 0.002278
+            },
+            "embedding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.030164,
+              "exclusive_seconds": 0.026436
+            },
+            "candidate_matrix": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.000679,
+              "exclusive_seconds": 0.000679
+            },
+            "keyword_ranking": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.0007,
+              "exclusive_seconds": 0.0007
+            },
+            "relevance_selection": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 2.337565,
+              "exclusive_seconds": 2.315032
+            },
+            "retrieval": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 4.500125,
+              "exclusive_seconds": 0.007382
+            },
+            "search": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 4.500148,
+              "exclusive_seconds": 2.3e-05
+            },
+            "token_count": {
+              "calls": 3,
+              "failures": 0,
+              "inclusive_seconds": 0.042448,
+              "exclusive_seconds": 0.042448
+            },
+            "search_planning": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 1.394658,
+              "exclusive_seconds": 1.391841
+            },
+            "general": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 3.094224,
+              "exclusive_seconds": 3.091439
+            },
+            "context_resolution": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 6.190858,
+              "exclusive_seconds": 6.157854
+            },
+            "context_selection": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 1.332903,
+              "exclusive_seconds": 1.330658
+            },
+            "answer_selection": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 1.335095,
+              "exclusive_seconds": 0.002192
+            },
+            "generation": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 4.103729,
+              "exclusive_seconds": 4.071588
+            },
+            "answer_generation": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 4.105739,
+              "exclusive_seconds": 0.00201
+            },
+            "review": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 3.731326,
+              "exclusive_seconds": 3.708727
+            },
+            "display_review": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.631116,
+              "exclusive_seconds": 0.608733
+            },
+            "independent_review": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 4.366277,
+              "exclusive_seconds": 0.003836
+            },
+            "final_save": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.001858,
+              "exclusive_seconds": 0.001858
+            }
+          },
+          "counts": {
+            "search_iterations": 1,
+            "generation_attempts": 1,
+            "review_attempts": 1
+          }
+        }
+      },
+      "elapsed_seconds": 25.058691000100225,
+      "python_cpu_seconds": 0.03125,
+      "finished_at_utc": "2026-10-20T04:50:27.726217+00:00",
+      "combined_process_cpu_seconds": 26.421875,
+      "cpu_percent_machine": 4.3933318716804886,
+      "combined_process_ram_peak_mb": 3174.24609375,
+      "whole_gpu_vram_peak_mb": 7651.0,
+      "python_working_set_mb": 25.28125
+    }
+  ]
+}

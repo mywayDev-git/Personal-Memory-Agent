@@ -9,7 +9,34 @@ import statistics
 import sys
 import time
 import traceback
+from datetime import datetime, timezone
 from pathlib import Path
+
+
+def process_cpu_seconds(pids):
+    if os.name != "nt":
+        return time.process_time()
+    import ctypes
+    from ctypes import wintypes
+
+    kernel = ctypes.WinDLL("kernel32", use_last_error=True)
+    kernel.OpenProcess.restype = ctypes.c_void_p
+    kernel.CloseHandle.argtypes = [ctypes.c_void_p]
+    kernel.GetProcessTimes.argtypes = [ctypes.c_void_p] + [ctypes.POINTER(wintypes.FILETIME)] * 4
+    total = 0
+    for pid in pids:
+        handle = kernel.OpenProcess(0x1000, False, pid)
+        if handle:
+            try:
+                values = [wintypes.FILETIME() for _ in range(4)]
+                if kernel.GetProcessTimes(handle, *(ctypes.byref(v) for v in values)):
+                    total += (
+                        sum((v.dwHighDateTime << 32) + v.dwLowDateTime for v in values[2:])
+                        / 10_000_000
+                    )
+            finally:
+                kernel.CloseHandle(handle)
+    return total
 
 
 def main():
@@ -19,6 +46,7 @@ def main():
     parser.add_argument("--cases", nargs="*")
     parser.add_argument("--embedding-revision", required=True)
     parser.add_argument("--embedding-endpoint", default="http://127.0.0.1:8082/v1/embeddings")
+    parser.add_argument("--model-pids", nargs="*", type=int, default=[])
     args = parser.parse_args()
     if args.implementation_root:
         sys.path.insert(0, str(args.implementation_root.resolve()))
@@ -46,6 +74,9 @@ def main():
         for p in (root / folder).rglob("*.py")
     }
     selected = [c for c in cases() if not args.cases or c["id"] in args.cases]
+    dataset_hash = hashlib.sha256(
+        json.dumps(selected, ensure_ascii=False, sort_keys=True).encode()
+    ).hexdigest()
     results = []
     for case in selected:
         folder = args.output / case["id"]
@@ -83,9 +114,22 @@ def main():
         service = Service(store, models, settings)
         engine = ChatEngine(service)
         sid = engine.store.create_empty()["id"]
+        monitor = None
+        if args.model_pids:
+            from evaluation.performance_benchmark import MemorySampler
+
+            monitor = MemorySampler([os.getpid(), *args.model_pids])
+            monitor.__enter__()
         started = time.perf_counter()
         cpu = time.process_time()
-        row = {"id": case["id"], "message": case["message"], "expected": case, "mode": "auto"}
+        process_cpu = process_cpu_seconds([os.getpid(), *args.model_pids])
+        row = {
+            "id": case["id"],
+            "message": case["message"],
+            "expected": case,
+            "mode": "auto",
+            "started_at_utc": datetime.now(timezone.utc).isoformat(),
+        }
         try:
             response = engine.message(sid, "evaluation", case["message"], "2026-10-20")
             session = engine.store.get(sid)
@@ -110,6 +154,7 @@ def main():
                     re.search(claim, text) for claim in case["forbidden_claims"]
                 ),
                 "exact_citations": valid,
+                "required_citations": bool(refs) if case["expected_search"] else True,
                 "memory_refusal": not message["evidence"] if case["id"] == "NAT-T09" else True,
                 "no_irrelevant_memory": not refs if not case["expected_search"] else True,
                 "answer_present": bool(response.get("items")),
@@ -134,6 +179,20 @@ def main():
             elapsed_seconds=time.perf_counter() - started,
             python_cpu_seconds=time.process_time() - cpu,
         )
+        row["finished_at_utc"] = datetime.now(timezone.utc).isoformat()
+        row["combined_process_cpu_seconds"] = (
+            process_cpu_seconds([os.getpid(), *args.model_pids]) - process_cpu
+        )
+        row["cpu_percent_machine"] = (
+            100
+            * row["combined_process_cpu_seconds"]
+            / row["elapsed_seconds"]
+            / (os.cpu_count() or 1)
+        )
+        if monitor:
+            monitor.__exit__(None, None, None)
+            row["combined_process_ram_peak_mb"] = max(monitor.ram, default=None)
+            row["whole_gpu_vram_peak_mb"] = max(monitor.vram, default=None)
         if os.name == "nt":
             from evaluation.performance_benchmark import memory_mb
 
@@ -146,6 +205,9 @@ def main():
 
         report = {
             "synthetic_only": True,
+            "scoring_version": 3,
+            "dataset_sha256": dataset_hash,
+            "evaluator_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
             "implementation_root": str(args.implementation_root or Path.cwd()),
             "source_hashes": source_hashes,
             "settings": {
@@ -153,6 +215,7 @@ def main():
                 "chat_timeout": settings.chat_timeout,
                 "generation_endpoint": settings.llm.endpoint,
                 "embedding_endpoint": settings.embedding_endpoint,
+                "model_pids": args.model_pids,
             },
             "passed": sum(r["passed"] for r in results),
             "measured": len(results),

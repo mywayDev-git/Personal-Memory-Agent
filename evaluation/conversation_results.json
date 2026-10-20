@@ -1,0 +1,504 @@
+{
+  "canonical_scoring_version": 3,
+  "before": {
+    "cases": 14,
+    "fixture_passed": 8,
+    "fixture_pass_rate": 0.5714285714285714,
+    "failed_cases": [
+      "NAT-T01",
+      "NAT-T03",
+      "NAT-T05",
+      "NAT-T07",
+      "NAT-T15",
+      "NAT-T20"
+    ],
+    "latency_including_failures": {
+      "p50": 7.229471749975346,
+      "p95": 28.871144199976698,
+      "p99": 34.63231580005959
+    },
+    "successful_latency_p50": 21.547136400011368,
+    "retrieval": {
+      "recall_at_8": 0.45454545454545453,
+      "ndcg_at_8": 0.45454545454545453,
+      "reciprocal_rank": 0.45454545454545453
+    },
+    "exact_citation_case_rate": 1.0,
+    "python_cpu_seconds_total": 0.59375,
+    "combined_cpu_seconds_total": 189.75,
+    "combined_ram_peak_mb": 3981.1875,
+    "whole_gpu_vram_peak_mb": 7642.0
+  },
+  "after": {
+    "cases": 14,
+    "fixture_passed": 14,
+    "fixture_pass_rate": 1.0,
+    "failed_cases": [],
+    "latency_including_failures": {
+      "p50": 27.251789299945813,
+      "p95": 45.01455800002441,
+      "p99": 45.070449999999255
+    },
+    "successful_latency_p50": 27.251789299945813,
+    "retrieval": {
+      "recall_at_8": 1.0,
+      "ndcg_at_8": 0.9815188709991369,
+      "reciprocal_rank": 1.0
+    },
+    "exact_citation_case_rate": 1.0,
+    "python_cpu_seconds_total": 1.109375,
+    "combined_cpu_seconds_total": 390.75,
+    "combined_ram_peak_mb": 3676.00390625,
+    "whole_gpu_vram_peak_mb": 7651.0
+  },
+  "dataset_sha256": "d385ed92dbe9b35be318883b84f1163dca54fdf2a3f3a485307e0d6c955b7181",
+  "cases": [
+    {
+      "id": "NAT-T01",
+      "before_passed": false,
+      "after_passed": true,
+      "before_seconds": 5.615376999950968,
+      "after_seconds": 45.01455800002441,
+      "before_checks": {
+        "required_concepts": false,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      },
+      "after_checks": {
+        "required_concepts": true,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "required_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      }
+    },
+    {
+      "id": "NAT-T02",
+      "before_passed": true,
+      "after_passed": true,
+      "before_seconds": 19.285702100023627,
+      "after_seconds": 22.52050599991344,
+      "before_checks": {
+        "required_concepts": true,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      },
+      "after_checks": {
+        "required_concepts": true,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "required_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      }
+    },
+    {
+      "id": "NAT-T03",
+      "before_passed": false,
+      "after_passed": true,
+      "before_seconds": 2.0099721000296995,
+      "after_seconds": 26.559375599958003,
+      "before_checks": {
+        "required_concepts": false,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      },
+      "after_checks": {
+        "required_concepts": true,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "required_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      }
+    },
+    {
+      "id": "NAT-T04",
+      "before_passed": true,
+      "after_passed": true,
+      "before_seconds": 34.63231580005959,
+      "after_seconds": 34.991044600028545,
+      "before_checks": {
+        "required_concepts": true,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      },
+      "after_checks": {
+        "required_concepts": true,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "required_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      }
+    },
+    {
+      "id": "NAT-T05",
+      "before_passed": false,
+      "after_passed": true,
+      "before_seconds": 8.843566499999724,
+      "after_seconds": 33.2060115999775,
+      "before_checks": {
+        "required_concepts": false,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      },
+      "after_checks": {
+        "required_concepts": true,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "required_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      }
+    },
+    {
+      "id": "NAT-T07",
+      "before_passed": false,
+      "after_passed": true,
+      "before_seconds": 5.119367800070904,
+      "after_seconds": 39.28377710003406,
+      "before_checks": {
+        "required_concepts": true,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      },
+      "after_checks": {
+        "required_concepts": true,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "required_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      }
+    },
+    {
+      "id": "NAT-T08",
+      "before_passed": true,
+      "after_passed": true,
+      "before_seconds": 1.4733031999785453,
+      "after_seconds": 1.7744652000255883,
+      "before_checks": {
+        "required_concepts": true,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      },
+      "after_checks": {
+        "required_concepts": true,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "required_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      }
+    },
+    {
+      "id": "NAT-T09",
+      "before_passed": true,
+      "after_passed": true,
+      "before_seconds": 14.810472999932244,
+      "after_seconds": 14.101081900065765,
+      "before_checks": {
+        "required_concepts": true,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      },
+      "after_checks": {
+        "required_concepts": true,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "required_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      }
+    },
+    {
+      "id": "NAT-T11",
+      "before_passed": true,
+      "after_passed": true,
+      "before_seconds": 27.394122599973343,
+      "after_seconds": 45.070449999999255,
+      "before_checks": {
+        "required_concepts": true,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      },
+      "after_checks": {
+        "required_concepts": true,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "required_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      }
+    },
+    {
+      "id": "NAT-T13",
+      "before_passed": true,
+      "after_passed": true,
+      "before_seconds": 28.871144199976698,
+      "after_seconds": 27.944202999933623,
+      "before_checks": {
+        "required_concepts": true,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      },
+      "after_checks": {
+        "required_concepts": true,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "required_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      }
+    },
+    {
+      "id": "NAT-T15",
+      "before_passed": false,
+      "after_passed": true,
+      "before_seconds": 3.315185899962671,
+      "after_seconds": 24.360644200001843,
+      "before_checks": {
+        "required_concepts": false,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      },
+      "after_checks": {
+        "required_concepts": true,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "required_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      }
+    },
+    {
+      "id": "NAT-T17",
+      "before_passed": true,
+      "after_passed": true,
+      "before_seconds": 1.0369484999682754,
+      "after_seconds": 0.6429272000677884,
+      "before_checks": {
+        "required_concepts": true,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      },
+      "after_checks": {
+        "required_concepts": true,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "required_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      }
+    },
+    {
+      "id": "NAT-T20",
+      "before_passed": false,
+      "after_passed": true,
+      "before_seconds": 3.028233600081876,
+      "after_seconds": 39.228750200010836,
+      "before_checks": {
+        "required_concepts": false,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      },
+      "after_checks": {
+        "required_concepts": true,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "required_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      }
+    },
+    {
+      "id": "NAT-T30",
+      "before_passed": true,
+      "after_passed": true,
+      "before_seconds": 23.80857069999911,
+      "after_seconds": 25.058691000100225,
+      "before_checks": {
+        "required_concepts": true,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      },
+      "after_checks": {
+        "required_concepts": true,
+        "forbidden_claims": true,
+        "exact_citations": true,
+        "required_citations": true,
+        "memory_refusal": true,
+        "no_irrelevant_memory": true,
+        "answer_present": true
+      }
+    }
+  ],
+  "rechecks": [
+    {
+      "path": "evaluation\\conversation_progress_recheck_results.json",
+      "cases": [
+        "NAT-T02",
+        "NAT-T03",
+        "NAT-T04",
+        "NAT-T30"
+      ],
+      "source_hashes": {
+        "pma/answer_review.py": "277d7cada9562f325f26dfd1d1e55c163d660f67c8019019251307e3c439aaa9",
+        "pma/console_trace.py": "29dec460563f852b626ffedd0201c1ff3ad151c0e7bcb23f0d8064d5ccbe2788",
+        "pma/diagnostics.py": "a1e46b0c3503e9f11fbfe0a833de3f6d85a86125afd55167b63bbd9829766478",
+        "pma/errors.py": "103413d68ec99127c8bb6111986925889eeeb47beaf73581fa7774e9488f671e",
+        "pma/evaluation_api.py": "43a21e70b6ef7c62255bfa6c6925b386e2580a85c37d41a08522b9e144135191",
+        "pma/facts.py": "fc4b91c2edb24cf3d9455d02d15752aca1abefd7891fb5bc8844b4e067a6ae21",
+        "pma/facts_diagnostics.py": "4b2d6c51b561c4f2173d7089bb76061c0f5b0a4ec0522c999219c9d9205ed711",
+        "pma/grounding.py": "52ba5311642b6439973af721ad52aa16944055052e24789dad68de2221ce4830",
+        "pma/imports.py": "5b2ba6a3ad204c0570e884a254de39229ca974be29cd5bff095b967bd4fb1420",
+        "pma/legacy_answer.py": "d498240fddf4fe909a407cbcffd02061025ccdbcbdb61287eaf0529d6e84ac83",
+        "pma/lock.py": "1896ced02498d759e24ee5a2359f479199d78358cddd5cd5bbc27ee6519ed088",
+        "pma/models.py": "3f89fc5b6714cd2fcb50d511d0989f4df00403affa9063cb05918a2b21f8bdfc",
+        "pma/model_diagnostics.py": "90061ae5dbe642d6c806712b3e3b3401bf52224c4a6a731e2d3d8441b7717a09",
+        "pma/model_reuse.py": "46d223bcc2ae2228853dee35aa32672f94a4b2802412013266571d08a08c7603",
+        "pma/processing.py": "cf42888f61d6219ea369e9a1e151a4c0c778b5cd6c8fc73474d095f3cfffa9fa",
+        "pma/query_correction.py": "868a4f0e120a4a8019e7ab8e4ed17f8ae3b5dc69e9e1a3301ad73648375d21fa",
+        "pma/relevance.py": "c3206938e7133c8b878961461f66d6aa5aabf09c597d7191fecebfe802925981",
+        "pma/search_explain.py": "4da5ee2a4206b0b0f9f08c361e261b6123a644699c637c7acc1b732d91c88f17",
+        "pma/search_expressions.py": "f9c7a043b665cc340845fb732f4d039daaee94ab1d8cc83337b37cf1e42f273f",
+        "pma/service.py": "3b0a7f31981907a78b6d54e1afb51a1226233dce23ddeabba360f99014073a20",
+        "pma/service_diagnostics.py": "39a2233ac5fc8bc9eb0f8bf657293b988823835601eae794fc19afde02d6cf78",
+        "pma/settings.py": "ece9ac9a3d662f5aa5e0768ac57a4e55758e1be55d8002c5e3375ea2557f043b",
+        "pma/store.py": "02b99eb8eee0884f852455b70275ed78b5ede301712b1719aa42b5d409699981",
+        "pma/validation_diagnostics.py": "8ca590408e601beeed338b1c3f0bc8ab9735f7df6c47b71eb8a141ba7ec0c7be",
+        "pma/web.py": "d57ec5af1f2172bc820d4c97772783d5458a7444314ebad66c89f214e4e9378d",
+        "pma/web_diagnostics.py": "2ef3463b383bcd1bdb4f3d2898d7384757c0aef0b32d78e7a21c24f9b38891a1",
+        "pma/worker_errors.py": "3667453b7c1d5e1e186185ee4c99759c261dd64d6e63c359ee71043a4247e0a2",
+        "pma/__init__.py": "86bdc1364e2cf177bbfc745e6f2e35b75d1f8adefd5a65a0ebfadd214d2a54d7",
+        "pma/__main__.py": "ade29e2dc193ccc0b2d3a0d8c07ff82133596378af283a3b76e45b9b0493fb2e",
+        "pma/chat/actions.py": "9af370428a5ed3f690360f7f2239d24e13a1d28d95184d54af644e47b975ed7a",
+        "pma/chat/answer_audit.py": "bc7a14e485f8a94b2450465b07cfb5e27232c98416adf2bbede3a4caade3440b",
+        "pma/chat/api.py": "56f90d410d9836a96329dcbe87569aa2c0e1b8e6b6995053db281409790581fd",
+        "pma/chat/automatic.py": "ef99078b2f219f1eeb3555b39240e7910539a6af2b325f59a554eebdea72ba88",
+        "pma/chat/context.py": "99c5f3199acd840ba7b83270d20d963bfe0bda3504112e3a96bbd1ed644dfbc6",
+        "pma/chat/engine.py": "7f0cf82583456f9a55862717b5c9f364b136b59bd6e6df41f36ff50c19b9ab08",
+        "pma/chat/evidence.py": "f993cde0316b7b620f962fc4bb85a4c74a5f121237c52d7f0b3ddb00125cb585",
+        "pma/chat/execution.py": "f0b73c86ee1964c95df8ca04c8ade6ee66e5323780a51368de6a10ba2944ef5b",
+        "pma/chat/generator.py": "9cdf9965b7a2aa9614d864e64e3c5844a3f9f6c377b9f888fe0d0bb8174be0a4",
+        "pma/chat/identity.py": "5aaaab0a1e36416f47595797b17f559ab52bf99f68ac4fda665297540b8db485",
+        "pma/chat/interpretation.py": "c6be1b0104023711c1c043d473cca6650cc683cf574d2a875481c5ab70a2e6f2",
+        "pma/chat/memory_capture.py": "f977f25760595789bdf05096928498071728f977b7851bd4d5dc5c436528425c",
+        "pma/chat/models.py": "1379bf05302b6797401256ced9985bfe3b878489c3c780e9895433f277b70a89",
+        "pma/chat/orchestrator.py": "249e9e3f1cb68825a49700a5ad25849a1962609f4c25b6926c00cb2ca68b3936",
+        "pma/chat/planner.py": "022be1c0010072349f2d34abe96356835774cb72c8788ba60e042b52b95ab2cc",
+        "pma/chat/policy.py": "341f49ace5e72ad4b98877fd30b016f9c0b43351b6c350225a7e5a6c444121a7",
+        "pma/chat/presentation.py": "d536eb4b2749de3556edce6dd1369fcc66566aaff274c368bd9058782309ad31",
+        "pma/chat/questions.py": "12101b1382516f3e504ed06910566d9160b9cfcec36f91ed0a4c55a63af2c8a6",
+        "pma/chat/retrieval.py": "b6318af32dd456ab2bc32201b9a8882377e00660d5a8b68befb2a321ae26c0ce",
+        "pma/chat/review_sources.py": "4146b7484e787fd00cf018a10e59dd1131e97853c30447b9ea7d746ef1b51731",
+        "pma/chat/router.py": "5edfd80a59be9beeb544a3ea690cad7f7f05d08c87263aefa59223e107f11366",
+        "pma/chat/schema.py": "089b262c7937a9af5de0231f10672045f4b905160ac786064b44d839c40290bd",
+        "pma/chat/schemas.py": "51ad1f7dea61a21936f9f2ae9dbe6b895b946df11902255182c8e249de2d74e2",
+        "pma/chat/semantics.py": "8f0ec0b8b66cbf73940958ad81ca2966c4aa44d519d6c183fca7818ad881fd56",
+        "pma/chat/store.py": "3d7b08319eae31f92880ea08aea63395be31f894a376b43bf59ba2622febdf08",
+        "pma/chat/__init__.py": "95a4377ba9f030a2dbf1cf6db4ab0b8b21b06da07d742a44b1bb6c8fa945b0f5",
+        "pma/memory/api.py": "320f149d064bfda666517747b8db2e1bd79fd43b1bfc96b4ad8787666a5788cb",
+        "pma/memory/conflict_resolver.py": "88aa43f8085d8765bf41b165788dea7080173033ba71f0562fc799530de440ee",
+        "pma/memory/deduplication.py": "d20832eb4e39efa7f416621ddd6fcae418c51367abfb3cc8e811bcf0a262df86",
+        "pma/memory/manager.py": "50150cd963cb88aed5eb39dc8e07b83cabea23629bf53e0b6b049083c53c6547",
+        "pma/memory/provenance.py": "8e9417b7b1b78789fce56a994313a13e437c875981af74f48027c9ad65835256",
+        "pma/memory/repository.py": "aaa7cb9f2d629a64dc45916cba1ce376ee8a05a5a26bfe4f4c2ee4014417472c",
+        "pma/memory/schemas.py": "da679c53554962523a5c5ac9ecb25911e35f034edbc6d607e4df2a7777cf1a54",
+        "pma/memory/__init__.py": "eec4b7b99f1a9987fc689ad85eafad5fc9196acc457833d895e4768df7b3d572",
+        "pma/chat/migrations/__init__.py": "cdc98648c903b9ea96cdc2e02c0296e3635a74cdf3cf16ab669698c5e367efba",
+        "scripts/main.py": "df15b0facb67f1490a3ddc910e2354194119f89b4fc427a957f4958aa7466d97",
+        "scripts/__init__.py": "9d74237e773cf8f2195f387ec361ac420de5276485ab2352cf2f96f0bc97dac4",
+        "scripts/memory_agent/diagnostics.py": "2887f6ee0ebaacbf325f40128beec2a020b1d53b786948a8069ecf0ae1a72b12",
+        "scripts/memory_agent/exceptions.py": "36e2331366c28a5b0fc192473daea89c9058ddb4aa52fd84138eac6350093e0d",
+        "scripts/memory_agent/extractor.py": "604de6028d845dd013b5a6f53eedfcd9fef26e0c36380a3f4859c92deda00dff",
+        "scripts/memory_agent/llm_client.py": "b0b094fa20031a09c819b2d11babef41354e21ad2a57ed094cef7e1d1543f34b",
+        "scripts/memory_agent/meaning.py": "b8cbd2c63dca311095fd9aa57740973fea41cd6e7c47ffdb196d82634a37c13e",
+        "scripts/memory_agent/performance.py": "53ecc669f30b66ac8e5a63985f3cc5f9e7bcbd7206dc82b8b62aeafe9418eb61",
+        "scripts/memory_agent/pipeline.py": "890a8af7ce166a72687dd1d2fba1b53ca2f81567f57ceed6d21007ef1d59001f",
+        "scripts/memory_agent/postprocess.py": "548579780d7ee6c6a18d7b1e2ccc0d06a72f40cdb9f2e56694196aa7702013bc",
+        "scripts/memory_agent/provenance.py": "0482f234dec1f97209f9e65021232ac7d895395daa48b786dbcd324fa733e661",
+        "scripts/memory_agent/validator.py": "41b6196c9e1d4601bbc83cd1ef2d7a2555f1d3fb03bd77d1ae55833a0915c25f",
+        "scripts/memory_agent/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "config/settings.py": "d484ac6bd487bab00e20e5b3423f95071045d8cbee1893f44fca03795f9f838f",
+        "config/__init__.py": "78291d5f6b3a6fd25c3782ffdaa7797866cb7f8bc86b356a071004e175526bf7"
+      }
+    }
+  ],
+  "initial_matrix": {
+    "passed": 25,
+    "measured": 30,
+    "original_v2_passed": 26
+  },
+  "latest_scenario_coverage": {
+    "passed": 30,
+    "cases": 30,
+    "single_build_full_run": false
+  },
+  "limitations": [
+    "각 사례 1회인 위험 기반 14개 비교이며 통계적 일반화가 아니다.",
+    "원문 fixture를 직접 색인했으므로 추출 정확도를 측정하지 않는다.",
+    "생성 서버는 기존 로컬 서버이며 다른 작업의 부하를 완전히 통제하지 않았다.",
+    "RAM은 지정한 프로세스 작업 집합의 1초 표본 최대값, VRAM은 다른 앱을 포함한 GPU 전체 사용량이다.",
+    "fixture 통과율은 필수 개념·금지 주장·인용·기억 거부 검사이며 전체 의미 정확도·자연스러움의 사람 평가를 대신하지 않는다.",
+    "최신 시나리오 커버리지는 초기 30개와 수정 후 재검증을 합친 값이며 한 빌드의 30회 성능 측정이 아니다.",
+    "전후 비교에는 원인 수정 후 해당 진도 사례의 재측정이 포함된다. 원 실행과 재측정의 소스 해시·시각은 각각 보존한다."
+  ]
+}
