@@ -259,6 +259,7 @@ def main():
     parser.add_argument("--multilingual", action="store_true")
     parser.add_argument("--multilingual-current-only", action="store_true")
     parser.add_argument("--seed-template", type=Path, help="Reuse this evaluator's synthetic seed; only embeddings may be rebuilt")
+    parser.add_argument("--fixed-anchor", action="store_true", help="Prepare and verify one shared anchor DB per case so variants receive identical history")
     parser.add_argument("--retrieval-baseline", type=Path,
                         help="Quality-screen against a fresh 90-case report; rejected models only run the two basic timing cases")
     args = parser.parse_args()
@@ -327,6 +328,26 @@ def main():
                                           "remaining_timing_cases": args.cases}), flush=True)
             for case_name in args.cases:
                 case = CASES[case_name]
+                case_seed, anchored_sid = seed, None
+                if case.get("anchor") and args.fixed_anchor:
+                    anchor_started = time.perf_counter()
+                    case_seed = args.output / f"{case_name}-anchor.db"
+                    shutil.copy2(seed, case_seed)
+                    anchor_service = Service(Store(case_seed), LocalModels(settings), settings)
+                    anchor_engine = ChatEngine(anchor_service)
+                    anchored_sid = anchor_engine.store.create_empty()["id"]
+                    anchor_response = anchor_engine.message(
+                        anchored_sid, "anchor", case["anchor"], today="2026-10-19", mode="memory")
+                    anchor_message = anchor_engine.store.get(anchored_sid)["messages"][-1]
+                    anchor_quality = quality(case, anchor_response, anchor_message["evidence"], keys)
+                    if not anchor_quality["passed"]:
+                        raise ValueError("INVALID_SHARED_ANCHOR")
+                    anchor_service.store.checkpoint()
+                    report.setdefault("anchors", {})[case_name] = {
+                        "quality": anchor_quality, "sha256": digest(case_seed),
+                        "preparation_seconds": time.perf_counter() - anchor_started,
+                        "shared_between_variants": True,
+                    }
                 for sample in range(args.samples + 1):
                     order = args.variants if sample % 2 == 0 else list(reversed(args.variants))
                     for variant in order:
@@ -335,11 +356,11 @@ def main():
                                                    selection_batch_size=8 if variant in {"batch8", "combined"} else 4,
                                                    chat_presentation="plain" if variant in {"plain", "combined", "planning_plain"} else "reviewed")
                         path = args.output / f"{case_name}-{sample}-{variant}.db"
-                        shutil.copy2(seed, path)
+                        shutil.copy2(case_seed, path)
                         service = Service(Store(path), LocalModels(variant_settings), variant_settings)
                         engine = ChatEngine(service)
-                        sid = engine.store.create_empty()["id"]
-                        if case.get("anchor"):
+                        sid = anchored_sid or engine.store.create_empty()["id"]
+                        if case.get("anchor") and not anchored_sid:
                             with planning_variant(variant in {"planning", "planning_plain"}):
                                 engine.message(sid, "anchor", case["anchor"], today="2026-10-19", mode="memory")
                         row = {"case": case_name, "sample": sample, "warmup": sample == 0, "variant": variant,
