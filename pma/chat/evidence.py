@@ -83,8 +83,15 @@ def causal_claims_supported(question, response, evidence):
 
 def semantic_issue(question, item, evidence):
     """Reject narrow, checkable meaning changes even if the model approves them."""
+    from .identity import identity_conflict
+    from .semantics import denies_stopping
+
+    if identity_conflict(question, item, evidence):
+        return "person"
     cited = [row["source_text"] for row in evidence if row["id"] in item["citations"]]
     text = item["text"]
+    if denies_stopping(question, text, cited):
+        return "negation"
     if meaning_conflict(text, "\n".join(cited)):
         return "other"
     if not causal_claims_supported(question, {"items": [item]}, evidence):

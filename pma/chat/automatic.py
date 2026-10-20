@@ -213,6 +213,10 @@ def display_block(question, items):
 
 
 def run(engine, question, session, today, requested_mode="auto"):
+    from .identity import scoped_followup
+
+    original_reference = question
+    question = scoped_followup(question, session)
     data = {"question": question, "today": today, "history": history(session)}
     data["topic_history_unverified"] = session.get("context", {}).get("summary", "")
     if requested_mode == "auto" and re.search(
@@ -255,6 +259,8 @@ def run(engine, question, session, today, requested_mode="auto"):
     elif requested_mode == "memory" and route["mode"] == "general":
         route["mode"] = "memory"
     route["query"] = search_question(question, route["query"])
+    if question != original_reference:
+        route["query"] = question
     engine.service.trace("chat_route", question=question, route=route)
     mode = "mixed" if route["mode"] == "hybrid" else route["mode"]
     explicit_recall = re.search(

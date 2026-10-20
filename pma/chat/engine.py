@@ -155,6 +155,11 @@ class ChatEngine:
         result = models.structured(RESOLVE_PROMPT, data, RESOLVE_SCHEMA)
         if schema_errors(result, RESOLVE_SCHEMA):
             raise ValueError("INVALID_CHAT_CONTEXT")
+        from .identity import labels
+
+        # An explicit role is user scope, not a model-editable factual premise.
+        if labels(question):
+            result["question"] = question
         sources = {r["id"]: r["source_text"] for r in session["evidence"]}
         forced = identity_alternatives(original_question or question, session["evidence"])
         alternatives = forced or result["alternatives"]
@@ -338,7 +343,11 @@ class ChatEngine:
                 })
             if not attempt and not review.get("error"):
                 generation_index += 1
-                response = (quoted_topic_answer(intent_question, evidence) if not attributes else None) or models.answer(
+                meaning_rejected = any(
+                    item.get("issue") == "negation" for item in review.get("items", [])
+                )
+                response = (quoted_topic_answer(intent_question, evidence)
+                            if not attributes or meaning_rejected else None) or models.answer(
                     question,
                     evidence,
                     feedback={
