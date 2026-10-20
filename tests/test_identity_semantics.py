@@ -12,6 +12,9 @@ def session(question="회사 동료 민수는 누구야?", quote="회사 동료 
 def test_followup_uses_source_backed_immediate_user_role():
     assert scoped_followup("그 사람 직업은 뭐야?", session()) == "회사 동료 민수 직업은 뭐야?"
     assert scoped_followup("그 사람의 직업은?", session()) == "회사 동료 민수의 직업은?"
+    active = session()
+    active["messages"].append({"state": "running", "question": "그 사람 직업은?"})
+    assert scoped_followup("그 사람 직업은?", active) == "회사 동료 민수 직업은?"
 
 
 @pytest.mark.parametrize("previous", [session(quote="민수는 개발자다."),

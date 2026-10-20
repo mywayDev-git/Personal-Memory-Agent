@@ -17,6 +17,9 @@ def scoped_followup(question, session):
     if not REFERENCE.search(question) or labels(question):
         return question
     messages = session.get("messages", [])
+    # ChatStore.begin has already appended the current in-flight user turn.
+    if messages and messages[-1].get("state") == "running" and messages[-1].get("question") == question:
+        messages = messages[:-1]
     if not messages:
         return question
     previous = messages[-1]
