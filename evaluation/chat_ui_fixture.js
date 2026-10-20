@@ -1,4 +1,5 @@
 import {setupChat} from '/static/chat.js';
+import {setupImports} from '/static/imports.js';
 const $=id=>document.getElementById(id);
 const node=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;};
 const notice=(text)=>{$('notice').hidden=!text;$('notice').textContent=text;};
@@ -39,8 +40,24 @@ Object.assign(auditSample.snapshot.searches[0].audit.candidates[1],{
 sessions.set('audit',{id:'audit',title:'검색 사유',mode:'auto',messages:[auditSample]});
 sessions.set('long',{id:'long',title:'긴 대화',mode:'auto',messages:Array.from({length:24},(_,i)=>message('plain','질문 '+i,['답변 '+i+' · 이전 메시지를 읽을 때 스크롤 위치가 유지됩니다.']))});
 sessions.set('running',{id:'running',title:'진행 중인 대화',mode:'auto',messages:[{id:'running1',request_id:'running1',question:'진행 중인 요청',state:'running'}]});
+const resume=message('plain','Python 이어서 공부하자',['2026-10-10 Python Part 1을 완료했습니다.']);
+resume.response.ui_actions=[['CONTINUE','이어서 진행'],['SHOW_HISTORY','진행 이력'],['COMPARE','근거 비교']].map(([type,label],i)=>({action_id:'resume-action-'+i,type,label,state:'ACTIVE',context_version:1}));
+sessions.set('resume',{id:'resume',title:'학습 재개',mode:'auto',messages:[resume]});
 let polls=0;
 async function api(path,method='GET',data){
+ if(path==='/imports/preview') {
+  const chars=Array.from(data.text),chunks=[];
+  for(let start=0;start<chars.length;start+=4000)chunks.push({start,end:Math.min(start+4000,chars.length),text:chars.slice(start,start+4000).join('')});
+  globalThis.fixtureImportPreview={import_id:'fixture-import',filename:data.filename,chunks,state:'preview'};
+  return structuredClone(globalThis.fixtureImportPreview);
+ }
+ if(path==='/imports/fixture-import/commit'){globalThis.fixtureImportCommits=(globalThis.fixtureImportCommits || 0)+1;return {records:globalThis.fixtureImportPreview.chunks.map((_,i)=>({record_id:'import-'+i}))};}
+ if(path==='/imports/fixture-import'&&method==='DELETE')return null;
+ if(path.startsWith('/records/')) {
+  if(path.endsWith('/revisions'))return {items:[{version:1,text:'2026-10-10 Python Part 1을 완료했습니다.',created_at:'2026-10-10T09:00:00Z'}]};
+  return {id:'r0',text:'2026-10-10 Python Part 1을 완료했습니다.',state:'active',version:1};
+ }
+ if(path.startsWith('/chat/citations/'))return {state:'active'};
  const parts=path.split('/'); const sid=parts[3]; const session=sessions.get(sid);
  if(path.startsWith('/chat/sessions?')||path==='/chat/sessions') {
   if(method==='POST'){const id=crypto.randomUUID();const s={id,title:'새 대화',mode:'auto',messages:[]};sessions.set(id,s);return structuredClone(s);}
@@ -52,6 +69,14 @@ async function api(path,method='GET',data){
   if(method==='POST'){m.state='failed';m.error_code='CANCELLED';}
   else if(sid==='running'&&++polls>=2&&m.state==='running')Object.assign(m,message('plain',m.question,['자동으로 완료된 답변입니다.'],m.id));
   return {state:m.state,phase:'generating'};
+ }
+ if(parts[4]==='actions') {
+  const chosen=session.messages.flatMap(m=>m.response?.ui_actions || []).find(a=>a.action_id===decodeURIComponent(parts[5]));
+  await new Promise(resolve=>setTimeout(resolve,250));
+  chosen.state='RESOLVED';
+  if(chosen.type!=='CONTINUE')return {effect:chosen.type==='SHOW_HISTORY'?'history':'compare',record_ids:['r0'],source_versions:{r0:1},state:'RESOLVED'};
+  session.messages.push(message('plain','확인된 진도에서 이어서 진행',['Part 1 복습과 다음 학습 계획을 함께 살펴볼게요.']));
+  return {effect:'conversation',message_id:session.messages.at(-1).id,state:'RESOLVED'};
  }
  if(parts[4]==='messages') {
   const existing=session.messages.find(m=>m.request_id===data.request_id);
@@ -68,5 +93,6 @@ async function api(path,method='GET',data){
  throw Error('Fixture does not support '+path);
 }
 setupChat({api,node,action,notice,today:()=> '2026-10-18'});
+setupImports({api,node,action,notice});
 for(const el of document.querySelectorAll('.tab'))el.hidden=el.id!=='chat';
 document.querySelector('[data-tab="chat"]').click();

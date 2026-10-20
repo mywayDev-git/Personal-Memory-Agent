@@ -139,5 +139,5 @@ export function setupMemory({api, node, action, notice}) {
     d.append(node('p','저장할 내용을 선택해 미리보기와 승인을 진행해 주세요.'));
     for(const c of items)d.append(action((c.source_type==='assistant_message'?'AI 제안: ':'사용자 진술: ')+c.content.slice(0,140),()=>{d.close();preview(c);}));
   }
-  return {attach,preview,session(id){if(sessionId!==id)selected.clear();sessionId=id;},candidates:chooseCandidates};
+  return {attach,preview,show,session(id){if(sessionId!==id)selected.clear();sessionId=id;},candidates:chooseCandidates};
 }

@@ -8,9 +8,9 @@
    <div class="header-inner">
     <a class="brand" href="/">기억의 서랍<span>PERSONAL MEMORY AGENT</span></a>
     <nav aria-label="주 메뉴">
-      <button data-tab="records" class="nav active" aria-current="page">나의 기록</button>
-      <button data-tab="questions" class="nav">기억에 질문하기</button>
-      <button data-tab="chat" class="nav">AI 대화</button>
+      <button data-tab="chat" class="nav active" aria-current="page">대화</button>
+      <button data-tab="records" class="nav">나의 기록</button>
+      <button data-tab="questions" class="nav" hidden>기억에 질문하기</button>
       <button data-tab="trash" class="nav">휴지통</button>
       <button data-tab="failures" class="nav">처리 실패 목록</button>
       <a id="evaluation-link" class="nav" href="/evaluation" hidden>평가 관제실</a>
@@ -19,7 +19,9 @@
     <span class="local-label"><span class="dot"></span>나만의 로컬 서재</span>
    </div>
   </header>
+  <button id="sidebar-scrim" aria-label="메뉴 닫기" hidden></button>
   <main id="main-content" tabindex="-1">
+   <button id="app-menu-toggle" class="secondary" aria-label="메뉴 열기" aria-expanded="true">☰</button>
    <details class="system-status">
     <summary>연결 상태 · AI 처리 현황</summary>
     <div class="status-content">
@@ -40,7 +42,7 @@
    </details>
     <header class="page-header"><div><span class="eyebrow">YOUR PERSONAL ARCHIVE</span><h1 id="heading">나의 기록</h1><p class="page-intro">지나간 경험을, 오늘의 단서로.</p></div><span id="today" class="date"></span></header>
     <div id="notice" role="status" aria-live="polite" hidden></div>
-    <section id="records" class="tab">
+    <section id="records" class="tab" hidden>
       <div class="grid">
         <article class="card editor"><div class="card-head"><h2 id="editor-title">오늘, 무엇을 기억할까요?</h2><button id="new-record" class="link">새 기록</button></div>
           <p class="muted">경험과 생각을 자유롭게 남기세요. AI가 검색할 수 있는 기억으로 정리합니다.</p>
@@ -63,8 +65,8 @@
         </form>
       </article><article id="answer" class="card" hidden aria-live="polite"></article>
     </section>
-    <section id="chat" class="tab" hidden>
-      <div class="chat-tools"><button id="chat-sidebar-toggle" class="secondary" aria-controls="chat-sidebar" aria-expanded="true">대화 목록 접기</button></div>
+    <section id="chat" class="tab">
+      <div class="chat-tools"><button id="chat-sidebar-toggle" class="secondary" aria-controls="chat-sidebar" aria-expanded="true">대화 목록 접기</button><button data-tab="questions" class="secondary">기록 검색</button><button data-tab="records" class="secondary">기록 남기기</button><button id="chat-upload" class="secondary">파일 가져오기</button><input id="record-upload" type="file" accept=".txt,.md,text/plain,text/markdown" hidden></div>
       <div class="chat-layout" id="chat-layout">
         <aside class="card chat-sidebar" id="chat-sidebar"><h2>Personal Memory</h2><button id="chat-new" class="primary">새 대화</button><label for="chat-search">대화 검색</label><input id="chat-search" type="search" maxlength="1000" placeholder="제목이나 대화 내용"><div id="chat-list"></div><button id="chat-refresh" class="link">새로고침</button></aside>
         <article id="chat-conversation" class="card chat-room" hidden>
@@ -72,7 +74,7 @@
           <div id="chat-context" class="chat-context" hidden></div>
           <div id="chat-messages" tabindex="0" role="log" aria-live="polite" aria-relevant="additions"></div>
           <button id="chat-jump" type="button" class="secondary" hidden>새 답변 보기 ↓</button>
-          <form id="chat-form"><label class="sr-only" for="chat-question">메시지</label><div class="chat-composer"><textarea id="chat-question" required maxlength="1000" rows="2" placeholder="이어서 질문하기…"></textarea><div class="chat-composer-tools"><label class="sr-only" for="chat-mode">대화 방식</label><select id="chat-mode" aria-describedby="chat-mode-help"><option value="auto">자동</option><option value="general">일반 대화</option><option value="memory">내 기억 사용</option><option value="hybrid">일반 지식 + 내 기억</option></select><button id="chat-send" class="primary" aria-label="보내기">↑</button><button id="chat-cancel" type="button" class="secondary" hidden>중단</button></div></div><small id="chat-mode-help" class="sr-only"></small><div class="chat-composer-footer"><small>Enter 전송 · Shift+Enter 줄바꿈</small><span id="chat-state" class="muted" role="status"></span></div></form>
+          <form id="chat-form"><label class="sr-only" for="chat-question">메시지</label><div class="chat-composer"><textarea id="chat-question" required maxlength="1000" rows="2" placeholder="메시지를 입력하세요. 필요한 기억은 함께 찾아볼게요."></textarea><div class="chat-composer-tools"><label class="sr-only" for="chat-mode">대화 방식</label><select id="chat-mode" aria-describedby="chat-mode-help"><option value="auto">자동</option><option value="general">기록 사용 안 함</option><option value="memory">기록에서 답변</option><option value="hybrid">기록과 일반 지식</option></select><button id="chat-send" class="primary" aria-label="보내기">↑</button><button id="chat-cancel" type="button" class="secondary" hidden>중단</button></div></div><small id="chat-mode-help" class="sr-only"></small><div class="chat-composer-footer"><small>Enter 전송 · Shift+Enter 줄바꿈</small><span id="chat-state" class="muted" role="status"></span></div></form>
         </article>
         <div id="chat-empty" class="card"><h2>기억과 함께하는 대화</h2><p>대화 목록에서 새 대화로 이야기를 시작하세요.</p></div>
       </div>

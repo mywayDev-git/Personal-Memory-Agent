@@ -18,7 +18,7 @@ class Handler(SimpleHTTPRequestHandler):
         elif path == "/fixture.js":
             content = (ROOT / "evaluation/chat_ui_fixture.js").read_text(encoding="utf-8")
             mime = "text/javascript"
-        elif path in {"/static/" + p for p in ("chat.js", "memory.js", "search-explanation.js", "style.css", "evaluation-link.js")}:
+        elif path in {"/static/" + p for p in ("chat.js", "memory.js", "conversation-ui.js", "imports.js", "search-explanation.js", "style.css", "evaluation-link.js")}:
             content = (ROOT / "pma" / path.lstrip("/")).read_text(encoding="utf-8")
             mime = "text/css" if path.endswith(".css") else "text/javascript"
         else:

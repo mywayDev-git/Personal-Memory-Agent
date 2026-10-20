@@ -8,9 +8,11 @@ export async function runChatUI(tab) {
  check((await p.locator('#chat-messages').innerText()).includes('기록에서 확인되지 않음'),'partial coverage');
  check(await p.locator('.chat-evidence').getAttribute('open')===null,'evidence collapsed');
  await p.locator('.chat-evidence > summary').click();await tab.getAXState({emit:false});
- check(await p.locator('.chat-evidence-card').count()===2,'two sources');
- await p.locator('.chat-citation > summary').first().click();await tab.getAXState({emit:false});
- check(await p.locator('.chat-source').first().isVisible(),'full source');
+ await p.getByRole('dialog').waitFor({state:'visible'});
+ check(await p.locator('.chat-evidence-panel .chat-evidence-card').count()===2,'two sources');
+ await p.locator('.chat-evidence-panel .chat-citation > summary').first().click();await tab.getAXState({emit:false});
+ check(await p.locator('.chat-evidence-panel .chat-source').first().isVisible(),'full source');
+ await button('닫기').click();await tab.getAXState({emit:false});
  await p.getByLabel('메시지',{exact:true}).fill('첫 번째 초안');
  await open('충돌 기록');
  check((await p.getByLabel('메시지',{exact:true}).evaluate(el=>el.value))!=='첫 번째 초안','draft isolation');

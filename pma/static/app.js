@@ -1,4 +1,5 @@
 import {setupChat} from './chat.js';
+import {setupImports} from './imports.js';
 import {explanation, auditView, correctionView, expansionView} from './search-explanation.js';
 const $ = id => document.getElementById(id);
 let csrf = '', editing = null, tab = 'records', cursor = null, trashCursor = null, authorized = false;
@@ -61,7 +62,7 @@ function renderConnections(host, links) {
   host.append(section);
 }
 function clearAnswer(){ $('answer').replaceChildren();$('answer').hidden=true; }
-function setTab(name){tab=name;for(const el of document.querySelectorAll('.tab'))el.hidden=el.id!==name;for(const b of document.querySelectorAll('[data-tab]')){b.classList.toggle('active',b.dataset.tab===name);if(b.dataset.tab===name)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');}$('heading').textContent={chat:'AI 대화',records:'나의 기록',questions:'기억에 질문하기',trash:'휴지통',failures:'처리 실패 목록'}[name];if(authorized&&name==='failures')loadFailures().catch(e=>notice(e.message,true));if(authorized&&['records','trash'].includes(name))loadList(name==='trash').catch(e=>notice(e.message,true));}
+function setTab(name){tab=name;document.body.dataset.tab=name;if(matchMedia('(max-width:760px)').matches)document.getElementById('sidebar-scrim')?.click();for(const el of document.querySelectorAll('.tab'))el.hidden=el.id!==name;for(const b of document.querySelectorAll('[data-tab]')){b.classList.toggle('active',b.dataset.tab===name);if(b.dataset.tab===name)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');}$('heading').textContent={chat:'AI 대화',records:'나의 기록',questions:'기억에 질문하기',trash:'휴지통',failures:'처리 실패 목록'}[name];if(authorized&&name==='failures')loadFailures().catch(e=>notice(e.message,true));if(authorized&&['records','trash'].includes(name))loadList(name==='trash').catch(e=>notice(e.message,true));}
 function resetEditor(){editing=null;$('editor-title').textContent='오늘, 무엇을 기억할까요?';$('save').textContent='기록 저장';$('record-text').value='';const d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());$('reference-time').value=d.toISOString().slice(0,16);$('char-count').textContent='0 / 4,000';}
 async function loadList(trash=false, append=false){
   const c=trash?trashCursor:cursor;const data=await api('/records?state='+(trash?'trash':'active')+(append&&c?'&cursor='+encodeURIComponent(c):''));
@@ -169,5 +170,8 @@ setInterval(()=>{if(authorized&&!document.hidden)processingProgress();},3000);
 document.addEventListener("visibilitychange",()=>{if(authorized&&!document.hidden)processingProgress();});
 
 setupChat({api,node,action,notice,today:()=>{const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');}});
+document.addEventListener('pma-open-record',e=>openRecord(e.detail.record_id).catch(err=>notice(err.message,true)));
+document.addEventListener('pma-edit-record',e=>edit(e.detail.record_id).catch(err=>notice(err.message,true)));
+setupImports({api,node,action,notice});
 setTab('chat');
 if (authorized) document.querySelector('[data-tab="chat"]').click();

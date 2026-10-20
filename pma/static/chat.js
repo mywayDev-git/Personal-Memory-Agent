@@ -1,8 +1,10 @@
 // Text-only rendering: model output never becomes HTML or executable content.
 import {setupMemory} from './memory.js';
+import {setupConversationUI} from './conversation-ui.js';
 import {explanation, auditView, answerAuditView, correctionView, expansionView} from './search-explanation.js';
 export function setupChat({api, node, action, notice, today}) {
   const memory = setupMemory({api,node,action,notice});
+  const ui = setupConversationUI({api,node,action,notice,memory});
   const $ = id => document.getElementById(id);
   let current = null, pending = null, sending = false, openVersion = 0, listVersion = 0;
   let contextId = null, searchTimer = null, resumeTimer = null, resumeVersion = 0;
@@ -30,7 +32,7 @@ export function setupChat({api, node, action, notice, today}) {
     const searches=message.snapshot?.searches || [];
     if(!searches.length) return null;
     const wrap=node('details',undefined,'chat-search-info');
-    wrap.open=true;
+    wrap.open=false;
     wrap.append(node('summary',`검색 완료 · 검색어와 조건 ${searches.length}건`));
     wrap.append(node('p','내 질문: '+message.question));
     const answerAudit=message.snapshot?.answer_audit;
@@ -52,7 +54,7 @@ export function setupChat({api, node, action, notice, today}) {
   }
   const validTurn = m => m.state === 'completed' && m.response && !m.error_code;
   function closeEvidence() {
-    // Evidence now stays with its answer; there is no detached panel.
+    ui.closePanel();
   }
   function context() {
     const target = current?.messages.find(m => m.id === contextId && validTurn(m));
@@ -69,15 +71,15 @@ export function setupChat({api, node, action, notice, today}) {
     contextId = message.id; context(); $('chat-topics').open = false; $('chat-menu').open = false; $('chat-question').focus();
   }
   function collapseSidebar() {
-    $('chat-sidebar').hidden = true; $('chat-layout').classList.add('sidebar-collapsed');
-    $('chat-sidebar-toggle').setAttribute('aria-expanded','false'); $('chat-sidebar-toggle').textContent='대화 목록 열기';
+    ui.sidebar(false);
   }
   const fail = e => notice(e.message, true);
   const bottom = () => { $('chat-messages').scrollTop = $('chat-messages').scrollHeight; $('chat-jump').hidden = true; };
   function clear() {
     saveDraft(); clearTimeout(resumeTimer); ++resumeVersion;
-    current = null; pending = null; contextId = null; closeEvidence(); $('chat-conversation').hidden = true;
-    $('chat-empty').hidden = false; $('chat-messages').replaceChildren();
+    current = null; pending = null; contextId = null; closeEvidence(); $('chat-conversation').hidden = false;
+    $('chat-empty').hidden = true; $('chat-title').textContent='새 대화';$('chat-messages').replaceChildren();
+    $('chat-question').value='';$('chat-send').disabled=false;
   }
   async function list() {
     const version = ++listVersion;
@@ -160,7 +162,13 @@ export function setupChat({api, node, action, notice, today}) {
       });
       card.append(full); body.append(card);
     }
-    details.append(body); return details;
+    details.append(body);
+    details.querySelector('summary').addEventListener('click',async e=>{
+      e.preventDefault();
+      try{for(const {refs} of groups){const cid=refs.find(r=>r.citation_id)?.citation_id;if(cid)await api('/chat/citations/'+encodeURIComponent(cid));}
+        ui.showPanel('답변의 근거',body);
+      }catch(error){notice(error.message,true);}
+    });return details;
   }
   function answerEvidence(response, evidence, outdated) {
     const groups = new Map();
@@ -250,7 +258,7 @@ export function setupChat({api, node, action, notice, today}) {
     if(switched) { saveDraft(); if(current) positions.set(current.id,oldScroll); }
     if (switched) contextId = session.messages.filter(validTurn).at(-1)?.id || null;
     if (switched && globalThis.matchMedia?.('(max-width:760px)').matches) collapseSidebar();
-    closeEvidence();
+    if(switched || changed) closeEvidence();
     if (switched) { $('chat-mode').value = session.mode || 'auto'; $('chat-mode').dispatchEvent(new Event('change')); }
     current = session; $('chat-empty').hidden = true; $('chat-conversation').hidden = false;
     for(const button of $('chat-list').children) if(button.dataset.sessionId) button.setAttribute('aria-current',String(button.dataset.sessionId===session.id));
@@ -289,7 +297,7 @@ export function setupChat({api, node, action, notice, today}) {
         if (r.status === 'needs_clarification') ai.append(node('p',r.clarification));
         if (r.status === 'insufficient_evidence') ai.append(node('p',r.notice || '관련 기록에서 답변을 뒷받침할 근거를 확인하지 못했습니다.'));
         if (r.status !== 'needs_clarification') content(ai, r, message.evidence || [],['SOURCE_MODIFIED','SOURCE_REPROCESSED'].includes(message.error_code));
-        if (r.status === 'needs_clarification') {
+        if (r.status === 'needs_clarification' && !r.ui_actions?.length) {
           const card = node('div',undefined,'chat-clarification');
           const expired = !!message.error_code || session.messages.at(-1)?.id !== message.id;
           if (expired) { card.append(node('p','이 선택은 만료되었습니다. 현재 기록으로 다시 질문해 주세요.', 'muted')); content(card,r,message.evidence || [],['SOURCE_MODIFIED','SOURCE_REPROCESSED'].includes(message.error_code)); }
@@ -309,7 +317,35 @@ export function setupChat({api, node, action, notice, today}) {
         if (r.validation === 'rejected') ai.append(node('p','근거 검증을 통과하지 못한 답변은 표시하지 않았습니다.', 'chat-warning'));
         const evidenceView=answerEvidence(r,message.evidence || [],['SOURCE_MODIFIED','SOURCE_REPROCESSED'].includes(message.error_code));
         if(evidenceView) ai.append(evidenceView);
-        const utilities=node('div',undefined,'chat-message-actions'); ai.append(utilities);
+        if(r.ui_actions?.length) {
+          const actions=node(r.ui_actions.length>3?'details':'div',undefined,'chat-dynamic-actions');
+          if(r.ui_actions.length>3)actions.append(node('summary','대상 선택 · '+r.ui_actions.length+'개'));
+          for(const item of r.ui_actions){
+            const button=node('button',item.label,'secondary');button.type='button';button.addEventListener('click',async()=>{
+              if(item.state!=='ACTIVE')return;button.disabled=true;
+              const requestId=item.requestId || (item.requestId=crypto.randomUUID());
+              item.state='LOADING';button.textContent='처리 중…';
+              try{const result=await api('/chat/sessions/'+session.id+'/actions/'+encodeURIComponent(item.action_id),'POST',{request_id:requestId,expected_context_version:item.context_version});
+                if(current?.id!==session.id)return;
+                item.state='RESOLVED';
+                if(result.effect==='conversation'){await open(session.id);await list();}
+                else if(result.effect==='dismiss'){actions.replaceChildren(node('p','제안을 접었습니다.','muted'));}
+                else await ui.resultPanel(result,message);
+                button.textContent=item.label+' · 선택 완료';button.disabled=true;
+              }catch(e){item.state='ACTIVE';button.textContent=item.label;notice(e.message,true);await open(session.id);}
+              finally{button.disabled=item.state!=='ACTIVE';}
+            });
+            button.disabled=item.state!=='ACTIVE'||!!message.error_code;
+            if(item.state==='EXPIRED')button.title='대화 또는 기록이 바뀌어 만료되었습니다.';
+            if(item.state==='LOADING')button.textContent=item.label+' · 처리 중';
+            if(item.state==='RESOLVED')button.textContent=item.label+' · 선택 완료';
+            actions.append(button);
+          }
+          if(r.ui_actions.some(a=>a.state==='EXPIRED'))actions.append(node('p','이전 선택은 만료되었습니다. 현재 내용으로 새 질문을 입력해 주세요.','muted'));
+          ai.append(actions);
+        }
+        const utilities=node('div',undefined,'chat-message-actions');
+        const utilityMenu=node('details',undefined,'chat-answer-actions');utilityMenu.append(node('summary','답변 작업'),utilities);ai.append(utilityMenu);
         utilities.append(action('답변 복사', async () => {
           await navigator.clipboard.writeText([r.clarification,r.notice,...r.items.map(i=>i.text)].filter(Boolean).join('\n\n')); notice('답변을 복사했습니다.');
         }, 'link'));
@@ -363,7 +399,14 @@ export function setupChat({api, node, action, notice, today}) {
     render(session);
   }
   async function send(question, requestId, requestToday, requestedContext, requestedMode, correctionEnabled) {
-    if (!current || sending || current.messages.some(m=>m.state==='running') || !question.trim()) return;
+    if(sending||!question.trim())return;
+    if(!current){
+      const chosenMode=$('chat-mode').value;sending=true;
+      try{const session=await api('/chat/sessions','POST',{});render(session);$('chat-mode').value=chosenMode;}
+      catch(e){fail(e);$('chat-question').value=question;return;}
+      finally{sending=false;$('chat-send').disabled=false;}
+    }
+    if (current.messages.some(m=>m.state==='running')) return;
     const sid = current.id;
     const req = requestId || (pending?.sid === sid && pending.question === question ? pending.requestId : crypto.randomUUID());
     const requestDate = requestToday !== undefined ? requestToday : pending?.requestId === req ? pending.today : today();
@@ -400,7 +443,7 @@ export function setupChat({api, node, action, notice, today}) {
     catch (e) { fail(e); } finally { $('chat-new').disabled = false; }
   });
   $('chat-form').addEventListener('submit', e => {
-    e.preventDefault(); if(!current || sending || current.messages.some(m=>m.state==='running')) return;
+    e.preventDefault(); if(sending || current?.messages.some(m=>m.state==='running')) return;
     const question=$('chat-question').value; if(!question.trim())return;
     $('chat-question').value=''; saveDraft(); resizeInput(); send(question);
   });
@@ -413,9 +456,7 @@ export function setupChat({api, node, action, notice, today}) {
   $('chat-messages').addEventListener('scroll',()=>{ if(nearBottom()) $('chat-jump').hidden=true; });
   $('chat-search').addEventListener('input', () => { clearTimeout(searchTimer); searchTimer=setTimeout(()=>list().catch(fail),250); });
   $('chat-sidebar-toggle').addEventListener('click', () => {
-    const hidden = !$('chat-sidebar').hidden; $('chat-sidebar').hidden=hidden;
-    $('chat-layout').classList.toggle('sidebar-collapsed',hidden);
-    $('chat-sidebar-toggle').setAttribute('aria-expanded',String(!hidden)); $('chat-sidebar-toggle').textContent=hidden?'대화 목록 열기':'대화 목록 접기';
+    ui.sidebar(document.querySelector('.shell').classList.contains('sidebar-collapsed'));
   });
   $('chat-menu').addEventListener('keydown',e=>{if(e.key==='Escape'){ $('chat-menu').open=false; $('chat-menu').querySelector('summary').focus(); }});
   $('chat-cancel').addEventListener('click', async () => {
@@ -424,6 +465,7 @@ export function setupChat({api, node, action, notice, today}) {
   });
   const refresh = () => list().then(() => current && open(current.id)).catch(fail);
   $('chat-refresh').addEventListener('click', refresh);
+  document.addEventListener('pma-chat-refresh',refresh);
   document.querySelector('[data-tab="chat"]').addEventListener('click', refresh);
   $('chat-delete').addEventListener('click', async () => {
     if (!current || sending || !confirm('이 대화와 저장된 근거를 삭제할까요?')) return;
@@ -432,4 +474,7 @@ export function setupChat({api, node, action, notice, today}) {
   if(globalThis.matchMedia?.('(max-width:760px)').matches) collapseSidebar();
   const modeHelp=()=>{ $('chat-mode-help').textContent={auto:'필요할 때 기억을 찾아 답합니다.',general:'개인 기록을 검색하지 않고 최근 대화 맥락으로 답합니다.',memory:'개인 기록에서 확인한 내용으로 답합니다.',hybrid:'일반 지식과 개인 기록을 구분해 답합니다.'}[$('chat-mode').value]; };
   $('chat-mode').addEventListener('change',modeHelp); modeHelp();
+  $('chat-empty').hidden=true;$('chat-conversation').hidden=false;$('chat-title').textContent='새 대화';
+  $('chat-messages').append(node('div',undefined,'chat-welcome'));
+  $('chat-messages').lastChild.append(node('h2','오늘은 어떤 이야기를 나눌까요?'),node('p','필요한 순간에, 기억을 오늘의 단서로 연결해요.'));
 }
