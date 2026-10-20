@@ -302,8 +302,12 @@ class ChatEngine:
                             "category") == "conflicting_evidence"]
         from .semantics import stop_record_draft
 
+        settings = getattr(self.service, "settings", None)
         draft = (stop_record_draft(intent_question, evidence)
-                 if getattr(getattr(self.service, "settings", None), "request_reuse", False) else None)
+                 if getattr(settings, "source_stop_drafts", False)
+                 or getattr(settings, "request_reuse", False) else None)
+        if draft:
+            count("source_stop_drafts")
         response = draft or direct_statement(question, evidence, intent_question) or models.answer(
             question, evidence
         )

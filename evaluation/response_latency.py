@@ -259,7 +259,7 @@ def main():
     parser.add_argument("--threads", type=int, default=0)
     parser.add_argument("--samples", type=int, default=5)
     parser.add_argument("--port", type=int, default=18181)
-    parser.add_argument("--variants", nargs="+", choices=["baseline", "cached", "batch8", "plain", "combined", "planning", "planning_plain", "reuse"], default=["baseline"])
+    parser.add_argument("--variants", nargs="+", choices=["baseline", "cached", "batch8", "plain", "combined", "planning", "planning_plain", "reuse", "source_first"], default=["baseline"])
     parser.add_argument("--cases", nargs="+", choices=list(CASES), default=list(CASES))
     parser.add_argument("--multilingual", action="store_true")
     parser.add_argument("--multilingual-current-only", action="store_true")
@@ -358,6 +358,7 @@ def main():
                     for variant in order:
                         variant_settings = replace(settings, request_token_cache=variant in {"cached", "combined"},
                                                    request_reuse=variant == "reuse",
+                                                   source_stop_drafts=variant in {"reuse", "source_first"},
                                                    selection_batch_size=8 if variant in {"batch8", "combined"} else 4,
                                                    chat_presentation="plain" if variant in {"plain", "combined", "planning_plain"} else "reviewed")
                         path = args.output / f"{case_name}-{sample}-{variant}.db"
@@ -371,6 +372,7 @@ def main():
                         row = {"case": case_name, "sample": sample, "warmup": sample == 0, "variant": variant,
                                "parameters": {"request_token_cache": variant_settings.request_token_cache,
                                               "request_reuse": variant_settings.request_reuse,
+                                              "source_stop_drafts": variant_settings.source_stop_drafts,
                                               "selection_batch_size": variant_settings.selection_batch_size,
                                               "chat_presentation": variant_settings.chat_presentation,
                                               "compact_planning": variant in {"planning", "planning_plain"}}}

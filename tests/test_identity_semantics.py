@@ -162,6 +162,69 @@ def test_stop_draft_preserves_sentence_and_does_not_answer_dates_or_commands(que
         assert source in draft["items"][0]["text"]
 
 
+@pytest.mark.parametrize("question", [
+    "파이썬 공부에 접근한 기록이 있어?", "파이썬 공부 중단점 설정한 기록이 있어?",
+    "최근 파이썬 공부를 중단한 기록이 있어?", "2026년 파이썬 공부를 중단한 기록이 있어?",
+    "파이썬 공부를 중단하지 않은 기록이 있어?",
+])
+def test_source_draft_defers_non_stop_words_time_scope_and_negative_actions(question):
+    from pma.chat.semantics import stop_record_draft
+
+    assert stop_record_draft(question, [{"id": "a", "source_text": "파이썬 공부를 접었다."}]) is None
+
+
+@pytest.mark.parametrize("source", [
+    "파이썬 공부 노트를 접었다.", "파이썬 공부를 접었다면 좋겠다.",
+    "파이썬 공부를 접었다고 말하지 않았다.", "파이썬 공부를 접지 않았다.",
+])
+def test_learning_stop_is_not_physical_folding_condition_or_negated_speech(source):
+    from pma.chat.semantics import denies_stopping, stop_record_draft
+
+    question = "파이썬 공부를 중단한 기록이 있어?"
+    assert stop_record_draft(question, [{"id": "a", "source_text": source}]) is None
+    assert not denies_stopping(question, "중단한 기록은 없습니다.", [source])
+
+
+@pytest.mark.parametrize("source", [
+    "파이썬 공부를 접었어.", "파이썬 공부를 중단했습니다.",
+    "파이썬 공부를 그만뒀어요.", "파이썬 공부를 그만두었음",
+])
+def test_plain_past_endings_preserve_stop_meaning(source):
+    from pma.chat.semantics import denies_stopping, stop_record_draft
+
+    question = "파이썬 공부를 중단한 기록이 있어?"
+    assert source in stop_record_draft(question, [{"id": "a", "source_text": source}])["items"][0]["text"]
+    assert denies_stopping(question, "중단한 기록은 없습니다.", [source])
+
+
+def test_stop_draft_does_not_truncate_long_sentences():
+    from pma.chat.semantics import stop_record_draft
+
+    source = "긴 배경 설명 " * 100 + "파이썬 공부를 접었다."
+    assert stop_record_draft("파이썬 공부를 중단한 기록이 있어?", [{"id": "a", "source_text": source}]) is None
+
+
+def test_past_stop_does_not_prove_a_different_year_or_current_state():
+    from pma.chat.semantics import denies_stopping
+
+    source = "2025년 파이썬 공부를 접었다."
+    assert not denies_stopping("2026년 파이썬 공부를 중단한 기록이 있어?",
+                              "2026년 중단한 기록은 없습니다.", [source])
+    assert not denies_stopping("파이썬 공부 기록", "현재 중단한 기록은 없습니다.", [source])
+    assert denies_stopping("파이썬 공부 기록", "중단한 기록은 없습니다. 다만 2025년 공부를 접었습니다.", [source])
+
+
+def test_narrow_source_drafts_default_and_rollback_do_not_enable_broad_reuse(monkeypatch):
+    from pma.settings import AppSettings
+
+    monkeypatch.delenv("PMA_SOURCE_STOP_DRAFTS", raising=False)
+    monkeypatch.delenv("PMA_REQUEST_REUSE", raising=False)
+    assert AppSettings.from_env().source_stop_drafts
+    assert not AppSettings.from_env().request_reuse
+    monkeypatch.setenv("PMA_SOURCE_STOP_DRAFTS", "0")
+    assert not AppSettings.from_env().source_stop_drafts
+
+
 @pytest.mark.parametrize("question,source,text,issue", [
     ("파이썬 공부를 중단한 기록이 있어?", "파이썬 공부를 접었다.",
      "중단한 기록은 없습니다. 다만 공부를 접었다고 기록했습니다.", "negation"),
