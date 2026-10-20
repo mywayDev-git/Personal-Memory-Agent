@@ -13,7 +13,7 @@ from ..search_explain import select_evidence
 from .evidence import asks_identity, preserve_overview
 from .generator import general as generate_general
 from .generator import grounded
-from .router import RetrievalRouter, RoutingMode
+from .router import RetrievalRouter, RoutingMode, social_reply
 
 
 def object_schema(properties):
@@ -88,6 +88,9 @@ def history(session):
 
 def structured(engine, prompt, data, schema, max_tokens=1024):
     data = dict(data)
+    # Interpretation proposals have not passed the answer validator. They must
+    # never become an alternate factual channel for the general/suggestion model.
+    data.pop("memory_interpretation", None)
     data["history"] = list(data.get("history", []))
     while (
         engine.models.count_tokens(prompt + json.dumps(data, ensure_ascii=False)) + max_tokens + 256
@@ -123,6 +126,9 @@ def general(engine, data):
 
     # Explicit style preferences transfer across chats without semantic retrieval.
     data = dict(data)
+    data["history"] = [{**turn, "response": {**turn.get("response", {}), "items": []}}
+                       if turn.get("response", {}).get("conversation_mode") != "general" else turn
+                       for turn in data.get("history", [])]
     data['saved_style_preferences'] = ([] if data.get("memory_disabled") else
                                        MemoryRepository(engine.service.store).preferences(OWNER))
     response = structured(engine, GENERAL_PROMPT, data, GENERAL)
@@ -137,6 +143,8 @@ def general(engine, data):
             if len(claim) >= 12 and claim in compact:
                 return None
     # No search has run: neither presence nor absence of records can be asserted.
+    if re.search(r"(?:기록|메모)(?:이|가|은|는)?\s*(?:비어|없|존재하지)", response["text"]):
+        return None
     if re.search(
         r"(?:기록|메모)(?:에|을|으로|에서).{0,40}(?:명시|확인|찾|적혀|남아|나와|없|따르면|포함)",
         response["text"],
@@ -273,9 +281,11 @@ def run(engine, question, session, today, requested_mode="auto"):
             "새로운 인물·과정 번호·완료 사실을 전제하지 않는다. 예: 'Python 다시 공부하려고' → 'Python 학습 진도와 마지막 공부 기록'. "
             "추천에 대한 거절과 실패 이력도 검색 범위에 포함한다.", data, NEXT, 384,
         )["query"].strip() or question
-    if requested_mode == "hybrid":
+    if social_reply(question):
+        route["mode"] = "general"
+    elif requested_mode == "hybrid":
         route["mode"] = "mixed"
-    elif requested_mode == "memory" and route["mode"] == "general":
+    elif requested_mode == "memory":
         route["mode"] = "memory"
     route["query"] = search_question(question, route["query"])
     if question != original_reference:
@@ -293,13 +303,16 @@ def run(engine, question, session, today, requested_mode="auto"):
         and (route["query"].strip() or explicit_recall)
     ):
         mode = "memory"
-    if mode == "memory" and re.search(
+    if mode == "memory" and requested_mode != "memory" and re.search(
         r"(?:위로|격려|응원|조언)(?:도|을|를)?\s*(?:해\s*줘|해\s*주세요|부탁)|"
         r"자책.{0,20}(?:말|않).{0,20}(?:해|줘)",
         question,
     ):
         mode = "mixed"
     casual = generate_general(engine, {**data, "mode": mode}) if mode == "general" else None
+    if mode == "general" and casual is None and social_reply(question):
+        casual = {"text": social_reply(question),
+                  "citations": [], "source_type": "general"}
     if mode == "general":
         return (
             {
@@ -397,7 +410,7 @@ def run(engine, question, session, today, requested_mode="auto"):
                     "limit": 8,
                 }
     evidence = engine.store.freeze(chosen)
-    from .interpretation import analyze, intent, PROMPT, SCHEMA
+    from .interpretation import PROMPT, SCHEMA, analyze, intent
     from .planner import prepare
     proposal = None
     if evidence and intent(original_reference) in {"resume", "progress", "experience", "reconsider", "next_step", "latest", "timeline", "compare"}:
@@ -430,18 +443,10 @@ def run(engine, question, session, today, requested_mode="auto"):
         # The follow-up interpretation is input to generation, never a source.
         # Retrieval expansion must not become the question used to judge the answer.
         # The context resolver handles pronouns using the original conversation.
-        interpreted = question
-        memory_question = question
-        if mode == "mixed":
-            memory_question = (
-                "다음 요청의 배경이 되는 개인 기록의 기존 사실만 알려줘. "
-                "원문에 없는 개선 방법, 제안, 일반 지식은 포함하지 마. "
-                "제안은 별도 단계에서 작성한다. 요청: " + interpreted
-            )
-            interpreted = memory_question
         response = grounded(
-            engine, interpreted, {**session, "evidence": evidence, "memory_interpretation": interpretation,
-                                  "response_plan": response_plan}, today, original_question=memory_question
+            engine, question, {**session, "evidence": evidence, "memory_interpretation": interpretation,
+                               "response_plan": {**response_plan, "suggestions_optional": False,
+                                                 "personal_facts_only": True}}, today, original_question=question
         )
     if "answer_audit" not in response:
         from .answer_audit import answer_audit
@@ -451,9 +456,10 @@ def run(engine, question, session, today, requested_mode="auto"):
         )
     for item in response["items"]:
         item["source_type"] = "personal_memory"
-    if mode == "mixed" and response["status"] != "needs_clarification":
+    from .interpretation import explicit_completion_conflicts
+    if mode == "mixed" and response["status"] != "needs_clarification" and not explicit_completion_conflicts(evidence):
         casual = generate_general(engine, {**data, "mode": mode, "verified_memory": response["items"],
-                                          "memory_interpretation": interpretation, "response_plan": response_plan})
+                                          "response_plan": response_plan})
     response["conversation_type"] = mode
     response["blocks"] = []
     if response["items"]:

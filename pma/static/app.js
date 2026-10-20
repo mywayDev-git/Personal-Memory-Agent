@@ -171,6 +171,7 @@ document.addEventListener("visibilitychange",()=>{if(authorized&&!document.hidde
 
 setupChat({api,node,action,notice,today:()=>{const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');}});
 document.addEventListener('pma-open-record',e=>openRecord(e.detail.record_id).catch(err=>notice(err.message,true)));
+document.addEventListener('pma-show-chat',()=>setTab('chat'));
 document.addEventListener('pma-edit-record',e=>edit(e.detail.record_id).catch(err=>notice(err.message,true)));
 setupImports({api,node,action,notice});
 setTab('chat');

@@ -43,7 +43,11 @@ export function setupConversationUI({api,node,action,notice,memory}) {
   sidebar(!matchMedia('(max-width:760px)').matches);
   matchMedia('(max-width:760px)').addEventListener('change',e=>{closePanel();sidebar(!e.matches);});
   async function resultPanel(result,message) {
-    if(result.effect==='save_preview'){memory.candidates(result.candidates);return;}
+    if(result.effect==='save_preview'){
+      if(result.candidates?.some(c=>c.lifecycle_status==='pending'))memory.candidates(result.candidates);
+      else notice('이미 처리한 저장 후보입니다. 기억 관리에서 결과를 확인할 수 있습니다.');
+      return;
+    }
     const content=node('section');
     const ids=result.record_ids || [...new Set((message.evidence || []).map(r=>r.record_id))];
     for(const rid of ids){

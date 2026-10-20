@@ -84,6 +84,22 @@ def test_memory_refusal_precedes_all_routes(question):
     )
 
 
+def test_latest_recorded_decision_is_not_general_knowledge():
+    route = RetrievalRouter().decide(
+        "PMA 검색 방식 마지막 결정 알려줘",
+        classify=lambda: pytest.fail("general classifier called"),
+    )
+    assert route.mode == "MEMORY_REQUIRED" and route.reason_code == "RECORDED_STATE"
+
+
+def test_past_record_explanation_is_explicit_recall():
+    route = RetrievalRouter().decide(
+        "Python 지난 기록 자연스럽게 설명해줘",
+        classify=lambda: pytest.fail("general classifier called"),
+    )
+    assert route.mode == "MEMORY_REQUIRED"
+
+
 def test_refusal_scrubs_all_recalled_sources_and_assistant_claims():
     original = {
         "context": {"summary": "private"},
@@ -142,6 +158,56 @@ def test_general_turn_never_reads_preferences_or_searches(monkeypatch):
     assert not evidence and not metadata["searches"]
     assert all(not d.get("saved_style_preferences") for d in observed)
     assert response["conversation_type"] == "general"
+
+
+def test_short_social_reply_is_not_empty_when_model_echoes():
+    from pma.chat import automatic
+
+    class Models:
+        def count_tokens(self, *args):
+            return 1
+
+        def structured(self, prompt, data, schema, max_tokens=None):
+            assert schema == automatic.GENERAL
+            return {"text": data["current_question"]}
+
+    engine = SimpleNamespace(
+        models=Models(),
+        service=SimpleNamespace(
+            store=object(),
+            trace=lambda *a, **k: None,
+            settings=SimpleNamespace(context_tokens=10000),
+        ),
+    )
+    response, evidence, metadata = run(engine, "고마워", {"messages": []}, "2026-10-20", "general")
+    assert response["items"] and response["items"][0]["text"] != "고마워"
+    assert not evidence
+
+
+def test_no_search_record_absence_claim_is_rejected_even_if_model_approves():
+    from pma.chat import automatic
+
+    class Models:
+        def count_tokens(self, *args):
+            return 1
+
+        def structured(self, prompt, data, schema, max_tokens=None):
+            return (
+                {"safe": True}
+                if schema == automatic.CHECK
+                else {"text": "현재 기록이 비어 있어서 구체적인 내용을 제공할 수 없습니다."}
+            )
+
+    engine = SimpleNamespace(
+        models=Models(),
+        service=SimpleNamespace(store=object(), settings=SimpleNamespace(context_tokens=10000)),
+    )
+    assert (
+        automatic.general(
+            engine, {"question": "일반 설명", "mode": "general", "memory_disabled": True}
+        )
+        is None
+    )
 
 
 @pytest.mark.parametrize("case", cases(), ids=lambda c: c["id"])
@@ -235,7 +301,13 @@ def test_empty_topic_scope_never_sends_empty_review_enum():
 
 
 @pytest.mark.parametrize(
-    "question", ["Python 다시 공부하려고", "오랜만에 파이썬 다시 공부할까?", "Python 좀 공부하자"]
+    "question",
+    [
+        "Python 다시 공부하려고",
+        "오랜만에 파이썬 다시 공부할까?",
+        "Python 좀 공부하자",
+        "Python Part 2 학습 진도와 마지막 공부 기록",
+    ],
 )
 def test_resume_adverbs_are_not_the_study_topic(question):
     from pma.relevance import study_topic, topic_supported
@@ -243,6 +315,15 @@ def test_resume_adverbs_are_not_the_study_topic(question):
     assert study_topic(question) == "python"
     assert topic_supported(question, {"source_text": "Python Part 1을 완료했다."})
     assert not topic_supported(question, {"source_text": "Rust Part 1을 완료했다."})
+
+
+def test_unscoped_progress_is_not_assumed_to_be_a_python_record():
+    from pma.relevance import topic_supported
+
+    assert not topic_supported(
+        "Python Part 2 학습 기록",
+        {"source_text": "AI가 Part 2 완료라고 잘못 답했다. Part 1만 공부했다."},
+    )
 
 
 def test_explicit_conflict_guard_preserves_dates_projects_and_conditions():
@@ -372,6 +453,104 @@ def test_retry_after_failure_does_not_resolve_or_modify_record(chat):
     assert chat.store.get(record["record_id"])["version"] == 1
 
 
+@pytest.mark.parametrize("kind", sorted(ACTION_TYPES))
+def test_all_server_authored_action_types_keep_source_record_unchanged(chat, kind):
+    import json
+
+    sid, mid, record, response = grounded_turn(chat)
+    action = response["ui_actions"][0]
+    action.update(type=kind, query="2026-10-10의 기록", target_ids=["m1"])
+    with chat.store.connect(True) as db:
+        db.execute(
+            "UPDATE chat_ui_actions SET payload=? WHERE id=?",
+            (json.dumps(action), action["action_id"]),
+        )
+    calls = []
+
+    def message(*args, **kwargs):
+        calls.append((args, kwargs))
+        return {"message_id": "followup"}
+
+    manager = ActionManager(SimpleNamespace(store=chat, message=message))
+    result = manager.run(sid, action["action_id"], "request", 1)
+    assert result["state"] == "RESOLVED"
+    assert chat.store.get(record["record_id"])["version"] == 1
+    assert chat.store.get(record["record_id"])["state"] == "active"
+    if kind == "SAVE_PROGRESS":
+        assert result["effect"] == "save_preview"
+        assert result["candidates"][0]["lifecycle_status"] == "pending"
+    elif kind in {"CONFIRM_PROGRESS", "CORRECT_RECORD"}:
+        assert result["effect"] == "record_preview"
+    elif calls:
+        assert calls[0][0][4] == mid
+        assert calls[0][1]["expected_context_version"] == 1
+        if kind == "EXPAND_SCOPE":
+            assert calls[0][1]["filters"] == {"date_from": None, "date_to": None}
+
+
+def test_action_id_cannot_be_reused_in_another_session(chat):
+    sid, mid, record, response = grounded_turn(chat)
+    other = chat.create_empty()["id"]
+    with pytest.raises(AppError, match="NOT_FOUND"):
+        ActionManager(SimpleNamespace(store=chat)).run(
+            other, response["ui_actions"][0]["action_id"], "r", 1
+        )
+
+
+def test_referenced_save_action_reuses_the_real_previous_message_candidates(chat):
+    from pma.memory.api import natural_candidates
+
+    sid = chat.create_empty()["id"]
+    first, _ = chat.begin(sid, "first", "PMA API 설계를 완료했어")
+    chat.finish(
+        sid,
+        first,
+        {
+            "status": "answered",
+            "items": [{"text": "다음 작업을 검토할 수 있어요", "citations": []}],
+        },
+        [],
+    )
+    mid, _ = chat.begin(sid, "save", "이거 저장해줘")
+    chat.finish(sid, mid, {"status": "answered", "items": []}, [])
+    delivered = natural_candidates(chat.store, sid, mid, "이거 저장해줘", "auto")
+    response = chat.get(sid)["messages"][-1]["response"]
+    action = next(a for a in response["ui_actions"] if a["type"] == "SAVE_PROGRESS")
+    result = ActionManager(SimpleNamespace(store=chat)).run(
+        sid, action["action_id"], "save-action", 2
+    )
+    assert {c["candidate_id"] for c in result["candidates"]} == {
+        c["candidate_id"] for c in delivered
+    }
+    assert all(c["message_ids"] == [first] for c in result["candidates"])
+    assert not chat.store.list()["items"]
+
+
+def test_cached_save_preview_never_resurrects_a_deleted_source(chat):
+    import json
+
+    sid, first, record, _ = grounded_turn(chat)
+    mid, _ = chat.begin(sid, "save", "이거 저장해줘")
+    chat.finish(sid, mid, {"status": "answered", "items": []}, [])
+    action = next(
+        a
+        for a in chat.get(sid)["messages"][-1]["response"]["ui_actions"]
+        if a["type"] == "SAVE_PROGRESS"
+    )
+    manager = ActionManager(SimpleNamespace(store=chat))
+    manager.run(sid, action["action_id"], "same", 2)
+    with chat.store.connect() as db:
+        cached = json.loads(
+            db.execute(
+                "SELECT result FROM chat_ui_actions WHERE id=?", (action["action_id"],)
+            ).fetchone()[0]
+        )
+    assert "candidates" not in cached and cached["candidate_ids"]
+    chat.store.trash(record["record_id"])
+    with pytest.raises(AppError, match="SOURCE_CHANGED"):
+        manager.run(sid, action["action_id"], "same", 2)
+
+
 def test_upload_atomic_idempotent_offsets_and_lifecycle(chat, monkeypatch):
     importer = TextImporter(chat.store)
     text = "😀 한글 Markdown\n" * 520
@@ -408,3 +587,171 @@ def test_upload_atomic_idempotent_offsets_and_lifecycle(chat, monkeypatch):
 def test_upload_invalid_content(chat, filename, text):
     with pytest.raises(AppError, match="INVALID_IMPORT"):
         TextImporter(chat.store).preview(filename, text)
+
+
+def test_memory_only_mode_never_adds_general_suggestions(monkeypatch):
+    from pma.chat import automatic
+
+    monkeypatch.setattr(
+        "pma.chat.retrieval.retrieve", lambda *a, **kw: (None, {"results": [], "status": "ok"})
+    )
+
+    class Models:
+        def count_tokens(self, *args):
+            return 1
+
+        def structured(self, prompt, data, schema, max_tokens=None):
+            assert schema == automatic.NEXT
+            return {"query": "" if data.get("searches") else "Python 학습 진도"}
+
+    engine = SimpleNamespace(
+        models=Models(),
+        store=SimpleNamespace(freeze=lambda rows: rows),
+        service=SimpleNamespace(
+            trace=lambda *a, **kw: None,
+            settings=SimpleNamespace(context_tokens=10000, embedding_key="test"),
+        ),
+    )
+    response, _, _ = run(engine, "Python 다시 공부하려고", {"messages": []}, "2026-10-20", "memory")
+    assert response["conversation_type"] == "memory" and not response["items"]
+
+
+def test_greeting_does_not_force_memory_search_in_memory_mode():
+    route = RetrievalRouter().decide("안녕", force_memory=True)
+    assert route.mode == "CHAT_ONLY"
+
+
+def test_progress_lookup_does_not_need_a_general_suggestion_stage():
+    assert RetrievalRouter().decide("Python 마지막 진도 알려줘").mode == "MEMORY_REQUIRED"
+    assert (
+        RetrievalRouter().decide("Python 진도 확인하고 다음 단계 계획 세워줘").mode
+        == "MEMORY_AUGMENTED"
+    )
+
+
+def test_latest_progress_draft_is_bounded_to_one_explicit_course_and_event_date():
+    from pma.chat.interpretation import dated_progress_draft
+
+    rows = [
+        {
+            "id": "old",
+            "source_text": "2026-10-10 Python Part 1을 완료했다.",
+            "recorded_at": "2026-10-20",
+        },
+        {
+            "id": "new",
+            "source_text": "2026-10-15 Python Part 2를 완료했다.",
+            "recorded_at": "2026-10-16",
+        },
+    ]
+    draft = dated_progress_draft("Python 마지막 진도 알려줘", rows)
+    assert draft["items"][0]["citations"] == ["new"]
+    assert rows[1]["source_text"] in draft["items"][0]["text"]
+    assert "Part 3" not in str(draft)
+    assert dated_progress_draft("Rust 마지막 진도 알려줘", rows) is None
+    assert dated_progress_draft("Python Part 1 마지막 진도", rows) is None
+    assert (
+        dated_progress_draft(
+            "Python 마지막 진도",
+            rows + [{"id": "cancel", "source_text": "Python 학습을 취소했다."}],
+        )
+        is None
+    )
+    assert (
+        dated_progress_draft(
+            "Python 마지막 진도",
+            [rows[0], {**rows[1], "source_text": "2026-10-15 Rust Part 2를 완료했다."}],
+        )
+        is None
+    )
+
+
+def test_general_generation_never_receives_unverified_interpretation():
+    from pma.chat import automatic
+
+    seen = []
+
+    class Models:
+        def count_tokens(self, *args):
+            return 1
+
+        def structured(self, prompt, data, schema, max_tokens=None):
+            seen.append(data)
+            return (
+                {"safe": True}
+                if schema == automatic.CHECK
+                else {"text": "일반적인 복습 계획부터 세울 수 있어요."}
+            )
+
+    engine = SimpleNamespace(
+        models=Models(),
+        service=SimpleNamespace(store=object(), settings=SimpleNamespace(context_tokens=10000)),
+    )
+    automatic.general(
+        engine,
+        {
+            "question": "공부 계획",
+            "mode": "mixed",
+            "memory_disabled": True,
+            "verified_memory": [],
+            "history": [
+                {
+                    "question": "지난 작업",
+                    "response": {
+                        "conversation_mode": "memory",
+                        "items": [{"text": "검증 전 개인 사실"}],
+                    },
+                }
+            ],
+            "memory_interpretation": {"observations": [{"claim": "검증 전 개인 사실"}]},
+        },
+    )
+    assert seen and all("memory_interpretation" not in data for data in seen)
+    assert all(not data["history"][0]["response"]["items"] for data in seen)
+
+
+def test_memory_refusal_preserves_safe_general_conversation_context():
+    session = {
+        "messages": [
+            {
+                "mode": "auto",
+                "response": {
+                    "conversation_type": "general",
+                    "items": [
+                        {"text": "일반 예제 설명", "source_type": "general", "citations": []},
+                        {"text": "개인 기록", "source_type": "personal_memory", "citations": ["a"]},
+                    ],
+                },
+            }
+        ]
+    }
+    safe = private_context(session)
+    assert [i["text"] for i in safe["messages"][0]["response"]["items"]] == ["일반 예제 설명"]
+
+
+def test_progress_citation_cannot_invent_a_different_part_or_hide_explicit_date():
+    from pma.chat.evidence import semantic_issue
+
+    rows = [{"id": "a", "source_text": "2026-10-15 Python Part 2를 완료했다."}]
+    assert (
+        semantic_issue(
+            "Python 마지막 진도", {"text": "Part 1 날짜는 미상입니다.", "citations": ["a"]}, rows
+        )
+        == "other"
+    )
+    assert (
+        semantic_issue(
+            "Python 마지막 진도",
+            {"text": "Part 2 완료 날짜는 기록에 명시되지 않았습니다.", "citations": ["a"]},
+            rows,
+        )
+        == "time"
+    )
+    assert (
+        semantic_issue(
+            "Python 마지막 진도",
+            {"text": "기록상 2026-10-15 Python Part 2를 완료했다.", "citations": ["a"]},
+            rows,
+        )
+        is None
+    )

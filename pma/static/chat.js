@@ -280,7 +280,7 @@ export function setupChat({api, node, action, notice, today}) {
       else if (message.state === 'failed') {
         ai.append(node('p',message.error_code === 'CANCELLED' ? '중단한 요청입니다. 검증되지 않은 답변은 보관하지 않습니다.' : '답변을 완료하지 못했습니다. 기록이 없다는 뜻은 아닙니다.', 'muted'), action('다시 시도', () => send(message.question, message.request_id, message.request_today, message.context_message_id, message.mode || 'auto')));
       } else if (message.state === 'running') { ai.dataset.requestId=message.request_id; ai.append(node('p','답변을 준비하고 있습니다.', 'chat-progress'), action('요청 중단',async()=>{
-        await api('/chat/sessions/'+session.id+'/requests/'+message.request_id+'/cancel','POST',{}); await open(session.id);
+        await api('/chat/sessions/'+session.id+'/requests/'+message.request_id+'/cancel','POST',{}); await open(session.id,false);
       })); }
       else if (message.response) {
         if (['SOURCE_MODIFIED','SOURCE_REPROCESSED'].includes(message.error_code)) ai.append(node('p',message.error_code==='SOURCE_REPROCESSED'?'이전 추출 기준 · 기억을 재처리했습니다. 현재 기록으로 다시 질문해 주세요.':'이전 기록 기준 · 원본이 변경되었습니다.', 'chat-warning'));
@@ -328,11 +328,11 @@ export function setupChat({api, node, action, notice, today}) {
               try{const result=await api('/chat/sessions/'+session.id+'/actions/'+encodeURIComponent(item.action_id),'POST',{request_id:requestId,expected_context_version:item.context_version});
                 if(current?.id!==session.id)return;
                 item.state='RESOLVED';
-                if(result.effect==='conversation'){await open(session.id);await list();}
+                if(result.effect==='conversation'){await open(session.id,false);await list();}
                 else if(result.effect==='dismiss'){actions.replaceChildren(node('p','제안을 접었습니다.','muted'));}
                 else await ui.resultPanel(result,message);
                 button.textContent=item.label+' · 선택 완료';button.disabled=true;
-              }catch(e){item.state='ACTIVE';button.textContent=item.label;notice(e.message,true);await open(session.id);}
+              }catch(e){item.state='ACTIVE';button.textContent=item.label;notice(e.message,true);await open(session.id,false);}
               finally{button.disabled=item.state!=='ACTIVE';}
             });
             button.disabled=item.state!=='ACTIVE'||!!message.error_code;
@@ -382,7 +382,7 @@ export function setupChat({api, node, action, notice, today}) {
       try {
         const state=await api('/chat/sessions/'+session.id+'/requests/'+running.request_id);
         if(version!==resumeVersion || current?.id!==session.id) return;
-        if(state.state==='completed' || state.state==='failed') { await open(session.id); await list(); return; }
+        if(state.state==='completed' || state.state==='failed') { await open(session.id,false); await list(); return; }
         const bubble=[...$('chat-messages').children].find(el=>el.dataset.requestId===running.request_id);
         const label=timingText(state);
         if(bubble?.querySelector('.chat-progress')) bubble.querySelector('.chat-progress').textContent=label;
@@ -391,7 +391,8 @@ export function setupChat({api, node, action, notice, today}) {
     };
     resumeTimer=setTimeout(poll,1200);
   }
-  async function open(id) {
+  async function open(id, navigate=true) {
+    if(navigate && document.body.dataset.tab!=='chat')document.dispatchEvent(new Event('pma-show-chat'));
     const version = ++openVersion;
     const session = await api('/chat/sessions/' + encodeURIComponent(id));
     if (version !== openVersion) return;
@@ -427,17 +428,18 @@ export function setupChat({api, node, action, notice, today}) {
     try {
       const clarifying = current?.messages.some(m => m.id === anchor && m.response?.status === 'needs_clarification');
       const result = await api('/chat/sessions/' + sid + (clarifying ? '/clarifications' : '/messages'),'POST',{question,correction_enabled:correctionEnabled,request_id:req,today:requestDate,context_message_id:anchor || null,mode});
-      if (current?.id === sid) { pending = null; contextId = result.message_id || null; await open(sid); }
+      if (current?.id === sid) { pending = null; contextId = result.message_id || null; await open(sid,false); }
       await list(); notice('');
       if(current?.id === sid) memory.candidates(result.memory_candidates);
       if(result.memory_capture_error) notice('답변은 보존되었습니다. 저장 후보를 만들지 못했으니 메시지의 기억에 저장 버튼으로 다시 시도해 주세요.',true);
     } catch (error) {
       if(current?.id===sid && !$('chat-question').value) { $('chat-question').value=question; saveDraft(); resizeInput(); }
-      fail(error); if (current?.id === sid) { try { await open(sid); } catch { clear(); } }
+      fail(error); if (current?.id === sid) { try { await open(sid,false); } catch { clear(); } }
     } finally { clearInterval(poll); sending = false; $('chat-cancel').hidden = true; $('chat-state').textContent = ''; $('chat-send').disabled = !current || current.messages.some(m => m.state === 'running'); }
   }
   $('chat-new').addEventListener('click', async () => {
     if (sending) return;
+    if(document.body.dataset.tab!=='chat')document.dispatchEvent(new Event('pma-show-chat'));
     $('chat-new').disabled = true;
     try { const session = await api('/chat/sessions','POST',{}); ++openVersion; pending = null; render(session); await list(); $('chat-question').focus(); }
     catch (e) { fail(e); } finally { $('chat-new').disabled = false; }
@@ -463,7 +465,7 @@ export function setupChat({api, node, action, notice, today}) {
     if (!pending || !sending) return;
     try { const result=await api('/chat/sessions/'+pending.sid+'/requests/'+pending.requestId+'/cancel','POST',{}); $('chat-state').textContent=result.state==='completed'?'이미 답변을 완료했습니다.':'중단 요청됨 · 실행 중인 모델 호출이 끝나면 초안을 폐기합니다.'; } catch(e) { fail(e); }
   });
-  const refresh = () => list().then(() => current && open(current.id)).catch(fail);
+  const refresh = () => list().then(() => current && open(current.id,false)).catch(fail);
   $('chat-refresh').addEventListener('click', refresh);
   document.addEventListener('pma-chat-refresh',refresh);
   document.querySelector('[data-tab="chat"]').addEventListener('click', refresh);

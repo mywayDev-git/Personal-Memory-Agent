@@ -22,12 +22,25 @@ def private_context(session):
     result["messages"] = [
         {
             **m,
-            "response": {"status": "answered", "items": [], "conversation_type": "general"},
+            "response": {
+                "status": "answered",
+                "items": [
+                    i
+                    for i in (m.get("response") or {}).get("items", [])
+                    if i.get("source_type") == "general" and not i.get("citations")
+                ],
+                "conversation_type": "general",
+            },
             "evidence": [],
             "snapshot": {},
         }
         for m in session.get("messages", [])
-        if m.get("mode") == "general" and not m.get("error_code")
+        if (
+            m.get("mode") == "general"
+            or (m.get("response") or {}).get("conversation_type") == "general"
+            or (m.get("response") or {}).get("conversation_mode") == "general"
+        )
+        and not m.get("error_code")
     ]
     return result
 

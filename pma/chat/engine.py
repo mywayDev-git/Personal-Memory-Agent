@@ -289,6 +289,8 @@ class ChatEngine:
         if not evidence:
             return finish({"status": "insufficient_evidence", "items": [],
                            "validation": "no_relevant_evidence", "history_turns": history_count}, "no_relevant_evidence")
+        from .interpretation import dated_progress_draft
+        progress_draft = dated_progress_draft(intent_question, evidence)
         if hasattr(models, "select") and not study_topic(intent_question):
             selected = models.select(question, evidence)
             if not isinstance(selected, list) or not set(selected) <= {r["id"] for r in evidence}:
@@ -303,6 +305,8 @@ class ChatEngine:
             from .interpretation import explicit_completion_conflicts
             selected = list(set(selected) | {mid for group in explicit_completion_conflicts(evidence)
                                             if set(group) & set(selected) for mid in group})
+            if progress_draft:
+                selected = list(set(selected) | {cid for item in progress_draft["items"] for cid in item["citations"]})
             # Preserve explicit conflicting sources, but do not promote every
             # unselected background candidate into the answer's source bundle.
             evidence = [row for row in evidence if row["id"] in selected or
@@ -312,11 +316,12 @@ class ChatEngine:
 
         settings = getattr(self.service, "settings", None)
         from .interpretation import conflict_draft, explicit_completion_conflicts
-        draft = conflict_draft(evidence) or (stop_record_draft(intent_question, evidence)
+        conflict = conflict_draft(evidence)
+        draft = conflict or progress_draft or (stop_record_draft(intent_question, evidence)
                  if getattr(settings, "source_stop_drafts", False)
                  or getattr(settings, "request_reuse", False) else None)
         if draft:
-            count("source_stop_drafts")
+            count("source_conflict_drafts" if conflict else "source_progress_drafts" if progress_draft else "source_stop_drafts")
         response = draft or direct_statement(question, evidence, intent_question) or models.answer(
             self.planned_question(question, session), evidence
         )
@@ -569,7 +574,7 @@ class ChatEngine:
                         response["generation_revision"] = os.getenv(
                             "PMA_GENERATION_REVISION", "unconfigured"
                         )
-                        response["chat_prompt_version"] = 5
+                        response["chat_prompt_version"] = 6
                         response["presentation"] = presentation(response)
                         from .planner import enrich
                         enrich(question, response, evidence, sid, mid,
@@ -582,7 +587,7 @@ class ChatEngine:
                             context_version=session.get("context", {}).get("version", 0),
                             model=response["model"],
                             generation_revision=response["generation_revision"],
-                            chat_prompt_version=5,
+                            chat_prompt_version=6,
                         )
                         budget.remaining()
                         phase("review")

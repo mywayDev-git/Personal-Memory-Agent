@@ -267,7 +267,7 @@ def test_UXR19_mixed_sources_are_separate():
     assert "HYBRID" in result["response_features"]
 
 
-def test_UXR20_import_authentication_and_approval(tmp_path):
+def test_import_authentication_and_approval(tmp_path):
     app = create_app(AppSettings(data_dir=tmp_path), models=SimpleNamespace(), run_worker=False)
     origin = app.state.settings.origin
     with TestClient(app, base_url=origin) as client:

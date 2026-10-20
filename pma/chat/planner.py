@@ -209,7 +209,10 @@ def enrich(question, response, evidence, sid, mid, context_version, *, mode="aut
             if item.get("citations"):
                 add("CHOOSE_TARGET", item["text"], target_ids=item["citations"], query=item["text"])
     elif not disabled and personal:
-        if kind == "resume":
+        if primary == "CONFLICT":
+            add("COMPARE", "기록 비교")
+            add("SHOW_HISTORY", "변경 이력")
+        elif kind == "resume":
             add(
                 "RESUME_TASK" if "프로젝트" in question or "작업" in question else "CONTINUE",
                 "이어서 진행",
@@ -242,6 +245,8 @@ def enrich(question, response, evidence, sid, mid, context_version, *, mode="aut
             add("EXPAND_SCOPE", "전체 기간에서 검색", query=question)
     if suggestions and actions and len(actions) < 3:
         add("DISMISS", "나중에")
+    if len(actions) > 1 and primary != "CLARIFY":
+        features.append("ACTION_CHOICES")
     refs = [
         {
             "memory_id": r["id"],

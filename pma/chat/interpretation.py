@@ -54,20 +54,77 @@ def conflict_draft(evidence):
     ids = {mid for group in explicit_completion_conflicts(evidence) for mid in group}
     if not ids:
         return None
+    rows = [row for row in evidence if row["id"] in ids]
+    items = [
+        {
+            "text": "같은 날짜의 완료 여부가 서로 달라 현재 진도를 확정할 수 없습니다.",
+            "citations": sorted(ids),
+        }
+    ]
+    items.extend(
+        {
+            "text": "한 기록에는 “" + row["source_text"] + "”라고 적혀 있습니다.",
+            "citations": [row["id"]],
+        }
+        for row in rows
+    )
     return {
         "status": "answered",
-        "items": [
-            {"text": row["source_text"], "citations": [row["id"]]}
-            for row in evidence
-            if row["id"] in ids
-        ],
+        "items": items,
         "display": {
             "kind": "conflict",
             "items": [
-                {"index": i, "state": "confirmed", "event": "", "event_date": ""}
-                for i in range(len(ids))
+                {
+                    "index": i,
+                    "state": "unknown" if i == 0 else "confirmed",
+                    "event": "",
+                    "event_date": "",
+                }
+                for i in range(len(items))
             ],
         },
+    }
+
+
+def dated_progress_draft(question, evidence):
+    """Quote only the latest explicitly dated progress in one exact course scope."""
+    if not re.search(r"마지막|최신|최근|어디까지", question) or not evidence:
+        return None
+    if re.search(r"(?i)(?:part|파트|단계)\s*\d+", question):
+        return None
+    from ..search_expressions import canonical_query
+
+    pattern = r"(?P<date>\d{4}-\d{2}-\d{2})\s+(?P<topic>.+?)\s+(?P<unit>(?:part|파트|단계)\s*\d+)(?:을|를|은|는)?\s*(?:완료했다|완료했습니다|공부했다|학습했다|진행 중이다|공부 중이다)[.!]?"
+    parsed = []
+    for row in evidence:
+        match = re.fullmatch(pattern, row["source_text"].strip(), re.I)
+        if not match:
+            return None
+        try:
+            stamp = date.fromisoformat(match["date"])
+        except ValueError:
+            return None
+        parsed.append((stamp, canonical_query(match["topic"]), row))
+    topics = {topic for _, topic, _ in parsed}
+    if len(topics) != 1 or not re.search(
+        r"(?<![a-z0-9가-힣])" + re.escape(next(iter(topics))) + r"(?![a-z0-9])",
+        canonical_query(question),
+    ):
+        return None
+    latest = max(stamp for stamp, _, _ in parsed)
+    rows = [row for stamp, _, row in parsed if stamp == latest]
+    if len({row["source_text"] for row in rows}) != 1:
+        return None
+    return {
+        "status": "answered",
+        "items": [
+            {
+                "text": "선택된 근거 중 사건 날짜가 가장 최근인 기록은 “"
+                + rows[0]["source_text"]
+                + "”입니다.",
+                "citations": [row["id"] for row in rows],
+            }
+        ],
     }
 
 

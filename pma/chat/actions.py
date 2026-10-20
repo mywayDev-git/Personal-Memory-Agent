@@ -29,6 +29,22 @@ class ActionManager:
         self.chat = chat
         self.store = chat.store
 
+    def cached_result(self, db, value):
+        if value.get("effect") != "save_preview" or "candidate_ids" not in value:
+            return value
+        from ..memory.repository import MemoryRepository
+
+        repo = MemoryRepository(self.store.store)
+        candidates = [
+            repo.require(db, "capture_candidates", self.store.owner_id, cid)
+            for cid in value["candidate_ids"]
+        ]
+        for candidate in candidates:
+            repo.sources(db, candidate)
+        return {key: item for key, item in value.items() if key != "candidate_ids"} | {
+            "candidates": candidates
+        }
+
     def run(self, sid, aid, request_id, expected_context_version):
         payload = None
         with self.store.store.connect(True) as db:
@@ -63,7 +79,7 @@ class ActionManager:
             elif row["state"] == "RESOLVED":
                 if row["request_id"] != request_id:
                     raise AppError("ACTION_RESOLVED", "이미 처리한 선택입니다.", 409)
-                return json.loads(row["result"])
+                return self.cached_result(db, json.loads(row["result"]))
             elif (
                 row["request_id"] == request_id
                 and completed
@@ -128,9 +144,14 @@ class ActionManager:
             with self.store.store.connect(True) as db:
                 # A successful follow-up intentionally advances the context version.
                 self.store.require(db, sid)
+                cached = {**result, "state": "RESOLVED"}
+                if result.get("effect") == "save_preview":
+                    cached.pop("candidates", None)
+                    cached["candidate_ids"] = [c["candidate_id"] for c in result["candidates"]]
+                    result = self.cached_result(db, cached)
                 db.execute(
                     "UPDATE chat_ui_actions SET state='RESOLVED',result=? WHERE id=? AND request_id=?",
-                    (encode({**result, "state": "RESOLVED"}), aid, request_id),
+                    (encode(cached), aid, request_id),
                 )
             return {**result, "state": "RESOLVED"}
         except Exception:
@@ -168,9 +189,14 @@ class ActionManager:
                 "source_versions": payload["source_versions"],
             }
         if kind == "SAVE_PROGRESS":
-            from ..memory.api import from_messages
+            from ..memory.api import from_messages, natural_candidates
             from ..memory.repository import MemoryRepository
 
+            candidates = natural_candidates(
+                self.store.store, sid, mid, anchor["question"], anchor.get("mode", "auto")
+            )
+            if candidates:
+                return {"effect": "save_preview", "candidates": candidates}
             candidate = from_messages(
                 MemoryRepository(self.store.store),
                 sid,

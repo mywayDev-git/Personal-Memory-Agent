@@ -160,8 +160,8 @@ class Store:
             from .chat.migrations import DDL as CHAT_EXTENSION_DDL
             from .chat.schema import DDL as CHAT_DDL
             from .chat.schema import upgrade_v4, upgrade_v5
-            from .memory.repository import DDL as CAPTURE_DDL
             from .imports import DDL as IMPORT_DDL
+            from .memory.repository import DDL as CAPTURE_DDL
 
             has_request_input = any(
                 row["name"] == "request_input"

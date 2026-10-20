@@ -111,6 +111,16 @@ def semantic_issue(question, item, evidence):
         return "person"
     cited = [row["source_text"] for row in evidence if row["id"] in item["citations"]]
     text = item["text"]
+    def units(value):
+        return {("stage" if label == "단계" else "part", str(int(number)))
+                for label, number in re.findall(r"(?i)(part|파트|단계)\s*(\d+)", value)}
+    if not units(text) <= units("\n".join(cited)):
+        return "other"
+    if re.search(r"날짜|시각", text) and re.search(r"명시되지|확인되지|모르|불명|미상|없", text):
+        if any(units(text) & units(sentence) and re.search(r"\d{4}-\d{2}-\d{2}", sentence)
+               and re.search(r"(?i)(?:part|파트|단계)\s*\d+(?:을|를|은|는)?\s*(?:완료했다|완료했습니다|마쳤다|끝냈다)[.!]?$", sentence)
+               for source in cited for sentence in re.split(r"(?<=[.!?])\s+|\n", source)):
+            return "time"
     if denies_stopping(question, text, cited):
         return "negation"
     if meaning_conflict(text, "\n".join(cited)):
