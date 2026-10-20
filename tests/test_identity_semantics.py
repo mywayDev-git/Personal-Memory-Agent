@@ -47,6 +47,19 @@ def test_other_person_cannot_supply_profession_even_if_model_approves():
         {"text": "교사입니다.", "citations": ["b"]}, evidence) == "person"
     assert semantic_issue("회사 동료 민수 직업은?",
         {"text": "개발자입니다.", "citations": ["a"]}, evidence) is None
+    assert semantic_issue("회사 동료 민수 직업은?",
+        {"text": "동아리 친구 민수는 개발자입니다.", "citations": ["a"]}, evidence) == "person"
+
+
+def test_profession_draft_uses_only_explicit_role_and_exact_source():
+    from pma.chat.evidence import direct_statement
+
+    rows = [{"id": "a", "source_text": "회사 동료 민수는 프론트엔드 개발자다."},
+            {"id": "b", "source_text": "동아리 친구 민수는 수학 교사다."}]
+    draft = direct_statement("회사 동료 민수 직업은 뭐야?", rows)
+    assert draft["items"] == [{"text": "기록에 이렇게 남아 있습니다: “회사 동료 민수는 프론트엔드 개발자다.”",
+                               "citations": ["a"]}]
+    assert direct_statement("민수 직업은 뭐야?", rows) is None
 
 
 @pytest.mark.parametrize("question,source,text,issue", [
@@ -67,3 +80,35 @@ def test_independent_model_approval_cannot_override_semantic_guard(question, sou
     review = model.review(question, [{"id": "a", "source_text": source}], response)
     assert not accepted(review, response)
     assert review["items"][0]["issue"] == issue
+
+
+@pytest.mark.parametrize("repair_accepted", [True, False])
+def test_stop_quote_repair_requires_a_second_independent_review(repair_accepted):
+    from types import SimpleNamespace
+
+    from pma.chat.engine import ChatEngine
+
+    source = "파이썬 공부를 접었다."
+    evidence = [{"id": "a", "record_id": "r", "revision_id": "v", "source_text": source,
+                 "evidence": [{"quote": source, "start": 0, "end": len(source)}]}]
+    reviews = []
+
+    def review(question, rows, response):
+        reviews.append(response)
+        passed = len(reviews) == 2 and repair_accepted
+        return {"fulfillment": "direct", "abstention": "not_applicable", "reason": "검토",
+                "items": [{"index": 0, "support": "supported" if passed else "unsupported",
+                           "issue": "none" if passed else "negation", "relevant": True,
+                           "answer_quote": response["items"][0]["text"],
+                           "evidence": [{"id": "a", "quote": source}]}]}
+
+    engine = ChatEngine.__new__(ChatEngine)
+    engine.service = SimpleNamespace(trace=lambda *a, **kw: None)
+    engine.models = SimpleNamespace(
+        answer=lambda *a, **kw: {"status": "answered", "items": [
+            {"text": "중단한 기록은 없습니다.", "citations": ["a"]}]}, review=review)
+    engine.resolve = lambda q, *a, **kw: ({"question": q, "needs_clarification": False}, 0)
+    result = engine.generate("파이썬 공부를 중단한 기록이 있어?", {"evidence": evidence}, "2026-10-19")
+    assert len(reviews) == 2
+    assert reviews[1]["items"][0]["text"] == "기록 원문: “파이썬 공부를 접었다.”"
+    assert result["status"] == ("answered" if repair_accepted else "insufficient_evidence")

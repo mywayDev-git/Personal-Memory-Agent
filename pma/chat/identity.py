@@ -43,10 +43,14 @@ def identity_conflict(question, item, evidence):
         return False
     target = targets[0]
     target_name = next(ROLE.finditer(target)).group(2)
+    compact_target = re.sub(r"\s+", "", target)
+    if any(m.group(2) == target_name and re.sub(r"\s+", "", m.group()) != compact_target
+           for m in ROLE.finditer(item["text"])):
+        return True
     for row in evidence:
         if row["id"] not in item["citations"]:
             continue
         other = [m for m in ROLE.finditer(row["source_text"]) if m.group(2) == target_name]
-        if other and all(m.group() != target for m in other):
+        if other and all(re.sub(r"\s+", "", m.group()) != compact_target for m in other):
             return True
     return False

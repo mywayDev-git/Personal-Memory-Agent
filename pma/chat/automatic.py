@@ -238,7 +238,7 @@ def run(engine, question, session, today, requested_mode="auto"):
             {"searches": []},
         )
     decision = RetrievalRouter().decide(
-        question, history=data["history"], memory_enabled=requested_mode != "general",
+        original_reference, history=data["history"], memory_enabled=requested_mode != "general",
         force_memory=(requested_mode == "memory" and not data["topic_history_unverified"]),
         classify=lambda: structured(engine, ROUTE_PROMPT, data, ROUTE, 768),
     )

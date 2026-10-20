@@ -269,6 +269,13 @@ class ChatEngine:
                 + resolved["question"]
             )
         evidence = [row for row in session["evidence"] if topic_supported(intent_question, row)]
+        from .identity import identity_conflict
+
+        # Keep all sources in the immutable search/audit bundle. Only the answer
+        # draft excludes an explicitly different person with the same name.
+        evidence = [row for row in evidence if not identity_conflict(
+            intent_question, {"text": "", "citations": [row["id"]]}, [row]
+        )]
         if hasattr(models, "select") and not study_topic(intent_question):
             selected = models.select(question, evidence)
             if not isinstance(selected, list) or not set(selected) <= {r["id"] for r in evidence}:

@@ -176,7 +176,9 @@ def direct_statement(question, evidence, intent_question=None):
     still run. Multiple conflicting candidates fall back to normal generation.
     """
     intent_question = intent_question or question
-    identity = re.search(r"([가-힣]{2,8}?)(?:이가|이는|가|는)?\s*누구", intent_question)
+    identity = re.search(
+        r"([가-힣]{2,8}?)(?:이가|이는|가|는|의)?\s*(?:누구|직업)", intent_question
+    )
     if not identity and asks_identity(intent_question):
         # The current intent must ask identity/relationship. A resolved name is
         # only a target hint; the candidate fact still comes verbatim from sources.
