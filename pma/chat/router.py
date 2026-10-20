@@ -24,6 +24,11 @@ class Route:
 class RetrievalRouter:
     def decide(self, question, *, history=(), memory_enabled=True, explicit_search=False,
                classify=None, force_memory=False):
+        from .policy import memory_disabled
+        from .interpretation import intent
+
+        if memory_disabled(question):
+            return Route(RoutingMode.CHAT_ONLY, "MEMORY_REFUSED")
         if not memory_enabled:
             return Route(RoutingMode.CHAT_ONLY, "MEMORY_DISABLED")
         if explicit_search:
@@ -32,6 +37,8 @@ class RetrievalRouter:
             return Route(RoutingMode.MEMORY_REQUIRED, "USER_MEMORY_MODE", question)
         if re.fullmatch(r"(?:안녕(?:하세요)?|고마워|감사합니다|hello|hi)[!?.\s]*", question, re.I):
             return Route(RoutingMode.CHAT_ONLY, "GREETING")
+        if intent(question) in {"resume", "progress", "experience", "reconsider", "next_step"}:
+            return Route(RoutingMode.MEMORY_AUGMENTED, "MEMORY_CONTINUITY", question)
         if re.search(r"검색\s*해|찾아\s*줘|기록에서|기억에서", question):
             return Route(RoutingMode.MEMORY_REQUIRED, "EXPLICIT_RECALL", question)
         if re.search(r"전에|그때|지난번|했지|했었|뭐\s*했|줬|갔|봤|내가|우리\s*(?:회의|프로젝트)", question):

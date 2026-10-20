@@ -161,6 +161,7 @@ class Store:
             from .chat.schema import DDL as CHAT_DDL
             from .chat.schema import upgrade_v4, upgrade_v5
             from .memory.repository import DDL as CAPTURE_DDL
+            from .imports import DDL as IMPORT_DDL
 
             has_request_input = any(
                 row["name"] == "request_input"
@@ -175,6 +176,7 @@ class Store:
                 + upgrade_v5(has_request_input)
                 + CAPTURE_DDL
                 + CHAT_EXTENSION_DDL
+                + IMPORT_DDL
                 + "\nCOMMIT;"
             )
 
@@ -298,6 +300,9 @@ class Store:
                 (FACT_VERSION, rev["id"]),
             ).fetchone()[0]
             r["facts_status"] = "pending" if missing else "ready"
+            location = db.execute("SELECT i.filename,l.start,l.end FROM record_import_locations l "
+                                  "JOIN record_imports i ON i.id=l.import_id WHERE l.record_id=?", (rid,)).fetchone()
+            r["source_location"] = {**dict(location), "record_version": 1} if location else None
             return r
 
     def list(self, state="active", cursor=None, limit=30):
@@ -322,9 +327,11 @@ class Store:
                 )
             ]
 
-    def trash(self, rid):
+    def trash(self, rid, expected_version=None):
         with self.connect(True) as db:
             r = self.require(db, rid)
+            if expected_version is not None and r["version"] != expected_version:
+                raise AppError("VERSION_CONFLICT", "기록이 변경되었습니다. 최신 내용을 확인해 주세요.", 409)
             if r["state"] == "trash":
                 return
             self.invalidate(db, rid)

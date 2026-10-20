@@ -62,6 +62,8 @@ GENERAL_PROMPT = POLICY + (
     "mixed인 경우 verified_memory는 별도로 원문 검증을 마친 사실이다. 이를 바탕으로 일반 지식과 "
     "조건부 제안을 제공한다. 개인 사실을 새로 만들거나 반복하지 않는다. 제안과 추론임을 명확히 표현한다. "
     "verified_memory가 비어 있으면 개인 사실을 모른다고 전제하고 일반적인 도움만 제공한다. "
+    "학습·작업 재개에서는 이미 표시할 verified_memory의 날짜·진도를 반복하지 말고 현재 요청에 유용한 제안만 짧게 쓴다. "
+    "'도움이 필요하면 말씀해주세요' 같은 상투적 마무리나 의무적인 재질문은 생략한다. "
     "일반 모드에서는 개인 기록을 조회하지 않는다. 개인 사실을 물으면 이 제약을 설명한다."
 )
 
@@ -121,8 +123,11 @@ def general(engine, data):
 
     # Explicit style preferences transfer across chats without semantic retrieval.
     data = dict(data)
-    data['saved_style_preferences'] = MemoryRepository(engine.service.store).preferences(OWNER)
+    data['saved_style_preferences'] = ([] if data.get("memory_disabled") else
+                                       MemoryRepository(engine.service.store).preferences(OWNER))
     response = structured(engine, GENERAL_PROMPT, data, GENERAL)
+    if re.sub(r"[\W_]", "", response["text"]) == re.sub(r"[\W_]", "", data.get("question", "")):
+        return None
     # Personal facts must stay in the cited part, even if the reviewer accepts repetition.
     if data.get("mode") == "mixed":
         compact = re.sub(r"[\W_]", "", response["text"])
@@ -147,7 +152,9 @@ def general(engine, data):
         + (
             " mode=mixed에서는 이 답변이 위로·제안 부분만 담당한다. 개인 기록 질문은 별도 검색과 검증으로 답해 합칠 예정이다. "
             "개인 사실을 단정하거나 새로 추가하면 safe=false. verified_memory를 조건으로 삼는 제안과 "
-            "일반 지식만 허용한다. 추론을 실제 있었던 일이나 확정된 선호로 표현하면 safe=false."
+            "일반 지식만 허용한다. 추론을 실제 있었던 일이나 확정된 선호로 표현하면 safe=false. "
+            "공부한 기록만으로 완료를 전제하거나 근거 없는 다음 Part·단계·일정을 확정하면 safe=false. "
+            "과거 해결책이 현재에도 동일하게 적용된다고 단정하거나 실패·거절한 추천을 반복하면 safe=false."
             if data.get("mode") == "mixed"
             else ""
         ),
@@ -214,10 +221,15 @@ def display_block(question, items):
 
 def run(engine, question, session, today, requested_mode="auto"):
     from .identity import scoped_followup
+    from .policy import memory_disabled, private_context
 
     original_reference = question
+    disabled = memory_disabled(question, requested_mode)
+    if disabled:
+        session = private_context(session)
+        requested_mode = "general"
     question = scoped_followup(question, session)
-    data = {"question": question, "today": today, "history": history(session)}
+    data = {"question": question, "today": today, "history": history(session), "memory_disabled": disabled}
     data["topic_history_unverified"] = session.get("context", {}).get("summary", "")
     if requested_mode == "auto" and re.search(
         r"가정(?:해\s*(?:보자|줘)|하자)[.!?]?$", question.strip()
@@ -254,6 +266,13 @@ def run(engine, question, session, today, requested_mode="auto"):
             route["query"] = structured(engine, ROUTE_PROMPT, data, ROUTE, 768)["query"] or question
         except Exception:
             route["query"] = question
+    if decision.reason_code == "MEMORY_CONTINUITY":
+        route["query"] = structured(
+            engine, POLICY + "현재 사용자의 학습·작업 재개 또는 다음 행동 요청을 위해 필요한 과거 기록의 검색 질문 하나를 만든다. "
+            "현재 의도의 대상·프로젝트·과목만 보존하고 마지막 진도·완료 여부·선택 이유·과거 해결 사례 등 필요한 기록을 묻는다. "
+            "새로운 인물·과정 번호·완료 사실을 전제하지 않는다. 예: 'Python 다시 공부하려고' → 'Python 학습 진도와 마지막 공부 기록'. "
+            "추천에 대한 거절과 실패 이력도 검색 범위에 포함한다.", data, NEXT, 384,
+        )["query"].strip() or question
     if requested_mode == "hybrid":
         route["mode"] = "mixed"
     elif requested_mode == "memory" and route["mode"] == "general":
@@ -364,7 +383,8 @@ def run(engine, question, session, today, requested_mode="auto"):
             elif asks_identity(question):
                 query = "나의 지인들과 어떤 관계인지 알려줘"
     # Keep evidence from later relational lookups while retaining earlier context.
-    chosen = combine(batches)
+    from .policy import source_allowed
+    chosen = [row for row in combine(batches) if source_allowed(original_reference, row)]
     final_ids = {row["id"] for row in chosen}
     final_reasons = {row["id"]: row["search_explanation"]["final_selection"]["reason"] for row in chosen}
     for search in searches:
@@ -377,12 +397,25 @@ def run(engine, question, session, today, requested_mode="auto"):
                     "limit": 8,
                 }
     evidence = engine.store.freeze(chosen)
+    from .interpretation import analyze, intent, PROMPT, SCHEMA
+    from .planner import prepare
+    proposal = None
+    if evidence and intent(original_reference) in {"resume", "progress", "experience", "reconsider", "next_step", "latest", "timeline", "compare"}:
+        try:
+            proposal = structured(engine, PROMPT, {"question": original_reference,
+                                  "sources": [{"memory_id": r["id"], "text": r["source_text"]} for r in evidence]}, SCHEMA, 1800)
+        except ValueError:
+            proposal = None
+    interpretation = analyze(original_reference, evidence, proposal)
+    response_plan = prepare(original_reference, interpretation, mode)
     metadata = {
         "route": route,
         "searches": searches,
         "search_version": "automatic-chat-v4",
         "today": today,
         "embedding_key": engine.service.settings.embedding_key,
+        "memory_interpretation": interpretation,
+        "response_plan": response_plan,
         **({"question_parts": parts} if parts else {}),
     }
     if unsupported or not evidence:
@@ -407,7 +440,8 @@ def run(engine, question, session, today, requested_mode="auto"):
             )
             interpreted = memory_question
         response = grounded(
-            engine, interpreted, {**session, "evidence": evidence}, today, original_question=memory_question
+            engine, interpreted, {**session, "evidence": evidence, "memory_interpretation": interpretation,
+                                  "response_plan": response_plan}, today, original_question=memory_question
         )
     if "answer_audit" not in response:
         from .answer_audit import answer_audit
@@ -418,7 +452,8 @@ def run(engine, question, session, today, requested_mode="auto"):
     for item in response["items"]:
         item["source_type"] = "personal_memory"
     if mode == "mixed" and response["status"] != "needs_clarification":
-        casual = generate_general(engine, {**data, "mode": mode, "verified_memory": response["items"]})
+        casual = generate_general(engine, {**data, "mode": mode, "verified_memory": response["items"],
+                                          "memory_interpretation": interpretation, "response_plan": response_plan})
     response["conversation_type"] = mode
     response["blocks"] = []
     if response["items"]:

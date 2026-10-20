@@ -227,6 +227,8 @@ class ChatEngine:
         return result, len(history)
 
     def generate(self, question, session, today, *, original_question=None):
+        from .policy import source_allowed
+        session = {**session, "evidence": [r for r in session["evidence"] if source_allowed(original_question or question, r)]}
         models = self.models
         attempts = []
 
@@ -284,6 +286,9 @@ class ChatEngine:
         evidence = [row for row in evidence if not identity_conflict(
             intent_question, {"text": "", "citations": [row["id"]]}, [row]
         )]
+        if not evidence:
+            return finish({"status": "insufficient_evidence", "items": [],
+                           "validation": "no_relevant_evidence", "history_turns": history_count}, "no_relevant_evidence")
         if hasattr(models, "select") and not study_topic(intent_question):
             selected = models.select(question, evidence)
             if not isinstance(selected, list) or not set(selected) <= {r["id"] for r in evidence}:
@@ -295,6 +300,9 @@ class ChatEngine:
                     "validation": "no_relevant_evidence",
                     "history_turns": history_count,
                 }, "no_relevant_evidence")
+            from .interpretation import explicit_completion_conflicts
+            selected = list(set(selected) | {mid for group in explicit_completion_conflicts(evidence)
+                                            if set(group) & set(selected) for mid in group})
             # Preserve explicit conflicting sources, but do not promote every
             # unselected background candidate into the answer's source bundle.
             evidence = [row for row in evidence if row["id"] in selected or
@@ -303,13 +311,14 @@ class ChatEngine:
         from .semantics import stop_record_draft
 
         settings = getattr(self.service, "settings", None)
-        draft = (stop_record_draft(intent_question, evidence)
+        from .interpretation import conflict_draft, explicit_completion_conflicts
+        draft = conflict_draft(evidence) or (stop_record_draft(intent_question, evidence)
                  if getattr(settings, "source_stop_drafts", False)
                  or getattr(settings, "request_reuse", False) else None)
         if draft:
             count("source_stop_drafts")
         response = draft or direct_statement(question, evidence, intent_question) or models.answer(
-            question, evidence
+            self.planned_question(question, session), evidence
         )
         generation_index = 1
         review_feedback = None
@@ -327,6 +336,8 @@ class ChatEngine:
             attributes = claims_supported(response["items"], evidence) and causal_claims_supported(
                 intent_question, response, evidence
             )
+            cited_ids = {cid for item in response["items"] for cid in item["citations"]}
+            attributes = attributes and all(set(group) <= cited_ids for group in explicit_completion_conflicts(evidence))
             try:
                 checked = (
                     models.review(question, evidence, response, feedback=review_feedback)
@@ -371,7 +382,7 @@ class ChatEngine:
                 )
                 response = (quoted_topic_answer(intent_question, evidence)
                             if not attributes or meaning_rejected else None) or models.answer(
-                    question,
+                    self.planned_question(question, session),
                     evidence,
                     feedback={
                         "previous_answer": response,
@@ -385,6 +396,15 @@ class ChatEngine:
             "validation": "rejected",
             "history_turns": history_count,
         })
+
+    @staticmethod
+    def planned_question(question, session):
+        plan = session.get("response_plan")
+        if not plan:
+            return question
+        return question + "\n응답 지침(추가 사실 아님): " + json.dumps({
+            "plan": plan, "source_observations_unverified": [o for o in session.get("memory_interpretation", {}).get("observations", []) if o.get("assessment") == "source_interpretation"]
+        }, ensure_ascii=False)
 
     def timing(self, sid, request_id):
         clock = self.progress_times.get((sid, request_id))
@@ -408,7 +428,7 @@ class ChatEngine:
                 **self.timing(sid, request_id),
             }
 
-    def message(self, sid, request_id, question, today=None, context_message_id=None, mode="auto", *, filters=None, correction_enabled=True):
+    def message(self, sid, request_id, question, today=None, context_message_id=None, mode="auto", *, filters=None, correction_enabled=True, expected_context_version=None):
         mode = ConversationMode(mode)
         started = time.monotonic()
         with self.progress_lock:
@@ -421,7 +441,8 @@ class ChatEngine:
                 )
             mid, cached = self.store.begin(
                 sid, request_id, question, today, context_message_id, mode, filters,
-                **({"correction_enabled": False} if not correction_enabled else {})
+                **({"correction_enabled": False} if not correction_enabled else {}),
+                **({"expected_context_version": expected_context_version} if expected_context_version is not None else {})
             )
             if cached is not None:
                 return {"message_id": mid, **cached}
@@ -516,7 +537,8 @@ class ChatEngine:
                                 session["messages"] = [
                                     m for m in session["messages"] if m["id"] != context_message_id
                                 ] + active
-                        if self.fixed_evidence and mode == ConversationMode.AUTO:
+                        from .policy import memory_disabled
+                        if self.fixed_evidence and mode == ConversationMode.AUTO and not memory_disabled(question, mode):
                             self.store.freeze(session["evidence"])
                             response = self.generate(
                                 question, deepcopy(session), today or date.today().isoformat()
@@ -549,6 +571,9 @@ class ChatEngine:
                         )
                         response["chat_prompt_version"] = 5
                         response["presentation"] = presentation(response)
+                        from .planner import enrich
+                        enrich(question, response, evidence, sid, mid,
+                               session.get("context", {}).get("version", 0) + 1, mode=mode, metadata=metadata)
                         if "answer_audit" in response:
                             attach_answer_audit(metadata, response.pop("answer_audit"))
                         else:

@@ -39,7 +39,17 @@ def router(input_type, query_type):
                 date.fromisoformat(value)
             return value
 
+    class ActionInput(input_type):
+        request_id: str = Field(min_length=1, max_length=128)
+        expected_context_version: int = Field(ge=0)
+
     routes = APIRouter(prefix="/api/v1/chat")
+
+    @routes.post("/sessions/{sid}/actions/{action_id}")
+    def execute_action(sid: str, action_id: str, data: ActionInput, request: Request):
+        from .actions import ActionManager
+        return ActionManager(request.app.state.chat).run(sid, action_id, data.request_id,
+                                                       data.expected_context_version)
 
     @routes.post("/searches")
     def search(data: query_type, request: Request):

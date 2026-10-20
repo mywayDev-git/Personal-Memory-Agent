@@ -113,6 +113,8 @@ class SessionInput(Input):
 def error_response(code, message, status, request_id, retryable=False):
     return JSONResponse(
         {
+            "primary_response_type": "ACCESS_DENIED" if status in (401, 403) else "ERROR",
+            "error_state": {"code": code, "retryable": retryable},
             "error": {
                 "code": code,
                 "message": message,
@@ -167,6 +169,8 @@ def create_app(settings=None, models=None, run_worker=True, console_test=False):
     )
     app.state.bootstrap_token = bootstrap
     app.state.settings = settings
+    from .imports import router as import_router
+    app.include_router(import_router(Input))
 
     from .evaluation_api import install
 
@@ -384,8 +388,8 @@ def create_app(settings=None, models=None, run_worker=True, console_test=False):
         return app.state.store.update(rid, data.expected_version, revert_version=data.version)
 
     @app.delete("/api/v1/records/{rid}", status_code=204)
-    def trash(rid: str):
-        app.state.store.trash(rid)
+    def trash(rid: str, expected_version: int | None = None):
+        app.state.store.trash(rid, expected_version)
 
     @app.post("/api/v1/records/{rid}/restore", status_code=202)
     def restore(rid: str):

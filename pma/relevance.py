@@ -22,7 +22,7 @@ def study_topic(question):
     suffix = "|".join(map(re.escape, PARTICLES))
     for alias in sorted(ALIASES, key=len, reverse=True):
         if re.search(r"(?:^|\s)" + re.escape(alias) + r"(?:" + suffix +
-                     r")?(?:\s*(?:관련된|관련|대한|했던|한|기록))*\s*$", prefix, re.I):
+                     r")?(?:\s*(?:관련된|관련|대한|했던|한|기록|다시|이어서|계속|좀|오늘|오랜만에))*\s*$", prefix, re.I):
             return ALIASES[alias]
     match = re.search(r"([A-Za-z][A-Za-z0-9.+#_-]*|[가-힣]+)(?:을|를)?\s*(?:공부|학습|배운|배웠|배우)", question, re.I)
     if not match:
@@ -30,7 +30,7 @@ def study_topic(question):
     topic = match[1]
     if topic.endswith(("을", "를")):
         topic = topic[:-1]
-    if topic in {"내가", "나는", "나", "그거", "그것", "무엇", "뭘", "어떤", "최근", "어제", "오늘", "했던", "관련된", "관련", "대한", "한"}:
+    if topic in {"내가", "나는", "나", "그거", "그것", "무엇", "뭘", "어떤", "최근", "어제", "오늘", "했던", "관련된", "관련", "대한", "한", "다시", "이어서", "계속", "좀", "오랜만에"}:
         return None
     return canonical_query(topic)
 

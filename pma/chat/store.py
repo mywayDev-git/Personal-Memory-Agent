@@ -26,6 +26,7 @@ class ChatStore:
                 "UPDATE chat_messages SET state='failed',error_code='INTERRUPTED' "
                 "WHERE state='running'"
             )
+            db.execute("UPDATE chat_ui_actions SET state='ACTIVE' WHERE state='LOADING'")
 
     def check_sources(self, db, rows):
         for row in rows:
@@ -91,6 +92,10 @@ class ChatStore:
                     ):
                         raise ValueError("INVALID_SOURCE_SPAN")
                 frozen.append({**row, "revision_id": revision["id"]})
+                location = db.execute("SELECT i.filename,l.start,l.end FROM record_import_locations l "
+                                      "JOIN record_imports i ON i.id=l.import_id WHERE l.record_id=?", (row["record_id"],)).fetchone()
+                if location:
+                    frozen[-1]["source_location"] = {**dict(location), "record_version": 1}
             return frozen
 
     def create(self, search_id, selected_ids):
@@ -207,6 +212,8 @@ class ChatStore:
                     (message["id"],),
                 ).fetchone()
                 message["snapshot"] = json.loads(snapshot[0]) if snapshot else {}
+                from .actions import persist_states
+                persist_states(db, message, result["context"]["version"])
                 result["messages"].append(message)
             result["mode"] = result["messages"][-1]["mode"] if result["messages"] else "auto"
             return result
@@ -235,7 +242,7 @@ class ChatStore:
             self.require(db, sid)
             db.execute("DELETE FROM chat_sessions WHERE id=?", (sid,))
 
-    def begin(self, sid, request_id, question, today=None, context_message_id=None, mode="auto", filters=None, *, correction_enabled=True):
+    def begin(self, sid, request_id, question, today=None, context_message_id=None, mode="auto", filters=None, *, correction_enabled=True, expected_context_version=None):
         inputs = {"question": question, "today": today}
         if not correction_enabled:
             inputs["correction_enabled"] = False
@@ -267,6 +274,8 @@ class ChatStore:
                     if previous["response"]
                     else {"status": "insufficient_evidence", "items": [], "source_state": "deleted"}
                 )
+            if expected_context_version is not None and self.context_in(db, sid).version != expected_context_version:
+                raise AppError("STATE_CONFLICT", "대화 상태가 변경되었습니다. 다시 선택해 주세요.", 409, True)
             if context_message_id is not None:
                 anchor = db.execute(
                     "SELECT * FROM chat_messages WHERE session_id=? AND id=?",
@@ -325,6 +334,12 @@ class ChatStore:
             if session["state"] != "active":
                 raise changed()
             self.check_sources(db, rows)
+            from .planner import enrich
+            if "response_version" not in response:
+                original = db.execute("SELECT question,request_input FROM chat_messages WHERE id=?", (mid,)).fetchone()
+                enrich(original["question"], response, rows, sid, mid,
+                       self.context_in(db, sid).version + 1,
+                       mode=json.loads(original["request_input"] or "{}").get("mode", "auto"), metadata=metadata)
             # Revalidate the actual revision at commit, not only before inference.
             for source in rows:
                 revision = db.execute(
@@ -369,6 +384,11 @@ class ChatStore:
                 "UPDATE chat_messages SET state='completed',response=?,completed_at=? WHERE id=?",
                 (encode(response), ts, mid),
             )
+            db.execute("UPDATE chat_ui_actions SET state='EXPIRED' WHERE session_id=? AND state='ACTIVE'", (sid,))
+            for item in response.get("ui_actions", []):
+                db.execute("INSERT INTO chat_ui_actions(id,session_id,message_id,state,context_version,payload) "
+                           "VALUES(?,?,?,'ACTIVE',?,?)",
+                           (item["action_id"], sid, mid, item["context_version"], encode(item)))
             db.execute(
                 "UPDATE chat_sessions SET updated_at=?,title=CASE WHEN title='새 대화' THEN (SELECT substr(question,1,100) FROM chat_messages WHERE id=?) ELSE title END WHERE id=?",
                 (ts, mid, sid),
