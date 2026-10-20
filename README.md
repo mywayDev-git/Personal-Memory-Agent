@@ -63,6 +63,9 @@ CPU·GPU·혼합 실행의 실제 시간·메모리와 채택하지 않은 실�
 검색·기억 답변의 단계별 계측과 고정 합성 데이터 비교 방법은
 [응답 지연 계측 문서](docs/response_latency.md), 실제 모델·배치·실행 설정 비교는
 [응답 속도·근거 품질 보고서](evaluation/response_latency_results.rst)에 정리했습니다.
+동명이인·중단·계획 의미 검증 보완과 제한된 중단 질문의 속도 개선은
+[후속 검증 보고서](evaluation/semantic_response_latency_results.rst),
+[적용 범위와 복구 방법](docs/semantic_response_latency.md)에 정리했습니다.
 질문별 검색 정확도와 핵심 인물·실행 상태 검사를 통과하지 못한 후보는 기본값으로 채택하지 않습니다.
 실험은 개인 DB를 사용하지 않으며 실제 DB 재색인이나 기본 모델 전환을 자동 실행하지 않습니다.
 

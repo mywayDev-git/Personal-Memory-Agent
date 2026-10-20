@@ -1,0 +1,331 @@
+{
+  "status": "complete",
+  "python": {
+    "passed": 431,
+    "failed": 0,
+    "seconds": 26.56,
+    "warnings": [
+      "Existing Starlette/httpx TestClient deprecation"
+    ]
+  },
+  "ui_all_passed": true,
+  "ui_checks": [
+    "multilingual_ui.mjs",
+    "query_correction_ui.mjs",
+    "search_highlight.mjs",
+    "search_audit_browser.cjs"
+  ],
+  "mixed_event_summary": {
+    "cases": 10,
+    "exact_sets": 10,
+    "mean_recall_at_8": 1.0,
+    "wrong_filter_questions": 0,
+    "wrong_expansion_approvals": 0,
+    "valid_expansion_rejections": 0,
+    "mean_seconds": 0.0018081600312143565,
+    "p95_seconds": 0.008387100067920983
+  },
+  "diagnostic_interrupted_trial": {
+    "interrupted": true,
+    "reason": "control_stopped_answer_refused_despite_available_source",
+    "source_unchanged_at_stop": true,
+    "evaluator_unchanged_at_stop": true,
+    "complete_followup_pair": {
+      "baseline/followup": {
+        "samples": 5,
+        "completed": 5,
+        "failures": 0,
+        "failure_rate": 0.0,
+        "median_seconds": 49.31020170007832,
+        "p95_seconds": 49.906595200067386,
+        "quality_passes": 5,
+        "peak_ram_mb": 5424.15234375,
+        "peak_gpu_total_mb": 7773.0
+      },
+      "reuse/followup": {
+        "samples": 5,
+        "completed": 5,
+        "failures": 0,
+        "failure_rate": 0.0,
+        "median_seconds": 42.300121899927035,
+        "p95_seconds": 43.718003000016324,
+        "quality_passes": 5,
+        "peak_ram_mb": 5656.28125,
+        "peak_gpu_total_mb": 7773.0
+      }
+    },
+    "all_recorded_rows": 18,
+    "not_a_completed_full_trial": true
+  },
+  "models_changed": false,
+  "personal_database_used": false,
+  "app_restored": true,
+  "targeted_stop_timing_gate": {
+    "passed": true,
+    "median_reduction": 0.37945595265130816,
+    "reason": "timing_gate_only"
+  },
+  "targeted_stop_inspection": {
+    "responses": 40,
+    "all_exact_same_source_quote": true,
+    "independent_review_preserved": true,
+    "search_iterations_each": 1,
+    "chat_calls_before": 7,
+    "chat_calls_after": 5,
+    "source_and_evaluator_unchanged": true,
+    "scope": "explicit unqualified Python study stop-record question; not application-wide"
+  },
+  "multilingual": {
+    "summary": {
+      "completed": 90,
+      "errors": 0,
+      "understanding_errors": 0,
+      "positive": {
+        "expanded": {
+          "precision_at_8": 0.925,
+          "recall_at_8": 0.8,
+          "search_seconds": 0.14630749333882703,
+          "understanding_seconds": 3.358929078343014,
+          "total_seconds": 3.505236571681841
+        }
+      },
+      "negative": {
+        "expanded": {
+          "precision_at_8": 1.0,
+          "recall_at_8": 1.0,
+          "search_seconds": 0.13200466665051255,
+          "understanding_seconds": 3.7725783566672666,
+          "total_seconds": 3.904583023317779
+        }
+      }
+    },
+    "gate": {
+      "passed": true,
+      "regressed_cases": [],
+      "alias_invariance": true
+    },
+    "aliases": {
+      "python": {
+        "expanded": true
+      },
+      "api": {
+        "expanded": true
+      },
+      "ml": {
+        "expanded": true
+      }
+    },
+    "scope": "fresh understanding, retrieval/fusion/top8 before optional LLM relevance; not final-answer accuracy"
+  },
+  "source_stop_drafts_default": true,
+  "broad_request_reuse_default": false,
+  "final_quality_matrix": {
+    "source_first/stopped": {
+      "trial": "semantic-default-quality5",
+      "samples": 5,
+      "completed": 5,
+      "failures": 0,
+      "failure_rate": 0.0,
+      "median_seconds": 21.766128099989146,
+      "p95_seconds": 23.09275249997154,
+      "quality_passes": 5,
+      "peak_ram_mb": 5295.10546875,
+      "peak_gpu_total_mb": 7837.0
+    },
+    "source_first/followup": {
+      "trial": "semantic-default-quality5",
+      "samples": 5,
+      "completed": 5,
+      "failures": 0,
+      "failure_rate": 0.0,
+      "median_seconds": 49.786613999982364,
+      "p95_seconds": 59.94145829998888,
+      "quality_passes": 5,
+      "peak_ram_mb": 6262.3046875,
+      "peak_gpu_total_mb": 7862.0
+    },
+    "source_first/identity_exclusion": {
+      "trial": "semantic-default-quality5",
+      "samples": 5,
+      "completed": 5,
+      "failures": 0,
+      "failure_rate": 0.0,
+      "median_seconds": 33.555763000040315,
+      "p95_seconds": 35.08821660000831,
+      "quality_passes": 5,
+      "peak_ram_mb": 5847.82421875,
+      "peak_gpu_total_mb": 7878.0
+    },
+    "source_first/stopped_date": {
+      "trial": "semantic-default-quality5",
+      "samples": 5,
+      "completed": 5,
+      "failures": 0,
+      "failure_rate": 0.0,
+      "median_seconds": 26.01742489996832,
+      "p95_seconds": 31.28440809994936,
+      "quality_passes": 5,
+      "peak_ram_mb": 4866.828125,
+      "peak_gpu_total_mb": 7858.0
+    },
+    "source_first/negation": {
+      "trial": "semantic-default-quality5",
+      "samples": 5,
+      "completed": 5,
+      "failures": 0,
+      "failure_rate": 0.0,
+      "median_seconds": 14.881415200070478,
+      "p95_seconds": 14.933260699966922,
+      "quality_passes": 5,
+      "peak_ram_mb": 4954.43359375,
+      "peak_gpu_total_mb": 7858.0
+    },
+    "source_first/identity": {
+      "trial": "semantic-default-quality5",
+      "samples": 5,
+      "completed": 5,
+      "failures": 0,
+      "failure_rate": 0.0,
+      "median_seconds": 38.59237580001354,
+      "p95_seconds": 41.46697810001206,
+      "quality_passes": 5,
+      "peak_ram_mb": 6339.30859375,
+      "peak_gpu_total_mb": 7869.0
+    },
+    "source_first/plan": {
+      "trial": "semantic-execution-compound-quality5",
+      "samples": 5,
+      "completed": 5,
+      "failures": 0,
+      "failure_rate": 0.0,
+      "median_seconds": 30.215844699996524,
+      "p95_seconds": 31.578662600019015,
+      "quality_passes": 5,
+      "peak_ram_mb": 6758.50390625,
+      "peak_gpu_total_mb": 7913.0
+    },
+    "source_first/multi_hop": {
+      "trial": "semantic-execution-compound-quality5",
+      "samples": 5,
+      "completed": 5,
+      "failures": 0,
+      "failure_rate": 0.0,
+      "median_seconds": 44.77414360002149,
+      "p95_seconds": 45.73167970008217,
+      "quality_passes": 5,
+      "peak_ram_mb": 5681.4765625,
+      "peak_gpu_total_mb": 7907.0
+    },
+    "source_first/additional_search": {
+      "trial": "semantic-default-quality5",
+      "samples": 5,
+      "completed": 5,
+      "failures": 0,
+      "failure_rate": 0.0,
+      "median_seconds": 14.667381900013424,
+      "p95_seconds": 15.91275689995382,
+      "quality_passes": 5,
+      "peak_ram_mb": 4696.625,
+      "peak_gpu_total_mb": 7860.0
+    },
+    "source_first/no_evidence": {
+      "trial": "semantic-default-quality5",
+      "samples": 5,
+      "completed": 5,
+      "failures": 0,
+      "failure_rate": 0.0,
+      "median_seconds": 5.283645899966359,
+      "p95_seconds": 5.413473900058307,
+      "quality_passes": 5,
+      "peak_ram_mb": 4290.484375,
+      "peak_gpu_total_mb": 7860.0
+    },
+    "source_first/long_evidence": {
+      "trial": "semantic-default-quality5",
+      "samples": 5,
+      "completed": 5,
+      "failures": 0,
+      "failure_rate": 0.0,
+      "median_seconds": 78.05812870000955,
+      "p95_seconds": 79.78445610008202,
+      "quality_passes": 5,
+      "peak_ram_mb": 6056.80078125,
+      "peak_gpu_total_mb": 7925.0
+    },
+    "source_first/concurrent": {
+      "trial": "semantic-default-quality5",
+      "samples": 5,
+      "completed": 5,
+      "failures": 0,
+      "failure_rate": 0.0,
+      "median_seconds": 19.887784900027327,
+      "p95_seconds": 21.071147899958305,
+      "quality_passes": 5,
+      "peak_ram_mb": 4066.87109375,
+      "peak_gpu_total_mb": 7918.0
+    }
+  },
+  "final_quality_gate": {
+    "passed": true,
+    "cases": 12,
+    "samples_per_case": 5,
+    "method": "latest verified result per case; no timing pooling across fixes"
+  },
+  "historical_quality_failures": {
+    "semantic-default-quality5": {
+      "plan": 5,
+      "multi_hop": 5
+    },
+    "resolution": "f806625 rerun passed 5/5 for each; initial failures retained"
+  },
+  "manual_source_inspection": {
+    "reviewer": "Codex source/text inspection, not an independent human study",
+    "final_case_response_records": 60,
+    "primary_stop_response_records": 40,
+    "all_unique_final_texts_inspected": true,
+    "findings": [
+      "same-role followup and excluded-person scopes correct",
+      "stop fact retained; unknown stop date distinguished from known start date",
+      "plan quoted as a plan; actual execution explicitly unconfirmed",
+      "compound profession and rain reason kept as two independent facts",
+      "no fabricated blood type; ambiguity requests grounded clarification",
+      "background synthetic save succeeded during wait"
+    ],
+    "limitation": "Long-evidence answers are brief; these finite synthetic checks do not establish general answer completeness."
+  },
+  "hardware": {
+    "cpu": "Intel Core i7-13700",
+    "physical_cores": 16,
+    "logical_processors": 24,
+    "ram_bytes": 16940138496,
+    "gpu": "NVIDIA GeForce RTX 3060",
+    "vram_mib": 8192,
+    "driver": "617.42"
+  },
+  "restoration": {
+    "app_http": 200,
+    "generation_health": 200,
+    "embedding_health": 200,
+    "experiment_ports_closed": [
+      18181,
+      18182
+    ],
+    "generation_model_sha256": "d98cdcbd03e17ce47681435b5150e34c1417f50b5c0019dd560e4882c5745785",
+    "embedding_model_sha256": "950f4a8e5e19477a6d3c26d2f162233c20002c601f75e4b002e3239997821167",
+    "generation_context": 16384,
+    "embedding_context": 8192,
+    "gpu_layers_requested": 99,
+    "flash_attention": "auto",
+    "embedding_pooling": "cls",
+    "embedding_normalization": 2,
+    "embedding_profile": "raw-v1",
+    "source_stop_drafts": true,
+    "broad_request_reuse": false,
+    "personal_reindex": false
+  },
+  "verification_passed": true,
+  "performance_record_content_scan": {
+    "forbidden_keys": [],
+    "scope": "profile and model_http_calls fields; no raw questions or source text"
+  }
+}
