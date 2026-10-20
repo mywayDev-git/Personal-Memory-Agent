@@ -162,7 +162,7 @@ class ChatEngine:
         result = models.structured(RESOLVE_PROMPT, data, RESOLVE_SCHEMA)
         if schema_errors(result, RESOLVE_SCHEMA):
             raise ValueError("INVALID_CHAT_CONTEXT")
-        from .identity import labels
+        from .identity import canonical_label, labels, positive_labels
 
         # An explicit role is user scope, not a model-editable factual premise.
         if labels(question):
@@ -180,16 +180,17 @@ class ChatEngine:
             )
             for a in alternatives
         )
-        compact_question = re.sub(r"\s+", "", original_question or question)
+        compact_question = canonical_label(original_question or question)
+        positive = {canonical_label(label) for label in positive_labels(original_question or question)}
         explicit = selected_alternative(
             original_question or question, [a["label"] for a in alternatives]
         ) or any(
-            re.sub(r"\s+", "", a["label"]) in compact_question
+            canonical_label(a["label"]) in compact_question
             or (
                 len(a["label"].split()) >= 3
-                and "".join(a["label"].split()[:-1]) in compact_question
+                and canonical_label("".join(a["label"].split()[:-1])) in compact_question
             )
-            for a in alternatives
+            for a in alternatives if not labels(a["label"]) or canonical_label(a["label"]) in positive
         )
         ambiguous = result["needs_clarification"] and valid and not explicit
         if history and ambiguous:

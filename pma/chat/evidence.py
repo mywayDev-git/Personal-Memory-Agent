@@ -16,6 +16,11 @@ def quoted_topic_answer(question, evidence):
     """
     if not study_topic(question):
         return None
+    from .semantics import stop_record_draft
+
+    focused = stop_record_draft(question, evidence)
+    if focused:
+        return focused
     items, seen = [], set()
     for row in evidence:
         if not topic_supported(question, row):
@@ -176,6 +181,10 @@ def direct_statement(question, evidence, intent_question=None):
     still run. Multiple conflicting candidates fall back to normal generation.
     """
     intent_question = intent_question or question
+    from .identity import labels, positive_labels
+
+    if labels(intent_question) and not positive_labels(intent_question):
+        return None
     identity = re.search(
         r"([가-힣]{2,8}?)(?:이가|이는|가|는|의)?\s*(?:누구|직업)", intent_question
     )
@@ -196,6 +205,8 @@ def direct_statement(question, evidence, intent_question=None):
             None,
         )
     why = re.search(r"왜|이유|원인", intent_question)
+    if identity and why:
+        return None  # One identity sentence cannot fulfill two independent questions.
     uncertainty = (
         re.search(r"최종|확정", intent_question) and len({r["source_text"] for r in evidence}) == 1
     )

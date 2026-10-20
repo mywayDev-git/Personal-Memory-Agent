@@ -26,7 +26,7 @@ def stop_record_draft(question, evidence):
     """Exact single stop sentence as a draft; normal independent review is mandatory."""
     if (not study_topic(question) or not re.search(r"중단|그만|접", question)
             or not re.search(r"기록.*(?:있|찾|알려)", question)
-            or re.search(r"왜|이유|언제|날짜|현재|지금|순서", question)):
+            or re.search(r"왜|이유|언제|날짜|현재|지금|순서|그리고|함께|모두|각각|시작|이전|이후|전후|전에|후에|기록[과와]", question)):
         return None
     from scripts.memory_agent.provenance import sentences
 

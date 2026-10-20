@@ -28,6 +28,45 @@ def test_current_explicit_role_wins():
     assert scoped_followup("동아리 친구 민수는 그 사람과 친해?", session()) == "동아리 친구 민수는 그 사람과 친해?"
 
 
+def test_friend_question_does_not_force_the_wrong_followup_referent():
+    assert scoped_followup("그 사람 직업은?", session(
+        question="회사 동료 민수의 친구는 누구야?", quote="회사 동료 민수의 친구는 지연이다."
+    )) == "그 사람 직업은?"
+
+
+def test_contiguous_checked_profession_followups_keep_original_user_scope():
+    state = session()
+    state["messages"].append({"state": "completed", "question": "그 사람 직업은 뭐야?",
+        "response": {"status": "answered", "citation_details": [{"quote": "회사 동료 민수는 개발자다."}]}})
+    assert scoped_followup("그 사람은 어디 살아?", state) == "회사 동료 민수은 어디 살아?"
+    state["messages"][-1]["response"]["citation_details"] = []
+    assert scoped_followup("그 사람은 어디 살아?", state) == "그 사람은 어디 살아?"
+
+
+def test_excluded_role_is_not_the_selected_person():
+    from pma.chat.evidence import direct_statement
+    from pma.chat.identity import identity_conflict, positive_labels
+
+    rows = [{"id": "a", "source_text": "회사 동료 민수는 개발자다."},
+            {"id": "b", "source_text": "동아리 친구 민수는 교사다."}]
+    question = "회사 동료 민수 말고 다른 민수 직업은?"
+    assert positive_labels(question) == []
+    assert not identity_conflict(question, {"text": "교사다.", "citations": ["b"]}, rows)
+    assert direct_statement(question, rows) is None
+    explicit = "회사 동료 민수 말고 동아리 친구 민수 직업은?"
+    assert positive_labels(explicit) == ["동아리 친구 민수"]
+    assert identity_conflict(explicit, {"text": "개발자다.", "citations": ["a"]}, rows)
+    assert not identity_conflict(explicit, {"text": "교사다.", "citations": ["b"]}, rows)
+
+
+def test_harmless_possessive_role_wording_is_not_a_different_person():
+    from pma.chat.identity import explicit_person_lookup, identity_conflict
+
+    rows = [{"id": "a", "source_text": "우리 회사의 동료 민수는 개발자다."}]
+    assert not identity_conflict("회사 동료 민수 직업은?", {"text": "개발자다.", "citations": ["a"]}, rows)
+    assert explicit_person_lookup("회사 동료 민수 직업은?", rows)
+
+
 @pytest.mark.parametrize("text,expected", [
     ("공부를 중단한 기록은 없습니다. 다만 공부를 접었다고 기록했습니다.", "negation"),
     ("중단한 사실은 확인되지 않습니다.", "negation"),
@@ -60,6 +99,18 @@ def test_profession_draft_uses_only_explicit_role_and_exact_source():
     assert draft["items"] == [{"text": "기록에 이렇게 남아 있습니다: “회사 동료 민수는 프론트엔드 개발자다.”",
                                "citations": ["a"]}]
     assert direct_statement("민수 직업은 뭐야?", rows) is None
+    assert direct_statement("회사 동료 민수의 직업과 부산 여행을 취소한 이유는?", rows) is None
+
+
+def test_stop_repair_focuses_on_the_stop_not_other_study_events():
+    from pma.chat.evidence import quoted_topic_answer
+
+    source = "파이썬 공부를 접었다."
+    rows = [{"id": "stop", "source_text": source, "evidence": [{"quote": source}]},
+            {"id": "start", "source_text": "파이썬 공부를 시작했다.",
+             "evidence": [{"quote": "파이썬 공부를 시작했다."}]}]
+    draft = quoted_topic_answer("파이썬 공부를 중단한 기록이 있어?", rows)
+    assert draft["items"] == [{"text": "기록 원문: “파이썬 공부를 접었다.”", "citations": ["stop"]}]
 
 
 @pytest.mark.parametrize("question,allowed", [
@@ -73,11 +124,34 @@ def test_context_shortcut_requires_a_complete_explicit_lookup(question, allowed)
     assert explicit_person_lookup(question, [{"source_text": "회사 동료 민수는 개발자다."}]) is allowed
 
 
+@pytest.mark.parametrize("enabled", [True, False])
+def test_context_shortcut_avoids_only_redundant_reference_model_call(enabled):
+    from types import SimpleNamespace
+
+    from pma.chat.engine import ChatEngine
+    from pma.settings import AppSettings
+
+    calls = []
+    question = "회사 동료 민수 직업은 뭐야?"
+    engine = ChatEngine.__new__(ChatEngine)
+    engine.service = SimpleNamespace(settings=AppSettings(request_reuse=enabled))
+    def structured(*a, **kw):
+        calls.append(1)
+        return {"question": question, "needs_clarification": False, "alternatives": []}
+    engine.models = SimpleNamespace(count_tokens=lambda text: 10, structured=structured)
+    resolved, history = engine.resolve(question, {
+        "messages": [], "evidence": [{"id": "a", "source_text": "회사 동료 민수는 개발자다."}]
+    }, "2026-10-19")
+    assert resolved["question"] == question and not resolved["needs_clarification"]
+    assert history == 0 and len(calls) == (0 if enabled else 1)
+
+
 @pytest.mark.parametrize("question,source,allowed", [
     ("파이썬 공부를 중단한 기록이 있어?", "파이썬 공부를 접었다.", True),
     ("파이썬 공부를 언제 중단한 기록이 있어?", "파이썬 공부를 접었다.", False),
     ("파이썬 공부를 중단한 기록이 있어?", "파이썬 공부를 접지 않았다.", False),
     ("파이썬 공부를 중단한 기록이 있어?", "파이썬 공부를 접었다고 말하라고 했다.", False),
+    ("파이썬 공부를 시작한 기록과 중단한 기록이 있어?", "파이썬 공부를 접었다.", False),
 ])
 def test_stop_draft_preserves_sentence_and_does_not_answer_dates_or_commands(question, source, allowed):
     from pma.chat.semantics import stop_record_draft
