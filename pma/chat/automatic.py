@@ -295,7 +295,11 @@ def run(engine, question, session, today, requested_mode="auto"):
             [],
             {"searches": [], "route": route},
         )
-    query = route["query"].strip() or question
+    from .questions import question_parts
+
+    parts = question_parts(question)
+    pending_parts = list(parts)
+    query = pending_parts.pop(0) if pending_parts else route["query"].strip() or question
     searches, rows, seen_queries, batches = [], {}, set(), []
     unsupported = False
     for _ in range(3):
@@ -310,7 +314,8 @@ def run(engine, question, session, today, requested_mode="auto"):
                                 filters=session.get("request_filters"),
                                 state_filters=(session.get("context", {}).get("filters", {})
                                                if decision.reason_code == "MEMORY_FOLLOWUP" else {}),
-                                selection_question=route["query"].strip() or question,
+                                selection_question=(query if parts and query in parts
+                                                    else route["query"].strip() or question),
                                 **({"correction_enabled": False} if not session.get("correction_enabled", True) else {}))
         searches.append(
             {
@@ -342,6 +347,8 @@ def run(engine, question, session, today, requested_mode="auto"):
             NEXT,
             512,
         )["query"].strip()
+        if pending_parts:
+            query = pending_parts.pop(0)
         if (not query or query in seen_queries) and len(searches) == 1:
             # A model must not treat the event itself as its cause or identity.
             texts = " ".join(r["source_text"] for r in rows.values())
@@ -376,6 +383,7 @@ def run(engine, question, session, today, requested_mode="auto"):
         "search_version": "automatic-chat-v4",
         "today": today,
         "embedding_key": engine.service.settings.embedding_key,
+        **({"question_parts": parts} if parts else {}),
     }
     if unsupported or not evidence:
         response = {

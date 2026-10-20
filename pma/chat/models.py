@@ -113,6 +113,9 @@ class ChatLocalModels(LocalModels):
             if issue:
                 item.update(support="unsupported", issue=issue)
                 result["reason"] = "원문과 답변의 동작·인과·부정 범위가 일치하지 않음"
+        from .execution import enforce_execution_limit
+
+        enforce_execution_limit(question, evidence, response, result)
         result["presentation_valid"] = False
         # A presentation failure must never affect the already decided factual review.
         if accepted(result, response) and response.get("display"):
@@ -135,6 +138,17 @@ class ChatLocalModels(LocalModels):
         return result
 
     def structured(self, prompt, data, schema, max_tokens=None):
+        from .questions import question_parts
+
+        parts = question_parts(data.get("question", data.get("original_question", "")))
+        if parts and ("feedback" in data or "proposed_answer" in data):
+            data = {**data, "question_parts_unverified": parts}
+            prompt += (
+                "question_parts_unverified는 원문 질문에서 그대로 나눈 검색 절이며 사실이나 주체 연결의 근거가 아니다. "
+                "원래 질문 전체의 인물·부정·날짜 조건을 우선 유지한다. 각 요청에 답하고 모르는 부분은 분리한다. "
+                "서로 다른 항목의 주체를 공유한다고 추정하거나 두 사실 사이에 인과를 만들지 않는다. "
+                "검토에서는 모든 요청을 충족했는지 확인한다."
+            )
         if "question" in data and "feedback" in data:
             # Storage timestamps are not personal events. Supply them only for a
             # question explicitly asking about when a record was written/saved.

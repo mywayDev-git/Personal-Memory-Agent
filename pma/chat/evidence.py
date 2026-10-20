@@ -70,20 +70,36 @@ def selected_alternative(question, labels):
     return matches[0] if len(matches) == 1 else None
 
 
-def causal_claims_supported(question, response, evidence):
+def causal_claims_supported(question, response, evidence, *, require_coverage=True):
     """Conservative extra guard against turning a repeated event into its own cause."""
     if not re.search(r"왜|이유|원인", question):
         return True
     sources = {row["id"]: row["source_text"] for row in evidence}
+    from .identity import canonical_label, positive_labels
+    from .questions import question_parts
+
+    parts = question_parts(question)
+    identity_sources = set()
+    if parts:
+        label = canonical_label(positive_labels(parts[0])[0])
+        identity_sources = {row["id"] for row in evidence
+                            if label in canonical_label(row["source_text"])}
+    identity_seen = cause_seen = False
     causal = r"때문|덕분|탓|느라|므로|어서|아서|여서|와서|워서|해서|라서|니까|위해"
     for item in response["items"]:
-        if not re.search(causal + r"|려고|목적|이유|원인|확인.*없|알.*없", item["text"]):
+        identity_item = bool(set(item["citations"]) & identity_sources)
+        identity_seen = identity_seen or identity_item
+        causal_text = re.search(causal + r"|려고|목적|이유|원인|확인.*없|알.*없", item["text"])
+        if parts and identity_item and not causal_text:
+            continue
+        if not causal_text:
             return False
+        cause_seen = True
         if re.search(causal, item["text"]) and not any(
             re.search(causal, sources[cid]) for cid in item["citations"]
         ):
             return False
-    return True
+    return not (parts and require_coverage) or (identity_seen and cause_seen)
 
 
 def semantic_issue(question, item, evidence):
@@ -99,7 +115,7 @@ def semantic_issue(question, item, evidence):
         return "negation"
     if meaning_conflict(text, "\n".join(cited)):
         return "other"
-    if not causal_claims_supported(question, {"items": [item]}, evidence):
+    if not causal_claims_supported(question, {"items": [item]}, evidence, require_coverage=False):
         return "cause"
     if re.search(r"때문|덕분|탓으로|원인이|이유로", text) and not any(
         re.search(r"때문|덕분|탓|느라|므로|어서|아서|여서|와서|워서|해서|라서|니까|위해", source)
@@ -181,6 +197,11 @@ def direct_statement(question, evidence, intent_question=None):
     still run. Multiple conflicting candidates fall back to normal generation.
     """
     intent_question = intent_question or question
+    from .execution import execution_draft
+
+    planned = execution_draft(intent_question, evidence)
+    if planned:
+        return planned
     from .identity import labels, positive_labels
 
     if labels(intent_question) and not positive_labels(intent_question):
