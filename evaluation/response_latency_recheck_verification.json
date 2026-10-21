@@ -1,0 +1,142 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-21",
+  "branch": "codex/response-latency-recheck",
+  "preserved_commit": "e6cdb1c",
+  "overall_status": "PARTIAL_REAL_MODEL_VALIDATION",
+  "offline_validation": {
+    "tests": 806,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "offline_seconds": 107.304,
+  "ui_checks": {
+    "offline_dom": [
+      "evaluation_cases_ui.mjs",
+      "evaluation_dataset_groups_ui.mjs",
+      "evaluation_execution_ui.mjs",
+      "evaluation_refresh_ui.mjs",
+      "test_memory_view_ui.mjs",
+      "multilingual_ui.mjs",
+      "query_correction_ui.mjs",
+      "search_highlight.mjs"
+    ],
+    "browser": [
+      "conversation_app_browser.cjs",
+      "conversation_browser.cjs",
+      "search_audit_browser.cjs"
+    ],
+    "all_passed": true
+  },
+  "real_model_trial": {
+    "file": "evaluation/response_latency_recheck_cpu_token.json",
+    "sha256": "486daf56f070704aad429889f10f8c2515f453a9b02349ad5dee9f2819ee4040",
+    "assessment": {
+      "complete": true,
+      "automatic_quality_passed": true,
+      "semantic_review": "PENDING_REVIEW",
+      "default_change_allowed": false,
+      "per_case": {
+        "simple_search": {
+          "complete": true,
+          "current_median_seconds": 22.0956651000306,
+          "candidate_median_seconds": 22.070307999965735,
+          "current_p95_seconds": 24.6753955000313,
+          "candidate_p95_seconds": 23.400614899932407,
+          "median_reduction": 0.0011476051954114608
+        }
+      },
+      "answer_geometric_median_reduction": null,
+      "p95_non_regression": true,
+      "timing_gate_passed": false,
+      "application_wide_claim": false
+    },
+    "measured_rows": 10,
+    "warmup_rows": 2,
+    "token_cache_hits": {
+      "current": 0,
+      "candidate": 0
+    },
+    "http_calls_per_request": 4,
+    "scope": "CPU simple_search only; not final answer, GPU, multilingual or all candidates",
+    "load_note": "Shared host and ordinary GPU servers were retained. Browser fixture checks ran during parts of this diagnostic CPU trial."
+  },
+  "attempts": [
+    {
+      "name": "cpu-token-screen-001",
+      "status": "INTERRUPTED_EXTERNAL",
+      "reason": "sandbox loopback connection denied; no measured rows"
+    },
+    {
+      "name": "cpu-token-screen-002",
+      "status": "ERROR",
+      "reason": "embedding server startup exit 3221225725; no measured rows"
+    },
+    {
+      "name": "cpu-token-screen-003",
+      "status": "ERROR",
+      "reason": "slot reset query rejected by transport validation; no measured rows"
+    },
+    {
+      "name": "cpu-token-screen-004",
+      "status": "ERROR",
+      "reason": "slot erasure unavailable without owned slot path; no measured rows"
+    },
+    {
+      "name": "cpu-token-screen-005",
+      "status": "COMPLETED",
+      "reason": "CPU 4 threads, embedding batch 4096, owned slot path and RAM prompt cache disabled"
+    }
+  ],
+  "validation_history": [
+    {
+      "scope": "preservation offline",
+      "passed": 781,
+      "failed": 0
+    },
+    {
+      "scope": "first optimization full offline",
+      "passed": 802,
+      "failed": 1,
+      "reason": "nested test process failed to import jsonschema._format; isolated rerun passed"
+    },
+    {
+      "scope": "search audit browser",
+      "reason": "fixture adapted to collapsed details and fixed sidebar overlay; original product UI unchanged"
+    },
+    {
+      "scope": "release offline in restricted environment",
+      "passed": 805,
+      "failed": 1,
+      "reason": "fake evaluation control-state file replacement denied; full unrestricted offline rerun passed"
+    }
+  ],
+  "not_run": [
+    "GPU candidate comparisons",
+    "other real-model candidates",
+    "20-repeat final combination",
+    "fresh multilingual 90-question evaluation",
+    "semantic acceptance review",
+    "sustained concurrent save latency"
+  ],
+  "defaults_changed": false,
+  "models_changed": false,
+  "personal_database_used": false,
+  "ordinary_servers_stopped": false,
+  "official_main_suite": "NOT_RUN",
+  "adoption": "KEEP_EXISTING_DEFAULTS",
+  "reproduce": "python -m evaluation.latency_recheck --execute --name cpu-token-user-001 --candidates token_cache --cases simple_search --placement cpu --threads 4 --embedding-batch 4096",
+  "offline_environment": "workspace temporary directory; final complete run outside filesystem sandbox",
+  "measured_product_sources_match_current": true,
+  "post_measurement_evaluator_change": {
+    "path": "evaluation/latency_recheck.py",
+    "reason": "CPU defaults matched explicit successful settings; honest interrupted/error status persistence; measured raw results unchanged"
+  },
+  "ordinary_server_check": {
+    "generation_port": 8081,
+    "embedding_port": 8082,
+    "both_processes_present": true,
+    "experiment_ports_18581_18582_present": false
+  }
+}

@@ -1,0 +1,1805 @@
+{
+  "schema_version": 1,
+  "personal_database_used": false,
+  "configuration": {
+    "output": "C:\\development\\Personal-Memory-Agent\\.local\\latency-recheck\\cpu-token-screen-005\\token_cache",
+    "server": "C:\\llama.cpp\\llama-server.exe",
+    "model_directory": ".local\\response-latency\\models",
+    "generation": "baseline",
+    "embedding": "bge",
+    "placement": "cpu",
+    "flash": "auto",
+    "threads": 4,
+    "embedding_batch": 4096,
+    "samples": 5,
+    "port": 18581,
+    "variants": [
+      "current",
+      "candidate"
+    ],
+    "candidate_options": [
+      "token_cache"
+    ],
+    "reset_prompt_cache": true,
+    "cases": [
+      "simple_search"
+    ],
+    "multilingual": false,
+    "multilingual_current_only": false,
+    "seed_template": null,
+    "fixed_anchor": true,
+    "retrieval_baseline": null
+  },
+  "measurement_scope": "response_return_before_quality_artifacts",
+  "quality_scoring_version": 5,
+  "repository_reference_revision": "e6cdb1cc88d0dd809e92a2356d1f7311b82206b5",
+  "artifact_verification_seconds": 4.147760199964978,
+  "hashes": {
+    "generation": "d98cdcbd03e17ce47681435b5150e34c1417f50b5c0019dd560e4882c5745785",
+    "embedding": "950f4a8e5e19477a6d3c26d2f162233c20002c601f75e4b002e3239997821167",
+    "server": "8d3422f50cf515a8f60ad0f1941ad4b37fa664c2746f7fbf460b8e2e4f3994f5"
+  },
+  "seed_policy": "hand-authored synthetic memories, real document embeddings",
+  "runs": [
+    {
+      "case": "simple_search",
+      "sample": 0,
+      "warmup": true,
+      "variant": "current",
+      "parameters": {
+        "request_token_cache": false,
+        "request_reuse": false,
+        "selection_reuse": false,
+        "explicit_context_shortcut": false,
+        "prompt_cache": null,
+        "source_stop_drafts": true,
+        "selection_batch_size": 4,
+        "chat_presentation": "reviewed",
+        "compact_search_planning": false,
+        "fair_model_scheduling": false
+      },
+      "seconds": 18.386433999985456,
+      "performance": {
+        "profile": {
+          "schema_version": 1,
+          "outcome": "completed",
+          "elapsed_seconds": 18.386407,
+          "stages": {
+            "model_wait": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 2.9e-05,
+              "exclusive_seconds": 2.9e-05
+            },
+            "token_budget": {
+              "calls": 2,
+              "failures": 0,
+              "inclusive_seconds": 0.08028,
+              "exclusive_seconds": 0.08028
+            },
+            "question_understanding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 18.183364,
+              "exclusive_seconds": 18.128195
+            },
+            "candidate_snapshot": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.008941,
+              "exclusive_seconds": 0.008941
+            },
+            "embedding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.172572,
+              "exclusive_seconds": 0.147461
+            },
+            "candidate_matrix": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.000796,
+              "exclusive_seconds": 0.000796
+            },
+            "keyword_ranking": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.004256,
+              "exclusive_seconds": 0.004256
+            },
+            "retrieval": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 18.38591,
+              "exclusive_seconds": 0.015982
+            }
+          },
+          "counts": {}
+        },
+        "model_http_calls": [
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.054889
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 18.12717,
+            "usage": {
+              "prompt_tokens": 778,
+              "completion_tokens": 74,
+              "total_tokens": 852
+            },
+            "timings": {
+              "cache_n": 0,
+              "prompt_n": 778,
+              "prompt_ms": 4606.457,
+              "predicted_n": 74,
+              "predicted_ms": 13483.877
+            },
+            "cached_prompt_tokens": 0
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.025032
+          },
+          {
+            "operation": "/v1/embeddings",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.146499,
+            "usage": {
+              "prompt_tokens": 10,
+              "total_tokens": 10
+            }
+          }
+        ]
+      },
+      "quality": {
+        "passed": true,
+        "recall": 1.0,
+        "precision": 1.0
+      },
+      "status": "ok",
+      "ram_peak_mb": 6655.05859375,
+      "gpu_total_peak_mb": 7828.0
+    },
+    {
+      "case": "simple_search",
+      "sample": 0,
+      "warmup": true,
+      "variant": "candidate",
+      "parameters": {
+        "request_token_cache": true,
+        "request_reuse": false,
+        "selection_reuse": false,
+        "explicit_context_shortcut": false,
+        "prompt_cache": null,
+        "source_stop_drafts": true,
+        "selection_batch_size": 4,
+        "chat_presentation": "reviewed",
+        "compact_search_planning": false,
+        "fair_model_scheduling": false
+      },
+      "seconds": 13.21721090003848,
+      "performance": {
+        "profile": {
+          "schema_version": 1,
+          "outcome": "completed",
+          "elapsed_seconds": 13.217197,
+          "stages": {
+            "model_wait": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 1e-05,
+              "exclusive_seconds": 1e-05
+            },
+            "token_budget": {
+              "calls": 2,
+              "failures": 0,
+              "inclusive_seconds": 0.008505,
+              "exclusive_seconds": 0.008505
+            },
+            "question_understanding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 13.165052,
+              "exclusive_seconds": 13.159146
+            },
+            "candidate_snapshot": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.005306,
+              "exclusive_seconds": 0.005306
+            },
+            "embedding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.041062,
+              "exclusive_seconds": 0.038464
+            },
+            "candidate_matrix": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 8.4e-05,
+              "exclusive_seconds": 8.4e-05
+            },
+            "keyword_ranking": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.00026,
+              "exclusive_seconds": 0.00026
+            },
+            "retrieval": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 13.21703,
+              "exclusive_seconds": 0.005265
+            }
+          },
+          "counts": {}
+        },
+        "model_http_calls": [
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.005667
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 13.158339,
+            "usage": {
+              "prompt_tokens": 778,
+              "completion_tokens": 74,
+              "total_tokens": 852
+            },
+            "timings": {
+              "cache_n": 0,
+              "prompt_n": 778,
+              "prompt_ms": 2163.206,
+              "predicted_n": 74,
+              "predicted_ms": 10977.89
+            },
+            "cached_prompt_tokens": 0
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.00254
+          },
+          {
+            "operation": "/v1/embeddings",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.037662,
+            "usage": {
+              "prompt_tokens": 10,
+              "total_tokens": 10
+            }
+          }
+        ]
+      },
+      "quality": {
+        "passed": true,
+        "recall": 1.0,
+        "precision": 1.0
+      },
+      "status": "ok",
+      "ram_peak_mb": 5266.953125,
+      "gpu_total_peak_mb": 7782.0
+    },
+    {
+      "case": "simple_search",
+      "sample": 1,
+      "warmup": false,
+      "variant": "candidate",
+      "parameters": {
+        "request_token_cache": true,
+        "request_reuse": false,
+        "selection_reuse": false,
+        "explicit_context_shortcut": false,
+        "prompt_cache": null,
+        "source_stop_drafts": true,
+        "selection_batch_size": 4,
+        "chat_presentation": "reviewed",
+        "compact_search_planning": false,
+        "fair_model_scheduling": false
+      },
+      "seconds": 23.25395559996832,
+      "performance": {
+        "profile": {
+          "schema_version": 1,
+          "outcome": "completed",
+          "elapsed_seconds": 23.253957,
+          "stages": {
+            "model_wait": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 4e-06,
+              "exclusive_seconds": 4e-06
+            },
+            "token_budget": {
+              "calls": 2,
+              "failures": 0,
+              "inclusive_seconds": 0.009729,
+              "exclusive_seconds": 0.009729
+            },
+            "question_understanding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 22.915057,
+              "exclusive_seconds": 22.911478
+            },
+            "candidate_snapshot": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.009134,
+              "exclusive_seconds": 0.009134
+            },
+            "embedding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.319733,
+              "exclusive_seconds": 0.313582
+            },
+            "candidate_matrix": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.000109,
+              "exclusive_seconds": 0.000109
+            },
+            "keyword_ranking": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.000395,
+              "exclusive_seconds": 0.000395
+            },
+            "retrieval": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 23.253678,
+              "exclusive_seconds": 0.009249
+            }
+          },
+          "counts": {}
+        },
+        "model_http_calls": [
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.003397
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 22.909832,
+            "usage": {
+              "prompt_tokens": 778,
+              "completion_tokens": 74,
+              "total_tokens": 852
+            },
+            "timings": {
+              "cache_n": 0,
+              "prompt_n": 778,
+              "prompt_ms": 1600.426,
+              "predicted_n": 74,
+              "predicted_ms": 21285.766
+            },
+            "cached_prompt_tokens": 0
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.005979
+          },
+          {
+            "operation": "/v1/embeddings",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.31215,
+            "usage": {
+              "prompt_tokens": 10,
+              "total_tokens": 10
+            }
+          }
+        ]
+      },
+      "quality": {
+        "passed": true,
+        "recall": 1.0,
+        "precision": 1.0
+      },
+      "status": "ok",
+      "ram_peak_mb": 5086.22265625,
+      "gpu_total_peak_mb": 7850.0
+    },
+    {
+      "case": "simple_search",
+      "sample": 1,
+      "warmup": false,
+      "variant": "current",
+      "parameters": {
+        "request_token_cache": false,
+        "request_reuse": false,
+        "selection_reuse": false,
+        "explicit_context_shortcut": false,
+        "prompt_cache": null,
+        "source_stop_drafts": true,
+        "selection_batch_size": 4,
+        "chat_presentation": "reviewed",
+        "compact_search_planning": false,
+        "fair_model_scheduling": false
+      },
+      "seconds": 17.399684600066394,
+      "performance": {
+        "profile": {
+          "schema_version": 1,
+          "outcome": "completed",
+          "elapsed_seconds": 17.399632,
+          "stages": {
+            "model_wait": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 8e-06,
+              "exclusive_seconds": 8e-06
+            },
+            "token_budget": {
+              "calls": 2,
+              "failures": 0,
+              "inclusive_seconds": 0.30465,
+              "exclusive_seconds": 0.30465
+            },
+            "question_understanding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 17.254682,
+              "exclusive_seconds": 16.966426
+            },
+            "candidate_snapshot": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.006105,
+              "exclusive_seconds": 0.006105
+            },
+            "embedding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.128376,
+              "exclusive_seconds": 0.111982
+            },
+            "candidate_matrix": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.000741,
+              "exclusive_seconds": 0.000741
+            },
+            "keyword_ranking": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.000314,
+              "exclusive_seconds": 0.000314
+            },
+            "retrieval": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 17.399408,
+              "exclusive_seconds": 0.00919
+            }
+          },
+          "counts": {}
+        },
+        "model_http_calls": [
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.287971
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 16.965572,
+            "usage": {
+              "prompt_tokens": 778,
+              "completion_tokens": 74,
+              "total_tokens": 852
+            },
+            "timings": {
+              "cache_n": 0,
+              "prompt_n": 778,
+              "prompt_ms": 2735.296,
+              "predicted_n": 74,
+              "predicted_ms": 14180.779
+            },
+            "cached_prompt_tokens": 0
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.016307
+          },
+          {
+            "operation": "/v1/embeddings",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.10584,
+            "usage": {
+              "prompt_tokens": 10,
+              "total_tokens": 10
+            }
+          }
+        ]
+      },
+      "quality": {
+        "passed": true,
+        "recall": 1.0,
+        "precision": 1.0
+      },
+      "status": "ok",
+      "ram_peak_mb": 5009.12890625,
+      "gpu_total_peak_mb": 7808.0
+    },
+    {
+      "case": "simple_search",
+      "sample": 2,
+      "warmup": false,
+      "variant": "current",
+      "parameters": {
+        "request_token_cache": false,
+        "request_reuse": false,
+        "selection_reuse": false,
+        "explicit_context_shortcut": false,
+        "prompt_cache": null,
+        "source_stop_drafts": true,
+        "selection_batch_size": 4,
+        "chat_presentation": "reviewed",
+        "compact_search_planning": false,
+        "fair_model_scheduling": false
+      },
+      "seconds": 24.6753955000313,
+      "performance": {
+        "profile": {
+          "schema_version": 1,
+          "outcome": "completed",
+          "elapsed_seconds": 24.67539,
+          "stages": {
+            "model_wait": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 5e-06,
+              "exclusive_seconds": 5e-06
+            },
+            "token_budget": {
+              "calls": 2,
+              "failures": 0,
+              "inclusive_seconds": 0.01249,
+              "exclusive_seconds": 0.01249
+            },
+            "question_understanding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 24.318517,
+              "exclusive_seconds": 24.312838
+            },
+            "candidate_snapshot": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.009373,
+              "exclusive_seconds": 0.009373
+            },
+            "embedding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.338642,
+              "exclusive_seconds": 0.331832
+            },
+            "candidate_matrix": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.000101,
+              "exclusive_seconds": 0.000101
+            },
+            "keyword_ranking": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.000271,
+              "exclusive_seconds": 0.000271
+            },
+            "retrieval": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 24.675122,
+              "exclusive_seconds": 0.008219
+            }
+          },
+          "counts": {}
+        },
+        "model_http_calls": [
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.005472
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 24.311819,
+            "usage": {
+              "prompt_tokens": 778,
+              "completion_tokens": 74,
+              "total_tokens": 852
+            },
+            "timings": {
+              "cache_n": 0,
+              "prompt_n": 778,
+              "prompt_ms": 2724.495,
+              "predicted_n": 74,
+              "predicted_ms": 21572.837
+            },
+            "cached_prompt_tokens": 0
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.006662
+          },
+          {
+            "operation": "/v1/embeddings",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.33086,
+            "usage": {
+              "prompt_tokens": 10,
+              "total_tokens": 10
+            }
+          }
+        ]
+      },
+      "quality": {
+        "passed": true,
+        "recall": 1.0,
+        "precision": 1.0
+      },
+      "status": "ok",
+      "ram_peak_mb": 5012.1328125,
+      "gpu_total_peak_mb": 7857.0
+    },
+    {
+      "case": "simple_search",
+      "sample": 2,
+      "warmup": false,
+      "variant": "candidate",
+      "parameters": {
+        "request_token_cache": true,
+        "request_reuse": false,
+        "selection_reuse": false,
+        "explicit_context_shortcut": false,
+        "prompt_cache": null,
+        "source_stop_drafts": true,
+        "selection_batch_size": 4,
+        "chat_presentation": "reviewed",
+        "compact_search_planning": false,
+        "fair_model_scheduling": false
+      },
+      "seconds": 22.070307999965735,
+      "performance": {
+        "profile": {
+          "schema_version": 1,
+          "outcome": "completed",
+          "elapsed_seconds": 22.070301,
+          "stages": {
+            "model_wait": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 5e-06,
+              "exclusive_seconds": 5e-06
+            },
+            "token_budget": {
+              "calls": 2,
+              "failures": 0,
+              "inclusive_seconds": 0.037701,
+              "exclusive_seconds": 0.037701
+            },
+            "question_understanding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 21.94887,
+              "exclusive_seconds": 21.93164
+            },
+            "candidate_snapshot": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.008265,
+              "exclusive_seconds": 0.008265
+            },
+            "embedding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.104677,
+              "exclusive_seconds": 0.084206
+            },
+            "candidate_matrix": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 6.2e-05,
+              "exclusive_seconds": 6.2e-05
+            },
+            "keyword_ranking": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.000213,
+              "exclusive_seconds": 0.000213
+            },
+            "retrieval": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 22.070147,
+              "exclusive_seconds": 0.00806
+            }
+          },
+          "counts": {}
+        },
+        "model_http_calls": [
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.016991
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 21.930583,
+            "usage": {
+              "prompt_tokens": 778,
+              "completion_tokens": 74,
+              "total_tokens": 852
+            },
+            "timings": {
+              "cache_n": 0,
+              "prompt_n": 778,
+              "prompt_ms": 3444.369,
+              "predicted_n": 74,
+              "predicted_ms": 18466.936
+            },
+            "cached_prompt_tokens": 0
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.020346
+          },
+          {
+            "operation": "/v1/embeddings",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.083198,
+            "usage": {
+              "prompt_tokens": 10,
+              "total_tokens": 10
+            }
+          }
+        ]
+      },
+      "quality": {
+        "passed": true,
+        "recall": 1.0,
+        "precision": 1.0
+      },
+      "status": "ok",
+      "ram_peak_mb": 5009.125,
+      "gpu_total_peak_mb": 7808.0
+    },
+    {
+      "case": "simple_search",
+      "sample": 3,
+      "warmup": false,
+      "variant": "candidate",
+      "parameters": {
+        "request_token_cache": true,
+        "request_reuse": false,
+        "selection_reuse": false,
+        "explicit_context_shortcut": false,
+        "prompt_cache": null,
+        "source_stop_drafts": true,
+        "selection_batch_size": 4,
+        "chat_presentation": "reviewed",
+        "compact_search_planning": false,
+        "fair_model_scheduling": false
+      },
+      "seconds": 19.595317999948747,
+      "performance": {
+        "profile": {
+          "schema_version": 1,
+          "outcome": "completed",
+          "elapsed_seconds": 19.595299,
+          "stages": {
+            "model_wait": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 8e-06,
+              "exclusive_seconds": 8e-06
+            },
+            "token_budget": {
+              "calls": 2,
+              "failures": 0,
+              "inclusive_seconds": 0.024658,
+              "exclusive_seconds": 0.024658
+            },
+            "question_understanding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 19.431739,
+              "exclusive_seconds": 19.425585
+            },
+            "candidate_snapshot": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.007303,
+              "exclusive_seconds": 0.007303
+            },
+            "embedding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.146188,
+              "exclusive_seconds": 0.127684
+            },
+            "candidate_matrix": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.000462,
+              "exclusive_seconds": 0.000462
+            },
+            "keyword_ranking": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.00123,
+              "exclusive_seconds": 0.00123
+            },
+            "retrieval": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 19.595058,
+              "exclusive_seconds": 0.008136
+            }
+          },
+          "counts": {}
+        },
+        "model_http_calls": [
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.005693
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 19.423288,
+            "usage": {
+              "prompt_tokens": 778,
+              "completion_tokens": 74,
+              "total_tokens": 852
+            },
+            "timings": {
+              "cache_n": 0,
+              "prompt_n": 778,
+              "prompt_ms": 3060.016,
+              "predicted_n": 74,
+              "predicted_ms": 16342.222
+            },
+            "cached_prompt_tokens": 0
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.018364
+          },
+          {
+            "operation": "/v1/embeddings",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.125828,
+            "usage": {
+              "prompt_tokens": 10,
+              "total_tokens": 10
+            }
+          }
+        ]
+      },
+      "quality": {
+        "passed": true,
+        "recall": 1.0,
+        "precision": 1.0
+      },
+      "status": "ok",
+      "ram_peak_mb": 5009.64453125,
+      "gpu_total_peak_mb": 7808.0
+    },
+    {
+      "case": "simple_search",
+      "sample": 3,
+      "warmup": false,
+      "variant": "current",
+      "parameters": {
+        "request_token_cache": false,
+        "request_reuse": false,
+        "selection_reuse": false,
+        "explicit_context_shortcut": false,
+        "prompt_cache": null,
+        "source_stop_drafts": true,
+        "selection_batch_size": 4,
+        "chat_presentation": "reviewed",
+        "compact_search_planning": false,
+        "fair_model_scheduling": false
+      },
+      "seconds": 17.866750300046988,
+      "performance": {
+        "profile": {
+          "schema_version": 1,
+          "outcome": "completed",
+          "elapsed_seconds": 17.86673,
+          "stages": {
+            "model_wait": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 5e-06,
+              "exclusive_seconds": 5e-06
+            },
+            "token_budget": {
+              "calls": 2,
+              "failures": 0,
+              "inclusive_seconds": 0.047478,
+              "exclusive_seconds": 0.047478
+            },
+            "question_understanding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 17.787354,
+              "exclusive_seconds": 17.75625
+            },
+            "candidate_snapshot": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.005601,
+              "exclusive_seconds": 0.005601
+            },
+            "embedding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.066835,
+              "exclusive_seconds": 0.050461
+            },
+            "candidate_matrix": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 7.3e-05,
+              "exclusive_seconds": 7.3e-05
+            },
+            "keyword_ranking": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.000208,
+              "exclusive_seconds": 0.000208
+            },
+            "retrieval": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 17.866643,
+              "exclusive_seconds": 0.006571
+            }
+          },
+          "counts": {}
+        },
+        "model_http_calls": [
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.030912
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 17.755557,
+            "usage": {
+              "prompt_tokens": 778,
+              "completion_tokens": 74,
+              "total_tokens": 852
+            },
+            "timings": {
+              "cache_n": 0,
+              "prompt_n": 778,
+              "prompt_ms": 2056.424,
+              "predicted_n": 74,
+              "predicted_ms": 15686.226
+            },
+            "cached_prompt_tokens": 0
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.016302
+          },
+          {
+            "operation": "/v1/embeddings",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.049477,
+            "usage": {
+              "prompt_tokens": 10,
+              "total_tokens": 10
+            }
+          }
+        ]
+      },
+      "quality": {
+        "passed": true,
+        "recall": 1.0,
+        "precision": 1.0
+      },
+      "status": "ok",
+      "ram_peak_mb": 5007.40625,
+      "gpu_total_peak_mb": 7849.0
+    },
+    {
+      "case": "simple_search",
+      "sample": 4,
+      "warmup": false,
+      "variant": "current",
+      "parameters": {
+        "request_token_cache": false,
+        "request_reuse": false,
+        "selection_reuse": false,
+        "explicit_context_shortcut": false,
+        "prompt_cache": null,
+        "source_stop_drafts": true,
+        "selection_batch_size": 4,
+        "chat_presentation": "reviewed",
+        "compact_search_planning": false,
+        "fair_model_scheduling": false
+      },
+      "seconds": 22.0956651000306,
+      "performance": {
+        "profile": {
+          "schema_version": 1,
+          "outcome": "completed",
+          "elapsed_seconds": 22.095665,
+          "stages": {
+            "model_wait": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 4e-06,
+              "exclusive_seconds": 4e-06
+            },
+            "token_budget": {
+              "calls": 2,
+              "failures": 0,
+              "inclusive_seconds": 0.11065,
+              "exclusive_seconds": 0.11065
+            },
+            "question_understanding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 21.887361,
+              "exclusive_seconds": 21.782085
+            },
+            "candidate_snapshot": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.012129,
+              "exclusive_seconds": 0.012129
+            },
+            "embedding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.181006,
+              "exclusive_seconds": 0.175632
+            },
+            "candidate_matrix": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.001189,
+              "exclusive_seconds": 0.001189
+            },
+            "keyword_ranking": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.000876,
+              "exclusive_seconds": 0.000876
+            },
+            "retrieval": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 22.095447,
+              "exclusive_seconds": 0.012887
+            }
+          },
+          "counts": {}
+        },
+        "model_http_calls": [
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.105122
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 21.780493,
+            "usage": {
+              "prompt_tokens": 778,
+              "completion_tokens": 74,
+              "total_tokens": 852
+            },
+            "timings": {
+              "cache_n": 0,
+              "prompt_n": 778,
+              "prompt_ms": 2444.102,
+              "predicted_n": 74,
+              "predicted_ms": 19311.856
+            },
+            "cached_prompt_tokens": 0
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.005242
+          },
+          {
+            "operation": "/v1/embeddings",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.167083,
+            "usage": {
+              "prompt_tokens": 10,
+              "total_tokens": 10
+            }
+          }
+        ]
+      },
+      "quality": {
+        "passed": true,
+        "recall": 1.0,
+        "precision": 1.0
+      },
+      "status": "ok",
+      "ram_peak_mb": 5008.4375,
+      "gpu_total_peak_mb": 7900.0
+    },
+    {
+      "case": "simple_search",
+      "sample": 4,
+      "warmup": false,
+      "variant": "candidate",
+      "parameters": {
+        "request_token_cache": true,
+        "request_reuse": false,
+        "selection_reuse": false,
+        "explicit_context_shortcut": false,
+        "prompt_cache": null,
+        "source_stop_drafts": true,
+        "selection_batch_size": 4,
+        "chat_presentation": "reviewed",
+        "compact_search_planning": false,
+        "fair_model_scheduling": false
+      },
+      "seconds": 20.709507799940184,
+      "performance": {
+        "profile": {
+          "schema_version": 1,
+          "outcome": "completed",
+          "elapsed_seconds": 20.709489,
+          "stages": {
+            "model_wait": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 8e-06,
+              "exclusive_seconds": 8e-06
+            },
+            "token_budget": {
+              "calls": 2,
+              "failures": 0,
+              "inclusive_seconds": 0.062719,
+              "exclusive_seconds": 0.062719
+            },
+            "question_understanding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 20.643224,
+              "exclusive_seconds": 20.595013
+            },
+            "candidate_snapshot": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.005211,
+              "exclusive_seconds": 0.005211
+            },
+            "embedding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.055443,
+              "exclusive_seconds": 0.040935
+            },
+            "candidate_matrix": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 4.6e-05,
+              "exclusive_seconds": 4.6e-05
+            },
+            "keyword_ranking": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.000144,
+              "exclusive_seconds": 0.000144
+            },
+            "retrieval": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 20.709186,
+              "exclusive_seconds": 0.005118
+            }
+          },
+          "counts": {}
+        },
+        "model_http_calls": [
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.047695
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 20.594115,
+            "usage": {
+              "prompt_tokens": 778,
+              "completion_tokens": 74,
+              "total_tokens": 852
+            },
+            "timings": {
+              "cache_n": 0,
+              "prompt_n": 778,
+              "prompt_ms": 3357.762,
+              "predicted_n": 74,
+              "predicted_ms": 17196.433
+            },
+            "cached_prompt_tokens": 0
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.014444
+          },
+          {
+            "operation": "/v1/embeddings",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.040117,
+            "usage": {
+              "prompt_tokens": 10,
+              "total_tokens": 10
+            }
+          }
+        ]
+      },
+      "quality": {
+        "passed": true,
+        "recall": 1.0,
+        "precision": 1.0
+      },
+      "status": "ok",
+      "ram_peak_mb": 5007.421875,
+      "gpu_total_peak_mb": 7769.0
+    },
+    {
+      "case": "simple_search",
+      "sample": 5,
+      "warmup": false,
+      "variant": "candidate",
+      "parameters": {
+        "request_token_cache": true,
+        "request_reuse": false,
+        "selection_reuse": false,
+        "explicit_context_shortcut": false,
+        "prompt_cache": null,
+        "source_stop_drafts": true,
+        "selection_batch_size": 4,
+        "chat_presentation": "reviewed",
+        "compact_search_planning": false,
+        "fair_model_scheduling": false
+      },
+      "seconds": 23.400614899932407,
+      "performance": {
+        "profile": {
+          "schema_version": 1,
+          "outcome": "completed",
+          "elapsed_seconds": 23.400614,
+          "stages": {
+            "model_wait": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 5e-06,
+              "exclusive_seconds": 5e-06
+            },
+            "token_budget": {
+              "calls": 2,
+              "failures": 0,
+              "inclusive_seconds": 0.007843,
+              "exclusive_seconds": 0.007843
+            },
+            "question_understanding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 23.256571,
+              "exclusive_seconds": 23.251901
+            },
+            "candidate_snapshot": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.007394,
+              "exclusive_seconds": 0.007394
+            },
+            "embedding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.12824,
+              "exclusive_seconds": 0.125068
+            },
+            "candidate_matrix": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 6.6e-05,
+              "exclusive_seconds": 6.6e-05
+            },
+            "keyword_ranking": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.000184,
+              "exclusive_seconds": 0.000184
+            },
+            "retrieval": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 23.400494,
+              "exclusive_seconds": 0.008038
+            }
+          },
+          "counts": {}
+        },
+        "model_http_calls": [
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.004425
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 23.250842,
+            "usage": {
+              "prompt_tokens": 778,
+              "completion_tokens": 74,
+              "total_tokens": 852
+            },
+            "timings": {
+              "cache_n": 0,
+              "prompt_n": 778,
+              "prompt_ms": 3226.987,
+              "predicted_n": 74,
+              "predicted_ms": 20000.689
+            },
+            "cached_prompt_tokens": 0
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.003045
+          },
+          {
+            "operation": "/v1/embeddings",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.123936,
+            "usage": {
+              "prompt_tokens": 10,
+              "total_tokens": 10
+            }
+          }
+        ]
+      },
+      "quality": {
+        "passed": true,
+        "recall": 1.0,
+        "precision": 1.0
+      },
+      "status": "ok",
+      "ram_peak_mb": 5007.1640625,
+      "gpu_total_peak_mb": 7812.0
+    },
+    {
+      "case": "simple_search",
+      "sample": 5,
+      "warmup": false,
+      "variant": "current",
+      "parameters": {
+        "request_token_cache": false,
+        "request_reuse": false,
+        "selection_reuse": false,
+        "explicit_context_shortcut": false,
+        "prompt_cache": null,
+        "source_stop_drafts": true,
+        "selection_batch_size": 4,
+        "chat_presentation": "reviewed",
+        "compact_search_planning": false,
+        "fair_model_scheduling": false
+      },
+      "seconds": 23.766334799933247,
+      "performance": {
+        "profile": {
+          "schema_version": 1,
+          "outcome": "completed",
+          "elapsed_seconds": 23.766317,
+          "stages": {
+            "model_wait": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 7e-06,
+              "exclusive_seconds": 7e-06
+            },
+            "token_budget": {
+              "calls": 2,
+              "failures": 0,
+              "inclusive_seconds": 0.064001,
+              "exclusive_seconds": 0.064001
+            },
+            "question_understanding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 23.705024,
+              "exclusive_seconds": 23.656934
+            },
+            "candidate_snapshot": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.00501,
+              "exclusive_seconds": 0.00501
+            },
+            "embedding": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.050791,
+              "exclusive_seconds": 0.034881
+            },
+            "candidate_matrix": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 4.6e-05,
+              "exclusive_seconds": 4.6e-05
+            },
+            "keyword_ranking": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 0.000133,
+              "exclusive_seconds": 0.000133
+            },
+            "retrieval": {
+              "calls": 1,
+              "failures": 0,
+              "inclusive_seconds": 23.766204,
+              "exclusive_seconds": 0.0052
+            }
+          },
+          "counts": {}
+        },
+        "model_http_calls": [
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.047741
+          },
+          {
+            "operation": "/v1/chat/completions",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 23.656208,
+            "usage": {
+              "prompt_tokens": 778,
+              "completion_tokens": 74,
+              "total_tokens": 852
+            },
+            "timings": {
+              "cache_n": 0,
+              "prompt_n": 778,
+              "prompt_ms": 3993.142,
+              "predicted_n": 74,
+              "predicted_ms": 19638.672
+            },
+            "cached_prompt_tokens": 0
+          },
+          {
+            "operation": "/tokenize",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.015852
+          },
+          {
+            "operation": "/v1/embeddings",
+            "phase": "other",
+            "status": "completed",
+            "http_status": 200,
+            "seconds": 0.034249,
+            "usage": {
+              "prompt_tokens": 10,
+              "total_tokens": 10
+            }
+          }
+        ]
+      },
+      "quality": {
+        "passed": true,
+        "recall": 1.0,
+        "precision": 1.0
+      },
+      "status": "ok",
+      "ram_peak_mb": 4969.640625,
+      "gpu_total_peak_mb": 7813.0
+    }
+  ],
+  "summary": {
+    "current/simple_search": {
+      "samples": 5,
+      "completed": 5,
+      "failures": 0,
+      "failure_rate": 0.0,
+      "median_seconds": 22.0956651000306,
+      "p95_seconds": 24.6753955000313,
+      "quality_passes": 5,
+      "peak_ram_mb": 5012.1328125,
+      "peak_gpu_total_mb": 7900.0
+    },
+    "candidate/simple_search": {
+      "samples": 5,
+      "completed": 5,
+      "failures": 0,
+      "failure_rate": 0.0,
+      "median_seconds": 22.070307999965735,
+      "p95_seconds": 23.400614899932407,
+      "quality_passes": 5,
+      "peak_ram_mb": 5086.22265625,
+      "peak_gpu_total_mb": 7850.0
+    }
+  },
+  "sources": {
+    "pma/answer_review.py": "277d7cada9562f325f26dfd1d1e55c163d660f67c8019019251307e3c439aaa9",
+    "pma/console_trace.py": "29dec460563f852b626ffedd0201c1ff3ad151c0e7bcb23f0d8064d5ccbe2788",
+    "pma/diagnostics.py": "a1e46b0c3503e9f11fbfe0a833de3f6d85a86125afd55167b63bbd9829766478",
+    "pma/errors.py": "103413d68ec99127c8bb6111986925889eeeb47beaf73581fa7774e9488f671e",
+    "pma/evaluation_api.py": "801b4d34e159c3c67d78f8cf91a4dd096d9fb6b6e9bf1574f3f87d3e339f0871",
+    "pma/evaluation_execution.py": "b558a0ed5a8784b9cc5ac105f8313350f4a79afa8895069f122737dab66536ea",
+    "pma/facts.py": "fc4b91c2edb24cf3d9455d02d15752aca1abefd7891fb5bc8844b4e067a6ae21",
+    "pma/facts_diagnostics.py": "4b2d6c51b561c4f2173d7089bb76061c0f5b0a4ec0522c999219c9d9205ed711",
+    "pma/grounding.py": "52ba5311642b6439973af721ad52aa16944055052e24789dad68de2221ce4830",
+    "pma/imports.py": "5b2ba6a3ad204c0570e884a254de39229ca974be29cd5bff095b967bd4fb1420",
+    "pma/legacy_answer.py": "d498240fddf4fe909a407cbcffd02061025ccdbcbdb61287eaf0529d6e84ac83",
+    "pma/lock.py": "1896ced02498d759e24ee5a2359f479199d78358cddd5cd5bbc27ee6519ed088",
+    "pma/models.py": "2381d553b0a9c708c5c64b59411a6f553cc31e50c222e223a3e5beb18a07cce9",
+    "pma/model_diagnostics.py": "90061ae5dbe642d6c806712b3e3b3401bf52224c4a6a731e2d3d8441b7717a09",
+    "pma/model_reuse.py": "9056d62f2549a7b497bbf5d6ee6c39a1f457a06a509b7ce7a685321182ca4917",
+    "pma/processing.py": "cf42888f61d6219ea369e9a1e151a4c0c778b5cd6c8fc73474d095f3cfffa9fa",
+    "pma/query_correction.py": "868a4f0e120a4a8019e7ab8e4ed17f8ae3b5dc69e9e1a3301ad73648375d21fa",
+    "pma/relevance.py": "c3206938e7133c8b878961461f66d6aa5aabf09c597d7191fecebfe802925981",
+    "pma/search_explain.py": "4da5ee2a4206b0b0f9f08c361e261b6123a644699c637c7acc1b732d91c88f17",
+    "pma/search_expressions.py": "f9c7a043b665cc340845fb732f4d039daaee94ab1d8cc83337b37cf1e42f273f",
+    "pma/service.py": "5a9984ae17c49a779ad58142e00e9e6bafe274c45ac3586a647be7da1456b533",
+    "pma/service_diagnostics.py": "39a2233ac5fc8bc9eb0f8bf657293b988823835601eae794fc19afde02d6cf78",
+    "pma/settings.py": "8ddbfc809de822c208bc994b3c36b7d9a485417772dcf5e16b0960e4acba39a1",
+    "pma/store.py": "02b99eb8eee0884f852455b70275ed78b5ede301712b1719aa42b5d409699981",
+    "pma/validation_diagnostics.py": "8ca590408e601beeed338b1c3f0bc8ab9735f7df6c47b71eb8a141ba7ec0c7be",
+    "pma/web.py": "de08a9ca28233c62486ae986e0e001c490afa369e1c9f5da6d51f3d1a01b4ccf",
+    "pma/web_diagnostics.py": "2ef3463b383bcd1bdb4f3d2898d7384757c0aef0b32d78e7a21c24f9b38891a1",
+    "pma/worker_errors.py": "3667453b7c1d5e1e186185ee4c99759c261dd64d6e63c359ee71043a4247e0a2",
+    "pma/__init__.py": "86bdc1364e2cf177bbfc745e6f2e35b75d1f8adefd5a65a0ebfadd214d2a54d7",
+    "pma/__main__.py": "ade29e2dc193ccc0b2d3a0d8c07ff82133596378af283a3b76e45b9b0493fb2e",
+    "pma/chat/actions.py": "9af370428a5ed3f690360f7f2239d24e13a1d28d95184d54af644e47b975ed7a",
+    "pma/chat/answer_audit.py": "bc7a14e485f8a94b2450465b07cfb5e27232c98416adf2bbede3a4caade3440b",
+    "pma/chat/api.py": "56f90d410d9836a96329dcbe87569aa2c0e1b8e6b6995053db281409790581fd",
+    "pma/chat/automatic.py": "6cbff160e5a23d8883a45d6aba1393819d16bae5bfceadc47eb368f919f579e1",
+    "pma/chat/context.py": "29528714c2b750aa1467fe402e5da3fe42279bb026381eccbdbbc236cf112868",
+    "pma/chat/engine.py": "4934b3826990ecd113de92b311018825b3aa7420380c35025cd18e9ce9c035b7",
+    "pma/chat/evidence.py": "c72cae62087f75b095304d2018b37abd7017feae8a1b51a427ed42d7bee453fd",
+    "pma/chat/execution.py": "f0b73c86ee1964c95df8ca04c8ade6ee66e5323780a51368de6a10ba2944ef5b",
+    "pma/chat/generator.py": "9cdf9965b7a2aa9614d864e64e3c5844a3f9f6c377b9f888fe0d0bb8174be0a4",
+    "pma/chat/identity.py": "5aaaab0a1e36416f47595797b17f559ab52bf99f68ac4fda665297540b8db485",
+    "pma/chat/interpretation.py": "c6be1b0104023711c1c043d473cca6650cc683cf574d2a875481c5ab70a2e6f2",
+    "pma/chat/memory_capture.py": "f977f25760595789bdf05096928498071728f977b7851bd4d5dc5c436528425c",
+    "pma/chat/models.py": "d57f04effffc466dfed7872d63c89dd9afd5dfb0f76b568645930b93c8df84f9",
+    "pma/chat/orchestrator.py": "249e9e3f1cb68825a49700a5ad25849a1962609f4c25b6926c00cb2ca68b3936",
+    "pma/chat/planner.py": "022be1c0010072349f2d34abe96356835774cb72c8788ba60e042b52b95ab2cc",
+    "pma/chat/policy.py": "00ed3726487877fbc35f0836a959ca0318da665981d8cd256f908315deed2e34",
+    "pma/chat/presentation.py": "d536eb4b2749de3556edce6dd1369fcc66566aaff274c368bd9058782309ad31",
+    "pma/chat/questions.py": "12101b1382516f3e504ed06910566d9160b9cfcec36f91ed0a4c55a63af2c8a6",
+    "pma/chat/record_reference.py": "53f92012a6fb18ce3bf9d5c7efbdaa8aa881038beb42f54943855df27ffe3167",
+    "pma/chat/retrieval.py": "b6318af32dd456ab2bc32201b9a8882377e00660d5a8b68befb2a321ae26c0ce",
+    "pma/chat/review_sources.py": "4146b7484e787fd00cf018a10e59dd1131e97853c30447b9ea7d746ef1b51731",
+    "pma/chat/router.py": "046c21e49e7efc54ed48f8370420dd45775ecf5f17df61b43940d0f870404c24",
+    "pma/chat/schema.py": "089b262c7937a9af5de0231f10672045f4b905160ac786064b44d839c40290bd",
+    "pma/chat/schemas.py": "51ad1f7dea61a21936f9f2ae9dbe6b895b946df11902255182c8e249de2d74e2",
+    "pma/chat/semantics.py": "8f0ec0b8b66cbf73940958ad81ca2966c4aa44d519d6c183fca7818ad881fd56",
+    "pma/chat/store.py": "3d7b08319eae31f92880ea08aea63395be31f894a376b43bf59ba2622febdf08",
+    "pma/chat/__init__.py": "95a4377ba9f030a2dbf1cf6db4ab0b8b21b06da07d742a44b1bb6c8fa945b0f5",
+    "pma/memory/api.py": "320f149d064bfda666517747b8db2e1bd79fd43b1bfc96b4ad8787666a5788cb",
+    "pma/memory/conflict_resolver.py": "88aa43f8085d8765bf41b165788dea7080173033ba71f0562fc799530de440ee",
+    "pma/memory/deduplication.py": "d20832eb4e39efa7f416621ddd6fcae418c51367abfb3cc8e811bcf0a262df86",
+    "pma/memory/manager.py": "50150cd963cb88aed5eb39dc8e07b83cabea23629bf53e0b6b049083c53c6547",
+    "pma/memory/provenance.py": "8e9417b7b1b78789fce56a994313a13e437c875981af74f48027c9ad65835256",
+    "pma/memory/repository.py": "aaa7cb9f2d629a64dc45916cba1ce376ee8a05a5a26bfe4f4c2ee4014417472c",
+    "pma/memory/schemas.py": "da679c53554962523a5c5ac9ecb25911e35f034edbc6d607e4df2a7777cf1a54",
+    "pma/memory/__init__.py": "eec4b7b99f1a9987fc689ad85eafad5fc9196acc457833d895e4768df7b3d572",
+    "pma/chat/migrations/__init__.py": "cdc98648c903b9ea96cdc2e02c0296e3635a74cdf3cf16ab669698c5e367efba",
+    "scripts/memory_agent/diagnostics.py": "2887f6ee0ebaacbf325f40128beec2a020b1d53b786948a8069ecf0ae1a72b12",
+    "scripts/memory_agent/exceptions.py": "36e2331366c28a5b0fc192473daea89c9058ddb4aa52fd84138eac6350093e0d",
+    "scripts/memory_agent/extractor.py": "604de6028d845dd013b5a6f53eedfcd9fef26e0c36380a3f4859c92deda00dff",
+    "scripts/memory_agent/llm_client.py": "60fce57fce34d11b5cb2c47377957d67385f041a042a729fb86e09c32eec259c",
+    "scripts/memory_agent/meaning.py": "b8cbd2c63dca311095fd9aa57740973fea41cd6e7c47ffdb196d82634a37c13e",
+    "scripts/memory_agent/performance.py": "53ecc669f30b66ac8e5a63985f3cc5f9e7bcbd7206dc82b8b62aeafe9418eb61",
+    "scripts/memory_agent/pipeline.py": "95f4b55a644dde51b33e024e7402d40a219db15f4ead25efe7f7981fc7401f16",
+    "scripts/memory_agent/postprocess.py": "548579780d7ee6c6a18d7b1e2ccc0d06a72f40cdb9f2e56694196aa7702013bc",
+    "scripts/memory_agent/provenance.py": "0482f234dec1f97209f9e65021232ac7d895395daa48b786dbcd324fa733e661",
+    "scripts/memory_agent/validator.py": "41b6196c9e1d4601bbc83cd1ef2d7a2555f1d3fb03bd77d1ae55833a0915c25f",
+    "scripts/memory_agent/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "evaluator_sources": {
+    "evaluation/response_latency.py": "daf493e4631050f4e84fde680bf4f751adc24fb92574d479c9a0b97f35f1f993",
+    "evaluation/multilingual_search.py": "6fa4dc683e4a3ca01b42a116f6af12d0421a9b0add2604bf0e23e06fd3428145",
+    "evaluation/response_latency_report.py": "ff34490211dff445e2fb0270618330b6ac983b3e58705b50eaa70a8f0ced8672",
+    "evaluation/latency_variants.py": "eb0027988d612695914beba27cee54c99affad00f1133f900004373ebb573b0f",
+    "evaluation/latency_recheck.py": "8376a3ba7334018362c7eac597379e5c1e5a03cef7d4b9e5bff38c3f42bddd89"
+  },
+  "startup": {
+    "seconds": 10.62544460000936,
+    "commands": [
+      [
+        "C:\\llama.cpp\\llama-server.exe",
+        "-m",
+        "C:\\models\\Qwen3-8B-Q4_K_M.gguf",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "18581",
+        "-c",
+        "16384",
+        "-ngl",
+        "0",
+        "--alias",
+        "latency-generation",
+        "--flash-attn",
+        "auto",
+        "--log-disable",
+        "-np",
+        "1",
+        "--slots",
+        "--slot-save-path",
+        "C:\\development\\Personal-Memory-Agent\\.local\\latency-recheck\\cpu-token-screen-005\\token_cache\\owned-slots",
+        "--cache-ram",
+        "0",
+        "-t",
+        "4"
+      ],
+      [
+        "C:\\llama.cpp\\llama-server.exe",
+        "-m",
+        "C:\\models\\bge-m3-Q8_0.gguf",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "18582",
+        "-c",
+        "8192",
+        "-ngl",
+        "0",
+        "--alias",
+        "latency-embedding",
+        "--flash-attn",
+        "auto",
+        "--log-disable",
+        "--embedding",
+        "--pooling",
+        "cls",
+        "--embd-normalize",
+        "2",
+        "-b",
+        "4096",
+        "-ub",
+        "4096",
+        "-t",
+        "4"
+      ]
+    ]
+  },
+  "index_seconds": 2.20156339998357,
+  "initial_preparation_seconds": 17.032397900009528,
+  "source_unchanged": true,
+  "evaluator_unchanged": true,
+  "execution_completed": true
+}
