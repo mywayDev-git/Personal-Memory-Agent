@@ -47,10 +47,11 @@ if ($PauseOrdinaryModels) {
     }
 }
 New-Item -ItemType Directory -Path $outputRoot | Out-Null
-$originals | Select-Object ProcessId,ExecutablePath,CommandLine | ConvertTo-Json |
+ConvertTo-Json -InputObject @($originals | Select-Object ProcessId,ExecutablePath,CommandLine) |
     Set-Content (Join-Path $outputRoot 'ordinary-models-before.json')
 $stopped = @()
 $restored = @()
+$restoreErrors = @()
 $previousLocation = Get-Location
 try {
     foreach ($model in $originals) {
@@ -72,12 +73,16 @@ try {
     Set-Location -LiteralPath $previousLocation.Path
     foreach ($model in $stopped) {
         $prefix = '"' + $model.ExecutablePath + '"'
-        if (-not $model.CommandLine.StartsWith($prefix)) { throw 'Saved command format is unexpected; inspect ordinary-models-before.json.' }
         $arguments = $model.CommandLine.Substring($prefix.Length).TrimStart()
-        $process = Start-Process -FilePath $model.ExecutablePath -ArgumentList $arguments -WindowStyle Hidden -PassThru
-        $restored += @{ original_pid=$model.ProcessId; restored_pid=$process.Id; arguments=$arguments }
+        try {
+            $process = Start-Process -FilePath $model.ExecutablePath -ArgumentList $arguments -WindowStyle Hidden -PassThru
+            $restored += @{ original_pid=$model.ProcessId; restored_pid=$process.Id; arguments=$arguments }
+        } catch {
+            $restoreErrors += @{ original_pid=$model.ProcessId; error_type=$_.Exception.GetType().Name }
+        }
     }
-    $restored | ConvertTo-Json -Depth 3 | Set-Content (Join-Path $outputRoot 'ordinary-models-restored.json')
+    ConvertTo-Json -InputObject @($restored) -Depth 3 | Set-Content (Join-Path $outputRoot 'ordinary-models-restored.json')
+    ConvertTo-Json -InputObject @($restoreErrors) | Set-Content (Join-Path $outputRoot 'ordinary-models-restore-errors.json')
     $health = @()
     foreach ($entry in $restored) {
         $port = if ($entry.arguments -match '--port (808[12])\b') { $Matches[1] } else { '' }
@@ -92,6 +97,8 @@ try {
         }
         $health += @{ port=$port; ready=$ready }
     }
-    $health | ConvertTo-Json | Set-Content (Join-Path $outputRoot 'ordinary-models-health.json')
-    if (@($health | Where-Object { -not $_.ready }).Count) { throw 'Inspect the saved model health report; a restored server is not ready.' }
+    ConvertTo-Json -InputObject @($health) | Set-Content (Join-Path $outputRoot 'ordinary-models-health.json')
+    if ($restoreErrors.Count -or @($health | Where-Object { -not $_.ready }).Count) {
+        throw 'Inspect the saved restoration and health reports; a restored server is not ready.'
+    }
 }
