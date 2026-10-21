@@ -24,6 +24,9 @@ def render(results, artifacts):
     if config.get('fixture_split') == 'identity_search_confirmation':
         from .identity_search_cases import CASES, manifest as search_manifest
         cases, expected_hash = CASES, search_manifest()['sha256']
+    if config.get('fixture_split') == 'identity_completion_confirmation':
+        from .identity_completion_cases import CASES, manifest as completion_manifest
+        cases, expected_hash = CASES, completion_manifest()['sha256']
     if cases is None or config.get("fixture_manifest_sha256") != expected_hash:
         raise ValueError("UNKNOWN_OR_CHANGED_SYNTHETIC_FIXTURE")
     root = artifacts.resolve()

@@ -98,11 +98,12 @@ def explicit_person_lookup(question, evidence):
     )) and any(canonical_label(targets[0]) in canonical_label(row["source_text"]) for row in evidence)
 
 
-def identity_discovery_redundant(question, evidence):
-    """A model's empty next query needs no forced generic relationship lookup.
+def identity_probe_candidate(question, evidence):
+    """Identify a bounded original quote to try, never certify completion.
 
     Only a complete explicit role lookup with one plain original statement can
-    use this shortcut. It neither approves that statement nor drops sources.
+    try a fresh independent review. The role may be known while the requested
+    attribute is absent: this predicate alone must never stop further search.
     Unknown, ambiguous, conditional, conflicting and directive cases defer.
     """
     if not explicit_person_lookup(question, evidence):

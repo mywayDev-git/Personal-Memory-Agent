@@ -257,6 +257,39 @@ def display_block(question, items):
     return {"type": style, "item_indices": indices}
 
 
+def probe_identity_completion(engine, question, session, today, batches, intermediate):
+    """Return the current request's fresh verified response, never a hint alone."""
+    from scripts.memory_agent.diagnostics import ProcessingError
+    from .identity import identity_probe_candidate
+    from .intermediate import scope
+
+    if not identity_probe_candidate(question, combine(batches)):
+        return None
+    evidence = engine.store.freeze(combine(batches))
+    exact_scope = scope(question, {**session, 'evidence': evidence}, today)
+    count('identity_completion_probes')
+    try:
+        response = grounded(engine, question, {**session, 'evidence': evidence, '_intermediate': intermediate},
+                            today, original_question=question, _direct_probe=True)
+    except ProcessingError as exc:
+        if exc.code != 'MODEL_TRUNCATED':
+            raise
+        count('identity_probe_truncated')
+        return None
+    except ValueError:
+        count('identity_probe_invalid')
+        return None
+    except AppError as exc:
+        if exc.code != 'CONTEXT_LIMIT':
+            raise
+        count('identity_probe_oversize')
+        return None
+    if response.get('status') == 'answered' and response.get('validation') == 'model_checked':
+        return exact_scope, response
+    count('identity_probe_rejections')
+    return None
+
+
 def run(engine, question, session, today, requested_mode="auto"):
     from .identity import scoped_followup
     from .policy import memory_disabled, private_context
@@ -379,6 +412,7 @@ def run(engine, question, session, today, requested_mode="auto"):
     searches, rows, seen_queries, batches = [], {}, set(), []
     unsupported = False
     intermediate = None
+    verified_completion = None
     for _ in range(3):
         if not query or query in seen_queries:
             break
@@ -458,10 +492,11 @@ def run(engine, question, session, today, requested_mode="auto"):
                 if query in seen_queries:
                     query = "그 사건의 이유와 목적: " + question
             elif asks_identity(question):
-                from .identity import identity_discovery_redundant
-                if (getattr(engine.service.settings, 'scoped_identity_search', False)
-                        and identity_discovery_redundant(question, list(rows.values()))):
+                verified_completion = probe_identity_completion(engine, question, session, today, batches, intermediate) if getattr(
+                    engine.service.settings, 'scoped_identity_search', False) else None
+                if verified_completion is not None:
                     count('identity_discovery_searches_saved')
+                    break
                 else:
                     query = "나의 지인들과 어떤 관계인지 알려줘"
     # Keep evidence from later relational lookups while retaining earlier context.
@@ -512,12 +547,19 @@ def run(engine, question, session, today, requested_mode="auto"):
         # The follow-up interpretation is input to generation, never a source.
         # Retrieval expansion must not become the question used to judge the answer.
         # The context resolver handles pronouns using the original conversation.
-        response = grounded(
-            engine, question, {**session, "evidence": evidence, "_intermediate": intermediate,
+        from .intermediate import scope
+        if verified_completion is not None and verified_completion[0] == scope(question, {**session, 'evidence': evidence}, today):
+            response = verified_completion[1]
+            count('current_verified_completion_used')
+        else:
+            if verified_completion is not None:
+                count('verified_completion_scope_invalidated')
+            response = grounded(
+                engine, question, {**session, "evidence": evidence, "_intermediate": intermediate,
                                "memory_interpretation": interpretation,
                                "response_plan": {**response_plan, "suggestions_optional": False,
                                                  "personal_facts_only": True}}, today, original_question=question
-        )
+            )
     if "answer_audit" not in response:
         from .answer_audit import answer_audit
         response["answer_audit"] = answer_audit(

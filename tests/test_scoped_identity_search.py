@@ -4,7 +4,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from pma.chat.identity import identity_discovery_redundant
+from pma.chat.identity import identity_probe_candidate
 
 
 @pytest.mark.parametrize('question,sources,expected', [
@@ -21,10 +21,10 @@ from pma.chat.identity import identity_discovery_redundant
 ])
 def test_generic_discovery_can_only_be_omitted_for_plain_complete_unique_role_lookup(question, sources, expected):
     rows = [{'id': str(i), 'source_text': text} for i, text in enumerate(sources)]
-    assert identity_discovery_redundant(question, rows) is expected
+    assert identity_probe_candidate(question, rows) is expected
     if expected:
         rows[0]['warnings'] = ['conflict']
-        assert identity_discovery_redundant(question, rows) is False
+        assert identity_probe_candidate(question, rows) is False
 
 
 @pytest.mark.parametrize('enabled,model_next', [(False, ''), (True, ''), (True, '민수의 업무 기록')])
@@ -43,7 +43,7 @@ def test_only_forced_generic_lookup_is_removed_and_model_requested_search_is_pre
     monkeypatch.setattr(automatic, 'combine', lambda batches: [row])
     monkeypatch.setattr(interpretation, 'analyze', lambda *a: {'observations': []})
     monkeypatch.setattr(planner, 'prepare', lambda *a: {})
-    monkeypatch.setattr(automatic, 'grounded', lambda *a, **kw: {'status': 'answered',
+    monkeypatch.setattr(automatic, 'grounded', lambda *a, **kw: {'status': 'answered', 'validation': 'model_checked',
         'items': [{'text': source, 'citations': ['a']}]})
     engine = SimpleNamespace(service=SimpleNamespace(settings=SimpleNamespace(
         embedding_key='test', intermediate_planning=False, scoped_identity_search=enabled), trace=lambda *a, **kw: None),

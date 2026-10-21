@@ -39,7 +39,7 @@ from scripts.memory_agent.performance import profile_request
 from scripts.memory_agent.validator import load_schema, schema_errors
 
 DOCUMENTS = list(BASE_DOCUMENTS)
-SCORING_VERSION = 5
+SCORING_VERSION = 6
 CASES = {
     "simple_search": {"question": "민수에게 무엇을 선물했어?", "search": True, "gold": ["gift"]},
     "alias_ko": {"question": "파이썬 공부 기록", "search": True, "gold": ["study", "stopped", "note"]},
@@ -284,6 +284,11 @@ def quality(case, response, evidence, keys):
     passed = (status == "insufficient_evidence" if case.get("absent") else
               status == "needs_clarification" and gold <= cited if case.get("clarification") else
               status == "answered" and response.get("validation") == "model_checked" and gold <= cited)
+    if case.get('unknown_attribute'):
+        if status == 'insufficient_evidence' and not response.get('items'):
+            passed, patterns_match = True, True
+        else:
+            passed = status == 'answered' and response.get('validation') == 'model_checked' and bool(cited)
     return {"passed": bool(passed and valid and patterns_match and scope_valid and contradiction_free), "citation_spans_valid": valid,
             "answer_patterns_match": bool(patterns_match),
             "answer_contradiction_free": contradiction_free,
@@ -333,7 +338,7 @@ def main():
     parser.add_argument("--review-only", action="store_true")
     parser.add_argument("--quality-only", action="store_true", help="One quality observation without latency warmup; never sufficient for speed adoption")
     parser.add_argument("--fixture-manifest-sha256")
-    parser.add_argument("--fixture-split", choices=["development", "holdout", "identity_confirmation", "identity_search_confirmation"])
+    parser.add_argument("--fixture-split", choices=["development", "holdout", "identity_confirmation", "identity_search_confirmation", "identity_completion_confirmation"])
     parser.add_argument("--retrieval-only", action="store_true")
     parser.add_argument("--skip-timing-on-retrieval-failure", action="store_true")
     parser.add_argument("--multilingual-current-only", action="store_true")
@@ -382,7 +387,8 @@ def main():
         "evaluation/latency_variants.py", "evaluation/latency_recheck.py", "evaluation/performance_benchmark.py",
         "evaluation/first_response.py", "evaluation/first_response_cases.py", "evaluation/first_response_manifest.json",
         "evaluation/review_bank.py", "evaluation/identity_followup_cases.py", "evaluation/identity_followup_manifest.json",
-        "evaluation/anchor_templates.py", "evaluation/identity_search_cases.py", "evaluation/identity_search_manifest.json")}
+        "evaluation/anchor_templates.py", "evaluation/identity_search_cases.py", "evaluation/identity_search_manifest.json",
+        "evaluation/identity_completion_cases.py", "evaluation/identity_completion_manifest.json")}
     if args.seed_template:
         report["seed_template_sha256"] = digest(args.seed_template)
     if args.runtime == "openvino":
@@ -487,7 +493,7 @@ def main():
                     anchor_response = anchor_engine.message(
                         anchored_sid, "anchor", case["anchor"], today="2026-10-19", mode="memory")
                     anchor_message = anchor_engine.store.get(anchored_sid)["messages"][-1]
-                    anchor_quality = quality(case, anchor_response, anchor_message["evidence"], keys)
+                    anchor_quality = quality({**case, **case.get('anchor_case', {})}, anchor_response, anchor_message["evidence"], keys)
                     if not anchor_quality["passed"]:
                         raise ValueError("INVALID_SHARED_ANCHOR")
                     anchor_service.store.checkpoint()

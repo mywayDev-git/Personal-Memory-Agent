@@ -18,6 +18,9 @@ def compare(document):
     if config.get('fixture_split') == 'identity_search_confirmation':
         from .identity_search_cases import CASES, manifest as search_manifest
         expected, expected_hash = CASES, search_manifest()['sha256']
+    if config.get('fixture_split') == 'identity_completion_confirmation':
+        from .identity_completion_cases import CASES, manifest as completion_manifest
+        expected, expected_hash = CASES, completion_manifest()['sha256']
     cases = {}
     for name in config["cases"]:
         grouped = {variant: [r for r in document.get("runs", [])

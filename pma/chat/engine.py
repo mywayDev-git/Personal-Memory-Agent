@@ -246,7 +246,7 @@ class ChatEngine:
         )
         return result, len(history)
 
-    def generate(self, question, session, today, *, original_question=None):
+    def generate(self, question, session, today, *, original_question=None, _direct_probe=False):
         from .identity import scoped_followup
         question = scoped_followup(question, session)
         if original_question is not None:
@@ -363,6 +363,11 @@ class ChatEngine:
         if draft:
             count("source_conflict_drafts" if conflict else "source_progress_drafts" if progress_draft else "source_stop_drafts")
         response = draft or direct_statement(question, evidence, intent_question)
+        if _direct_probe:
+            response = direct_statement(question, evidence, intent_question)
+            if response is None:
+                return finish({'status': 'insufficient_evidence', 'items': [],
+                    'validation': 'probe_unavailable', 'history_turns': history_count}, 'probe_unavailable')
         if response is None and getattr(settings, "source_date_drafts", False):
             from .source_fact import source_date_draft
             response = source_date_draft(intent_question, evidence)
@@ -423,9 +428,10 @@ class ChatEngine:
                 review=review,
                 attributes_supported=attributes,
             )
-            attempts.append(review_attempt(response, review, attributes, attributes and review_ok))
+            direct_ok = not _direct_probe or review.get('fulfillment') == 'direct'
+            attempts.append(review_attempt(response, review, attributes, attributes and review_ok and direct_ok))
             attempts[-1]["generation"] = generation_index
-            if attributes and review_ok:
+            if attributes and review_ok and direct_ok:
                 display = reviewed_display(response, review)
                 response = {k: v for k, v in response.items() if k != "display"}
                 if display is not None:
@@ -435,6 +441,11 @@ class ChatEngine:
                     "validation": "model_checked",
                     "history_turns": history_count,
                 })
+            if _direct_probe:
+                # A limited/rejected quote is not evidence that discovery is
+                # complete. Let the caller retain its original search fallback.
+                return finish({'status': 'insufficient_evidence', 'items': [],
+                    'validation': 'probe_rejected', 'history_turns': history_count}, 'probe_not_direct')
             if not attempt and not review.get("error"):
                 generation_index += 1
                 count("answer_regenerations")

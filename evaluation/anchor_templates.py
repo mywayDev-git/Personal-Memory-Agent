@@ -48,7 +48,7 @@ def import_anchor(results_path, name, case, target, *, documents, hashes,
     if (len(messages) != 1 or messages[0]['state'] != 'completed' or messages[0].get('error_code')
             or messages[0]['question'] != case['anchor']):
         raise ValueError('INVALID_SHARED_ANCHOR_TURN')
-    quality = score(case, messages[0]['response'], messages[0]['evidence'], keys)
+    quality = score({**case, **case.get('anchor_case', {})}, messages[0]['response'], messages[0]['evidence'], keys)
     if not quality['passed']:
         raise ValueError('INVALID_SHARED_ANCHOR_QUALITY')
     store.checkpoint()
