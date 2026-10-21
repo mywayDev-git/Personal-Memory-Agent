@@ -1,0 +1,24 @@
+{
+  "sha256": "3c96825dafc2975ff7ca0b9c9e0410754ae137136545137940463da37f4e810a",
+  "cases": [
+    "scope_friend",
+    "scope_friend_possessive",
+    "scope_person",
+    "scope_polite",
+    "scope_female",
+    "scope_switch",
+    "scope_explicit",
+    "scope_ambiguous",
+    "control_fact",
+    "control_date",
+    "control_negation",
+    "control_plan",
+    "control_cause",
+    "control_absent",
+    "control_compound",
+    "control_other_role"
+  ],
+  "gold_origin": "hand_authored_synthetic_sources",
+  "version": 1,
+  "purpose": "independent confirmation frozen before identity follow-up repair"
+}
