@@ -83,7 +83,9 @@ def test_source_selection_never_bypasses_semantic_or_identity_checks(mode):
     if mode == "unsupported":
         assert not accepted(model.review("동료 민수에게 선물 줬어?", sources, response), response)
     else:
-        with pytest.raises(ValueError, match="INVALID_REVIEW_CITATION|INCONSISTENT_REVIEW"):
+        # Uncited span IDs are now rejected by the constrained output schema
+        # before the later citation consistency check can run.
+        with pytest.raises(ValueError, match="INVALID_REVIEW_SCHEMA|INVALID_REVIEW_CITATION|INCONSISTENT_REVIEW"):
             model.review("동료 민수에게 선물 줬어?", sources, response)
 
 
