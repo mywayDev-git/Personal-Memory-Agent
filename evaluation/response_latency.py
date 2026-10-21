@@ -338,6 +338,7 @@ def main():
     parser.add_argument("--skip-timing-on-retrieval-failure", action="store_true")
     parser.add_argument("--multilingual-current-only", action="store_true")
     parser.add_argument("--seed-template", type=Path, help="Reuse this evaluator's synthetic seed; only embeddings may be rebuilt")
+    parser.add_argument("--anchor-templates", type=Path, help="Completed same-fixture results with checked anchors; does not test target-device preparation")
     parser.add_argument("--fixed-anchor", action="store_true", help="Prepare and verify one shared anchor DB per case so variants receive identical history")
     parser.add_argument("--retrieval-baseline", type=Path,
                         help="Quality-screen against a fresh 90-case report; rejected models only run the two basic timing cases")
@@ -380,7 +381,8 @@ def main():
         "evaluation/response_latency.py", "evaluation/multilingual_search.py", "evaluation/response_latency_report.py",
         "evaluation/latency_variants.py", "evaluation/latency_recheck.py", "evaluation/performance_benchmark.py",
         "evaluation/first_response.py", "evaluation/first_response_cases.py", "evaluation/first_response_manifest.json",
-        "evaluation/review_bank.py", "evaluation/identity_followup_cases.py", "evaluation/identity_followup_manifest.json")}
+        "evaluation/review_bank.py", "evaluation/identity_followup_cases.py", "evaluation/identity_followup_manifest.json",
+        "evaluation/anchor_templates.py")}
     if args.seed_template:
         report["seed_template_sha256"] = digest(args.seed_template)
     if args.runtime == "openvino":
@@ -467,6 +469,17 @@ def main():
                 if case.get("anchor") and args.fixed_anchor:
                     anchor_started = time.perf_counter()
                     case_seed = args.output / f"{case_name}-anchor.db"
+                    if args.anchor_templates:
+                        from evaluation.anchor_templates import import_anchor
+                        anchored_sid, anchor_metadata = import_anchor(args.anchor_templates, case_name, case, case_seed,
+                            documents=DOCUMENTS, hashes=hashes, fixture_split=args.fixture_split,
+                            fixture_sha256=args.fixture_manifest_sha256, keys=keys, score=quality)
+                        anchor_metadata['preparation_seconds'] = time.perf_counter() - anchor_started
+                        report.setdefault('anchors', {})[case_name] = anchor_metadata
+                        save()
+                    else:
+                        anchored_sid = None
+                if case.get("anchor") and args.fixed_anchor and not anchored_sid:
                     shutil.copy2(seed, case_seed)
                     anchor_service = Service(Store(case_seed), LocalModels(settings), settings)
                     anchor_engine = ChatEngine(anchor_service)

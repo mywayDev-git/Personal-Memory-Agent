@@ -46,3 +46,17 @@ def test_baseline_only_plan_cannot_include_or_start_a_candidate():
     command = json.loads(next(line for line in warm.stdout.splitlines() if line.startswith("[")))
     assert command[command.index("--baseline-options") + 1:][:3] == ["compact_ids", "source_facts", "interpretation_cache"]
 
+
+def test_candidate_only_plan_keeps_exact_requested_profile_and_anchor_provenance():
+    import json
+    executable = shutil.which('pwsh')
+    if executable is None:
+        pytest.skip('PowerShell 7 unavailable')
+    result = subprocess.run([executable, '-NoProfile', '-File', 'scripts/run_latency_goal.ps1',
+        '-CandidateOnly', '-IntermediatePlanning', '-ContextShortcut', '-AnchorTemplates', 'saved/results.json'],
+        capture_output=True, text=True, encoding='utf-8', timeout=20, check=True)
+    command = json.loads(next(line for line in result.stdout.splitlines() if line.startswith('[')))
+    assert command[command.index('--variants') + 1:][:2] == ['candidate', '--candidate-options']
+    assert 'context_shortcut' in command and 'intermediate' in command
+    assert command[command.index('--anchor-templates') + 1] == 'saved/results.json'
+

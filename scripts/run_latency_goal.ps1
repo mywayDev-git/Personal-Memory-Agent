@@ -16,6 +16,9 @@ param(
     [switch]$ReviewBank,
     [switch]$ReviewOnly,
     [string]$RetrievalBaseline = '',
+    [string]$AnchorTemplates = '',
+    [string]$SeedTemplate = '',
+    [switch]$CandidateOnly,
     [ValidateSet('llama', 'openvino')][string]$Runtime = 'llama',
     [string]$RuntimePython = '',
     [string]$RuntimeModel = '',
@@ -33,6 +36,7 @@ $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
 if (-not $PythonExe) { $PythonExe = Join-Path $root '.venv\Scripts\python.exe' }
 if ($RunName -notmatch '^[a-zA-Z0-9_-]+$') { throw 'RunName must contain letters, digits, underscores or hyphens.' }
+if ($BaselineOnly -and $CandidateOnly) { throw 'Choose either BaselineOnly or CandidateOnly.' }
 $outputRoot = Join-Path $root ('.local\latency-goal\' + $RunName)
 $placements = if ($Placement -eq 'both') { @('cpu', 'gpu') } else { @($Placement) }
 $commands = @()
@@ -58,6 +62,10 @@ foreach ($mode in $placements) {
         $variantIndex = [Array]::IndexOf($arguments, '--variants')
         $arguments = @($arguments[0..($variantIndex + 1)]) + @($arguments[($variantIndex + 3)..($arguments.Count - 1)])
     }
+    if ($CandidateOnly) {
+        $variantIndex = [Array]::IndexOf($arguments, '--variants')
+        $arguments = @($arguments[0..$variantIndex]) + @($arguments[($variantIndex + 2)..($arguments.Count - 1)])
+    }
     if ($BaselineOnly -or $InterpretationReuse -or $IntermediatePlanning) {
         # Compare with the already measured source-draft/compact-ID candidate.
         $arguments += @('--baseline-options', 'compact_ids', 'source_facts')
@@ -71,6 +79,8 @@ foreach ($mode in $placements) {
     if ($FixtureSplit -eq 'legacy' -or $PSBoundParameters.ContainsKey('Cases')) { $arguments += @('--cases') + $Cases }
     if ($RetrievalOnly) { $arguments += @('--retrieval-only', '--multilingual', '--multilingual-current-only', '--skip-timing-on-retrieval-failure') }
     if ($RetrievalBaseline) { $arguments += @('--retrieval-baseline', $RetrievalBaseline) }
+    if ($AnchorTemplates) { $arguments += @('--anchor-templates', $AnchorTemplates) }
+    if ($SeedTemplate) { $arguments += @('--seed-template', $SeedTemplate) }
     if ($ReviewBank) { $arguments += '--review-bank' }
     if ($ReviewOnly) { $arguments += '--review-only' }
     if ($QualityScreen) { $arguments += '--quality-only' }
