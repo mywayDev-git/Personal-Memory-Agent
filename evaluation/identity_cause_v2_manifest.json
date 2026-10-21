@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "sha256": "a7adee089f1ee3317e22438c72a218ae498d054e093d1f3e08868dbbf9bd09b5",
+  "case_counts": {
+    "development": 16,
+    "confirmation": 16
+  },
+  "review_pairs_per_split": 8,
+  "freeze_before_product_fix": true,
+  "base_revision": "7fe5e0f",
+  "development_confirmation_source_overlap": []
+}

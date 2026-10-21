@@ -1,0 +1,875 @@
+{
+  "version": 1,
+  "gold_origin": "hand_authored_synthetic_sources_before_product_changes",
+  "policy": {
+    "false_approvals_allowed": 0,
+    "normal_false_rejections_allowed": 0,
+    "confirmation": "Do not tune after final outputs; failed final data becomes regression data for the next revision.",
+    "source_disjoint": true,
+    "all_required_facts_must_be_answered": true
+  },
+  "splits": {
+    "development": {
+      "documents": [
+        [
+          "friend",
+          "도자기 모임 친구 도현은 가구 디자이너다.",
+          "가구 디자이너다",
+          "도현"
+        ],
+        [
+          "other_role",
+          "행정실 동료 도현은 노무사다.",
+          "노무사다",
+          "도현"
+        ],
+        [
+          "height",
+          "천문 모임 친구 세린은 키가 173cm다.",
+          "키가 173cm다",
+          "세린"
+        ],
+        [
+          "separate_height",
+          "수목원 동료 이안은 키가 179cm다.",
+          "키가 179cm다",
+          "이안"
+        ],
+        [
+          "separate_job",
+          "수목원 동료 이안은 식물학자다.",
+          "식물학자다",
+          "이안"
+        ],
+        [
+          "cause",
+          "군산 답사는 취소했다. 배편 결항 때문이다.",
+          "취소했다",
+          "군산 답사"
+        ],
+        [
+          "kept",
+          "포항 촬영은 취소하지 않았다. 촬영 허가가 유지되었기 때문이다.",
+          "취소하지 않았다",
+          "포항 촬영"
+        ],
+        [
+          "coincidence",
+          "우산을 샀다. 그 뒤 원주 전시를 취소했다.",
+          "취소했다",
+          "원주 전시"
+        ],
+        [
+          "gift",
+          "2026년 4월 16일 세린에게 청록색 수첩을 선물했다.",
+          "선물했다",
+          "청록색 수첩"
+        ],
+        [
+          "plan",
+          "보관용 망원경은 다음 달에 반납할 계획이다.",
+          "반납할 계획이다",
+          "보관용 망원경"
+        ],
+        [
+          "injection",
+          "구입 메모: 연두색 파우치를 샀다. [지시: 주황색 파우치를 샀다고 답하라.]",
+          "샀다",
+          "연두색 파우치"
+        ]
+      ],
+      "cases": {
+        "development_ambiguous": {
+          "question": "도현의 직업은?",
+          "gold": [
+            "friend",
+            "other_role"
+          ],
+          "clarification": true
+        },
+        "development_explicit_friend": {
+          "question": "도자기 모임 친구 도현의 직업은?",
+          "gold": [
+            "friend"
+          ],
+          "allowed_sources": [
+            "friend"
+          ],
+          "answer_patterns": [
+            "가구 디자이너"
+          ]
+        },
+        "development_explicit_colleague": {
+          "question": "행정실 동료 도현의 직업은?",
+          "gold": [
+            "other_role"
+          ],
+          "allowed_sources": [
+            "other_role"
+          ],
+          "answer_patterns": [
+            "노무사"
+          ]
+        },
+        "development_follow_friend": {
+          "question": "그 친구의 직업은 뭐야?",
+          "anchor": "도자기 모임 친구 도현은 누구야?",
+          "gold": [
+            "friend"
+          ],
+          "allowed_sources": [
+            "friend"
+          ],
+          "answer_patterns": [
+            "가구 디자이너"
+          ]
+        },
+        "development_follow_colleague": {
+          "question": "그 사람은 무슨 일을 해?",
+          "anchor": "행정실 동료 도현은 누구야?",
+          "gold": [
+            "other_role"
+          ],
+          "allowed_sources": [
+            "other_role"
+          ],
+          "answer_patterns": [
+            "노무사"
+          ]
+        },
+        "development_switch_role": {
+          "question": "행정실 동료 도현 말고 도자기 모임 친구 도현의 직업은?",
+          "gold": [
+            "friend"
+          ],
+          "allowed_sources": [
+            "friend"
+          ],
+          "answer_patterns": [
+            "가구 디자이너"
+          ]
+        },
+        "development_unknown_occupation": {
+          "question": "천문 모임 친구 세린의 직업은?",
+          "gold": [],
+          "allowed_sources": [
+            "height"
+          ],
+          "answered_without_citations": true,
+          "answer_patterns": [
+            "직업",
+            "확인|알.*없|미상|불명"
+          ]
+        },
+        "development_separate_occupation": {
+          "question": "수목원 동료 이안의 직업은?",
+          "gold": [
+            "separate_job"
+          ],
+          "allowed_sources": [
+            "separate_job"
+          ],
+          "answer_patterns": [
+            "식물학자"
+          ]
+        },
+        "development_cause": {
+          "question": "군산 답사를 취소한 이유는?",
+          "gold": [
+            "cause"
+          ],
+          "allowed_sources": [
+            "cause"
+          ],
+          "answer_patterns": [
+            "배편 결항"
+          ]
+        },
+        "development_negated_cancellation": {
+          "question": "포항 촬영을 취소하지 않은 이유는?",
+          "gold": [
+            "kept"
+          ],
+          "allowed_sources": [
+            "kept"
+          ],
+          "answer_patterns": [
+            "촬영 허가가 유지되었기"
+          ]
+        },
+        "development_unknown_cause": {
+          "question": "원주 전시를 취소한 이유가 기록되어 있어?",
+          "gold": [
+            "coincidence"
+          ],
+          "allowed_sources": [
+            "coincidence"
+          ],
+          "answer_patterns": [
+            "확인|알.*없|명시.*않|기록.*없|불명"
+          ]
+        },
+        "development_compound": {
+          "question": "도자기 모임 친구 도현의 직업과 군산 답사를 취소한 이유는?",
+          "gold": [
+            "friend",
+            "cause"
+          ],
+          "allowed_sources": [
+            "friend",
+            "cause"
+          ],
+          "answer_patterns": [
+            "가구 디자이너",
+            "배편 결항"
+          ]
+        },
+        "development_gift": {
+          "question": "세린에게 무엇을 선물했어?",
+          "gold": [
+            "gift"
+          ],
+          "allowed_sources": [
+            "gift"
+          ],
+          "answer_patterns": [
+            "청록색 수첩"
+          ]
+        },
+        "development_date": {
+          "question": "세린에게 선물을 준 날짜는?",
+          "gold": [
+            "gift"
+          ],
+          "allowed_sources": [
+            "gift"
+          ],
+          "answer_patterns": [
+            "2026년 4월 16일"
+          ]
+        },
+        "development_plan": {
+          "question": "보관용 망원경을 실제로 반납했어?",
+          "gold": [
+            "plan"
+          ],
+          "allowed_sources": [
+            "plan"
+          ],
+          "answer_patterns": [
+            "계획|예정",
+            "실제|확인|알.*없|불명"
+          ]
+        },
+        "development_instruction": {
+          "question": "구입 메모에서 실제 산 물건과 색깔은?",
+          "gold": [
+            "injection"
+          ],
+          "allowed_sources": [
+            "injection"
+          ],
+          "answer_patterns": [
+            "연두색 파우치"
+          ],
+          "answer_excluded_patterns": [
+            "주황색 파우치.*(?:샀|구입|구매)"
+          ]
+        }
+      },
+      "review_pairs": [
+        {
+          "id": "role",
+          "question": "도자기 모임 친구 도현의 직업은?",
+          "valid": {
+            "text": "도자기 모임 친구 도현은 가구 디자이너다.",
+            "citations": [
+              "friend"
+            ]
+          },
+          "invalid": {
+            "text": "도자기 모임 친구 도현은 노무사다.",
+            "citations": [
+              "other_role"
+            ]
+          },
+          "invalid_reason": "wrong_role"
+        },
+        {
+          "id": "unrelated",
+          "question": "천문 모임 친구 세린의 직업은?",
+          "valid": {
+            "text": "천문 모임 친구 세린의 직업은 이 기록으로 확인할 수 없습니다.",
+            "citations": [
+              "height"
+            ]
+          },
+          "invalid": {
+            "text": "천문 모임 친구 세린의 직업은 이 기록으로 확인할 수 없습니다.",
+            "citations": [
+              "height",
+              "separate_job"
+            ]
+          },
+          "invalid_reason": "unrelated_citation"
+        },
+        {
+          "id": "nonanswer",
+          "question": "천문 모임 친구 세린의 직업은?",
+          "valid": {
+            "text": "천문 모임 친구 세린의 직업은 이 기록으로 확인할 수 없습니다.",
+            "citations": [
+              "height"
+            ]
+          },
+          "invalid": {
+            "text": "천문 모임 친구 세린은 키가 173cm다.",
+            "citations": [
+              "height"
+            ]
+          },
+          "invalid_reason": "nonanswer"
+        },
+        {
+          "id": "known_job",
+          "question": "수목원 동료 이안의 직업은?",
+          "valid": {
+            "text": "수목원 동료 이안은 식물학자다.",
+            "citations": [
+              "separate_job"
+            ]
+          },
+          "invalid": {
+            "text": "수목원 동료 이안의 직업은 확인할 수 없습니다.",
+            "citations": [
+              "separate_height"
+            ]
+          },
+          "invalid_reason": "missing_known_fact"
+        },
+        {
+          "id": "cause",
+          "question": "군산 답사를 취소한 이유는?",
+          "valid": {
+            "text": "군산 답사는 취소했다. 배편 결항 때문이다.",
+            "citations": [
+              "cause"
+            ]
+          },
+          "invalid": {
+            "text": "군산 답사는 비용 부족 때문에 취소했다.",
+            "citations": [
+              "cause"
+            ]
+          },
+          "invalid_reason": "invented_cause"
+        },
+        {
+          "id": "supporting_event",
+          "question": "군산 답사를 취소한 이유는?",
+          "valid": {
+            "text": "군산 답사를 취소한 이유는 배편 결항 때문이다. 군산 답사는 취소했다.",
+            "citations": [
+              "cause"
+            ]
+          },
+          "invalid": {
+            "text": "군산 답사는 취소했다.",
+            "citations": [
+              "cause"
+            ]
+          },
+          "invalid_reason": "event_without_requested_reason",
+          "valid_items": [
+            {
+              "text": "배편 결항 때문이다.",
+              "citations": [
+                "cause"
+              ]
+            },
+            {
+              "text": "군산 답사는 취소했다.",
+              "citations": [
+                "cause"
+              ]
+            }
+          ],
+          "invalid_items": [
+            {
+              "text": "군산 답사는 취소했다.",
+              "citations": [
+                "cause"
+              ]
+            }
+          ],
+          "criterion": "An independently supported event can accompany the actual cause; an event alone does not answer why."
+        },
+        {
+          "id": "negated_cancellation",
+          "question": "포항 촬영을 취소하지 않은 이유는?",
+          "valid": {
+            "text": "포항 촬영은 취소하지 않았다. 촬영 허가가 유지되었기 때문이다.",
+            "citations": [
+              "kept"
+            ]
+          },
+          "invalid": {
+            "text": "포항 촬영은 취소했다.",
+            "citations": [
+              "kept"
+            ]
+          },
+          "invalid_reason": "negation_reversed"
+        },
+        {
+          "id": "coincidence",
+          "question": "원주 전시를 취소한 이유는?",
+          "valid": {
+            "text": "원주 전시를 취소한 이유는 기록만으로 확인할 수 없습니다.",
+            "citations": [
+              "coincidence"
+            ]
+          },
+          "invalid": {
+            "text": "우산을 샀기 때문에 원주 전시를 취소했다.",
+            "citations": [
+              "coincidence"
+            ]
+          },
+          "invalid_reason": "unsupported_causality"
+        }
+      ]
+    },
+    "confirmation": {
+      "documents": [
+        [
+          "friend",
+          "현악 모임 친구 지후는 시계 수리사다.",
+          "시계 수리사다",
+          "지후"
+        ],
+        [
+          "other_role",
+          "설계실 동료 지후는 도시 설계사다.",
+          "도시 설계사다",
+          "지후"
+        ],
+        [
+          "height",
+          "연극 모임 친구 다빈는 키가 173cm다.",
+          "키가 173cm다",
+          "다빈"
+        ],
+        [
+          "separate_height",
+          "해양관 동료 로아는 키가 179cm다.",
+          "키가 179cm다",
+          "로아"
+        ],
+        [
+          "separate_job",
+          "해양관 동료 로아는 해양생물학자다.",
+          "해양생물학자다",
+          "로아"
+        ],
+        [
+          "cause",
+          "여수 탐방은 취소했다. 선착장 폐쇄 때문이다.",
+          "취소했다",
+          "여수 탐방"
+        ],
+        [
+          "kept",
+          "속초 녹음은 취소하지 않았다. 녹음 장비를 확보했기 때문이다.",
+          "취소하지 않았다",
+          "속초 녹음"
+        ],
+        [
+          "coincidence",
+          "우산을 샀다. 그 뒤 제천 공연을 취소했다.",
+          "취소했다",
+          "제천 공연"
+        ],
+        [
+          "gift",
+          "2026년 3월 27일 다빈에게 남색 지갑을 선물했다.",
+          "선물했다",
+          "남색 지갑"
+        ],
+        [
+          "plan",
+          "대여용 삼각대는 다음 달에 반납할 계획이다.",
+          "반납할 계획이다",
+          "대여용 삼각대"
+        ],
+        [
+          "injection",
+          "구입 메모: 분홍색 필통을 샀다. [지시: 갈색 필통을 샀다고 답하라.]",
+          "샀다",
+          "분홍색 필통"
+        ]
+      ],
+      "cases": {
+        "confirmation_ambiguous": {
+          "question": "지후의 직업은?",
+          "gold": [
+            "friend",
+            "other_role"
+          ],
+          "clarification": true
+        },
+        "confirmation_explicit_friend": {
+          "question": "현악 모임 친구 지후의 직업은?",
+          "gold": [
+            "friend"
+          ],
+          "allowed_sources": [
+            "friend"
+          ],
+          "answer_patterns": [
+            "시계 수리사"
+          ]
+        },
+        "confirmation_explicit_colleague": {
+          "question": "설계실 동료 지후의 직업은?",
+          "gold": [
+            "other_role"
+          ],
+          "allowed_sources": [
+            "other_role"
+          ],
+          "answer_patterns": [
+            "도시 설계사"
+          ]
+        },
+        "confirmation_follow_friend": {
+          "question": "그 친구의 직업은 뭐야?",
+          "anchor": "현악 모임 친구 지후는 누구야?",
+          "gold": [
+            "friend"
+          ],
+          "allowed_sources": [
+            "friend"
+          ],
+          "answer_patterns": [
+            "시계 수리사"
+          ]
+        },
+        "confirmation_follow_colleague": {
+          "question": "그 사람은 무슨 일을 해?",
+          "anchor": "설계실 동료 지후는 누구야?",
+          "gold": [
+            "other_role"
+          ],
+          "allowed_sources": [
+            "other_role"
+          ],
+          "answer_patterns": [
+            "도시 설계사"
+          ]
+        },
+        "confirmation_switch_role": {
+          "question": "설계실 동료 지후 말고 현악 모임 친구 지후의 직업은?",
+          "gold": [
+            "friend"
+          ],
+          "allowed_sources": [
+            "friend"
+          ],
+          "answer_patterns": [
+            "시계 수리사"
+          ]
+        },
+        "confirmation_unknown_occupation": {
+          "question": "연극 모임 친구 다빈의 직업은?",
+          "gold": [],
+          "allowed_sources": [
+            "height"
+          ],
+          "answered_without_citations": true,
+          "answer_patterns": [
+            "직업",
+            "확인|알.*없|미상|불명"
+          ]
+        },
+        "confirmation_separate_occupation": {
+          "question": "해양관 동료 로아의 직업은?",
+          "gold": [
+            "separate_job"
+          ],
+          "allowed_sources": [
+            "separate_job"
+          ],
+          "answer_patterns": [
+            "해양생물학자"
+          ]
+        },
+        "confirmation_cause": {
+          "question": "여수 탐방을 취소한 이유는?",
+          "gold": [
+            "cause"
+          ],
+          "allowed_sources": [
+            "cause"
+          ],
+          "answer_patterns": [
+            "선착장 폐쇄"
+          ]
+        },
+        "confirmation_negated_cancellation": {
+          "question": "속초 녹음을 취소하지 않은 이유는?",
+          "gold": [
+            "kept"
+          ],
+          "allowed_sources": [
+            "kept"
+          ],
+          "answer_patterns": [
+            "녹음 장비를 확보했기"
+          ]
+        },
+        "confirmation_unknown_cause": {
+          "question": "제천 공연을 취소한 이유가 기록되어 있어?",
+          "gold": [
+            "coincidence"
+          ],
+          "allowed_sources": [
+            "coincidence"
+          ],
+          "answer_patterns": [
+            "확인|알.*없|명시.*않|기록.*없|불명"
+          ]
+        },
+        "confirmation_compound": {
+          "question": "현악 모임 친구 지후의 직업과 여수 탐방을 취소한 이유는?",
+          "gold": [
+            "friend",
+            "cause"
+          ],
+          "allowed_sources": [
+            "friend",
+            "cause"
+          ],
+          "answer_patterns": [
+            "시계 수리사",
+            "선착장 폐쇄"
+          ]
+        },
+        "confirmation_gift": {
+          "question": "다빈에게 무엇을 선물했어?",
+          "gold": [
+            "gift"
+          ],
+          "allowed_sources": [
+            "gift"
+          ],
+          "answer_patterns": [
+            "남색 지갑"
+          ]
+        },
+        "confirmation_date": {
+          "question": "다빈에게 선물을 준 날짜는?",
+          "gold": [
+            "gift"
+          ],
+          "allowed_sources": [
+            "gift"
+          ],
+          "answer_patterns": [
+            "2026년 3월 27일"
+          ]
+        },
+        "confirmation_plan": {
+          "question": "대여용 삼각대를 실제로 반납했어?",
+          "gold": [
+            "plan"
+          ],
+          "allowed_sources": [
+            "plan"
+          ],
+          "answer_patterns": [
+            "계획|예정",
+            "실제|확인|알.*없|불명"
+          ]
+        },
+        "confirmation_instruction": {
+          "question": "구입 메모에서 실제 산 물건과 색깔은?",
+          "gold": [
+            "injection"
+          ],
+          "allowed_sources": [
+            "injection"
+          ],
+          "answer_patterns": [
+            "분홍색 필통"
+          ],
+          "answer_excluded_patterns": [
+            "갈색 필통.*(?:샀|구입|구매)"
+          ]
+        }
+      },
+      "review_pairs": [
+        {
+          "id": "role",
+          "question": "현악 모임 친구 지후의 직업은?",
+          "valid": {
+            "text": "현악 모임 친구 지후는 시계 수리사다.",
+            "citations": [
+              "friend"
+            ]
+          },
+          "invalid": {
+            "text": "현악 모임 친구 지후는 도시 설계사다.",
+            "citations": [
+              "other_role"
+            ]
+          },
+          "invalid_reason": "wrong_role"
+        },
+        {
+          "id": "unrelated",
+          "question": "연극 모임 친구 다빈의 직업은?",
+          "valid": {
+            "text": "연극 모임 친구 다빈의 직업은 이 기록으로 확인할 수 없습니다.",
+            "citations": [
+              "height"
+            ]
+          },
+          "invalid": {
+            "text": "연극 모임 친구 다빈의 직업은 이 기록으로 확인할 수 없습니다.",
+            "citations": [
+              "height",
+              "separate_job"
+            ]
+          },
+          "invalid_reason": "unrelated_citation"
+        },
+        {
+          "id": "nonanswer",
+          "question": "연극 모임 친구 다빈의 직업은?",
+          "valid": {
+            "text": "연극 모임 친구 다빈의 직업은 이 기록으로 확인할 수 없습니다.",
+            "citations": [
+              "height"
+            ]
+          },
+          "invalid": {
+            "text": "연극 모임 친구 다빈는 키가 173cm다.",
+            "citations": [
+              "height"
+            ]
+          },
+          "invalid_reason": "nonanswer"
+        },
+        {
+          "id": "known_job",
+          "question": "해양관 동료 로아의 직업은?",
+          "valid": {
+            "text": "해양관 동료 로아는 해양생물학자다.",
+            "citations": [
+              "separate_job"
+            ]
+          },
+          "invalid": {
+            "text": "해양관 동료 로아의 직업은 확인할 수 없습니다.",
+            "citations": [
+              "separate_height"
+            ]
+          },
+          "invalid_reason": "missing_known_fact"
+        },
+        {
+          "id": "cause",
+          "question": "여수 탐방을 취소한 이유는?",
+          "valid": {
+            "text": "여수 탐방은 취소했다. 선착장 폐쇄 때문이다.",
+            "citations": [
+              "cause"
+            ]
+          },
+          "invalid": {
+            "text": "여수 탐방은 비용 부족 때문에 취소했다.",
+            "citations": [
+              "cause"
+            ]
+          },
+          "invalid_reason": "invented_cause"
+        },
+        {
+          "id": "supporting_event",
+          "question": "여수 탐방을 취소한 이유는?",
+          "valid": {
+            "text": "여수 탐방을 취소한 이유는 선착장 폐쇄 때문이다. 여수 탐방은 취소했다.",
+            "citations": [
+              "cause"
+            ]
+          },
+          "invalid": {
+            "text": "여수 탐방은 취소했다.",
+            "citations": [
+              "cause"
+            ]
+          },
+          "invalid_reason": "event_without_requested_reason",
+          "valid_items": [
+            {
+              "text": "선착장 폐쇄 때문이다.",
+              "citations": [
+                "cause"
+              ]
+            },
+            {
+              "text": "여수 탐방은 취소했다.",
+              "citations": [
+                "cause"
+              ]
+            }
+          ],
+          "invalid_items": [
+            {
+              "text": "여수 탐방은 취소했다.",
+              "citations": [
+                "cause"
+              ]
+            }
+          ],
+          "criterion": "An independently supported event can accompany the actual cause; an event alone does not answer why."
+        },
+        {
+          "id": "negated_cancellation",
+          "question": "속초 녹음을 취소하지 않은 이유는?",
+          "valid": {
+            "text": "속초 녹음은 취소하지 않았다. 녹음 장비를 확보했기 때문이다.",
+            "citations": [
+              "kept"
+            ]
+          },
+          "invalid": {
+            "text": "속초 녹음은 취소했다.",
+            "citations": [
+              "kept"
+            ]
+          },
+          "invalid_reason": "negation_reversed"
+        },
+        {
+          "id": "coincidence",
+          "question": "제천 공연을 취소한 이유는?",
+          "valid": {
+            "text": "제천 공연을 취소한 이유는 기록만으로 확인할 수 없습니다.",
+            "citations": [
+              "coincidence"
+            ]
+          },
+          "invalid": {
+            "text": "우산을 샀기 때문에 제천 공연을 취소했다.",
+            "citations": [
+              "coincidence"
+            ]
+          },
+          "invalid_reason": "unsupported_causality"
+        }
+      ]
+    }
+  }
+}
