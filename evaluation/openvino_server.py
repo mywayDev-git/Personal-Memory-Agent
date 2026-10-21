@@ -10,8 +10,16 @@ import select
 import socket
 import threading
 import time
+import traceback
+from pathlib import Path
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlsplit
+
+
+def error_location(exc):
+    frame = traceback.extract_tb(exc.__traceback__)[-1]
+    return {"error": type(exc).__name__, "file": Path(frame.filename).name,
+            "function": frame.name, "line": frame.lineno}
 
 
 def main():
@@ -72,8 +80,10 @@ def main():
             except (BrokenPipeError, ConnectionResetError):
                 pass
             except Exception as exc:
-                # Exception messages can contain source text: emit only a type.
-                self.send({"error": type(exc).__name__}, 500)
+                # Exception messages can contain source text: emit type/location only.
+                details = error_location(exc)
+                print(json.dumps(details), flush=True)
+                self.send(details, 500)
 
         def generate(self, body):
             if body.get("stream") or body.get("temperature", 0) != 0:
@@ -100,7 +110,9 @@ def main():
                 disconnected = bool(select.select([self.connection], [], [], 0)[0]) and not self.connection.recv(1, socket.MSG_PEEK)
                 cancelled = disconnected or time.monotonic() - started > args.request_timeout
                 return genai.StreamingStatus.CANCEL if cancelled else genai.StreamingStatus.RUNNING
-            result = pipeline.generate(prompt, config, streamer=stream)
+            # A scalar string can return a plain str in the installed SDK.
+            # Batch size one preserves DecodedResults and actual token metrics.
+            result = pipeline.generate([prompt], config, streamer=stream)
             if cancelled:
                 self.send({"error": "REQUEST_CANCELLED_OR_TIMEOUT"}, 504)
                 return

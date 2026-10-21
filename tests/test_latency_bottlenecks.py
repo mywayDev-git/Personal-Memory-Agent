@@ -16,6 +16,13 @@ def test_cli_uses_the_requested_device_target_and_marks_baseline_only(tmp_path, 
         assert report["target_seconds"] == target
         assert report["adoption"] == "BASELINE_REFERENCE_ONLY"
         assert len(report["source_sha256"]) == 64
+    output = tmp_path / "both-report.json"
+    monkeypatch.setattr(sys, "argv", ["report", str(tmp_path / "cpu.json"), str(tmp_path / "gpu.json"),
+                                      "--output", str(output)])
+    main()
+    reports = json.loads(output.read_text(encoding="utf-8"))
+    assert [r["target_seconds"] for r in reports] == [60, 10]
+    assert [r["placement"] for r in reports] == ["cpu", "gpu"]
 
 
 def test_failures_and_warmups_are_not_ten_second_successes():

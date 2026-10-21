@@ -22,12 +22,14 @@ PAIRS = [
 ]
 
 
-def evaluate(models, artifact_path=None):
+def evaluate(models, artifact_path=None, *, before_call=None):
     rows = []
     artifacts = []
     for index, (source, question, valid, altered) in enumerate(PAIRS):
         evidence = [{"id": "review-source", "source_text": source}]
         for expected, text in ((True, valid), (False, altered)):
+            if before_call is not None:
+                before_call()
             response = {"status": "answered", "items": [{"text": text, "citations": ["review-source"]}]}
             started = time.perf_counter()
             row = {"pair": index, "expected_approval": expected}
@@ -44,8 +46,11 @@ def evaluate(models, artifact_path=None):
                        transport_calls=len(budget.calls))
             row["passed"] = row["approved"] == expected and "error_code" not in row
             rows.append(row)
-    if artifact_path is not None:
-        Path(artifact_path).write_text(json.dumps(artifacts, ensure_ascii=False, indent=2), encoding="utf-8")
+            if artifact_path is not None:
+                path = Path(artifact_path)
+                pending = path.with_suffix(".partial")
+                pending.write_text(json.dumps(artifacts, ensure_ascii=False, indent=2), encoding="utf-8")
+                pending.replace(path)
     return {"fixture_sha256": hashlib.sha256(json.dumps(PAIRS, ensure_ascii=False).encode()).hexdigest(),
             "gold_origin": "authored_from_synthetic_sources", "rows": rows,
             "false_approvals": sum(r["approved"] and not r["expected_approval"] for r in rows),

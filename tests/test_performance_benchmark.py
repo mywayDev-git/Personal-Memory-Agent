@@ -6,6 +6,32 @@ from evaluation.performance_benchmark import accelerator_available, available_me
 from evaluation.performance_report import summarize
 
 
+def test_owned_model_descendants_are_deduplicated_without_monitoring_siblings():
+    from evaluation.performance_benchmark import owned_process_ids
+    parents = {1: 0, 10: 1, 11: 10, 12: 11, 99: 1, 100: 99}
+    assert owned_process_ids([1, 10], parents, current_pid=1) == {1, 10, 11, 12}
+    assert owned_process_ids([10, 11], parents, current_pid=1) == {10, 11, 12}
+    assert owned_process_ids([0], {4: 0, 8: 4}, current_pid=1) == {0}
+
+
+@pytest.mark.skipif(os.name != "nt", reason="Windows process-memory integration")
+def test_sampler_includes_actual_interpreter_below_an_owned_launcher():
+    import subprocess
+    import sys
+    child = "import time; data=bytearray(20*1024**2); print('ready',flush=True); time.sleep(2)"
+    parent = ("import subprocess,sys; p=subprocess.Popen([sys.executable,'-c'," + repr(child) + "],stdout=subprocess.PIPE,text=True); "
+              "p.stdout.readline(); print(p.pid,flush=True); p.wait()")
+    process = subprocess.Popen([sys.executable, "-c", parent], stdout=subprocess.PIPE, text=True)
+    try:
+        assert int(process.stdout.readline()) > 0
+        usage = memory_usage([process.pid])
+        assert usage["observed_processes"] == 1
+        assert usage["tracked_processes"] >= 2 and usage["process_tree_complete"]
+        assert usage["private_commit_mb"] > 20
+    finally:
+        process.communicate(timeout=10)
+
+
 @pytest.mark.parametrize("output,code,expected", [
     ("Available devices:\n  CUDA0: NVIDIA GPU", 0, True),
     ("Available devices:\n  Vulkan0: GPU", 0, True),

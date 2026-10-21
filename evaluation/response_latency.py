@@ -182,7 +182,9 @@ def servers(args, generation, embedding):
                     startup_memory.append({"server_index": index, "ram_peak_mb": max(memory.ram, default=None),
                         "private_commit_peak_mb": max(memory.private_commit, default=None),
                         "gpu_total_peak_mb": max(memory.vram, default=None),
-                        "system_available_ram_min_mb": min(memory.available_ram, default=None)})
+                        "system_available_ram_min_mb": min(memory.available_ram, default=None),
+                        "process_tree_complete": bool(memory.process_tree_complete) and all(memory.process_tree_complete),
+                        "tracked_processes_peak": max(memory.tracked_processes, default=None)})
                 else:
                     wait_ready(process, args.port + index)
             except BaseException as exc:
@@ -421,16 +423,26 @@ def main():
             seed = args.output / "synthetic-seed.db"
             keys = seed_database(seed, LocalModels(settings), settings, template=args.seed_template)
             report["index_seconds"] = time.perf_counter() - started
+            report["synthetic_seed_sha256"] = digest(seed)
             report["initial_preparation_seconds"] = time.perf_counter() - preparation_started
             if args.review_bank:
                 from evaluation.review_bank import evaluate as evaluate_review
                 from pma.chat.models import ChatLocalModels
-                with MemorySampler([os.getpid()] + [p.pid for p in processes]) as review_memory:
-                    report["review_bank"] = evaluate_review(ChatLocalModels(configured(settings, args.candidate_options)), args.output / "review-quality.json")
-                report["review_bank"]["memory"] = {"ram_peak_mb": max(review_memory.ram, default=None),
-                    "private_commit_peak_mb": max(review_memory.private_commit, default=None),
-                    "gpu_total_peak_mb": max(review_memory.vram, default=None),
-                    "system_available_ram_min_mb": min(review_memory.available_ram, default=None)}
+                review_memory = None
+                try:
+                    with MemorySampler([os.getpid()] + [p.pid for p in processes]) as review_memory:
+                        report["review_bank"] = evaluate_review(
+                            ChatLocalModels(configured(settings, args.candidate_options)), args.output / "review-quality.json",
+                            before_call=lambda: check_cancelled(args))
+                finally:
+                    if review_memory is not None:
+                        report.setdefault("review_bank", {"status": "ERROR"})["memory"] = {
+                            "ram_peak_mb": max(review_memory.ram, default=None),
+                            "private_commit_peak_mb": max(review_memory.private_commit, default=None),
+                            "gpu_total_peak_mb": max(review_memory.vram, default=None),
+                            "system_available_ram_min_mb": min(review_memory.available_ram, default=None),
+                            "process_tree_complete": bool(review_memory.process_tree_complete) and all(review_memory.process_tree_complete),
+                            "tracked_processes_peak": max(review_memory.tracked_processes, default=None)}
                 save()
             if args.multilingual:
                 from evaluation.multilingual_search import evaluate
@@ -574,7 +586,9 @@ def main():
                         row["private_commit_peak_mb"] = max(mem.private_commit, default=None)
                         row["system_available_ram_min_mb"] = min(mem.available_ram, default=None)
                         row["memory_processes_complete"] = (bool(mem.observed_processes)
-                            and all(count == len(mem.pids) for count in mem.observed_processes))
+                            and all(count == len(mem.pids) for count in mem.observed_processes)
+                            and bool(mem.process_tree_complete) and all(mem.process_tree_complete))
+                        row["tracked_processes_peak"] = max(mem.tracked_processes, default=None)
                         row["page_fault_delta"] = (max(mem.page_faults) - min(mem.page_faults)
                                                    if mem.page_faults else None)
                         row["gpu_total_peak_mb"] = max(mem.vram, default=None)

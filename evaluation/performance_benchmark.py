@@ -76,14 +76,59 @@ class Counters(ctypes.Structure):
     ]
 
 
+def owned_process_ids(pids, parents, current_pid=None):
+    """Expand model launchers, excluding the sampler's own monitoring helpers."""
+    current_pid = os.getpid() if current_pid is None else current_pid
+    selected = set(pids)
+    expandable = {pid for pid in selected if pid > 0 and pid != current_pid}
+    while True:
+        children = {pid for pid, parent in parents.items() if parent in expandable and pid not in selected}
+        if not children:
+            return selected
+        selected.update(children)
+        expandable.update(children)
+
+
+def windows_process_parents(kernel):
+    from ctypes import wintypes
+    class Entry(ctypes.Structure):
+        _fields_ = [("size", wintypes.DWORD), ("usage", wintypes.DWORD), ("pid", wintypes.DWORD),
+                    ("heap", ctypes.c_size_t), ("module", wintypes.DWORD), ("threads", wintypes.DWORD),
+                    ("parent", wintypes.DWORD), ("priority", wintypes.LONG), ("flags", wintypes.DWORD),
+                    ("exe", wintypes.WCHAR * 260)]
+    kernel.CreateToolhelp32Snapshot.restype = ctypes.c_void_p
+    kernel.CreateToolhelp32Snapshot.argtypes = [wintypes.DWORD, wintypes.DWORD]
+    for name in ("Process32FirstW", "Process32NextW"):
+        getattr(kernel, name).argtypes = [ctypes.c_void_p, ctypes.POINTER(Entry)]
+    snapshot = kernel.CreateToolhelp32Snapshot(2, 0)
+    if snapshot in (None, ctypes.c_void_p(-1).value):
+        return None
+    try:
+        entry = Entry()
+        entry.size = ctypes.sizeof(entry)
+        if not kernel.Process32FirstW(snapshot, ctypes.byref(entry)):
+            return None
+        parents = {}
+        while True:
+            parents[entry.pid] = entry.parent
+            if not kernel.Process32NextW(snapshot, ctypes.byref(entry)):
+                return parents
+    finally:
+        kernel.CloseHandle(snapshot)
+
+
 def memory_usage(pids):
     kernel = ctypes.WinDLL("kernel32", use_last_error=True)
     kernel.OpenProcess.restype = ctypes.c_void_p
     kernel.CloseHandle.argtypes = [ctypes.c_void_p]
     psapi = ctypes.WinDLL("psapi", use_last_error=True)
     psapi.GetProcessMemoryInfo.argtypes = [ctypes.c_void_p, ctypes.c_void_p, ctypes.c_ulong]
-    total = private = faults = observed = 0
-    for pid in pids:
+    roots = set(pids)
+    parents = windows_process_parents(kernel)
+    tracked = owned_process_ids(roots, parents) if parents is not None else roots
+    total = private = faults = 0
+    observed = set()
+    for pid in tracked:
         handle = kernel.OpenProcess(0x410, False, pid)
         if handle:
             try:
@@ -93,11 +138,13 @@ def memory_usage(pids):
                     total += data.working
                     private += data.private
                     faults += data.faults
-                    observed += 1
+                    observed.add(pid)
             finally:
                 kernel.CloseHandle(handle)
     return {"working_mb": total / 1024**2, "private_commit_mb": private / 1024**2,
-            "page_faults": faults, "observed_processes": observed}
+            "page_faults": faults, "observed_processes": len(observed & roots),
+            "tracked_processes": len(observed),
+            "process_tree_complete": parents is not None and observed == tracked}
 
 
 def memory_mb(pids):
@@ -126,6 +173,8 @@ class MemorySampler:
         self.available_ram = []
         self.page_faults = []
         self.observed_processes = []
+        self.process_tree_complete = []
+        self.tracked_processes = []
 
     def sample(self):
         while not self.stop.is_set():
@@ -134,6 +183,8 @@ class MemorySampler:
             self.private_commit.append(usage["private_commit_mb"])
             self.page_faults.append(usage["page_faults"])
             self.observed_processes.append(usage["observed_processes"])
+            self.process_tree_complete.append(usage["process_tree_complete"])
+            self.tracked_processes.append(usage["tracked_processes"])
             available = available_memory_mb()
             if available is not None:
                 self.available_ram.append(available)
