@@ -103,7 +103,8 @@ class AppSettings:
             interpretation_reuse=os.getenv("PMA_INTERPRETATION_REUSE", "0") == "1",
             intermediate_planning=os.getenv("PMA_INTERMEDIATE_PLANNING", "0") == "1",
             bounded_expansions=os.getenv("PMA_BOUNDED_EXPANSIONS", "0") == "1",
-            scoped_identity_search=os.getenv("PMA_SCOPED_IDENTITY_SEARCH", "0") == "1",
+            # Failed completion-quality gates: evaluator-only until qualified.
+            scoped_identity_search=False,
             source_date_drafts=os.getenv("PMA_SOURCE_DATE_DRAFTS", "0") == "1",
             source_stop_drafts=os.getenv("PMA_SOURCE_STOP_DRAFTS", "1") == "1",
             selection_batch_size=int(os.getenv("PMA_SELECTION_BATCH_SIZE", "4")),

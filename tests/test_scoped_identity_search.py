@@ -61,4 +61,6 @@ def test_second_independent_set_is_frozen_and_opt_in_is_disabled_by_default(monk
     monkeypatch.delenv('PMA_SCOPED_IDENTITY_SEARCH', raising=False)
     assert AppSettings.from_env().scoped_identity_search is False
     monkeypatch.setenv('PMA_SCOPED_IDENTITY_SEARCH', '1')
-    assert AppSettings.from_env().scoped_identity_search is True
+    assert AppSettings.from_env().scoped_identity_search is False
+    from evaluation.latency_variants import configured
+    assert configured(AppSettings(), ['scoped_identity']).scoped_identity_search is True
