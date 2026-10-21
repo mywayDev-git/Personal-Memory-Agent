@@ -11,7 +11,7 @@ from .first_response_cases import DEVELOPMENT, HOLDOUT, EXTRA_DOCUMENTS, HOLDOUT
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--execute", action="store_true")
-    parser.add_argument("--split", choices=["development", "holdout", "identity_confirmation", "identity_search_confirmation", "identity_completion_confirmation"], default="development")
+    parser.add_argument("--split", choices=["development", "holdout", "identity_confirmation", "identity_search_confirmation", "identity_completion_confirmation", "integrity_development", "integrity_confirmation"], default="development")
     args, remaining = parser.parse_known_args()
     declared = json.loads(Path(__file__).with_name("first_response_manifest.json").read_text(encoding="utf-8"))
     if declared != manifest():
@@ -31,19 +31,22 @@ def main():
         declared = json.loads(Path(__file__).with_name('identity_completion_manifest.json').read_text('utf-8'))
         if declared != completion_manifest():
             parser.error('Frozen independent direct-completion confirmation differs')
+    if args.split.startswith('integrity_'):
+        from .answer_integrity_cases import load
+        DOCUMENTS, CASES, declared = load(args.split.removeprefix('integrity_'))
     if not args.execute:
         print(json.dumps({"status": "PLAN_ONLY", "fixtures": declared, "split": args.split,
                           "model_arguments": remaining, "models_started": False}, ensure_ascii=False, indent=2))
         return
     # Importing or viewing the plan cannot load models or invoke any evaluation.
     from . import response_latency as runner
-    if args.split in {"identity_confirmation", "identity_search_confirmation", "identity_completion_confirmation"}:
+    if args.split.startswith('integrity_') or args.split in {"identity_confirmation", "identity_search_confirmation", "identity_completion_confirmation"}:
         runner.DOCUMENTS[:] = DOCUMENTS
     elif args.split == "development":
         runner.DOCUMENTS.extend(EXTRA_DOCUMENTS)
     else:
         runner.DOCUMENTS[:] = HOLDOUT_DOCUMENTS
-    cases = CASES if args.split in {"identity_confirmation", "identity_search_confirmation", "identity_completion_confirmation"} else DEVELOPMENT if args.split == "development" else HOLDOUT
+    cases = CASES if args.split.startswith('integrity_') or args.split in {"identity_confirmation", "identity_search_confirmation", "identity_completion_confirmation"} else DEVELOPMENT if args.split == "development" else HOLDOUT
     runner.CASES.update(cases)
     if "--cases" not in remaining:
         remaining += ["--cases", *cases]

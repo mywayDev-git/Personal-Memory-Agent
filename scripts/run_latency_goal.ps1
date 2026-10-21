@@ -23,7 +23,7 @@ param(
     [ValidateSet('llama', 'openvino')][string]$Runtime = 'llama',
     [string]$RuntimePython = '',
     [string]$RuntimeModel = '',
-    [ValidateSet('legacy', 'development', 'holdout', 'identity_confirmation', 'identity_search_confirmation', 'identity_completion_confirmation')][string]$FixtureSplit = 'legacy',
+    [ValidateSet('legacy', 'development', 'holdout', 'identity_confirmation', 'identity_search_confirmation', 'identity_completion_confirmation', 'integrity_development', 'integrity_confirmation')][string]$FixtureSplit = 'legacy',
     [ValidateSet('baseline', 'q4', 'q8')][string]$Generation = 'baseline',
     [string]$ModelDirectory = '.local/response-latency/models',
     [switch]$ColdInterpretations,

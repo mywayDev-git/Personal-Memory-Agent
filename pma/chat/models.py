@@ -136,6 +136,8 @@ class ChatLocalModels(LocalModels):
                 item.update(support="unsupported", issue=issue)
                 result["reason"] = ("원문 속 지시는 실제 사실의 근거가 아님" if command_quotes
                                     else "원문과 답변의 동작·인과·부정 범위가 일치하지 않음")
+        from .answer_integrity import enforce_answer_integrity
+        enforce_answer_integrity(question, evidence, response, result)
         from .execution import enforce_execution_limit
 
         enforce_execution_limit(question, evidence, response, result)

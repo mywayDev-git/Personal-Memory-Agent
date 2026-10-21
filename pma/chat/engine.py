@@ -72,7 +72,7 @@ RESOLVE_PROMPT = (
     "근거 부족은 모호함이 아니다. 이유가 없는 경우 왜 질문을 그대로 유지한다. "
     "today는 현재 질문의 상대 날짜 기준이고 기록 저장일은 사건 날짜가 아니다."
 )
-CHAT_PROMPT_VERSION = 9
+CHAT_PROMPT_VERSION = 10
 
 AMBIGUITY_SCHEMA = {
     "type": "object",
@@ -320,6 +320,7 @@ class ChatEngine:
                 return finish({"status": "needs_clarification", "items": [],
                                "clarification": "어떤 작업이 완료되었는지 원문에서 구분되지 않습니다. 완료한 작업을 알려주시겠어요?",
                                "history_turns": history_count}, "ambiguous_completion_object")
+        integrity_evidence = list(evidence)
         from .interpretation import dated_progress_draft
         progress_draft = dated_progress_draft(intent_question, evidence)
         if hasattr(models, "select") and not study_topic(intent_question):
@@ -410,6 +411,8 @@ class ChatEngine:
                     else models.review(review_question, evidence, response)
                 )
                 review = validate_review(checked, response, evidence)
+                from .answer_integrity import enforce_answer_integrity
+                enforce_answer_integrity(review_question, integrity_evidence, response, review)
                 review_ok = accepted(review, response) and review_spans_supported(response, review, evidence)
                 review_feedback = None
             except ValueError as exc:
@@ -453,7 +456,8 @@ class ChatEngine:
                 meaning_rejected = any(
                     item.get("issue") == "negation" for item in review.get("items", [])
                 )
-                repair = instruction_statement_draft(intent_question, evidence)
+                from .answer_integrity import occupation_limit_draft
+                repair = occupation_limit_draft(intent_question, integrity_evidence) or instruction_statement_draft(intent_question, evidence)
                 if repair:
                     count("source_instruction_repairs")
                 response = repair or (quoted_topic_answer(intent_question, evidence)

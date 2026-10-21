@@ -388,7 +388,8 @@ def main():
         "evaluation/first_response.py", "evaluation/first_response_cases.py", "evaluation/first_response_manifest.json",
         "evaluation/review_bank.py", "evaluation/identity_followup_cases.py", "evaluation/identity_followup_manifest.json",
         "evaluation/anchor_templates.py", "evaluation/identity_search_cases.py", "evaluation/identity_search_manifest.json",
-        "evaluation/identity_completion_cases.py", "evaluation/identity_completion_manifest.json")}
+        "evaluation/identity_completion_cases.py", "evaluation/identity_completion_manifest.json",
+        "evaluation/answer_integrity_cases.py", "evaluation/answer_integrity_cases.json", "evaluation/answer_integrity_manifest.json")}
     if args.seed_template:
         report["seed_template_sha256"] = digest(args.seed_template)
     if args.runtime == "openvino":

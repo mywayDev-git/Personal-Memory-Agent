@@ -18,6 +18,10 @@ def render(results, artifacts):
     config = document["configuration"]
     cases = {"development": DEVELOPMENT, "holdout": HOLDOUT}.get(config.get("fixture_split"))
     expected_hash = manifest()["sha256"]
+    if config.get('fixture_split', '').startswith('integrity_'):
+        from .answer_integrity_cases import load
+        _, cases, declared = load(config['fixture_split'].removeprefix('integrity_'))
+        expected_hash = declared['sha256']
     if config.get("fixture_split") == "identity_confirmation":
         from .identity_followup_cases import CASES, manifest as identity_manifest
         cases, expected_hash = CASES, identity_manifest()["sha256"]
