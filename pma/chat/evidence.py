@@ -93,13 +93,17 @@ def causal_claims_supported(question, response, evidence, *, require_coverage=Tr
         if parts and identity_item and not causal_text:
             continue
         if not causal_text:
-            return False
+            # A supported event may accompany its actual cause. Completeness is
+            # checked across the answer, not independently for every sentence.
+            continue
         cause_seen = True
         if re.search(causal, item["text"]) and not any(
             re.search(causal, sources[cid]) for cid in item["citations"]
         ):
             return False
-    return not (parts and require_coverage) or (identity_seen and cause_seen)
+    if not require_coverage or not response['items']:
+        return True
+    return cause_seen and (not parts or identity_seen)
 
 
 def semantic_issue(question, item, evidence):
@@ -198,14 +202,17 @@ def identity_alternatives(question, evidence):
     """Only explicit role-qualified names can force a clarification."""
     if not (asks_identity(question) or re.search(r"어떤\s*일|무슨\s*일", question)) or re.search(r"둘|각각|비교|차이", question):
         return []
+    from .identity import ROLE, canonical_label
+    from .review_sources import source_units, instruction_span
     groups = {}
     for row in evidence:
-        pattern = r"([가-힣]+(?:\s+[가-힣]+){0,2}\s+(?:동료|친구|동창|선배|후배))\s+([가-힣]{2,5}?)(?=은|는|이|가|에게|와|과|[ .,!]|$)"
-        for match in re.finditer(pattern, row["source_text"]):
+        # Labels in a quoted instruction cannot establish a second person.
+        text = '\n'.join(unit for unit in source_units(row['source_text']) if not instruction_span(unit))
+        for match in ROLE.finditer(text):
             role, name = match.groups()
             if name not in question:
                 continue
-            groups.setdefault(name, {})[role] = {
+            groups.setdefault(name, {})[canonical_label(role)] = {
                 "label": match.group(),
                 "quote": match.group(),
                 "evidence_id": row["id"],

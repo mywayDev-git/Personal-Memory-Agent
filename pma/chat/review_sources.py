@@ -22,6 +22,31 @@ def source_units(text):
     yield from (s["text"].strip() for s in sentences(text[cursor:]) if s["text"].strip())
 
 
+def alternative_span(alternative, source):
+    """Locate a clarification label in a factual unit of the selected quote.
+
+    Keep the entire source available. An embedded command alone cannot create
+    an alternative referent or become the citation behind a clarification.
+    """
+    label, quote = alternative['label'], alternative['quote']
+    if not label or not quote or label not in quote:
+        return None
+    ranges = [(m.start(), m.end()) for m in re.finditer(re.escape(quote), source)]
+    cursor = 0
+    for unit in source_units(source):
+        start = source.find(unit, cursor)
+        if start < 0:
+            continue
+        cursor = start + len(unit)
+        if instruction_span(unit):
+            continue
+        for match in re.finditer(re.escape(label), unit):
+            a, b = start + match.start(), start + match.end()
+            if any(low <= a and b <= high for low, high in ranges):
+                return a, b
+    return None
+
+
 def verbatim_instruction_report(question, text, quotes):
     if not re.search(r"(?:지시|명령).*(?:내용|문구|무엇|뭐)|(?:어떤|무슨)\s*(?:지시|명령)", question):
         return False

@@ -98,6 +98,37 @@ def explicit_person_lookup(question, evidence):
     )) and any(canonical_label(targets[0]) in canonical_label(row["source_text"]) for row in evidence)
 
 
+def ambiguity_reservations(question, candidates):
+    """Keep eligible source-backed roles for clarification, never certify an answer.
+
+    Call only after owner/version/date/structural filtering. A model selection
+    must not erase the second person before the context ambiguity check runs.
+    """
+    if positive_labels(question):
+        return set()
+    from .evidence import identity_alternatives
+    sources = [{'id': row['id'], 'source_text': row.get('source_text', row.get('text', ''))}
+               for row in candidates]
+    return {item['evidence_id'] for item in identity_alternatives(question, sources)}
+
+
+def retain_ambiguity_rows(candidates, selected, reserved, limit):
+    """Restore only protected eligible rows without increasing the evidence cap."""
+    result = list(selected)
+    present = {row['id'] for row in result}
+    for row in candidates:
+        if row['id'] in reserved and row['id'] not in present:
+            result.append(row)
+            present.add(row['id'])
+    while len(result) > limit:
+        index = next((i for i in range(len(result)-1, -1, -1)
+                      if result[i]['id'] not in reserved), None)
+        if index is None:
+            raise ValueError('IDENTITY_ALTERNATIVES_EXCEED_EVIDENCE_LIMIT')
+        result.pop(index)
+    return result
+
+
 def identity_probe_candidate(question, evidence):
     """Identify a bounded original quote to try, never certify completion.
 

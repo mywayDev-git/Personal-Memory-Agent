@@ -12,14 +12,15 @@ from .answer_integrity_cases import load
 
 def evaluate(models, artifact_path=None, *, before_call=None, split='development'):
     documents, _, manifest = load(split)
-    pairs = json.loads(Path(__file__).with_name('answer_integrity_cases.json').read_text('utf-8'))['splits'][split]['review_pairs']
+    filename = 'identity_cause_v2_cases.json' if split.startswith('v2_') else 'answer_integrity_cases.json'
+    pairs = json.loads(Path(__file__).with_name(filename).read_text('utf-8'))['splits'][split.removeprefix('v2_')]['review_pairs']
     evidence = [{'id': row[0], 'source_text': row[1]} for row in documents]
     rows, artifacts = [], []
     for pair in pairs:
         for expected, key in ((True, 'valid'), (False, 'invalid')):
             if before_call:
                 before_call()
-            response = {'status': 'answered', 'items': [pair[key]]}
+            response = {'status': 'answered', 'items': pair.get(key + '_items', [pair[key]])}
             row = {'pair': pair['id'], 'expected_approval': expected}
             started = time.perf_counter()
             checked = None

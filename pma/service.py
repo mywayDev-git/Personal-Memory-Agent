@@ -12,7 +12,7 @@ import numpy as np
 import requests
 
 from scripts.memory_agent.diagnostics import failure
-from scripts.memory_agent.performance import measure, measured
+from scripts.memory_agent.performance import count, measure, measured
 from scripts.memory_agent.postprocess import make_source_context
 from scripts.memory_agent.validator import schema_errors
 
@@ -495,6 +495,8 @@ class Service:
                 r["text"],
             )
         )
+        from .chat.identity import ambiguity_reservations, retain_ambiguity_rows
+        identity_reserved = ambiguity_reservations(selection_question or question, candidates)
         self.trace("search_scope", total=len(rows), count=len(candidates), filters=applied)
         capture("filtered", rows, candidates, locations, known_names)
         term_specs, vocabulary = keyword_query(question, candidates)
@@ -621,6 +623,12 @@ class Service:
                 ranks[i] = ranks.get(i, 0) + 1 / 60
                 original_ranks[i] = original_ranks.get(i, 0) + 1 / 60
                 capture("component", i, "structure", 1 / 60)
+        for i, row in enumerate(candidates):
+            if row['id'] in identity_reserved:
+                # Eligibility is already filtered; retention changes coverage,
+                # not the semantic/keyword score or its ranking contribution.
+                ranks.setdefault(i, 0)
+                original_ranks.setdefault(i, 0)
         order = sorted(
             ranks,
             key=lambda i: (
@@ -633,7 +641,8 @@ class Service:
         original_order = sorted(original_ranks, key=lambda i: (
             -original_ranks[i], candidates[i]["memory"]["content"],
             candidates[i]["fact"]["event_time"].get("start") or ""))
-        reserved = set(original_order[:8])
+        reserved = set(original_order[:8]) | {i for i, row in enumerate(candidates)
+                                             if row['id'] in identity_reserved}
         pool = set(order[:24]) | reserved
         for i in reversed(order):
             if len(pool) <= 24:
@@ -754,6 +763,7 @@ class Service:
             allowed = {r["id"] for r in results}
             if not set(selected) <= allowed:
                 raise ValueError("INVALID_SELECTION")
+            selected = list(set(selected) | (identity_reserved & allowed))
             model_selected = set(selected)
             results = [r for r in results if r["id"] in selected]
             self.trace(
@@ -767,6 +777,10 @@ class Service:
         else:
             results = select_evidence(results, limit=evidence_limit)
             selection_reason = "combined_rank"
+        results = retain_ambiguity_rows(selection_pool, results,
+                                       identity_reserved - topic_excluded, evidence_limit)
+        if identity_reserved:
+            count('identity_alternatives_preserved', len(identity_reserved & {r['id'] for r in results}))
         selected_ids = {r["id"] for r in results}
         audit_candidates = []
         for row in selection_pool:
@@ -775,6 +789,8 @@ class Service:
                 reason = "topic_mismatch"
             if row["id"] in model_decisions and reason in {"model_selected", "model_not_selected"}:
                 reason = model_decisions[row["id"]]["category"]
+            if row['id'] in identity_reserved and row['id'] in selected_ids:
+                reason = 'person_ambiguity_preserved'
             decision = {"status": "selected" if row["id"] in selected_ids else "excluded", "reason": reason}
             row["search_explanation"]["selection"] = decision
             for chosen in results:

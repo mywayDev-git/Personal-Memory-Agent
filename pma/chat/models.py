@@ -164,6 +164,9 @@ class ChatLocalModels(LocalModels):
         from .execution import enforce_execution_limit
 
         enforce_execution_limit(question, evidence, response, result)
+        from .evidence import causal_claims_supported
+        if not causal_claims_supported(question, response, evidence):
+            result.update(fulfillment='missing', reason='이유 질문에 실제 이유 또는 확인 불가의 한계 설명이 필요함')
         result["presentation_valid"] = False
         # A presentation failure must never affect the already decided factual review.
         if accepted(result, response) and response.get("display"):

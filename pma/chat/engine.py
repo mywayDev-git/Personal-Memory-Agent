@@ -72,7 +72,7 @@ RESOLVE_PROMPT = (
     "근거 부족은 모호함이 아니다. 이유가 없는 경우 왜 질문을 그대로 유지한다. "
     "today는 현재 질문의 상대 날짜 기준이고 기록 저장일은 사건 날짜가 아니다."
 )
-CHAT_PROMPT_VERSION = 17
+CHAT_PROMPT_VERSION = 18
 
 AMBIGUITY_SCHEMA = {
     "type": "object",
@@ -187,9 +187,9 @@ class ChatEngine:
         alternatives = forced or result["alternatives"]
         if forced:
             result["needs_clarification"] = True
+        from .review_sources import alternative_span
         valid = len({a["label"] for a in alternatives}) >= 2 and all(
-            a["quote"] in sources.get(a["evidence_id"], "")
-            and a["label"] in a["quote"]
+            alternative_span(a, sources.get(a['evidence_id'], '')) is not None
             and not re.search(
                 r"(?:했다|봤다|이다|있다|없다|않았다|합니다|했습니다)[.!]?$", a["label"]
             )
@@ -276,7 +276,8 @@ class ChatEngine:
             for index, alternative in enumerate(resolved["alternatives"]):
                 source = sources[alternative["evidence_id"]]
                 quote = alternative["label"]
-                start = source["source_text"].index(quote)
+                from .review_sources import alternative_span
+                start, end = alternative_span(alternative, source['source_text'])
                 items.append({"text": quote, "citations": [source["id"]]})
                 details.append(
                     {
@@ -286,7 +287,7 @@ class ChatEngine:
                         "revision_id": source["revision_id"],
                         "quote": quote,
                         "start": start,
-                        "end": start + len(quote),
+                        "end": end,
                     }
                 )
             return finish({
