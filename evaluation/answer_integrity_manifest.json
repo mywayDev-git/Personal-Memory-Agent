@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "sha256": "9a04e341f3beaaf319e6ee5eb61b9b96be844e796f73a7063b0dd46995e70c25",
+  "case_counts": {
+    "development": 16,
+    "confirmation": 16
+  },
+  "review_pairs_per_split": 4,
+  "freeze_before_product_fix": true
+}
