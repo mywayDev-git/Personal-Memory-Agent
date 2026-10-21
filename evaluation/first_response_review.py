@@ -96,7 +96,11 @@ def render(results, artifacts):
                       f"<pre>{escaped(source['source_text'])}</pre>"]
         if not artifact:
             parts.append("<p>답변 아티팩트 없음. 오류 사례를 빠른 정답으로 집계하지 않습니다.</p>")
-        parts.append("</details></article>")
+        parts.append("</details>")
+        if artifact.get('validation_trace'):
+            parts += ["<details><summary>독립 검증 과정과 거절 사유 · 모델 판정에도 오류가 있을 수 있습니다</summary>",
+                      f"<pre>{escaped(json.dumps(artifact['validation_trace'], ensure_ascii=False, indent=2))}</pre></details>"]
+        parts.append("</article>")
     parts.append("</html>")
     return "\n".join(parts)
 

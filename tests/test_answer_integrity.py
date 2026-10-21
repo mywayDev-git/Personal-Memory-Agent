@@ -96,3 +96,25 @@ def test_other_attributes_are_not_professions_even_with_an_occupation_heading(so
         {'index': 0, 'support': 'supported', 'relevant': True, 'issue': 'none', 'evidence': [{'id': 'r', 'quote': source}]}]}
     enforce_answer_integrity('연구실 동료 현우의 직업은?', [{'id': 'r', 'source_text': source}], response, review)
     assert accepted(review, response) is expected
+
+
+def test_supplement_is_frozen_and_source_disjoint_without_removing_old_controls():
+    from evaluation.answer_integrity_cases import load
+    documents, cases, declared = load('supplement')
+    originals = {row[1] for split in FIXTURE['splits'].values() for row in split['documents']}
+    assert len(cases) == 2
+    assert all(row[1] not in originals for row in documents)
+    assert declared['original_fixtures_preserved']
+
+
+def test_candidate_only_quality_failure_is_ineligible_even_without_a_control():
+    from evaluation.answer_integrity_cases import load
+    from evaluation.first_response_quality import compare
+    _, cases, declared = load('confirmation')
+    document = {'execution_completed': True, 'configuration': {'fixture_split': 'integrity_confirmation',
+        'fixture_manifest_sha256': declared['sha256'], 'cases': list(cases)},
+        'runs': [{'case': case, 'variant': 'candidate', 'sample': 1,
+                  'quality': {'passed': False, 'source_scope_valid': True}} for case in cases]}
+    result = compare(document)
+    assert not result['candidate_absolute_quality_passed']
+    assert result['adoption'] == 'NOT_ELIGIBLE_ABSOLUTE_QUALITY'

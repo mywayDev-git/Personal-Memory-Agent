@@ -63,6 +63,7 @@ def compare(document):
             "candidate_scope_guard_passed": candidate_complete and not candidate_scope_errors and not candidate_errors,
             "adoption": ("NOT_ELIGIBLE_SCOPE_FALSE_APPROVAL" if candidate_scope_errors else
                          "NOT_ELIGIBLE_REGRESSION_OR_ERROR" if regressions or candidate_errors else
+                         'NOT_ELIGIBLE_ABSOLUTE_QUALITY' if candidate_complete and not absolute_pass else
                          'PENDING_BASELINE_SOURCE_REVIEW_AND_PERFORMANCE' if not complete else
                          "PENDING_SOURCE_REVIEW_AND_PERFORMANCE"),
             "manual_semantic_review": "PENDING", "cases": cases,

@@ -7,6 +7,13 @@ from pathlib import Path
 
 def load(split):
     root = Path(__file__).parent
+    if split == 'supplement':
+        raw = (root / 'answer_integrity_supplement.json').read_bytes()
+        declared = json.loads((root / 'answer_integrity_supplement_manifest.json').read_text('utf-8'))
+        if hashlib.sha256(raw).hexdigest() != declared['sha256']:
+            raise ValueError('Frozen supplemental fixtures differ')
+        data = json.loads(raw)
+        return data['documents'], data['cases'], declared
     raw = (root / 'answer_integrity_cases.json').read_bytes()
     declared = json.loads((root / 'answer_integrity_manifest.json').read_text('utf-8'))
     if hashlib.sha256(raw).hexdigest() != declared['sha256']:
