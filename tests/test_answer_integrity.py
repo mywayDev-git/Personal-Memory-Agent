@@ -102,3 +102,15 @@ def test_instruction_only_alternative_cannot_be_promoted_by_approving_resolver()
         {'messages': [], 'evidence': [{'id': 'r', 'source_text': source}]}, '2026-10-22')
     assert result['needs_clarification'] is False
     assert result['alternatives'] == []
+
+
+@pytest.mark.parametrize('source,claim,expected', [
+    ('연구실 동료 현우는 한국인이다.', '현우의 직업은 알 수 없습니다.', True),
+    ('연구실 동료 현우는 키가 181cm다.', '직업 질문의 답은 키가 181cm입니다.', False),
+])
+def test_other_attributes_are_not_professions_even_with_an_occupation_heading(source, claim, expected):
+    response = {'status': 'answered', 'items': [{'text': claim, 'citations': ['r']}]}
+    review = {'fulfillment': 'direct', 'abstention': 'not_applicable', 'items': [
+        {'index': 0, 'support': 'supported', 'relevant': True, 'issue': 'none', 'evidence': [{'id': 'r', 'quote': source}]}]}
+    enforce_answer_integrity('연구실 동료 현우의 직업은?', [{'id': 'r', 'source_text': source}], response, review)
+    assert accepted(review, response) is expected

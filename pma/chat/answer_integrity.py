@@ -9,7 +9,7 @@ from .identity import ROLE, canonical_label, positive_labels
 
 
 LIMIT = re.compile(r"확인.{0,12}(?:없|않)|알\s*수\s*없|제공.{0,8}않|명시.{0,8}않|기록.{0,8}없|미상|불명|모르")
-ATTRIBUTE = re.compile(r"키(?:가|는|은|\s)|\d\s*(?:cm|㎝|kg|세|살)|몸무게|혈액형|생일|출생|거주")
+ATTRIBUTE = re.compile(r"키(?:가|는|은|\s)|\d\s*(?:cm|㎝|kg|세|살)|몸무게|혈액형|생일|출생|거주|국적|미혼|기혼|독신|(?:한국|일본|미국|중국|프랑스|독일)인")
 
 
 def occupation_target(question):
@@ -87,7 +87,7 @@ def enforce_answer_integrity(question, evidence, response, review):
         # Height-only quotations are true but do not answer an occupation query.
         if (ATTRIBUTE.search(text) and not limited
                 and not any(job in text for job in known_jobs)
-                and not re.search(r'직업|일하|근무|종사', text)):
+                and not re.search(r'일하|근무|종사', text)):
             checked['relevant'] = False
             review.update(fulfillment='missing', reason='직업 질문에 다른 속성만 답하고 직업 미확인을 설명하지 않음')
         if limited and known_jobs and not any(job in text for job in known_jobs):

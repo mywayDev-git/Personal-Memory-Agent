@@ -527,6 +527,10 @@ def main():
                         path = args.output / f"{case_name}-{sample}-{variant}.db"
                         shutil.copy2(case_seed, path)
                         service = Service(Store(path), LocalModels(variant_settings), variant_settings)
+                        validation_trace = []
+                        # Only this synthetic harness retains content-rich rejection
+                        # diagnostics; ordinary performance logs remain content-free.
+                        service.diagnostic_sink = lambda entry: validation_trace.append(entry) if entry.get('stage') == 'chat_validation' else None
                         engine = ChatEngine(service)
                         sid = anchored_sid or engine.store.create_empty()["id"]
                         if case.get("anchor") and not anchored_sid:
@@ -587,7 +591,7 @@ def main():
                                 artifacts = args.output / "quality"
                                 artifacts.mkdir(exist_ok=True)
                                 (artifacts / f"{case_name}-{sample}-{variant}.json").write_text(
-                                    json.dumps({"response": response, "evidence": evidence}, ensure_ascii=False, indent=2), encoding="utf-8")
+                                    json.dumps({"response": response, "evidence": evidence, "validation_trace": validation_trace}, ensure_ascii=False, indent=2), encoding="utf-8")
                             except Exception as exc:
                                 row["error_phase"] = "evaluation_after_response" if "seconds" in row else "response"
                                 row["error_code"] = getattr(exc, "code", type(exc).__name__)
