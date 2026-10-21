@@ -158,9 +158,10 @@ class ChatLocalModels(LocalModels):
 
     def structured(self, prompt, data, schema, max_tokens=None):
         if getattr(getattr(self, "settings", None), "intermediate_planning", False) and "evidence" in data:
-            from .source_input import deduplicate_sources
-            data = {**data, "evidence": deduplicate_sources(data["evidence"])}
-            prompt += " quote_from은 같은 항목의 해당 필드 원문 전체를 가리키는 중복 없는 인용 참조다. 원문은 생략되지 않았다. "
+            from .source_input import deduplicate_sources, has_source_directives
+            if not has_source_directives(data["evidence"]):
+                data = {**data, "evidence": deduplicate_sources(data["evidence"])}
+                prompt += " quote_from은 같은 항목의 해당 필드 원문 전체를 가리키는 중복 없는 인용 참조다. 원문은 생략되지 않았다. "
         from .questions import question_parts
 
         parts = question_parts(data.get("question", data.get("original_question", "")))
