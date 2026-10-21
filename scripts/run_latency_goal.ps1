@@ -7,10 +7,12 @@ param(
     [switch]$InterpretationReuse,
     [switch]$IntermediatePlanning,
     [switch]$BoundedExpansions,
+    [switch]$SourceDateDrafts,
     [switch]$BatchEight,
     [switch]$QualityScreen,
     [switch]$RetrievalOnly,
     [switch]$ReviewBank,
+    [switch]$ReviewOnly,
     [string]$RetrievalBaseline = '',
     [ValidateSet('llama', 'openvino')][string]$Runtime = 'llama',
     [string]$RuntimePython = '',
@@ -38,12 +40,14 @@ foreach ($mode in $placements) {
     if ($InterpretationReuse) { $candidateOptions += 'interpretation_cache' }
     if ($IntermediatePlanning) { $candidateOptions += 'intermediate' }
     if ($BoundedExpansions) { $candidateOptions += 'bounded_expansions' }
+    if ($SourceDateDrafts) { $candidateOptions += 'source_dates' }
     if ($BatchEight) { $candidateOptions += 'batch8' }
     $iterations = if ($QualityScreen) { 1 } else { $Samples }
     $arguments = @('-u', '-m', 'evaluation.response_latency', '--output', $output,
         '--placement', $mode, '--samples', "$iterations", '--threads', "$Threads",
         '--generation-batch-threads', "$GenerationBatchThreads", '--embedding-batch', '4096',
         '--generation', $Generation, '--model-directory', $ModelDirectory,
+        '--startup-memory', '--min-free-gib', '8',
         '--port', '18581', '--variants', 'current', 'candidate',
         '--candidate-options') + $candidateOptions + @(
         '--fixed-anchor', '--reset-prompt-cache', '--cancel-file', (Join-Path $output 'cancel.request'))
@@ -61,6 +65,7 @@ foreach ($mode in $placements) {
     if ($RetrievalOnly) { $arguments += @('--retrieval-only', '--multilingual', '--multilingual-current-only', '--skip-timing-on-retrieval-failure') }
     if ($RetrievalBaseline) { $arguments += @('--retrieval-baseline', $RetrievalBaseline) }
     if ($ReviewBank) { $arguments += '--review-bank' }
+    if ($ReviewOnly) { $arguments += '--review-only' }
     if ($QualityScreen) { $arguments += '--quality-only' }
     if ($Runtime -eq 'openvino') {
         if ($mode -ne 'cpu' -or -not $RuntimePython -or -not $RuntimeModel) { throw 'OpenVINO requires CPU, RuntimePython and RuntimeModel.' }

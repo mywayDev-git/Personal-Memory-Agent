@@ -8,6 +8,7 @@ def observation():
     for sample in range(1, 6):
         for variant, seconds in (("current", 16), ("candidate", 9)):
             runs.append({"case": "dev_fact", "sample": sample, "variant": variant, "seconds": seconds,
+                         "memory_processes_complete": True,
                          "quality": {"passed": True}, "ram_peak_mb": 100,
                          "private_commit_peak_mb": 110, "gpu_total_peak_mb": 120})
     return {"configuration": {"placement": "gpu", "cases": ["dev_fact"], "cold_interpretations": True,
@@ -17,7 +18,7 @@ def observation():
 def test_fast_errors_wrong_answers_or_memory_regression_never_pass():
     source = observation()
     assert compare(source)["cases"]["dev_fact"]["status"] == "SCREEN_PASS"
-    for change in ("wrong", "error", "memory", "source_changed", "few_samples"):
+    for change in ("wrong", "error", "memory", "source_changed", "few_samples", "incomplete_memory"):
         data = deepcopy(source)
         row = data["runs"][1]
         if change == "wrong": row["quality"]["passed"] = False
@@ -25,6 +26,7 @@ def test_fast_errors_wrong_answers_or_memory_regression_never_pass():
         if change == "memory": row["private_commit_peak_mb"] = 116
         if change == "source_changed": data["execution_completed"] = False
         if change == "few_samples": data["runs"] = data["runs"][:-2]
+        if change == "incomplete_memory": row["memory_processes_complete"] = False
         assert compare(data)["cases"]["dev_fact"]["status"] == "NOT_ADOPTED"
 
 

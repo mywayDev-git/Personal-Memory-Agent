@@ -5,6 +5,7 @@ from dataclasses import asdict, replace
 OPTIONS = {
     "intermediate": {"intermediate_planning": True},
     "bounded_expansions": {"bounded_expansions": True},
+    "source_dates": {"source_date_drafts": True},
     "interpretation_cache": {"interpretation_reuse": True},
     "source_facts": {"source_fact_drafts": True},
     "compact_ids": {"compact_model_ids": True},
@@ -31,7 +32,8 @@ def configured(settings, options=()):
                    source_stop_drafts=True, selection_batch_size=4,
                    chat_presentation="reviewed", compact_search_planning=False,
                    fair_model_scheduling=False, compact_model_ids=False, source_fact_drafts=False,
-                   interpretation_reuse=False, intermediate_planning=False, bounded_expansions=False)
+                   interpretation_reuse=False, intermediate_planning=False, bounded_expansions=False,
+                   source_date_drafts=False)
     for option in options:
         changes.update(OPTIONS[option])
     return replace(settings, **changes)
@@ -42,4 +44,4 @@ def parameters(settings):
         "request_token_cache", "request_reuse", "selection_reuse", "explicit_context_shortcut",
         "prompt_cache", "source_stop_drafts", "selection_batch_size", "chat_presentation",
         "compact_search_planning", "fair_model_scheduling", "compact_model_ids", "source_fact_drafts",
-        "interpretation_reuse", "intermediate_planning", "bounded_expansions")}
+        "interpretation_reuse", "intermediate_planning", "bounded_expansions", "source_date_drafts")}

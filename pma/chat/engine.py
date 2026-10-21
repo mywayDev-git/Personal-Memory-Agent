@@ -9,7 +9,7 @@ from dataclasses import replace
 from datetime import date
 from threading import RLock
 
-from scripts.memory_agent.llm_client import RequestDeadlineExceeded, observe_phases, request_budget
+from scripts.memory_agent.llm_client import RequestDeadlineExceeded, observe_phases, request_budget, model_phase
 from scripts.memory_agent.performance import count, measure, measured, profile_request
 from scripts.memory_agent.validator import schema_errors
 
@@ -72,6 +72,7 @@ RESOLVE_PROMPT = (
     "근거 부족은 모호함이 아니다. 이유가 없는 경우 왜 질문을 그대로 유지한다. "
     "today는 현재 질문의 상대 날짜 기준이고 기록 저장일은 사건 날짜가 아니다."
 )
+CHAT_PROMPT_VERSION = 8
 
 AMBIGUITY_SCHEMA = {
     "type": "object",
@@ -125,7 +126,7 @@ class ChatEngine:
             },
         )
 
-    @measured("context_resolution")
+    @model_phase("context_resolution")
     @reuse_interpretation("context")
     def resolve(self, question, session, today, *, original_question=None):
         models = self.models
@@ -147,24 +148,20 @@ class ChatEngine:
             "history": history,
             "evidence": session["evidence"],
         }
-        while True:
-            tokens = models.count_tokens(RESOLVE_PROMPT + json.dumps(data, ensure_ascii=False))
-            if (
-                tokens + self.service.settings.llm.max_tokens + 256
-                <= self.service.settings.context_tokens
-            ):
-                break
-            if not history:
-                raise AppError(
-                    "CONTEXT_LIMIT",
-                    "근거가 너무 깁니다. 질문의 범위를 좁혀 주세요.",
-                    422,
-                )
-            history.pop(0)
         from .intermediate import reuse
         result = reuse(question, session, today, "context") if getattr(
             self.service.settings, "intermediate_planning", False) else None
         if result is None:
+            if getattr(self.service.settings, "intermediate_planning", False):
+                from .source_input import deduplicate_sources
+                data["evidence"] = deduplicate_sources(data["evidence"])
+            while True:
+                tokens = models.count_tokens(RESOLVE_PROMPT + json.dumps(data, ensure_ascii=False))
+                if tokens + self.service.settings.llm.max_tokens + 256 <= self.service.settings.context_tokens:
+                    break
+                if not history:
+                    raise AppError("CONTEXT_LIMIT", "근거가 너무 깁니다. 질문의 범위를 좁혀 주세요.", 422)
+                history.pop(0)
             result = models.structured(RESOLVE_PROMPT, data, RESOLVE_SCHEMA)
         if schema_errors(result, RESOLVE_SCHEMA):
             raise ValueError("INVALID_CHAT_CONTEXT")
@@ -362,6 +359,11 @@ class ChatEngine:
         if draft:
             count("source_conflict_drafts" if conflict else "source_progress_drafts" if progress_draft else "source_stop_drafts")
         response = draft or direct_statement(question, evidence, intent_question)
+        if response is None and getattr(settings, "source_date_drafts", False):
+            from .source_fact import source_date_draft
+            response = source_date_draft(intent_question, evidence)
+            if response is not None:
+                count("source_date_drafts")
         if response is None and getattr(settings, "source_fact_drafts", False):
             from .source_fact import source_fact_draft
             response = source_fact_draft(intent_question, evidence)
@@ -425,10 +427,15 @@ class ChatEngine:
                 })
             if not attempt and not review.get("error"):
                 generation_index += 1
+                count("answer_regenerations")
+                from .review_sources import instruction_statement_draft
                 meaning_rejected = any(
                     item.get("issue") == "negation" for item in review.get("items", [])
                 )
-                response = (quoted_topic_answer(intent_question, evidence)
+                repair = instruction_statement_draft(intent_question, evidence)
+                if repair:
+                    count("source_instruction_repairs")
+                response = repair or (quoted_topic_answer(intent_question, evidence)
                             if not attributes or meaning_rejected else None) or models.answer(
                     self.planned_question(question, session),
                     evidence,
@@ -505,6 +512,10 @@ class ChatEngine:
                 "context_selection": "resolving_context",
                 "search": "searching",
                 "search_planning": "searching",
+                "question_understanding": "searching",
+                "relevance_selection": "searching",
+                "intermediate_planning": "searching",
+                "context_resolution": "resolving_context",
                 "generation": "generating",
                 "general": "generating",
                 "review": "validating",
@@ -617,7 +628,7 @@ class ChatEngine:
                         response["generation_revision"] = os.getenv(
                             "PMA_GENERATION_REVISION", "unconfigured"
                         )
-                        response["chat_prompt_version"] = 6
+                        response["chat_prompt_version"] = CHAT_PROMPT_VERSION
                         response["presentation"] = presentation(response)
                         from .planner import enrich
                         enrich(question, response, evidence, sid, mid,
@@ -630,7 +641,7 @@ class ChatEngine:
                             context_version=session.get("context", {}).get("version", 0),
                             model=response["model"],
                             generation_revision=response["generation_revision"],
-                            chat_prompt_version=6,
+                            chat_prompt_version=CHAT_PROMPT_VERSION,
                         )
                         budget.remaining()
                         phase("review")

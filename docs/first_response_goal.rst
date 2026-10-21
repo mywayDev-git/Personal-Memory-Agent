@@ -29,9 +29,13 @@ GPU가 물리적으로 없는 컴퓨터에서 검증한 것으로 해석하지 �
 
 ``-ColdInterpretations``는 각 요청 전 해석 캐시를 비웁니다.
 두 번째 옵션을 비교하려면 ``-BoundedExpansions``를 추가합니다.
+``-SourceDateDrafts``는 명시적 날짜가 검증된 유일한 대상 사건의 원문을 답변 후보로 제안합니다.
+같은 대상의 다른 언급·부정·미상 날짜가 있으면 기존 생성 경로를 사용합니다.
+다른 배경 원문은 최종 독립 검증 입력에서 제거하지 않습니다.
 ``-BatchEight``은 모든 후보를 유지하면서 한 번에 판정할 묶음 크기만 8로 바꿉니다.
 ``-QualityScreen``은 속도 채택용 표본을 모으지 않는 1회 품질 선별입니다.
 ``-RetrievalOnly``는 기존 90개 검색 사례만, ``-ReviewBank``는 정상·변조 답변 검사도 실행합니다.
+``-ReviewOnly``는 고정 답변 묶음의 검증만 수행하며, 검색·답변 속도 채택 검사를 대신하지 않습니다.
 후보 파일 선택은 ``-Generation q4`` 또는 ``-Generation q8``이며 BGE는 유지됩니다.
 생성 서버의 이전 프롬프트 슬롯은 첫 질문과 반복 질문 실험 모두 비웁니다.
 모델 최초 로딩·합성 자료 색인·준비 실행은 응답 시간에서 분리됩니다.
@@ -48,6 +52,12 @@ GPU가 물리적으로 없는 컴퓨터에서 검증한 것으로 해석하지 �
 
 ``review.json``과 읽기 쉬운 ``review.rst``가 생성됩니다.
 SCREEN_PASS는 해당 사례의 자동 선별 통과이며 전체 품질 통과·최종 채택이 아닙니다.
+16개 품질 사례의 비교는 모델을 구동하지 않는 별도 도구로 확인합니다::
+
+    & C:\development\Personal-Memory-Agent\.venv\Scripts\python.exe -m evaluation.first_response_quality .local/latency-goal/my-first-response/gpu/results.json --output .local/latency-goal/my-first-response/quality-review.json
+
+자동 채점과 원문을 대조한 의미 검토를 구분합니다. 기준과 후보가 똑같이 실패했어도
+정답으로 집계하지 않습니다. 명령문을 사실로 승인하는 오류는 채택을 막습니다.
 
 비교 조건과 채택
 ---------------
@@ -73,6 +83,8 @@ OpenVINO 후보는 고정된 OpenVINO/Qwen3-8B-int4-ov 커밋이며
 추가 사용량 20GiB, 남은 공간 8GiB 제한을 적용하며 대규모 변환·소스 빌드는 하지 않습니다.
 기존 GGUF 다운로드와 런타임 환경까지 포함하려면 ``--budget-root .local``을 지정합니다.
 양자화도 달라지므로 결과는 모델·런타임 조합의 효과입니다.
+실행기는 시작 시와 요청 사이에 8GiB 여유 공간을 확인합니다. 서버 로딩의 RAM·private commit·VRAM과
+응답 처리 중 메모리를 분리해 기록합니다. 표본 관측이므로 순간 피크를 전부 포착한다고 보장하지 않습니다.
 
 ONNX 후보의 메타데이터와 작은 그래프부터 확인합니다. 해당 저장소에
 ``genai_config.json``이 없으면 현재 아티팩트로는 GenAI 파이프라인을 시작할 수 없습니다.

@@ -75,7 +75,8 @@ def test_dependent_or_single_question_is_not_split(question):
     assert question_parts(question) == []
 
 
-def test_literal_facets_keep_separate_retrieval_conditions_and_next_search_review(monkeypatch):
+@pytest.mark.parametrize("intermediate", [False, True])
+def test_literal_facets_keep_separate_retrieval_conditions_and_next_search_review(monkeypatch, intermediate):
     from types import SimpleNamespace
 
     from pma.chat import automatic, retrieval
@@ -92,11 +93,11 @@ def test_literal_facets_keep_separate_retrieval_conditions_and_next_search_revie
     monkeypatch.setattr(retrieval, "retrieve", retrieve)
     monkeypatch.setattr(automatic, "structured", structured)
     engine = SimpleNamespace(
-        service=SimpleNamespace(settings=SimpleNamespace(embedding_key="test"), trace=lambda *a, **kw: None),
+        service=SimpleNamespace(settings=SimpleNamespace(embedding_key="test", intermediate_planning=intermediate), trace=lambda *a, **kw: None),
         store=SimpleNamespace(freeze=lambda rows: rows))
     _, _, metadata = automatic.run(engine, question, {"messages": [], "context": {}}, "2026-10-19", "memory")
     assert searched == [(part, part) for part in question_parts(question)]
-    assert decisions == [automatic.NEXT, automatic.NEXT]
+    assert decisions == [automatic.NEXT] * (1 if intermediate else 2)
     assert metadata["question_parts"] == question_parts(question)
 
 

@@ -9,7 +9,7 @@ import requests
 
 from config.settings import paths
 from scripts.memory_agent.extractor import extract_json
-from scripts.memory_agent.llm_client import chat, local_session, post_json, token_count
+from scripts.memory_agent.llm_client import chat, local_session, post_json, token_count, model_phase
 from scripts.memory_agent.performance import measured
 from scripts.memory_agent.pipeline import process_text
 from scripts.memory_agent.validator import load_schema, schema_errors
@@ -246,7 +246,7 @@ class LocalModels:
         return result
 
     @observed_model(Stage.MODEL_UNDERSTANDING)
-    @measured("question_understanding")
+    @model_phase("question_understanding")
     @reuse_interpretation("question")
     def understand(self, question, today, *, expand=True):
         from .search_expressions import expansion_possible
@@ -334,7 +334,7 @@ class LocalModels:
         )
 
     @observed_model(Stage.EVIDENCE_SELECTION_BATCH)
-    @measured("relevance_selection")
+    @model_phase("relevance_selection")
     @reuse_selection
     def select_explained(self, question, evidence):
         """Review every candidate before applying a global limit; retain verifiable excerpts."""

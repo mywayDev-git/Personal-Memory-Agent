@@ -7,6 +7,21 @@ from the source, never from another model's approval. Do not tune on holdout.
 import hashlib
 import json
 
+BASE_DOCUMENTS = [
+    ("gift", "2026년 10월 12일 민수에게 파란색 책을 선물했다.", "선물했다", "파란색 책"),
+    ("negative", "지연에게는 선물을 주지 않았다.", "주지 않았다", "선물"),
+    ("study", "2026년 10월 1일 파이썬 공부를 시작했다.", "시작했다", "파이썬"),
+    ("stopped", "파이썬 공부를 접었다.", "접었다", "파이썬"),
+    ("plan", "도서관 책은 2026년 10월 25일까지 반납할 계획이다.", "반납할 계획이다", "도서관 책"),
+    ("cancel", "부산 여행은 취소했다. 비가 많이 내렸기 때문이다.", "취소했다", "부산 여행"),
+    ("coworker", "회사 동료 민수는 프론트엔드 개발자다.", "개발자다", "민수"),
+    ("club", "동아리 친구 민수는 수학 교사다.", "교사다", "민수"),
+    ("note", "파이썬 공부 노트: asyncio.gather로 비동기 작업을 모았다.", "모았다", "파이썬"),
+    ("unrelated", "2026년 10월 13일 공원에서 산책했다.", "산책했다", "공원"),
+    ("long", "검색 프로젝트 메모. " + "원문 근거와 정확한 인용을 유지하며 검색을 검토했다. " * 40,
+     "검토했다", "검색 프로젝트"),
+]
+
 EXTRA_DOCUMENTS = [
     ("meeting_old", "10월 20일 회의는 화요일로 정했다.", "정했다", "회의"),
     ("meeting_new", "10월 21일 회의는 수요일로 변경했다. 화요일 일정은 취소했다.", "변경했다", "회의"),
@@ -74,7 +89,7 @@ HOLDOUT = {
 
 
 def manifest():
-    value = {"development_extra_documents": EXTRA_DOCUMENTS, "holdout_documents": HOLDOUT_DOCUMENTS,
+    value = {"development_documents": [*BASE_DOCUMENTS, *EXTRA_DOCUMENTS], "holdout_documents": HOLDOUT_DOCUMENTS,
              "development": DEVELOPMENT, "holdout": HOLDOUT}
     return {"sha256": hashlib.sha256(json.dumps(value, ensure_ascii=False, sort_keys=True).encode()).hexdigest(),
             "development": list(DEVELOPMENT), "holdout": list(HOLDOUT),

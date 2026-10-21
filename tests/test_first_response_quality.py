@@ -1,0 +1,33 @@
+from copy import deepcopy
+
+from evaluation.first_response_cases import DEVELOPMENT, manifest
+from evaluation.first_response_quality import compare
+
+
+def observation():
+    return {"configuration": {"fixture_split": "development", "fixture_manifest_sha256": manifest()["sha256"],
+                               "cases": list(DEVELOPMENT)}, "execution_completed": True,
+            "runs": [{"case": case, "variant": variant, "quality": {"passed": True}}
+                     for case in DEVELOPMENT for variant in ("current", "candidate")]}
+
+
+def test_missing_or_changed_evidence_cannot_pass_quality_gate():
+    original = observation()
+    assert compare(original)["automated_nonregression_gate"]
+    for change in ("candidate_failure", "missing", "manifest", "source_changed"):
+        data = deepcopy(original)
+        if change == "candidate_failure": data["runs"][1]["quality"]["passed"] = False
+        if change == "missing": data["runs"].pop()
+        if change == "manifest": data["configuration"]["fixture_manifest_sha256"] = "wrong"
+        if change == "source_changed": data["execution_completed"] = False
+        assert not compare(data)["automated_nonregression_gate"]
+
+
+def test_unchanged_baseline_failures_are_visible_and_never_counted_as_correct():
+    data = observation()
+    data["runs"][0]["quality"]["passed"] = False
+    data["runs"][1]["quality"]["passed"] = False
+    result = compare(data)
+    assert result["automated_nonregression_gate"]
+    assert result["unchanged_failures"] == ["dev_fact"]
+    assert result["manual_semantic_review"] == "PENDING"

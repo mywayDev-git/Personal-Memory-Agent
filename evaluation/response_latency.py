@@ -27,6 +27,7 @@ from uuid import NAMESPACE_URL, uuid5
 from config.settings import Settings
 from evaluation.latency_models import MODELS, digest
 from evaluation.latency_variants import OPTIONS, configured, parameters
+from evaluation.first_response_cases import BASE_DOCUMENTS
 from evaluation.performance_benchmark import MemorySampler, wait_ready
 from pma.chat.engine import ChatEngine
 from pma.models import LocalModels
@@ -37,20 +38,7 @@ from scripts.memory_agent.llm_client import request_budget
 from scripts.memory_agent.performance import profile_request
 from scripts.memory_agent.validator import load_schema, schema_errors
 
-DOCUMENTS = [
-    ("gift", "2026년 10월 12일 민수에게 파란색 책을 선물했다.", "선물했다", "파란색 책"),
-    ("negative", "지연에게는 선물을 주지 않았다.", "주지 않았다", "선물"),
-    ("study", "2026년 10월 1일 파이썬 공부를 시작했다.", "시작했다", "파이썬"),
-    ("stopped", "파이썬 공부를 접었다.", "접었다", "파이썬"),
-    ("plan", "도서관 책은 2026년 10월 25일까지 반납할 계획이다.", "반납할 계획이다", "도서관 책"),
-    ("cancel", "부산 여행은 취소했다. 비가 많이 내렸기 때문이다.", "취소했다", "부산 여행"),
-    ("coworker", "회사 동료 민수는 프론트엔드 개발자다.", "개발자다", "민수"),
-    ("club", "동아리 친구 민수는 수학 교사다.", "교사다", "민수"),
-    ("note", "파이썬 공부 노트: asyncio.gather로 비동기 작업을 모았다.", "모았다", "파이썬"),
-    ("unrelated", "2026년 10월 13일 공원에서 산책했다.", "산책했다", "공원"),
-    ("long", "검색 프로젝트 메모. " + "원문 근거와 정확한 인용을 유지하며 검색을 검토했다. " * 40,
-     "검토했다", "검색 프로젝트"),
-]
+DOCUMENTS = list(BASE_DOCUMENTS)
 SCORING_VERSION = 5
 CASES = {
     "simple_search": {"question": "민수에게 무엇을 선물했어?", "search": True, "gold": ["gift"]},
@@ -151,6 +139,7 @@ def servers(args, generation, embedding):
     processes, logs = [], []
     started = time.perf_counter()
     commands = []
+    startup_memory = []
     for port in (args.port, args.port + 1):
         with socket.socket() as probe:
             probe.bind(("127.0.0.1", port))
@@ -186,14 +175,23 @@ def servers(args, generation, embedding):
                                        creationflags=0x08000000 if os.name == "nt" else 0)
             processes.append(process)
             try:
-                wait_ready(process, args.port + index)
+                if getattr(args, "startup_memory", False):
+                    with MemorySampler([os.getpid()] + [p.pid for p in processes]) as memory:
+                        wait_ready(process, args.port + index)
+                    startup_memory.append({"server_index": index, "ram_peak_mb": max(memory.ram, default=None),
+                        "private_commit_peak_mb": max(memory.private_commit, default=None),
+                        "gpu_total_peak_mb": max(memory.vram, default=None),
+                        "system_available_ram_min_mb": min(memory.available_ram, default=None)})
+                else:
+                    wait_ready(process, args.port + index)
             except BaseException as exc:
                 (args.output / "server-failure.json").write_text(json.dumps({
                     "phase": "server_startup", "port": args.port + index,
                     "error_type": type(exc).__name__, "returncode": process.poll(),
                     "owned_experiment_server": True}), encoding="utf-8")
                 raise
-        yield processes, {"seconds": time.perf_counter() - started, "commands": commands}
+        yield processes, {"seconds": time.perf_counter() - started, "commands": commands,
+                          "memory": startup_memory}
     finally:
         for process in reversed(processes):
             if process.poll() is None:
@@ -287,6 +285,9 @@ def quality(case, response, evidence, keys):
 def check_cancelled(args):
     if getattr(args, "cancel_file", None) and args.cancel_file.exists():
         raise KeyboardInterrupt("LATENCY_EXPERIMENT_CANCELLED")
+    floor = getattr(args, "min_free_gib", 0)
+    if floor and args.output.exists() and shutil.disk_usage(args.output).free < floor * 1024 ** 3:
+        raise ValueError("EXPERIMENT_DISK_FLOOR")
 
 
 def main():
@@ -298,6 +299,8 @@ def main():
     parser.add_argument("--runtime", choices=["llama", "openvino"], default="llama")
     parser.add_argument("--runtime-python", type=Path)
     parser.add_argument("--runtime-model", type=Path)
+    parser.add_argument("--startup-memory", action="store_true")
+    parser.add_argument("--min-free-gib", type=float, default=.5)
     parser.add_argument("--embedding", choices=["bge", "qwen"], default="bge")
     parser.add_argument("--placement", choices=["cpu", "gpu", "hybrid"], default="cpu")
     parser.add_argument("--flash", choices=["auto", "on", "off"], default="auto")
@@ -317,7 +320,10 @@ def main():
     parser.add_argument("--cases", nargs="+", choices=list(CASES), default=list(CASES))
     parser.add_argument("--multilingual", action="store_true")
     parser.add_argument("--review-bank", action="store_true")
+    parser.add_argument("--review-only", action="store_true")
     parser.add_argument("--quality-only", action="store_true", help="One quality observation without latency warmup; never sufficient for speed adoption")
+    parser.add_argument("--fixture-manifest-sha256")
+    parser.add_argument("--fixture-split", choices=["development", "holdout"])
     parser.add_argument("--retrieval-only", action="store_true")
     parser.add_argument("--skip-timing-on-retrieval-failure", action="store_true")
     parser.add_argument("--multilingual-current-only", action="store_true")
@@ -341,8 +347,8 @@ def main():
     artifact_verification_seconds = time.perf_counter() - preparation_started
     os.environ["PMA_GENERATION_REVISION"] = hashes["generation"]
     args.output.mkdir(parents=True)
-    if shutil.disk_usage(args.output).free < 512 * 1024 * 1024:
-        parser.error("at least 512 MiB free space required for evaluation output")
+    if not math.isfinite(args.min_free_gib) or args.min_free_gib < .5 or shutil.disk_usage(args.output).free < args.min_free_gib * 1024 ** 3:
+        parser.error("insufficient free disk space for the configured experiment floor")
     report = {"schema_version": 1, "personal_database_used": False, "configuration": vars(args).copy(),
               "status": "RUNNING", "execution_completed": False,
               "cpu_placement_policy": "device-none-no-op-offload-no-kv-offload",
@@ -363,14 +369,26 @@ def main():
     report["evaluator_sources"] = {p: digest(Path(p)) for p in (
         "evaluation/response_latency.py", "evaluation/multilingual_search.py", "evaluation/response_latency_report.py",
         "evaluation/latency_variants.py", "evaluation/latency_recheck.py", "evaluation/performance_benchmark.py",
-        "evaluation/first_response.py", "evaluation/first_response_cases.py", "evaluation/review_bank.py")}
+        "evaluation/first_response.py", "evaluation/first_response_cases.py", "evaluation/first_response_manifest.json",
+        "evaluation/review_bank.py")}
     if args.seed_template:
         report["seed_template_sha256"] = digest(args.seed_template)
     if args.runtime == "openvino":
         report["runtime_artifacts"] = {str(p): digest(p) for p in args.runtime_model.iterdir() if p.is_file() and p != generation}
         report["runtime_gateway_sha256"] = digest(Path("evaluation/openvino_server.py"))
+        report["evaluator_sources"]["evaluation/openvino_server.py"] = report["runtime_gateway_sha256"]
+        packages = args.runtime_python.parent.parent / "Lib" / "site-packages"
+        report["runtime_binaries"] = {str(p.relative_to(packages)): digest(p)
+            for name in ("openvino_genai", "openvino", "openvino_tokenizers")
+            for p in (packages / name).rglob("*") if p.suffix in {".pyd", ".dll"}}
     if args.retrieval_only:
         args.multilingual = True
+        report["configuration"]["multilingual"] = True
+        args.cases = []
+        report["configuration"]["cases"] = []
+    if args.review_only:
+        args.review_bank = True
+        report["configuration"]["review_bank"] = True
         args.cases = []
         report["configuration"]["cases"] = []
 
@@ -399,7 +417,12 @@ def main():
             if args.review_bank:
                 from evaluation.review_bank import evaluate as evaluate_review
                 from pma.chat.models import ChatLocalModels
-                report["review_bank"] = evaluate_review(ChatLocalModels(settings))
+                with MemorySampler([os.getpid()] + [p.pid for p in processes]) as review_memory:
+                    report["review_bank"] = evaluate_review(ChatLocalModels(configured(settings, args.candidate_options)), args.output / "review-quality.json")
+                report["review_bank"]["memory"] = {"ram_peak_mb": max(review_memory.ram, default=None),
+                    "private_commit_peak_mb": max(review_memory.private_commit, default=None),
+                    "gpu_total_peak_mb": max(review_memory.vram, default=None),
+                    "system_available_ram_min_mb": min(review_memory.available_ram, default=None)}
                 save()
             if args.multilingual:
                 from evaluation.multilingual_search import evaluate

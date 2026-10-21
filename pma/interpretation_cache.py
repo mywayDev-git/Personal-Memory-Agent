@@ -110,7 +110,7 @@ def reuse_interpretation(kind):
             # approval. Failures, cancellations and invalid results are not saved.
             if kind == "context" and result[0].get("needs_clarification"):
                 return result
-            if kind == "proposal" and (result is None or result["context"].get("needs_clarification")):
+            if kind == "proposal" and (result is None or result["context"].get("needs_clarification") or result.get("query") is None):
                 return result
             encoded = json.dumps(result, ensure_ascii=False, separators=(",", ":")).encode()
             if len(encoded) > MAX_BYTES // 4:

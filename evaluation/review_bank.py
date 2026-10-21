@@ -3,6 +3,7 @@
 import hashlib
 import json
 import time
+from pathlib import Path
 
 from pma.answer_review import accepted
 from pma.chat.evidence import review_spans_supported
@@ -21,8 +22,9 @@ PAIRS = [
 ]
 
 
-def evaluate(models):
+def evaluate(models, artifact_path=None):
     rows = []
+    artifacts = []
     for index, (source, question, valid, altered) in enumerate(PAIRS):
         evidence = [{"id": "review-source", "source_text": source}]
         for expected, text in ((True, valid), (False, altered)):
@@ -33,11 +35,17 @@ def evaluate(models):
                 try:
                     checked = models.review(question, evidence, response)
                     row["approved"] = bool(accepted(checked, response) and review_spans_supported(response, checked, evidence))
+                    artifacts.append({"pair": index, "expected_approval": expected, "question": question,
+                                      "source": source, "proposed_answer": response, "review": checked})
                 except ValueError as exc:
                     row.update(approved=False, error_code=type(exc).__name__)
-            row.update(seconds=time.perf_counter() - started, model_calls=len(budget.calls))
+            row.update(seconds=time.perf_counter() - started,
+                       model_calls=sum(c["operation"] == "/v1/chat/completions" for c in budget.calls),
+                       transport_calls=len(budget.calls))
             row["passed"] = row["approved"] == expected and "error_code" not in row
             rows.append(row)
+    if artifact_path is not None:
+        Path(artifact_path).write_text(json.dumps(artifacts, ensure_ascii=False, indent=2), encoding="utf-8")
     return {"fixture_sha256": hashlib.sha256(json.dumps(PAIRS, ensure_ascii=False).encode()).hexdigest(),
             "gold_origin": "authored_from_synthetic_sources", "rows": rows,
             "false_approvals": sum(r["approved"] and not r["expected_approval"] for r in rows),

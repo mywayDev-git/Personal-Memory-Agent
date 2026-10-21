@@ -102,3 +102,55 @@ def test_deduplication_retains_full_source_warnings_and_offsets():
     assert sent["evidence"] == row["evidence"]
     assert sent["fact"] == row["fact"]
     assert row["content"] == source
+
+
+def test_previously_budgeted_exact_proposal_does_not_rebudget_unused_duplicate_input():
+    engine, session, _, calls = fixture()
+    question = "민수에게 뭘 선물했어?"
+    session["_intermediate"] = propose(engine, question, session, "2026-10-21", [])
+    def unused_budget(_):
+        raise AssertionError("unused legacy duplicated prompt must not be budgeted")
+    engine.models.count_tokens = unused_budget
+    result, _ = engine.resolve(question, session, "2026-10-21")
+    assert result["question"] == question
+    assert len(calls) == 1
+
+
+def compound_fixture(query=""):
+    engine, session, answer, calls = fixture()
+    question = "회사 동료 민수의 직업과 부산 여행을 취소한 이유는 뭐야?"
+    session["evidence"] = [
+        {"id": "a", "source_text": "회사 동료 민수는 개발자다.", "record_id": "r1"},
+        {"id": "b", "source_text": "부산 여행은 비 때문에 취소했다.", "record_id": "r2"},
+        {"id": "c", "source_text": "동아리 친구 민수는 교사다.", "record_id": "r3"}]
+    answer.update(selection=[{"id": "a", "selected": True}, {"id": "b", "selected": True}],
+                  coverage=[{"part": 0, "ids": ["a"]}, {"part": 1, "ids": ["b"]}], query=query)
+    return engine, session, answer, calls, question
+
+
+def test_selection_uses_the_exact_existing_answer_scope_but_planning_keeps_every_source():
+    engine, session, _, calls, question = compound_fixture()
+    session["_intermediate"] = propose(engine, question, session, "2026-10-21", [])
+    assert session["_intermediate"] is not None
+    data = calls[0][0][1]
+    assert {r["id"] for r in data["evidence"]} == {"a", "b", "c"}
+    assert data["scopes"]["selection"]["ids"] == ["a", "b"]
+    selected_session = {**session, "evidence": session["evidence"][:2]}
+    assert reuse(question, selected_session, "2026-10-21", "selection") == ["a", "b"]
+    assert reuse(question, session, "2026-10-21", "selection") is None
+    selected_session["evidence"][0]["source_text"] += " 개발자가 아니다."
+    assert reuse(question, selected_session, "2026-10-21", "selection") is None
+
+
+def test_invalid_search_plan_is_not_reused_or_cached_but_valid_scoped_parts_remain(monkeypatch):
+    from pma.interpretation_cache import clear_interpretations
+    clear_interpretations()
+    monkeypatch.setenv("PMA_GENERATION_REVISION", "a" * 64)
+    engine, session, _, calls, question = compound_fixture("민수의 친구 관계는?")
+    engine.service.settings = replace(engine.service.settings, interpretation_reuse=True)
+    result = propose(engine, question, session, "2026-10-21", [])
+    assert result["query"] is None
+    assert result["context"] and result["selection"] == ["a", "b"]
+    propose(engine, question, session, "2026-10-21", [])
+    assert len(calls) == 2
+    clear_interpretations()

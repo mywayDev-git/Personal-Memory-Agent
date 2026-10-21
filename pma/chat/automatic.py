@@ -134,6 +134,7 @@ def structured(engine, prompt, data, schema, max_tokens=1024):
             if engine.models.count_tokens(prompt + json.dumps(data, ensure_ascii=False)) + limit + 256 > engine.service.settings.context_tokens:
                 raise
             engine.service.trace("model_retry", phase=phase, reason="MODEL_TRUNCATED", max_tokens=limit)
+            count("model_truncation_retries")
             try:
                 value = engine.models.structured(prompt, data, schema, max_tokens=limit)
             except ProcessingError as retry:
@@ -412,26 +413,36 @@ def run(engine, question, session, today, requested_mode="auto"):
         for row in found["results"]:
             rows[row["id"]] = row
         batches.append(found["results"])
-        intermediate = None  # An additional retrieval invalidates the earlier proposal.
+        # Consumption checks the entire frozen input again. Keep a proposal
+        # only for context/selection when another lookup changes no inputs.
         if found.get("query_correction", {}).get("status") == "rejected":
             break  # Do not let a follow-up rewrite bypass a rejected edit.
         if unsupported or len(searches) == 3:
             break
-        from .intermediate import propose
-        intermediate = propose(engine, question,
-                               {**session, "evidence": engine.store.freeze(combine(batches))},
-                               today, [{k: v for k, v in search.items() if k != "audit"}
-                                       for search in searches]) if getattr(
-                                           engine.service.settings, "intermediate_planning", False) else None
-        query = intermediate["query"] if intermediate is not None else structured(
-            engine,
-            NEXT_PROMPT,
-            {**data, "searches": [{k: v for k, v in search.items() if k != "audit"} for search in searches], "evidence": combine(batches)},
-            NEXT,
-            512,
-        )["query"].strip()
-        if pending_parts:
+        if pending_parts and getattr(engine.service.settings, "intermediate_planning", False):
+            # This query was already fixed from the original compound question.
+            # The former model result was unconditionally overwritten below.
+            count("unused_planning_calls_saved")
             query = pending_parts.pop(0)
+        else:
+            from .intermediate import propose
+            planning = propose(engine, question,
+                                   {**session, "evidence": engine.store.freeze(combine(batches))},
+                                   today, [{k: v for k, v in search.items() if k != "audit"}
+                                           for search in searches]) if getattr(
+                                               engine.service.settings, "intermediate_planning", False) else None
+            if planning is not None:
+                intermediate = planning
+            planned_query = planning["query"] if planning is not None else None
+            query = planned_query if planned_query is not None else structured(
+                engine,
+                NEXT_PROMPT,
+                {**data, "searches": [{k: v for k, v in search.items() if k != "audit"} for search in searches], "evidence": combine(batches)},
+                NEXT,
+                512,
+            )["query"].strip()
+            if pending_parts:
+                query = pending_parts.pop(0)
         if (not query or query in seen_queries) and len(searches) == 1:
             # A model must not treat the event itself as its cause or identity.
             texts = " ".join(r["source_text"] for r in rows.values())
