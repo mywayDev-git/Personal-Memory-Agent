@@ -1,0 +1,25 @@
+{
+  "sha256": "5f6da565d7b29657cde3d251cd9e543d3965246e2ed4ef860bf73fe7d7dfb893",
+  "cases": [
+    "complete_friend",
+    "complete_polite",
+    "complete_role",
+    "complete_switch",
+    "complete_unknown_attribute",
+    "complete_unknown_followup",
+    "complete_separate_sources",
+    "complete_separate_followup",
+    "complete_ambiguous",
+    "complete_fact",
+    "complete_date",
+    "complete_negative",
+    "complete_plan",
+    "complete_cause",
+    "complete_injection",
+    "complete_compound"
+  ],
+  "version": 3,
+  "gold_origin": "hand_authored_synthetic_sources",
+  "unknown_attribute_gold": "No occupation is stated for the named role; explicit absence or correctly limited source-backed answer is valid.",
+  "purpose": "independent verification of directly answered versus incomplete role evidence"
+}
