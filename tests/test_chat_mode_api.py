@@ -1,10 +1,10 @@
 from types import SimpleNamespace
 
 from fastapi import FastAPI
-from fastapi.testclient import TestClient
 from pydantic import BaseModel, ConfigDict
 
 from pma.chat.api import router
+from tests.http_client import TestClient
 
 
 class StrictInput(BaseModel):

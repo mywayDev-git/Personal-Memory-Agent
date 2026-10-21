@@ -75,7 +75,8 @@ class ChatLocalModels(LocalModels):
             FACT_POLICY + FACT_REVIEW_POLICY + metadata_policy +
             "proposed_answer의 각 항목을 사실 검증한다. 표시는 검증 대상이 아니다. "
             "source_records 원문 전체를 읽고 모든 주장이 지지되는지 support, 질문 관련성 relevant, 오류 issue를 평가한다. "
-            "evidence에는 해당 답변 항목이 인용한 기록 id와 근거 문장의 span_id만 선택한다. 인용문을 작성하지 않는다. "
+            "evidence에는 해당 답변 항목이 인용한 기록 id와 모든 주장에 필요한 근거 문장의 span_id를 각각 선택한다. 인용문을 작성하지 않는다. "
+            "부가한 담당자·요일·예정·수치 주장도 근거 문장이 필요하다. 완료 미상 문장 하나만으로 담당자와 예정까지 뒷받침하지 않는다. "
             "문장이 존재한다는 것만으로 의미 일치를 인정하지 않는다. 특히 부정 범위, 주체, 날짜, 실행 여부, 인과를 확인한다. "
             "모든 답변 항목 index를 정확히 한 번 평가한다. 답변 문장이나 원문을 다시 쓰지 않는다. "
             "supported이고 의미 오류가 없으면 issue=none이다. 날짜 미상이나 원하는 물건과 받은 물건의 차이는 인용 오류가 아니다. "

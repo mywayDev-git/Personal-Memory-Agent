@@ -65,6 +65,8 @@ GENERAL_PROMPT = POLICY + (
     "학습·작업 재개에서는 이미 표시할 verified_memory의 날짜·진도를 반복하지 말고 현재 요청에 유용한 제안만 짧게 쓴다. "
     "'도움이 필요하면 말씀해주세요' 같은 상투적 마무리나 의무적인 재질문은 생략한다. "
     "일반 모드에서는 개인 기록을 조회하지 않는다. 개인 사실을 물으면 이 제약을 설명한다."
+    "기술의 장점은 적용 조건과 비교 기준에 따라 달라진다. 측정 근거 없이 속도·정확도 향상을 보장하지 않는다. "
+    "일반적인 작동 원리와 조건부 장점을 구분하고, 실제 효과는 데이터·설정·측정에 달려 있음을 설명한다."
 )
 
 
@@ -114,7 +116,21 @@ def structured(engine, prompt, data, schema, max_tokens=1024):
         else "general"
     )
     with model_phase(phase):
-        value = engine.models.structured(prompt, data, schema, max_tokens=max_tokens)
+        from scripts.memory_agent.diagnostics import ProcessingError
+        try:
+            value = engine.models.structured(prompt, data, schema, max_tokens=max_tokens)
+        except ProcessingError as exc:
+            limit = min(getattr(engine.service.settings.llm, "max_tokens", max_tokens), max_tokens * 2)
+            if exc.code != "MODEL_TRUNCATED" or limit <= max_tokens:
+                raise
+            if engine.models.count_tokens(prompt + json.dumps(data, ensure_ascii=False)) + limit + 256 > engine.service.settings.context_tokens:
+                raise
+            engine.service.trace("model_retry", phase=phase, reason="MODEL_TRUNCATED", max_tokens=limit)
+            try:
+                value = engine.models.structured(prompt, data, schema, max_tokens=limit)
+            except ProcessingError as retry:
+                retry.diagnostic["previous_attempts"] = [exc.diagnostic]
+                raise
     if schema_errors(value, schema):
         raise ValueError("INVALID_CHAT_STRUCTURE")
     return value
@@ -126,6 +142,9 @@ def general(engine, data):
 
     # Explicit style preferences transfer across chats without semantic retrieval.
     data = dict(data)
+    if re.search(r"(?:기억|저장)\s*(?:하지\s*마(?:세요)?|하지\s*말(?:아(?:줘|주세요)?)?|말아(?:줘)?|안\s*해)[.!?\s]*$|"
+                 r"(?:do not|don't)\s+(?:save|remember|store)(?:\s+(?:this|it))?[.!?\s]*$", data.get("question", ""), re.I):
+        return {"text": "알겠습니다. 이 내용은 기억으로 저장하지 않겠습니다.", "citations": [], "source_type": "general"}
     data["history"] = [{**turn, "response": {**turn.get("response", {}), "items": []}}
                        if turn.get("response", {}).get("conversation_mode") != "general" else turn
                        for turn in data.get("history", [])]
@@ -157,6 +176,8 @@ def general(engine, data):
         "개인 기록 조회가 허용되지 않아 한계를 명시한 답변은 safe=true. "
         "현재 질문을 그대로 따라 말하는 답변이나 과거 질문에 다시 답한 답변도 safe=false. "
         "일반적인 설명, 제안, 인사, 현재 사용자 감정에 대한 공감은 safe=true."
+        "기술이나 모델이 속도·정확도를 반드시 개선하는 듯한 무조건적 성능 주장은 safe=false. "
+        "일반 원리와 조건부 장점을 구분하고 측정 결과 없는 개선 수치를 만들지 않아야 한다."
         + (
             " mode=mixed에서는 이 답변이 위로·제안 부분만 담당한다. 개인 기록 질문은 별도 검색과 검증으로 답해 합칠 예정이다. "
             "개인 사실을 단정하거나 새로 추가하면 safe=false. verified_memory를 조건으로 삼는 제안과 "
@@ -237,6 +258,12 @@ def run(engine, question, session, today, requested_mode="auto"):
         session = private_context(session)
         requested_mode = "general"
     question = scoped_followup(question, session)
+    from .context import temporal_followup
+    changed_period = temporal_followup(question, session, today) if not disabled else None
+    if changed_period:
+        session = {**session, "request_filters": {**session.get("context", {}).get("filters", {}),
+                   **(session.get("request_filters") or {}), **changed_period["filters"]}}
+        question = changed_period["question"]
     data = {"question": question, "today": today, "history": history(session), "memory_disabled": disabled}
     data["topic_history_unverified"] = session.get("context", {}).get("summary", "")
     if requested_mode == "auto" and re.search(
@@ -257,11 +284,16 @@ def run(engine, question, session, today, requested_mode="auto"):
             [],
             {"searches": []},
         )
+    from .record_reference import references_record
     decision = RetrievalRouter().decide(
-        original_reference, history=data["history"], memory_enabled=requested_mode != "general",
+        question, history=data["history"], memory_enabled=requested_mode != "general",
         force_memory=(requested_mode == "memory" and not data["topic_history_unverified"]),
+        has_record_reference=lambda: references_record(question, engine.service.store),
         classify=lambda: structured(engine, ROUTE_PROMPT, data, ROUTE, 768),
     )
+    if decision.reason_code == "GENERAL_FOLLOWUP":
+        data["history"] = [turn for turn in data["history"] if turn.get("response", {}).get("conversation_mode", turn.get("response", {}).get("conversation_type")) == "general"]
+        data["topic_history_unverified"] = ""
     route = {"mode": {RoutingMode.CHAT_ONLY: "general",
                       RoutingMode.MEMORY_REQUIRED: "memory",
                       RoutingMode.MEMORY_AUGMENTED: "mixed",
@@ -290,7 +322,8 @@ def run(engine, question, session, today, requested_mode="auto"):
     route["query"] = search_question(question, route["query"])
     if question != original_reference:
         route["query"] = question
-    engine.service.trace("chat_route", question=question, route=route)
+    if changed_period:
+        route.update(mode="memory", reason_code="PERIOD_REPLACED")
     mode = "mixed" if route["mode"] == "hybrid" else route["mode"]
     explicit_recall = re.search(
         r"(?:회의|약속|예약|일정|여행).*(?:언제|몇\s*시|요일|날짜|최종|며칠|몇\s*박|바뀌|변경)|"
@@ -309,6 +342,8 @@ def run(engine, question, session, today, requested_mode="auto"):
         question,
     ):
         mode = "mixed"
+    route["mode"] = mode
+    engine.service.trace("chat_route", question=question, route=route)
     casual = generate_general(engine, {**data, "mode": mode}) if mode == "general" else None
     if mode == "general" and casual is None and social_reply(question):
         casual = {"text": social_reply(question),

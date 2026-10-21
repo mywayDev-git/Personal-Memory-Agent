@@ -4,7 +4,7 @@ const assert=require('node:assert/strict');
 const {readFileSync,mkdirSync,writeFileSync}=require('node:fs');
 const {resolve}=require('node:path');
 (async()=>{
- const out=resolve('.local/conversation-ui');mkdirSync(out,{recursive:true});
+ const out=resolve(process.env.PMA_TEST_OUTPUT||'.local/conversation-ui');mkdirSync(out,{recursive:true});
  const browser=await chromium.launch({headless:true,channel:'chrome'});
  const checks=[],errors=[];
  const check=(value,label)=>{assert.ok(value,label);checks.push(label);};

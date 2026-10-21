@@ -3,11 +3,11 @@
 from types import SimpleNamespace
 
 import pytest
-from fastapi.testclient import TestClient
 
 from pma.chat.planner import enrich
 from pma.settings import AppSettings
 from pma.web import create_app
+from tests.http_client import TestClient
 
 
 def source(key, text):

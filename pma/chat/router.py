@@ -29,7 +29,7 @@ class Route:
 
 class RetrievalRouter:
     def decide(self, question, *, history=(), memory_enabled=True, explicit_search=False,
-               classify=None, force_memory=False):
+               classify=None, force_memory=False, has_record_reference=None):
         from .interpretation import intent
         from .policy import memory_disabled
 
@@ -41,6 +41,12 @@ class RetrievalRouter:
             return Route(RoutingMode.EXPLICIT_SEARCH, "SEARCH_BUTTON", question)
         if social_reply(question):
             return Route(RoutingMode.CHAT_ONLY, "GREETING")
+        if re.search(r"^(?:내|나의|내가|나는)\s*.*(?:취향|선호|혈액형)", question):
+            return Route(RoutingMode.MEMORY_REQUIRED, "PERSONAL_FACT", question)
+        if history and re.fullmatch(r"\s*(?:그\s*(?:내용|설명)|다시)\s*(?:을|를)?\s*(?:다시\s*)?설명해\s*줘[.!?\s]*", question):
+            previous = history[-1].get("response") or {}
+            if previous.get("conversation_mode", previous.get("conversation_type")) == "general":
+                return Route(RoutingMode.CHAT_ONLY, "GENERAL_FOLLOWUP")
         if intent(question) == "progress" and not re.search(r"이어서|계속|다시|다음\s*단계|계획", question):
             return Route(RoutingMode.MEMORY_REQUIRED, "PROGRESS_RECALL", question)
         if intent(question) in {"resume", "progress", "experience", "reconsider", "next_step"}:
@@ -61,8 +67,10 @@ class RetrievalRouter:
             mode = latest.get("conversation_mode", latest.get("conversation_type"))
             if mode in {"memory", "mixed", "hybrid"}:
                 return Route(RoutingMode.MEMORY_REQUIRED, "MEMORY_FOLLOWUP", question)
-        if re.search(r"일반적으로|일반적인|python.*(?:뭐|설명)|광합성|번역해", canonical_query(question)):
+        if re.search(r"일반적으로|일반적인|python.*(?:뭐|설명)|광합성|번역해|\bin general\b|\bgenerally\b|\btranslate\b", canonical_query(question)):
             return Route(RoutingMode.CHAT_ONLY, "GENERAL_KNOWLEDGE")
+        if has_record_reference is not None and has_record_reference():
+            return Route(RoutingMode.MEMORY_REQUIRED, "SOURCE_IDENTIFIER", question)
         if classify is not None:
             try:
                 value = classify()

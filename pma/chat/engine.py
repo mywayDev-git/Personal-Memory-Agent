@@ -25,6 +25,7 @@ from .evidence import (
     identity_alternatives,
     preserve_overview,
     quoted_topic_answer,
+    review_spans_supported,
     reviewed_citations,
     selected_alternative,
 )
@@ -169,6 +170,18 @@ class ChatEngine:
             result["question"] = question
         sources = {r["id"]: r["source_text"] for r in session["evidence"]}
         forced = identity_alternatives(original_question or question, session["evidence"])
+        if history and history[-1]["response"].get("status") == "needs_clarification":
+            prior = identity_alternatives(history[-1]["question"], session["evidence"])
+            if not prior:
+                by_id = {r['id']: r['source_text'] for r in session['evidence']}
+                prior = [{'label':item['text'], 'quote':item['text'], 'evidence_id':cid}
+                         for item in history[-1]['response'].get('items', []) for cid in item.get('citations', [])
+                         if item.get('text') and item['text'] in by_id.get(cid, '')]
+                if len({a['label'] for a in prior}) < 2:
+                    prior = []
+            if prior and re.search(r"그\s*(?:내용|사람|것)|다시|설명", original_question or question):
+                if not selected_alternative(original_question or question, [a["label"] for a in prior]):
+                    forced = prior
         alternatives = forced or result["alternatives"]
         if forced:
             result["needs_clarification"] = True
@@ -193,7 +206,12 @@ class ChatEngine:
             for a in alternatives if not labels(a["label"]) or canonical_label(a["label"]) in positive
         )
         ambiguous = result["needs_clarification"] and valid and not explicit
-        if history and ambiguous:
+        if re.search(r"내가|나는|나의|내\s", original_question or question) and re.search(
+                r"선호|좋아|취향", original_question or question):
+            # The user already identified whose preference is requested.
+            ambiguous = False
+            result["question"] = original_question or question
+        if history and ambiguous and not forced:
             # Distinguish an unresolved reference from a request for an unknown fact.
             shared_names = set(alternatives[0]["label"].split())
             for alternative in alternatives[1:]:
@@ -228,7 +246,9 @@ class ChatEngine:
 
     def generate(self, question, session, today, *, original_question=None):
         from .policy import source_allowed
-        session = {**session, "evidence": [r for r in session["evidence"] if source_allowed(original_question or question, r)]}
+        from .record_reference import previously_supported, scoped_evidence
+        session = {**session, "evidence": scoped_evidence(original_question or question,
+                   [r for r in session["evidence"] if source_allowed(original_question or question, r)])}
         models = self.models
         attempts = []
 
@@ -289,12 +309,22 @@ class ChatEngine:
         if not evidence:
             return finish({"status": "insufficient_evidence", "items": [],
                            "validation": "no_relevant_evidence", "history_turns": history_count}, "no_relevant_evidence")
+        if re.search(r"무엇|어떤|무슨", intent_question) and re.search(r"완료|마쳤", intent_question):
+            if any(re.search(r"그것(?:은|을)?\s*완료", r["source_text"]) for r in evidence):
+                return finish({"status": "needs_clarification", "items": [],
+                               "clarification": "어떤 작업이 완료되었는지 원문에서 구분되지 않습니다. 완료한 작업을 알려주시겠어요?",
+                               "history_turns": history_count}, "ambiguous_completion_object")
         from .interpretation import dated_progress_draft
         progress_draft = dated_progress_draft(intent_question, evidence)
         if hasattr(models, "select") and not study_topic(intent_question):
             selected = models.select(question, evidence)
             if not isinstance(selected, list) or not set(selected) <= {r["id"] for r in evidence}:
                 raise ValueError("INVALID_SELECTION")
+            if not selected:
+                selected = previously_supported(evidence)
+                if selected:
+                    self.service.trace("chat_selection_recovery", selected_ids=selected,
+                                       reason="prior_source_excerpt_requires_answer_review")
             if not selected:
                 return finish({
                     "status": "insufficient_evidence",
@@ -350,7 +380,7 @@ class ChatEngine:
                     else models.review(question, evidence, response)
                 )
                 review = validate_review(checked, response, evidence)
-                review_ok = accepted(review, response)
+                review_ok = accepted(review, response) and review_spans_supported(response, review, evidence)
                 review_feedback = None
             except ValueError as exc:
                 review = {
@@ -612,6 +642,8 @@ class ChatEngine:
             self.service.trace("chat_result", question=question, response=response)
             return {"message_id": mid, **response}
         except Exception as exc:
+            from scripts.memory_agent.diagnostics import failure
+            self.service.trace("chat_error", diagnostic=failure(exc, self.progress.get((sid, request_id), "chat"))[1])
             if isinstance(exc, RequestDeadlineExceeded):
                 exc = AppError(
                     "CHAT_TIMEOUT", "응답 시간이 초과되었습니다. 다시 시도해 주세요.", 504, True

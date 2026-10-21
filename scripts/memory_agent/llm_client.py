@@ -231,7 +231,7 @@ def chat(
         usage = payload.get("usage") or {}
         raise ProcessingError(
             "MODEL_TRUNCATED",
-            "extract",
+            _model_phase.get() if _model_phase.get() != "other" else "extract",
             finish_reason="length",
             max_tokens=max_tokens,
             usage={k: usage.get(k) for k in ("prompt_tokens", "completion_tokens", "total_tokens")},

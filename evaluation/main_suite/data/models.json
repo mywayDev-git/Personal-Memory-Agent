@@ -1,0 +1,23 @@
+{
+  "generation": {
+    "baseline": {
+      "path": "C:/models/Qwen3-8B-Q4_K_M.gguf",
+      "sha256": null,
+      "context": 16384,
+      "threads": 0,
+      "gpu_layers": 0
+    }
+  },
+  "embedding": {
+    "baseline": {
+      "path": "C:/models/bge-m3-Q8_0.gguf",
+      "sha256": "950f4a8e5e19477a6d3c26d2f162233c20002c601f75e4b002e3239997821167",
+      "context": 8192,
+      "threads": 0,
+      "gpu_layers": 0,
+      "dimensions": 1024,
+      "profile": "raw-v1",
+      "pooling": "cls"
+    }
+  }
+}

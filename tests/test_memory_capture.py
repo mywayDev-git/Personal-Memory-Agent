@@ -182,10 +182,10 @@ def test_index_publication_correction_and_delete(tmp_path):
 def test_api_approval_validation_and_sources(tmp_path):
     from fastapi import FastAPI
     from fastapi.responses import JSONResponse
-    from fastapi.testclient import TestClient
 
     from pma.memory.api import router
     from pma.web import Input
+    from tests.http_client import TestClient
 
     app = FastAPI()
     store = Store(tmp_path / "memory.db")
@@ -280,10 +280,9 @@ def test_memory_types_roundtrip(tmp_path, kind):
 
 
 def test_capture_security_middleware(tmp_path):
-    from fastapi.testclient import TestClient
-
     from pma.settings import AppSettings
     from pma.web import create_app
+    from tests.http_client import TestClient
 
     settings = AppSettings(data_dir=tmp_path)
     app = create_app(settings, models=object(), run_worker=False)

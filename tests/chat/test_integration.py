@@ -3,7 +3,6 @@
 from concurrent.futures import ThreadPoolExecutor
 
 import pytest
-from fastapi.testclient import TestClient
 
 from pma.chat.context import merge_filters
 from pma.chat.router import RetrievalRouter, RoutingMode
@@ -12,6 +11,7 @@ from pma.errors import AppError
 from pma.settings import AppSettings
 from pma.store import Store
 from pma.web import create_app
+from tests.http_client import TestClient
 
 
 @pytest.fixture

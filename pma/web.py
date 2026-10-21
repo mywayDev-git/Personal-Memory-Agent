@@ -157,6 +157,12 @@ def create_app(settings=None, models=None, run_worker=True, console_test=False):
             try:
                 yield
             finally:
+                executor = getattr(app.state, "evaluation_executor", None)
+                if executor is not None:
+                    try:
+                        executor.shutdown()
+                    except OSError:
+                        log.warning("evaluation_cancel_on_shutdown_failed")
                 service.stop()
                 store.checkpoint()
 

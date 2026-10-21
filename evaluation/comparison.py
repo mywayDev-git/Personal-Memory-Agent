@@ -28,6 +28,7 @@ def compare(repo, left_id, right_id):
         if left_results[k].verdict in {"pass", "fail"}
         and right_results[k].verdict in {"pass", "fail"}
     )
+
     cases = [c for c in repo.cases(left["dataset_id"]) if c.id in common]
     lm = dashboard_metrics(cases, [left_results[k] for k in common])
     rm = dashboard_metrics(cases, [right_results[k] for k in common])
@@ -66,3 +67,49 @@ def compare(repo, left_id, right_id):
         else [],
         excluded=sorted((left_results.keys() | right_results.keys()) - set(common)),
     )
+
+
+def compare_models(repo, left_id, right_id):
+    """Explicit model comparison, independent of the unchanged regression policy."""
+    left, right = repo.get_run(left_id), repo.get_run(right_id)
+    reasons = []
+    if left["content_hash"] != right["content_hash"]:
+        reasons.append("dataset_content_hash")
+    if left["environment"] != right["environment"]:
+        reasons.append("environment")
+    if left["status"] != "completed" or right["status"] != "completed":
+        reasons.append("incomplete_run")
+    ac, bc = left["config"], right["config"]
+    for name in ("model", "embedding"):
+        if not ac.get(name, {}).get("sha256") or not bc.get(name, {}).get("sha256"):
+            reasons.append(name + "_identity")
+    # Exactly model identities/settings and the display candidate name may vary.
+    ignored = {"model", "embedding", "candidate", "generation_id", "embedding_id"}
+    for name in (ac.keys() | bc.keys()) - ignored:
+        if ac.get(name) != bc.get(name):
+            reasons.append(name)
+    for required in ("snapshot", "grading_version", "retrieval", "server_sha256", "seed", "profile"):
+        if ac.get(required) is None or bc.get(required) is None:
+            reasons.append(required + "_unknown")
+    lm, rm = repo.get_run_summary(left_id), repo.get_run_summary(right_id)
+    lr, rr = repo.results(left_id), repo.results(right_id)
+    common = sorted({r.case_id for r in lr} & {r.case_id for r in rr})
+    if {r.case_id for r in lr} != {r.case_id for r in rr}:
+        reasons.append("different_completed_cases")
+    if any(r.verdict in {"pending_review", "error", "not_applicable"} for r in [*lr, *rr]):
+        reasons.append("unresolved_or_unavailable_cases")
+    if len(lr) != len(repo.cases(left["dataset_id"])) or len(rr) != len(repo.cases(right["dataset_id"])):
+        reasons.append("missing_cases")
+    keys = lm["metrics"].keys() | rm["metrics"].keys()
+    deltas = {}
+    for key in keys:
+        a, b = lm["metrics"].get(key, {}).get("value"), rm["metrics"].get(key, {}).get("value")
+        deltas[key] = b - a if not reasons and a is not None and b is not None else None
+    lmap, rmap = {r.case_id: r for r in lr}, {r.case_id: r for r in rr}
+    return dict(left=left, right=right, comparable=not reasons, reasons=sorted(set(reasons)),
+                mode="models", common_case_count=len(common), metric_deltas=deltas,
+                delta_units={"ratios": "ratio", "latency": "ms", "memory": "MiB"},
+                new_failures=[k for k in common if lmap[k].verdict == "pass" and rmap[k].verdict == "fail"] if not reasons else [],
+                resolved=[k for k in common if lmap[k].verdict == "fail" and rmap[k].verdict == "pass"] if not reasons else [],
+                persistent_failures=[k for k in common if lmap[k].verdict == rmap[k].verdict == "fail"] if not reasons else [],
+                excluded=sorted({r.case_id for r in [*lr, *rr] if r.verdict not in {"pass", "fail"}}))

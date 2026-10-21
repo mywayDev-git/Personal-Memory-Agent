@@ -361,12 +361,20 @@ class Service:
             })
 
         locations = location_terms(question, rows)
+        def person_scope(value):
+            if not value or value == 'self' or value not in question:
+                return False
+            escaped = re.escape(value)
+            # A project appearing as an extracted actor is not a person constraint.
+            project = any(re.search(escaped + r'(?:에서|\s*(?:프로젝트|장비|회의)|(?:와|과)(?:는)?\s*다른\s*프로젝트)', r['text']) for r in rows)
+            person = any(re.search(r'(?:' + escaped + r')(?:씨|님|에게|한테)|(?:동료|친구|담당자(?:는|가)?)\s*' + escaped, r['text']) for r in rows)
+            return not project or person
         known_names = {
             value
             for r in rows
             if r["fact"]
             for value in (r["fact"]["actor"], r["fact"]["recipient"], r["fact"].get("counterparty"), *r["fact"].get("participants", []))
-            if value and value != "self" and value in question
+            if person_scope(value)
         }
         pending = sum(r["fact"] is None for r in rows)
         requested_objects = {
@@ -724,6 +732,14 @@ class Service:
                     row["search_explanation"]["model_assessment"] = model_decisions.get(row["id"])
             else:
                 selected = self.models.select(canonical_query(selection_question or question), results)
+            if not selected and results and hasattr(self.models, "recover_selection"):
+                recovered = self.models.recover_selection(selection_question or question, results)
+                from .chat.record_reference import previously_supported
+                for row in results:
+                    if row["id"] in recovered:
+                        row["search_explanation"]["model_assessment"] = recovered[row["id"]]
+                selected = previously_supported(results)
+                self.trace("selection_recovery", selected_ids=selected, reason="source_excerpt_second_look")
             allowed = {r["id"] for r in results}
             if not set(selected) <= allowed:
                 raise ValueError("INVALID_SELECTION")

@@ -7,7 +7,7 @@ import json
 from jsonschema import Draft202012Validator, FormatChecker
 
 from .diagnostics import ProcessingError
-from .exceptions import SchemaValidationError
+from .exceptions import ExtractionError, SchemaValidationError
 from .extractor import extract_memories
 from .meaning import action_assertions, extraction_conflicts
 from .postprocess import build_final_result
@@ -19,6 +19,27 @@ def fingerprint(value):
     return hashlib.sha256(
         json.dumps(value, ensure_ascii=False, sort_keys=True).encode()
     ).hexdigest()
+
+
+def decoder_schema(schema):
+    """Express conditional value types as a tagged union for constrained decoders."""
+    result = copy.deepcopy(schema)
+    value = result.get('$defs', {}).get('value_ref')
+    if not value or not value.get('allOf'):
+        return result
+    branches = []
+    for tag, kind in [('string', 'string'), ('number', 'number'), ('boolean', 'boolean'),
+                      ('date', 'string'), ('datetime', 'string'), ('none', 'null')]:
+        branch = {k: copy.deepcopy(v) for k, v in value.items() if k != 'allOf'}
+        branch['properties']['value_type'] = {'const': tag}
+        branch['properties']['value'] = {'type': kind}
+        if kind == 'string':
+            branch['properties']['value']['minLength'] = 1
+        if tag != 'none':
+            branch['properties']['kind'] = {'enum': ['self', 'entity', 'literal']}
+        branches.append(branch)
+    result['$defs']['value_ref'] = {'oneOf': branches}
+    return result
 
 
 def process_text(
@@ -38,10 +59,10 @@ def process_text(
         raise ValueError("EMPTY_SOURCE")
     if schema_errors(build_final_result({"memories": []}, source_context), final_schema):
         raise SchemaValidationError("INVALID_SOURCE_CONTEXT")
-    request_schema = output_schema
+    request_schema = decoder_schema(output_schema)
     request_text = source_text
     if source_units is not None:
-        request_schema = copy.deepcopy(output_schema)
+        request_schema = decoder_schema(output_schema)
         request_schema["$defs"]["evidence_item"] = {
             "type": "object",
             "additionalProperties": False,
@@ -52,20 +73,49 @@ def process_text(
             {"target_ids": target_ids, "sentences": source_units}, ensure_ascii=False
         )
         prompt += "\n이번 요청은 인용문을 다시 쓰지 않는다. evidence에는 quote 대신 sentence_id만 넣는다. target_ids 문장의 사실만 추출한다. 나머지 문장은 문맥용이다. time은 근거 문장의 시간 범위만 적용하고 기록 시각을 사건 시각으로 복사하지 않는다. 요일만 있는 약속은 날짜를 추측하지 않는다. 받은 사람은 내가 아니라 X라는 문장에서 사용자가 받은 것으로 추출하지 않는다."
-    extraction, metadata, latency = extract_memories(
-        session=session,
-        endpoint=settings.endpoint,
-        model=settings.model,
-        prompt=prompt,
-        source_text=request_text,
-        source_context=source_context,
-        timeout=settings.timeout,
-        max_tokens=settings.max_tokens,
-        temperature=settings.temperature,
-        seed=settings.seed,
-        top_p=settings.top_p,
-        output_schema=request_schema,
-    )
+    def repair(diagnostic, latency=0):
+        if _repair_attempt:
+            raise ProcessingError(diagnostic["code"], diagnostic["stage"], issues=diagnostic.get("issues", []))
+        try:
+            repaired, meta = process_text(
+                source_text, source_context,
+                prompt=prompt + "\n이전 출력이 검증에 실패했다. 원문과 스키마만 사용해 다시 추출하라. 타입과 필수 필드를 지켜라. "
+                "value_type=number이면 value는 따옴표 없는 JSON 숫자이고, string/date/datetime이면 문자열이다. "
+                "사건 날짜가 없으면 time.raw/start/end는 null, precision=unknown, certainty=uncertain이다. "
+                "time.start/end는 문자열 또는 null이며 객체나 배열을 넣지 않는다. 숫자를 모르면 숫자를 만들어내지 않는다. "
+                + json.dumps(diagnostic, ensure_ascii=False),
+                output_schema=output_schema, final_schema=final_schema, session=session,
+                settings=settings, source_units=source_units, target_ids=target_ids, _repair_attempt=True)
+        except ProcessingError as exc:
+            exc.diagnostic["previous_attempts"] = [diagnostic]
+            raise
+        meta.setdefault("repair_attempts", []).append(diagnostic)
+        meta["latency_seconds"] += latency
+        return repaired, meta
+
+    try:
+        extraction, metadata, latency = extract_memories(
+            session=session,
+            endpoint=settings.endpoint,
+            model=settings.model,
+            prompt=prompt,
+            source_text=request_text,
+            source_context=source_context,
+            timeout=settings.timeout,
+            max_tokens=settings.max_tokens,
+            temperature=settings.temperature,
+            seed=settings.seed,
+            top_p=settings.top_p,
+            output_schema=request_schema,
+        )
+    except ExtractionError:
+        return repair(dict(code="MODEL_INVALID_JSON", stage="parse"))
+    # Validate before iterating memory/evidence objects or normalizing time.
+    # A malformed list/object must yield a bounded repair, not an AttributeError.
+    if schema_errors(extraction, request_schema):
+        issues = [{"path": list(e.absolute_path), "rule": e.validator}
+                  for e in Draft202012Validator(request_schema, format_checker=FormatChecker()).iter_errors(extraction)]
+        return repair(dict(code="INVALID_EXTRACTION_SCHEMA", stage="schema", issues=issues[:20]), latency)
     if source_units is not None:
         by_id = {u["id"]: u for u in source_units}
         annotations = []
@@ -93,7 +143,7 @@ def process_text(
             ).iter_errors(extraction)
         ]
         diagnostic = dict(code="INVALID_EXTRACTION_SCHEMA", stage="schema", issues=issues[:20])
-        if source_units is not None and not _repair_attempt:
+        if not _repair_attempt:
             # Retry generation once using the original source and safe field diagnostics.
             # Never coerce a guessed value into the required type.
             try:

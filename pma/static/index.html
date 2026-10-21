@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="ko">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>기억의 서랍 · Personal Memory Agent</title><link rel="stylesheet" href="/static/style.css"><script type="module" src="/static/app.js"></script></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>기억의 서랍 · Personal Memory Agent</title><link rel="stylesheet" href="/static/style.css"><script type="module" src="/static/app.js"></script><link rel="stylesheet" href="/static/evaluation-datasets.css"></head>
 <body>
 <a class="skip-link" href="#main-content">본문으로 건너뛰기</a>
 <div class="shell">
@@ -14,6 +14,7 @@
       <button data-tab="trash" class="nav">휴지통</button>
       <button data-tab="failures" class="nav">처리 실패 목록</button>
       <a id="evaluation-link" class="nav" href="/evaluation" hidden>평가 관제실</a>
+      <a id="evaluation-dataset-link" class="nav" href="/evaluation/datasets" hidden>테스트 데이터셋</a>
     </nav>
     <script type="module" src="/static/evaluation-link.js"></script>
     <span class="local-label"><span class="dot"></span>나만의 로컬 서재</span>
@@ -21,6 +22,8 @@
   </header>
   <button id="sidebar-scrim" aria-label="메뉴 닫기" hidden></button>
   <main id="main-content" tabindex="-1">
+   <section id="evaluation-dataset-browser" data-mode="preview" hidden aria-label="전체 테스트 데이터셋 미리보기"></section>
+   <script type="module" src="/static/evaluation-datasets.js"></script>
    <button id="app-menu-toggle" class="secondary" aria-label="메뉴 열기" aria-expanded="true">☰</button>
    <details class="system-status">
     <summary>연결 상태 · AI 처리 현황</summary>
@@ -43,6 +46,8 @@
     <header class="page-header"><div><span class="eyebrow">YOUR PERSONAL ARCHIVE</span><h1 id="heading">나의 기록</h1><p class="page-intro">지나간 경험을, 오늘의 단서로.</p></div><span id="today" class="date"></span></header>
     <div id="notice" role="status" aria-live="polite" hidden></div>
     <section id="records" class="tab" hidden>
+      <div class="actions" aria-label="기록 종류"><button id="records-personal-choice" class="secondary" type="button" aria-pressed="true">내 기록</button><button id="records-test-choice" class="secondary" type="button" aria-pressed="false" hidden>테스트 기억 원문</button></div>
+      <div id="records-personal">
       <div class="grid">
         <article class="card editor"><div class="card-head"><h2 id="editor-title">오늘, 무엇을 기억할까요?</h2><button id="new-record" class="link">새 기록</button></div>
           <p class="muted">경험과 생각을 자유롭게 남기세요. AI가 검색할 수 있는 기억으로 정리합니다.</p>
@@ -56,6 +61,8 @@
         <article class="card archive-list"><div class="card-head"><h2>서랍에 담긴 기록</h2><button id="refresh" class="link">새로고침</button></div><div id="record-list" class="record-list"></div><button id="more" class="secondary" hidden>더 보기</button></article>
       </div>
       <article id="detail" class="card detail" hidden><div class="card-head"><h2>원문과 기억</h2><button id="close-detail" class="link">닫기</button></div><div id="detail-content"></div></article>
+      </div>
+      <article id="test-memory-browser" class="card" hidden aria-label="테스트 기억 원문"></article>
     </section>
     <section id="questions" class="tab" hidden>
       <article class="card question-card"><span class="eyebrow">CONNECT THE DOTS</span><h2>지금 필요한 과거의 경험은?</h2><p class="muted">기록에서 단서를 찾고, 답변에 사용한 원문까지 확인하세요.</p>

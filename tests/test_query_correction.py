@@ -115,10 +115,10 @@ def test_api_passes_opt_out_and_defaults_without_breaking_existing_clients():
     from types import SimpleNamespace
 
     from fastapi import FastAPI
-    from fastapi.testclient import TestClient
 
     from pma.chat.api import router
     from pma.web import Input, QueryInput
+    from tests.http_client import TestClient
     seen = []
     app = FastAPI()
     app.include_router(router(Input, QueryInput))

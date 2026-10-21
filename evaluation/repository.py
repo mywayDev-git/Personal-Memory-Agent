@@ -242,7 +242,7 @@ class Repository:
                 ],
             )
 
-    def list_case_results(self, run_id, limit=20, offset=0, **filters):
+    def list_case_results(self, run_id, limit=20, offset=0, *, compact=False, **filters):
         self.get_run(run_id)
         where, args = ["r.run_id=?"], [run_id]
         for key in ("verdict", "error_type", "question_type", "ambiguity_class"):
@@ -254,11 +254,20 @@ class Repository:
             args.append("%" + filters["q"] + "%")
         join = " FROM eval_case_results r JOIN eval_cases c ON c.id=r.case_id WHERE "
         join += " AND ".join(where)
+        projection = "r.*,c.question,c.expected_answer,c.question_type,c.ambiguity_class,c.expected_behavior,c.metadata_json,"
+        if compact:
+            # Do not load large observation/source/trace payloads for the list view.
+            projection = (
+                "r.id,r.run_id,r.case_id,r.actual_answer,r.response_behavior,r.verdict,r.latency_ms,r.error_type,"
+                "c.question,c.expected_answer,c.question_type,c.ambiguity_class,c.expected_behavior,"
+                "json_object('_case_id',json_extract(c.metadata_json,'$._case_id')) AS metadata_json,"
+                "json_object('suite_verdict',json_extract(r.evaluation_json,'$.suite_verdict'),"
+                "'measurement_type',json_extract(r.evaluation_json,'$.measurement_type')) AS evaluation_json,"
+            )
         with self.connect() as db:
             total = db.execute("SELECT count(*)" + join, args).fetchone()[0]
             rows = db.execute(
-                "SELECT r.*,c.question,c.expected_answer,c.question_type,"
-                "c.ambiguity_class,c.expected_behavior,c.metadata_json,"
+                "SELECT " + projection +
                 "EXISTS(SELECT 1 FROM eval_trace_events t WHERE t.result_id=r.id) "
                 "AS has_trace" + join + " ORDER BY c.id,r.id LIMIT ? OFFSET ?",
                 [*args, limit, offset],

@@ -145,6 +145,24 @@ def semantic_issue(question, item, evidence):
     return None
 
 
+def review_spans_supported(response, review, evidence):
+    """A true conclusion cannot cover uncited ancillary people, dates or plans."""
+    rows = {r['id']: r for r in evidence}
+    for checked in review.get('items', []):
+        text = response['items'][checked['index']]['text']
+        quote = '\n'.join(ref['quote'] for ref in checked['evidence'])
+        sources = [rows[ref['id']] for ref in checked['evidence']]
+        full = '\n'.join(r['source_text'] for r in sources)
+        facts = [r.get('fact') or {} for r in sources]
+        names = {f.get(key) for f in facts for key in ('actor', 'recipient', 'counterparty')} - {None, '', 'self'}
+        tokens = names | set(re.findall(r'\d+(?:\.\d+)?|[월화수목금토일]요일', text))
+        if any(token in text and token in full and token not in quote for token in tokens):
+            return False
+        if re.search(r'예정|계획', text) and re.search(r'예정|계획', full) and not re.search(r'예정|계획', quote):
+            return False
+    return True
+
+
 def reviewed_citations(response, review, evidence):
     result = deepcopy(response)
     sources = {row["id"]: row for row in evidence}
@@ -178,7 +196,7 @@ def reviewed_citations(response, review, evidence):
 
 def identity_alternatives(question, evidence):
     """Only explicit role-qualified names can force a clarification."""
-    if not asks_identity(question) or re.search(r"둘|각각|비교|차이", question):
+    if not (asks_identity(question) or re.search(r"어떤\s*일|무슨\s*일", question)) or re.search(r"둘|각각|비교|차이", question):
         return []
     groups = {}
     for row in evidence:

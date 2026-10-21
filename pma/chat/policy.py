@@ -53,7 +53,9 @@ def source_allowed(question, row):
             r"진단|진료|치료|질환|병원|건강\s*상담|정신\s*건강",
             r"건강|의료|진단|진료|치료|질환|병원|상담",
         ),
-        (r"비밀번호|주민등록번호|인증\s*토큰|계좌번호", r"비밀번호|주민등록번호|인증|계좌"),
+        # An expiry/error diagnosis is not a credential value. Keep actual token
+        # declarations sensitive, including when a later sentence mentions expiry.
+        (r"비밀번호|주민등록번호|인증\s*토큰(?!(?:이|의)?\s*(?:만료|오류|갱신|재발급|문제))|계좌번호", r"비밀번호|주민등록번호|인증|계좌"),
         (r"성생활|성적\s*지향", r"성생활|성적\s*지향"),
     ]
     return all(

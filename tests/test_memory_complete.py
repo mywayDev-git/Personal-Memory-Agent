@@ -126,11 +126,10 @@ def test_policy_and_archived_preference(tmp_path):
 
 
 def test_api_review_contract(tmp_path):
-    from fastapi.testclient import TestClient
-
     from pma.chat.store import ChatStore
     from pma.settings import AppSettings
     from pma.web import create_app
+    from tests.http_client import TestClient
 
     settings = AppSettings(data_dir=tmp_path)
     app = create_app(settings, models=service_for().models, run_worker=False)
