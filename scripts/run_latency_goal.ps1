@@ -3,6 +3,7 @@ param(
     [ValidateSet(5, 20)][int]$Samples = 5,
     [ValidateRange(1, 1024)][int]$Threads = 8,
     [ValidateRange(0, 1024)][int]$GenerationBatchThreads = 0,
+    [switch]$DisableCpuRepacking,
     [string[]]$Cases = @('simple_search', 'simple_answer'),
     [string]$RunName = ('manual-' + (Get-Date -Format 'yyyyMMdd-HHmmss')),
     [string]$PythonExe = '',
@@ -29,6 +30,7 @@ foreach ($mode in $placements) {
 if (-not $Execute) {
     Write-Host 'Plan only. Add -Execute to run real synthetic-data model measurements.'
     Write-Host "Ordinary models will be paused only with -PauseOrdinaryModels: $PauseOrdinaryModels"
+    Write-Host "Disable weight repacking for owned CPU trials: $DisableCpuRepacking"
     foreach ($arguments in $commands) { Write-Output (@($PythonExe) + $arguments | ConvertTo-Json -Compress) }
     return
 }
@@ -52,6 +54,8 @@ ConvertTo-Json -InputObject @($originals | Select-Object ProcessId,ExecutablePat
 $stopped = @()
 $restored = @()
 $restoreErrors = @()
+$originalRepack = [Environment]::GetEnvironmentVariable('LLAMA_ARG_REPACK', 'Process')
+$serverEnvironment = @()
 $previousLocation = Get-Location
 try {
     foreach ($model in $originals) {
@@ -62,6 +66,11 @@ try {
     }
     Set-Location -LiteralPath $root
     foreach ($arguments in $commands) {
+        $mode = $arguments[[Array]::IndexOf($arguments, '--placement') + 1]
+        $repack = if ($DisableCpuRepacking -and $mode -eq 'cpu') { '0' } else { $originalRepack }
+        [Environment]::SetEnvironmentVariable('LLAMA_ARG_REPACK', $repack, 'Process')
+        $serverEnvironment += @{placement=$mode; LLAMA_ARG_REPACK=$repack}
+        ConvertTo-Json -InputObject @($serverEnvironment) | Set-Content (Join-Path $outputRoot 'model-server-environment.json')
         & $PythonExe @arguments
         if ($LASTEXITCODE -ne 0) { throw 'Measurement interrupted or failed. Partial results are preserved.' }
     }
@@ -70,6 +79,7 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Report generation failed; raw results remain available.' }
     Write-Host "Result: $(Join-Path $outputRoot 'comparison.rst')"
 } finally {
+    [Environment]::SetEnvironmentVariable('LLAMA_ARG_REPACK', $originalRepack, 'Process')
     Set-Location -LiteralPath $previousLocation.Path
     foreach ($model in $stopped) {
         $prefix = '"' + $model.ExecutablePath + '"'
