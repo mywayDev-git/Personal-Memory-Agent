@@ -67,3 +67,19 @@ def test_role_free_unrelated_record_cannot_establish_absence(text):
         'issue': 'none', 'evidence': [{'id': 'note', 'quote': row['source_text']}]}]}
     enforce_answer_integrity('등산 모임 친구 도윤의 직업은?', [row], response, review)
     assert review['items'][0]['support'] == 'unsupported'
+
+
+def test_review_reads_uncited_job_but_can_only_select_existing_answer_citations():
+    evidence = [{'id': 'h', 'source_text': '연구실 동료 현우는 키가 181cm다.'},
+                {'id': 'j', 'source_text': '연구실 동료 현우는 통계학자다.'}]
+    model = ChatLocalModels.__new__(ChatLocalModels)
+    def structured(prompt, data, schema, **kw):
+        assert len(data['source_records']) == 2
+        refs = schema['properties']['items']['items']['properties']['evidence']['items']['properties']
+        assert refs['id']['enum'] == ['h']
+        assert refs['span_id']['enum'] == ['s0:0']
+        return {'fulfillment': 'missing', 'abstention': 'not_applicable', 'reason': '직업 누락',
+            'items': [{'index': 0, 'support': 'unsupported', 'relevant': False, 'issue': 'other', 'evidence': []}]}
+    model.structured = structured
+    response = {'status': 'answered', 'items': [{'text': '직업은 알 수 없습니다.', 'citations': ['h']}]}
+    assert not accepted(model.review('연구실 동료 현우의 직업은?', evidence, response), response)

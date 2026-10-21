@@ -28,7 +28,7 @@ def evaluate(models, artifact_path=None, *, before_call=None, split='development
                     checked = models.review(pair['question'], evidence, response)
                     row['approved'] = bool(accepted(checked, response) and review_spans_supported(response, checked, evidence))
                 except ValueError as exc:
-                    row.update(approved=False, error_code=type(exc).__name__)
+                    row.update(approved=False, error_code=type(exc).__name__, error_reason=str(exc))
             row.update(seconds=time.perf_counter()-started, model_calls=sum(
                 call['operation'] == '/v1/chat/completions' for call in budget.calls), transport_calls=budget.calls)
             row['passed'] = row['approved'] == expected and 'error_code' not in row
