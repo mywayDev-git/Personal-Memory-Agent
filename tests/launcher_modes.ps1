@@ -44,11 +44,18 @@ function Wait-Model {
 }
 function Assert($Condition, $Message) { if (-not $Condition) { throw $Message } }
 function Layers($Entry) { $Entry.Args[[Array]::IndexOf($Entry.Args, '-ngl') + 1] }
+function Assert-CpuOnly($Entry) {
+    Assert ($Entry.Args -contains '--no-op-offload') 'CPU host operations must not use a GPU'
+    Assert ($Entry.Args -contains '--no-kv-offload') 'CPU KV cache must not use a GPU'
+    Assert ($Entry.Args[[Array]::IndexOf($Entry.Args, '--device') + 1] -eq 'none') 'CPU device selection must be none'
+}
 
 Reset-Mocks
 $models = @(Start-ModelServers Test-Devices 'generation model.gguf' 'embedding model.gguf' cpu 4 2)
 Assert ($models.Count -eq 2 -and $script:deviceQueries -eq 0) 'CPU must not query GPU devices'
 Assert ((Layers $script:launched[0]) -eq '0' -and (Layers $script:launched[1]) -eq '0') 'CPU offload must be zero'
+Assert-CpuOnly $script:launched[0]
+Assert-CpuOnly $script:launched[1]
 Assert ($script:launched[0].Args[-1] -eq '4' -and $script:launched[1].Args[-1] -eq '2') 'per-server thread options lost'
 
 Reset-Mocks
@@ -58,11 +65,16 @@ Assert ($script:launched.Count -eq 4 -and $models[0].Id -eq 3) 'auto must retry 
 Assert (($script:stopped -join ',') -eq '1,2' -and ($script:waited -join ',') -eq '1,2') 'failed GPU pair must exit before retry'
 Assert ((Layers $script:launched[0]) -eq '99' -and (Layers $script:launched[2]) -eq '0') 'fallback offload flags incorrect'
 Assert (-not ($script:launched[2].Args -contains '-t')) 'unset threads must preserve server default'
+Assert-CpuOnly $script:launched[2]
+Assert-CpuOnly $script:launched[3]
+Assert (-not ($script:launched[0].Args -contains '--no-op-offload')) 'GPU attempt must retain acceleration'
 Assert (@($script:launched | Where-Object Window -ne Hidden).Count -eq 0) 'background windows must stay hidden'
 
 Reset-Mocks
 $models = @(Start-ModelServers Test-Devices gen emb gpu 0 0 cpu)
 Assert ((Layers $script:launched[0]) -eq '99' -and (Layers $script:launched[1]) -eq '0') 'mixed placement must keep generation on GPU and embeddings on CPU'
+Assert-CpuOnly $script:launched[1]
+Assert (-not ($script:launched[0].Args -contains '--device')) 'mixed generation must retain its GPU'
 
 Reset-Mocks
 $models = @(Start-ModelServers Test-Devices gen emb gpu 0 0 cpu 'qwen3-retrieval-v1' 'off')

@@ -73,6 +73,12 @@ function Start-ModelServers {
             }
             $embeddingArgs += @('--embd-normalize', '2', '--flash-attn', $FlashAttention)
             $generationArgs += @('--flash-attn', $FlashAttention)
+            if ($mode -eq 'cpu') {
+                $generationArgs += @('--device', 'none', '--no-op-offload', '--no-kv-offload')
+            }
+            if ($mode -eq 'cpu' -or $EmbeddingAcceleration -eq 'cpu') {
+                $embeddingArgs += @('--device', 'none', '--no-op-offload', '--no-kv-offload')
+            }
             if ($GenerationThreads -gt 0) { $generationArgs += @('-t', "$GenerationThreads") }
             if ($EmbeddingThreads -gt 0) { $embeddingArgs += @('-t', "$EmbeddingThreads") }
             Write-Host "[PMA] Launching models ($mode)..."

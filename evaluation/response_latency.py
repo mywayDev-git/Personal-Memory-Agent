@@ -163,6 +163,9 @@ def servers(args, generation, embedding):
                        "--port", str(args.port + index), "-c", "16384" if index == 0 else "8192",
                        "-ngl", "99" if gpu else "0", "--alias", "latency-generation" if index == 0 else "latency-embedding",
                        "--flash-attn", args.flash, "--log-disable"]
+            if not gpu:
+                # Layer placement alone can leave KV/host operations on a GPU.
+                command += ["--device", "none", "--no-op-offload", "--no-kv-offload"]
             command += ["-np", "1"] if index == 0 else [
                 "--embedding", "--pooling", "last" if args.embedding == "qwen" else "cls",
                 "--embd-normalize", "2", "-b", str(args.embedding_batch), "-ub", str(args.embedding_batch)]
