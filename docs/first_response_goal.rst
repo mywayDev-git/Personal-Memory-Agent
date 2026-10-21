@@ -39,6 +39,9 @@ GPU가 물리적으로 없는 컴퓨터에서 검증한 것으로 해석하지 �
 다른 배경 원문은 최종 독립 검증 입력에서 제거하지 않습니다.
 ``-BatchEight``은 모든 후보를 유지하면서 한 번에 판정할 묶음 크기만 8로 바꿉니다.
 ``-QualityScreen``은 속도 채택용 표본을 모으지 않는 1회 품질 선별입니다.
+``-BaselineOnly``는 후보를 실행하지 않고 기존 8B 기준 경로만 측정합니다.
+품질 선별에서 후보가 탈락한 경우에도 현재 CPU·GPU의 기준 시간을 확인할 수 있습니다.
+이때 ``baseline.json``은 기준 측정값이며 최적화 전후 비교나 후보 채택 결과가 아닙니다.
 ``-RetrievalOnly``는 기존 90개 검색 사례만, ``-ReviewBank``는 정상·변조 답변 검사도 실행합니다.
 ``-ReviewOnly``는 고정 답변 묶음의 검증만 수행하며, 검색·답변 속도 채택 검사를 대신하지 않습니다.
 후보 파일 선택은 ``-Generation q4`` 또는 ``-Generation q8``이며 BGE는 유지됩니다.
@@ -63,6 +66,13 @@ SCREEN_PASS는 해당 사례의 자동 선별 통과이며 전체 품질 통과�
 
 자동 채점과 원문을 대조한 의미 검토를 구분합니다. 기준과 후보가 똑같이 실패했어도
 정답으로 집계하지 않습니다. 명령문을 사실로 승인하는 오류는 채택을 막습니다.
+실제 답변과 전체 원문을 함께 볼 수 있는 검토표도 모델 재실행 없이 만듭니다::
+
+    & C:\development\Personal-Memory-Agent\.venv\Scripts\python.exe -m evaluation.first_response_review .local/latency-goal/my-first-response/gpu/results.json --output .local/latency-goal/my-first-response/answers.html
+
+생성된 ``answers.html``을 브라우저에서 열면 사례별 답변과 자동 점수가 보입니다.
+인용 구간·전체 원문·채점 조건은 펼쳐서 볼 수 있습니다. 외부 통신과 모델 실행 버튼은 없습니다.
+새로운 개발용·최종 확인용 답변 비교 실행은 가속 환경별 폴더에 이 검토표를 자동 생성합니다.
 
 비교 조건과 채택
 ---------------

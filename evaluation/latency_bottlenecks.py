@@ -1,6 +1,7 @@
 """Content-free analysis of explicit latency experiments; never starts models."""
 
 import argparse
+import hashlib
 import json
 import math
 import statistics
@@ -75,10 +76,20 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("results", type=Path)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--target-seconds", type=float)
     args = parser.parse_args()
     if args.output.exists():
         parser.error("Use a new output file; previous observations are immutable")
-    result = analyze(json.loads(args.results.read_text("utf-8")))
+    if args.target_seconds is not None and (not finite(args.target_seconds) or args.target_seconds <= 0):
+        parser.error("Target must be positive and finite")
+    document = json.loads(args.results.read_text("utf-8"))
+    target = args.target_seconds if args.target_seconds is not None else (60 if document.get("configuration", {}).get("placement") == "cpu" else 10)
+    result = analyze(document, target)
+    result.update(source=str(args.results), source_sha256=hashlib.sha256(args.results.read_bytes()).hexdigest(),
+                  reporter_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+                  configuration=document.get("configuration"), startup=document.get("startup"),
+                  source_unchanged=document.get("source_unchanged"), evaluator_unchanged=document.get("evaluator_unchanged"),
+                  adoption="BASELINE_REFERENCE_ONLY" if document.get("configuration", {}).get("variants") == ["current"] else "PENDING_REVIEW")
     args.output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", "utf-8")
 
 

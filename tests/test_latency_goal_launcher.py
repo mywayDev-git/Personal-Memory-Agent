@@ -27,3 +27,22 @@ def test_latency_goal_requires_execute_and_restores_owned_servers(tmp_path, scen
     assert result.returncode == 0, result.stdout + result.stderr
     assert "latency goal launcher passed" in result.stdout
 
+
+def test_baseline_only_plan_cannot_include_or_start_a_candidate():
+    import json
+    executable = shutil.which("pwsh")
+    if executable is None:
+        pytest.skip("PowerShell 7 unavailable")
+    result = subprocess.run([executable, "-NoProfile", "-File", "scripts/run_latency_goal.ps1",
+                             "-Placement", "cpu", "-BaselineOnly"],
+                            capture_output=True, text=True, encoding="utf-8", timeout=20, check=True)
+    command = json.loads(next(line for line in result.stdout.splitlines() if line.startswith("[")))
+    start = command.index("--variants") + 1
+    assert command[start:start + 2] == ["current", "--candidate-options"]
+    assert command[command.index("--baseline-options") + 1:] == ["compact_ids", "source_facts", "--cases", "simple_search", "simple_answer"]
+    warm = subprocess.run([executable, "-NoProfile", "-File", "scripts/run_latency_goal.ps1",
+                           "-BaselineOnly", "-InterpretationReuse"],
+                          capture_output=True, text=True, encoding="utf-8", timeout=20, check=True)
+    command = json.loads(next(line for line in warm.stdout.splitlines() if line.startswith("[")))
+    assert command[command.index("--baseline-options") + 1:][:3] == ["compact_ids", "source_facts", "interpretation_cache"]
+

@@ -31,3 +31,14 @@ def test_unchanged_baseline_failures_are_visible_and_never_counted_as_correct():
     assert result["automated_nonregression_gate"]
     assert result["unchanged_failures"] == ["dev_fact"]
     assert result["manual_semantic_review"] == "PENDING"
+
+
+def test_shared_false_approval_blocks_adoption_even_without_a_relative_regression():
+    data = observation()
+    for row in data["runs"][:2]:
+        row["quality"].update(passed=False, validation="model_checked", source_scope_valid=False)
+    result = compare(data)
+    assert result["automated_nonregression_gate"] is True
+    assert result["candidate_scope_guard_passed"] is False
+    assert result["adoption"] == "NOT_ELIGIBLE_SCOPE_FALSE_APPROVAL"
+    assert len(result["approved_scope_errors"]) == 2

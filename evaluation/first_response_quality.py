@@ -1,6 +1,7 @@
 """Compare paired synthetic quality observations without invoking models."""
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 
@@ -25,6 +26,11 @@ def compare(document):
                        "candidate_observations": len(grouped["candidate"])}
     errors = [r for r in document.get("runs", []) if r.get("error_code")]
     candidate_errors = [r for r in errors if r["variant"] == "candidate"]
+    approved_scope_errors = [{"case": row["case"], "variant": row["variant"], "sample": row.get("sample")}
+                             for row in document.get("runs", []) if not row.get("warmup")
+                             and (row.get("quality") or {}).get("validation") == "model_checked"
+                             and (row.get("quality") or {}).get("source_scope_valid") is False]
+    candidate_scope_errors = [row for row in approved_scope_errors if row["variant"] == "candidate"]
     complete = bool(document.get("execution_completed") and set(cases) == set(expected) and
                     config.get("fixture_manifest_sha256") == manifest()["sha256"] and
                     all(row["baseline_observations"] and row["candidate_observations"] for row in cases.values()))
@@ -35,6 +41,11 @@ def compare(document):
                                    if not row["baseline_passed"] and not row["candidate_passed"]],
             "errors": len(errors), "candidate_errors": len(candidate_errors),
             "automated_nonregression_gate": complete and not regressions and not candidate_errors,
+            "approved_scope_errors": approved_scope_errors,
+            "candidate_scope_guard_passed": complete and not candidate_scope_errors and not candidate_errors,
+            "adoption": ("NOT_ELIGIBLE_SCOPE_FALSE_APPROVAL" if candidate_scope_errors else
+                         "NOT_ELIGIBLE_REGRESSION_OR_ERROR" if regressions or candidate_errors else
+                         "PENDING_SOURCE_REVIEW_AND_PERFORMANCE"),
             "manual_semantic_review": "PENDING", "cases": cases,
             "note": "Unchanged baseline failures are not counted as correct answers or target successes."}
 
@@ -47,8 +58,10 @@ def main():
     if args.output.exists():
         parser.error("Choose a new output; earlier reports are preserved")
     result = compare(json.loads(args.results.read_text(encoding="utf-8")))
+    result.update(source_sha256=hashlib.sha256(args.results.read_bytes()).hexdigest(),
+                  reporter_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest())
     args.output.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(json.dumps({k: result[k] for k in ("complete_split", "regressions", "errors", "automated_nonregression_gate")}))
+    print(json.dumps({k: result[k] for k in ("complete_split", "regressions", "errors", "automated_nonregression_gate", "candidate_scope_guard_passed", "adoption")}))
 
 
 if __name__ == "__main__":

@@ -10,6 +10,7 @@ param(
     [switch]$SourceDateDrafts,
     [switch]$BatchEight,
     [switch]$QualityScreen,
+    [switch]$BaselineOnly,
     [switch]$RetrievalOnly,
     [switch]$ReviewBank,
     [switch]$ReviewOnly,
@@ -51,10 +52,14 @@ foreach ($mode in $placements) {
         '--port', '18581', '--variants', 'current', 'candidate',
         '--candidate-options') + $candidateOptions + @(
         '--fixed-anchor', '--reset-prompt-cache', '--cancel-file', (Join-Path $output 'cancel.request'))
-    if ($InterpretationReuse -or $IntermediatePlanning) {
+    if ($BaselineOnly) {
+        $variantIndex = [Array]::IndexOf($arguments, '--variants')
+        $arguments = @($arguments[0..($variantIndex + 1)]) + @($arguments[($variantIndex + 3)..($arguments.Count - 1)])
+    }
+    if ($BaselineOnly -or $InterpretationReuse -or $IntermediatePlanning) {
         # Compare with the already measured source-draft/compact-ID candidate.
         $arguments += @('--baseline-options', 'compact_ids', 'source_facts')
-        if ($IntermediatePlanning -and $InterpretationReuse) { $arguments += 'interpretation_cache' }
+        if ($InterpretationReuse -and ($IntermediatePlanning -or $BaselineOnly)) { $arguments += 'interpretation_cache' }
     }
     if ($ColdInterpretations) { $arguments += '--cold-interpretations' }
     if ($FixtureSplit -ne 'legacy') {
@@ -125,11 +130,19 @@ try {
         if ($LASTEXITCODE -ne 0) { throw 'Measurement interrupted or failed. Partial results are preserved.' }
     }
     $results = @($placements | ForEach-Object { Join-Path $outputRoot "$_\results.json" })
-    $reportModule = if ($IntermediatePlanning -or $FixtureSplit -ne 'legacy') { 'evaluation.first_response_report' } elseif ($InterpretationReuse) { 'evaluation.interpretation_reuse_report' } else { 'evaluation.latency_target_report' }
-    $reportFile = if ($reportModule -eq 'evaluation.first_response_report') { 'comparison.json' } else { 'comparison.rst' }
+    $reportModule = if ($BaselineOnly) { 'evaluation.latency_bottlenecks' } elseif ($IntermediatePlanning -or $FixtureSplit -ne 'legacy') { 'evaluation.first_response_report' } elseif ($InterpretationReuse) { 'evaluation.interpretation_reuse_report' } else { 'evaluation.latency_target_report' }
+    $reportFile = if ($BaselineOnly) { 'baseline.json' } elseif ($reportModule -eq 'evaluation.first_response_report') { 'comparison.json' } else { 'comparison.rst' }
     & $PythonExe -m $reportModule @results --output (Join-Path $outputRoot $reportFile)
     if ($LASTEXITCODE -ne 0) { throw 'Report generation failed; raw results remain available.' }
     Write-Host "Result: $(Join-Path $outputRoot $reportFile)"
+    if ($FixtureSplit -ne 'legacy' -and -not $RetrievalOnly -and -not $ReviewOnly) {
+        foreach ($mode in $placements) {
+            $modeRoot = Join-Path $outputRoot $mode
+            & $PythonExe -m evaluation.first_response_review (Join-Path $modeRoot 'results.json') --output (Join-Path $modeRoot 'answers.html')
+            if ($LASTEXITCODE -ne 0) { throw 'Answer review generation failed; raw results remain available.' }
+            Write-Host "Answers: $(Join-Path $modeRoot 'answers.html')"
+        }
+    }
 } finally {
     if ($null -eq $originalRepack) {
         [Environment]::SetEnvironmentVariable('LLAMA_ARG_REPACK', [NullString]::Value, 'Process')
