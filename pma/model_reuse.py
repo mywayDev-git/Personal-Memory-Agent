@@ -15,7 +15,10 @@ def reuse_selection(function):
     def wrapped(self, question, evidence):
         budget = current_request_budget()
         settings = getattr(self, "settings", None)
-        if budget is None or not getattr(settings, "request_reuse", False) or not evidence:
+        enabled = getattr(settings, "selection_reuse", None)
+        if enabled is None:
+            enabled = getattr(settings, "request_reuse", False)
+        if budget is None or not enabled or not evidence:
             return function(self, question, evidence)
         check_request_active()
         # Match the complete model-visible data plus full immutable sources.

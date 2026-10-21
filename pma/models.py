@@ -215,6 +215,8 @@ class LocalModels:
                 seed=self.settings.llm.seed,
                 top_p=self.settings.llm.top_p,
                 output_schema=schema,
+                **({"cache_prompt": self.settings.prompt_cache}
+                   if getattr(self.settings, "prompt_cache", None) is not None else {}),
             )
         result = extract_json(raw)
         query_schema = any(schema is candidate for candidate in (QUERY_SCHEMA, UNDERSTANDING_SCHEMA, UNEXPANDED_SCHEMA))

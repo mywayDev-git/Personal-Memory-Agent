@@ -134,7 +134,10 @@ class ChatEngine:
         ][-6:]
         from .identity import explicit_person_lookup
 
-        if (getattr(self.service.settings, "request_reuse", False)
+        shortcut = getattr(self.service.settings, "explicit_context_shortcut", None)
+        if shortcut is None:
+            shortcut = getattr(self.service.settings, "request_reuse", False)
+        if (shortcut
                 and explicit_person_lookup(question, session["evidence"])):
             count("explicit_context_calls_saved")
             return {"question": question, "needs_clarification": False,

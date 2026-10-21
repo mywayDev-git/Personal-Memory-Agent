@@ -90,6 +90,14 @@ def history(session):
 
 def structured(engine, prompt, data, schema, max_tokens=1024):
     data = dict(data)
+    if schema is NEXT and getattr(engine.service.settings, "compact_search_planning", False):
+        # Retain original sources, filters, warnings, history and every candidate.
+        data["searches"] = [{k: v for k, v in row.items() if k != "query_plan"}
+                            for row in data.get("searches", [])]
+        # search_explanation can contain corrections and semantic warnings.
+        # Keep it: only numerical rank scores have no evidential meaning.
+        data["evidence"] = [{k: v for k, v in row.items() if k != "score"}
+                            for row in data.get("evidence", [])]
     # Interpretation proposals have not passed the answer validator. They must
     # never become an alternate factual channel for the general/suggestion model.
     data.pop("memory_interpretation", None)

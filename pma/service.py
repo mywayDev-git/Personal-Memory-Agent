@@ -66,6 +66,8 @@ class Service:
         self.gate = threading.Lock()
         self.slot_condition = threading.Condition()
         self.foreground_waiters = 0
+        self.background_waiters = 0
+        self.foreground_streak = 0
         self.worker_gate = threading.Lock()
         self.stop_event = threading.Event()
         self.thread = None
@@ -111,11 +113,18 @@ class Service:
         with measure("model_wait"), self.slot_condition:
             if not background:
                 self.foreground_waiters += 1
+            else:
+                self.background_waiters += 1
             try:
                 while True:
                     if (background and self.stop_event.is_set()) or (cancelled and cancelled()):
                         raise AppError("CANCELLED", "요청을 중단했습니다.", 409)
-                    if not (background and self.foreground_waiters) and self.gate.acquire(False):
+                    fair = getattr(self.settings, "fair_model_scheduling", False)
+                    background_due = fair and self.background_waiters and self.foreground_streak >= 2
+                    defer = ((background and self.foreground_waiters and not background_due)
+                             or (not background and background_due))
+                    if not defer and self.gate.acquire(False):
+                        self.foreground_streak = 0 if background else self.foreground_streak + 1
                         break
                     remaining = None if deadline is None else deadline - time.monotonic()
                     if remaining is not None and remaining <= 0:
@@ -124,6 +133,8 @@ class Service:
             finally:
                 if not background:
                     self.foreground_waiters -= 1
+                else:
+                    self.background_waiters -= 1
                 self.slot_condition.notify_all()
         try:
             yield

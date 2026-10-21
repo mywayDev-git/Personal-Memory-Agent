@@ -188,6 +188,17 @@ def post_json(session, endpoint: str, body: dict, timeout: float) -> dict:
         call["usage"] = {key: usage[key] for key in
                          ("prompt_tokens", "completion_tokens", "total_tokens")
                          if type(usage.get(key)) is int and usage[key] >= 0}
+    timings = payload.get("timings")
+    if isinstance(timings, dict):
+        import math
+        call["timings"] = {key: timings[key] for key in
+                           ("cache_n", "prompt_n", "prompt_ms", "predicted_n", "predicted_ms")
+                           if type(timings.get(key)) in {int, float}
+                           and math.isfinite(timings[key]) and timings[key] >= 0}
+    details = usage.get("prompt_tokens_details") if isinstance(usage, dict) else None
+    if isinstance(details, dict) and type(details.get("cached_tokens")) is int:
+        if details["cached_tokens"] >= 0:
+            call["cached_prompt_tokens"] = details["cached_tokens"]
     return payload
 
 
@@ -203,6 +214,7 @@ def chat(
     seed=42,
     top_p=1.0,
     output_schema=None,
+    cache_prompt=None,
 ):
     body = dict(
         messages=messages,
@@ -215,6 +227,10 @@ def chat(
     )
     if model:
         body["model"] = model
+    if cache_prompt is not None:
+        if type(cache_prompt) is not bool:
+            raise ValueError("INVALID_PROMPT_CACHE")
+        body["cache_prompt"] = cache_prompt
     if output_schema is not None:
         body["json_schema"] = output_schema
     started = time.perf_counter()

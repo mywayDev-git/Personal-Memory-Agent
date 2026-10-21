@@ -34,6 +34,12 @@ class AppSettings:
     source_stop_drafts: bool = field(default=True, kw_only=True)
     selection_batch_size: int = field(default=4, kw_only=True)
     chat_presentation: str = field(default="reviewed", kw_only=True)
+    # None preserves the legacy bundled request_reuse switch.
+    selection_reuse: bool | None = field(default=None, kw_only=True)
+    explicit_context_shortcut: bool | None = field(default=None, kw_only=True)
+    prompt_cache: bool | None = field(default=None, kw_only=True)
+    compact_search_planning: bool = field(default=False, kw_only=True)
+    fair_model_scheduling: bool = field(default=False, kw_only=True)
 
     @property
     def origin(self):
@@ -90,6 +96,14 @@ class AppSettings:
             source_stop_drafts=os.getenv("PMA_SOURCE_STOP_DRAFTS", "1") == "1",
             selection_batch_size=int(os.getenv("PMA_SELECTION_BATCH_SIZE", "4")),
             chat_presentation=os.getenv("PMA_CHAT_PRESENTATION", "reviewed"),
+            selection_reuse=(os.getenv("PMA_SELECTION_REUSE") == "1"
+                             if "PMA_SELECTION_REUSE" in os.environ else None),
+            explicit_context_shortcut=(os.getenv("PMA_CONTEXT_SHORTCUT") == "1"
+                                       if "PMA_CONTEXT_SHORTCUT" in os.environ else None),
+            prompt_cache=(os.getenv("PMA_PROMPT_CACHE") == "1"
+                          if "PMA_PROMPT_CACHE" in os.environ else None),
+            compact_search_planning=os.getenv("PMA_COMPACT_SEARCH_PLANNING", "0") == "1",
+            fair_model_scheduling=os.getenv("PMA_FAIR_MODEL_SCHEDULING", "0") == "1",
         )
         result.validate()
         return result
