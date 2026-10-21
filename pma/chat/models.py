@@ -157,7 +157,11 @@ class ChatLocalModels(LocalModels):
         return result
 
     def structured(self, prompt, data, schema, max_tokens=None):
-        if getattr(getattr(self, "settings", None), "intermediate_planning", False) and "evidence" in data:
+        if (getattr(getattr(self, "settings", None), "intermediate_planning", False)
+                and "evidence" in data and "feedback" not in data):
+            # Generation keeps its established input format. Deduplication of
+            # its factual payload caused an extra rejection/regeneration in
+            # real-model conflict screening; planning reuse is independent.
             from .source_input import deduplicate_sources, has_source_directives
             if not has_source_directives(data["evidence"]):
                 data = {**data, "evidence": deduplicate_sources(data["evidence"])}
