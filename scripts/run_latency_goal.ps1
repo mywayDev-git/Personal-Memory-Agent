@@ -81,6 +81,7 @@ foreach ($mode in $placements) {
     }
     if ($PlanningBaseline) {
         $arguments += @('--baseline-options') + $planningOptions
+        if ($InterpretationReuse) { $arguments += 'interpretation_cache' }
     } elseif ($BaselineOnly -or $InterpretationReuse -or $IntermediatePlanning) {
         # Compare with the already measured source-draft/compact-ID candidate.
         $arguments += @('--baseline-options', 'compact_ids', 'source_facts')

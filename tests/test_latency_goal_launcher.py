@@ -60,3 +60,25 @@ def test_candidate_only_plan_keeps_exact_requested_profile_and_anchor_provenance
     assert 'context_shortcut' in command and 'intermediate' in command
     assert command[command.index('--anchor-templates') + 1] == 'saved/results.json'
 
+
+@pytest.mark.parametrize('reuse', [False, True])
+def test_planning_comparison_aligns_existing_interpretation_cache(reuse):
+    import json
+    executable = shutil.which('pwsh')
+    if executable is None:
+        pytest.skip('PowerShell 7 unavailable')
+    arguments = [executable, '-NoProfile', '-File', 'scripts/run_latency_goal.ps1',
+                 '-PlanningBaseline', '-CompactJson', '-CompactReview']
+    if reuse:
+        arguments.append('-InterpretationReuse')
+    result = subprocess.run(arguments, capture_output=True, text=True, encoding='utf-8',
+                            timeout=20, check=True)
+    command = json.loads(next(line for line in result.stdout.splitlines() if line.startswith('[')))
+    baseline = command[command.index('--baseline-options') + 1:command.index('--cases')]
+    candidate = command[command.index('--candidate-options') + 1:command.index('--fixed-anchor')]
+    assert ('interpretation_cache' in baseline) is reuse
+    assert ('interpretation_cache' in candidate) is reuse
+    assert set(candidate) - set(baseline) == {'compact_json', 'compact_review'}
+    assert '--reset-prompt-cache' in command
+    assert 'Plan only. Add -Execute' in result.stdout
+
