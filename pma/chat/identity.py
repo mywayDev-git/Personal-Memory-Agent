@@ -92,6 +92,7 @@ def explicit_person_lookup(question, evidence):
         return False
     tail = question.replace(targets[0], "", 1).strip()
     return bool(re.fullmatch(
-        r"(?:은|는|의)?\s*(?:누구(?:야|예요|인가요|입니까)?|직업(?:은|이)?\s*(?:뭐야|뭐예요|뭔가요|무엇인가요)?)\s*[?.!]*",
+        r"(?:은|는|의)?\s*(?:누구(?:야|예요|인가요|입니까)?|직업(?:은|이)?\s*(?:뭐야|뭐예요|뭔가요|무엇인가요)?|"
+        r"(?:어떤|무슨)\s*일(?:을)?\s*(?:해|해요|하나요|합니까|하세요))\s*[?.!]*",
         tail
     )) and any(canonical_label(targets[0]) in canonical_label(row["source_text"]) for row in evidence)

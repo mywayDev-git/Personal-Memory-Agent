@@ -8,6 +8,7 @@ param(
     [switch]$IntermediatePlanning,
     [switch]$BoundedExpansions,
     [switch]$SourceDateDrafts,
+    [switch]$ContextShortcut,
     [switch]$BatchEight,
     [switch]$QualityScreen,
     [switch]$BaselineOnly,
@@ -42,6 +43,7 @@ foreach ($mode in $placements) {
     if ($IntermediatePlanning) { $candidateOptions += 'intermediate' }
     if ($BoundedExpansions) { $candidateOptions += 'bounded_expansions' }
     if ($SourceDateDrafts) { $candidateOptions += 'source_dates' }
+    if ($ContextShortcut) { $candidateOptions += 'context_shortcut' }
     if ($BatchEight) { $candidateOptions += 'batch8' }
     $iterations = if ($QualityScreen) { 1 } else { $Samples }
     $arguments = @('-u', '-m', 'evaluation.response_latency', '--output', $output,

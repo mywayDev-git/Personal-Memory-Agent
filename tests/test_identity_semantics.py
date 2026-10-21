@@ -59,6 +59,27 @@ def test_friend_chain_revalidates_every_completed_anchor_quote():
     assert scoped_followup("그 친구는 어디 살아?", previous) == "그 친구는 어디 살아?"
 
 
+@pytest.mark.parametrize('followup', ['그 친구는 어떤 일을 해?', '그 사람은 무슨 일 해요?'])
+def test_checked_profession_paraphrase_can_anchor_the_next_turn(followup):
+    previous = session('동아리 친구 민수는 누구야?', '동아리 친구 민수는 교사다.')
+    previous['messages'].append({'state': 'completed', 'question': followup,
+        'response': {'status': 'answered', 'citation_details': [{'quote': '동아리 친구 민수는 교사다.'}]}})
+    assert scoped_followup('그 친구는 어디 살아?', previous) == '동아리 친구 민수는 어디 살아?'
+
+
+@pytest.mark.parametrize('tail,allowed', [('는 어떤 일을 해?', True), ('는 무슨 일 해요?', True),
+    ('는 어떤 일을 하지 않았어?', False), ('는 어떤 일을 할 계획이야?', False),
+    ('는 어떤 일을 했고 부산 여행 이유는?', False)])
+def test_profession_paraphrase_shortcut_only_accepts_complete_identity_lookup(tail, allowed):
+    from pma.chat.identity import explicit_person_lookup
+    from pma.chat.evidence import direct_statement
+    question = '회사 동료 민수' + tail
+    rows = [{'id': 'a', 'source_text': '회사 동료 민수는 개발자다.'}]
+    assert explicit_person_lookup(question, rows) is allowed
+    if allowed:
+        assert direct_statement(question, rows)['items'][0]['citations'] == ['a']
+
+
 def test_friend_question_does_not_force_the_wrong_followup_referent():
     assert scoped_followup("그 사람 직업은?", session(
         question="회사 동료 민수의 친구는 누구야?", quote="회사 동료 민수의 친구는 지연이다."

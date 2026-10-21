@@ -230,13 +230,15 @@ def direct_statement(question, evidence, intent_question=None):
     planned = execution_draft(intent_question, evidence)
     if planned:
         return planned
-    from .identity import labels, positive_labels
+    from .identity import labels, positive_labels, explicit_person_lookup
 
     if labels(intent_question) and not positive_labels(intent_question):
         return None
     identity = re.search(
         r"([가-힣]{2,8}?)(?:이가|이는|가|는|의)?\s*(?:누구|직업)", intent_question
     )
+    if identity is None and explicit_person_lookup(intent_question, evidence):
+        identity = re.search(r"([가-힣]{2,5}?)(?:은|는|의)?\s*(?:어떤|무슨)\s*일", intent_question)
     if not identity and asks_identity(intent_question):
         # The current intent must ask identity/relationship. A resolved name is
         # only a target hint; the candidate fact still comes verbatim from sources.
