@@ -355,9 +355,13 @@ class ChatEngine:
                  or getattr(settings, "request_reuse", False) else None)
         if draft:
             count("source_conflict_drafts" if conflict else "source_progress_drafts" if progress_draft else "source_stop_drafts")
-        response = draft or direct_statement(question, evidence, intent_question) or models.answer(
-            self.planned_question(question, session), evidence
-        )
+        response = draft or direct_statement(question, evidence, intent_question)
+        if response is None and getattr(settings, "source_fact_drafts", False):
+            from .source_fact import source_fact_draft
+            response = source_fact_draft(intent_question, evidence)
+            if response is not None:
+                count("source_fact_drafts")
+        response = response or models.answer(self.planned_question(question, session), evidence)
         generation_index = 1
         review_feedback = None
         for attempt in range(2):

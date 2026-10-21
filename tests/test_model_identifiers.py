@@ -41,10 +41,11 @@ def test_unknown_and_cross_call_references_fail_original_validation():
 
 def test_identity_collision_duplicates_and_context_evidence_id():
     mapping = identifiers({"evidence": [{"id": "S0"}, {"id": ID}, {"id": ID}]})
-    assert len(mapping) == 2
+    assert len(mapping) == 1
     assert not set(mapping) & set(mapping.values())
     assert references({"alternatives": [{"evidence_id": ID, "quote": ID}]}, mapping) == {
         "alternatives": [{"evidence_id": mapping[ID], "quote": ID}]}
+    assert identifiers({"evidence": [{"id": "a"}, {"id": "S0"}]}) == {}
 
 
 def test_disabled_or_no_sources_is_original_call_including_schema_identity():

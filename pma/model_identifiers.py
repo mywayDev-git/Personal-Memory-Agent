@@ -14,10 +14,11 @@ def identifiers(data):
             ids.extend(row["id"] for row in rows if isinstance(row, dict)
                        and isinstance(row.get("id"), str))
     ids = list(dict.fromkeys(ids))
+    long_ids = [identifier for identifier in ids if len(identifier) > 8]
     prefix = "S"
-    while any(prefix + str(i) in ids for i in range(len(ids))):
+    while any(prefix + str(i) in ids for i in range(len(long_ids))):
         prefix += "S"
-    return {identifier: prefix + str(i) for i, identifier in enumerate(ids)}
+    return {identifier: prefix + str(i) for i, identifier in enumerate(long_ids)}
 
 
 def references(value, mapping, key=None):
