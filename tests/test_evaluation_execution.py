@@ -281,7 +281,11 @@ def test_cancellation_during_model_startup_cleans_only_owned_child(tmp_path, mon
             self.returncode = 0
     process, checks = ServerProcess(), 0
     monkeypatch.setattr(runtime.socket, "socket", lambda: nullcontext(SimpleNamespace(bind=lambda *a: None)))
-    monkeypatch.setattr(runtime.subprocess, "Popen", lambda *a, **k: process)
+    commands = []
+    def spawn(command, **kwargs):
+        commands.append(command)
+        return process
+    monkeypatch.setattr(runtime.subprocess, "Popen", spawn)
     def cancelled():
         nonlocal checks
         checks += 1
@@ -291,6 +295,8 @@ def test_cancellation_during_model_startup_cleans_only_owned_child(tmp_path, mon
         with runtime.servers("fake-server", spec, spec, tmp_path, cancelled=cancelled):
             pytest.fail("server should not be ready")
     assert process.terminated
+    assert "--no-op-offload" in commands[0] and "--no-kv-offload" in commands[0]
+    assert commands[0][commands[0].index("--device") + 1] == "none"
 
 
 def test_dashboard_controls_offline_dom():

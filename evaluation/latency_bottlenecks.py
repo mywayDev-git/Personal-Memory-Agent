@@ -59,6 +59,11 @@ def analyze(document, target=10):
             "ram_peak_mb": max((r["ram_peak_mb"] for r in rows if finite(r.get("ram_peak_mb"))), default=None),
             "device_vram_peak_mb": max((r["gpu_total_peak_mb"] for r in rows
                                         if finite(r.get("gpu_total_peak_mb"))), default=None),
+            "private_commit_peak_mb": max((r["private_commit_peak_mb"] for r in rows
+                                           if finite(r.get("private_commit_peak_mb"))), default=None),
+            "system_available_ram_min_mb": min((r["system_available_ram_min_mb"] for r in rows
+                                                 if finite(r.get("system_available_ram_min_mb"))), default=None),
+            "page_fault_delta": distribution(r.get("page_fault_delta") for r in rows),
             "exclusive_stages_seconds": {name: distribution(values) for name, values in stages.items()},
             "http_phases": {name: {field: distribution(v[field] for v in values)
                                     for field in values[0]} for name, values in phases.items()},

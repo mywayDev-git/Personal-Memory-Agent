@@ -76,13 +76,13 @@ class Counters(ctypes.Structure):
     ]
 
 
-def memory_mb(pids):
+def memory_usage(pids):
     kernel = ctypes.WinDLL("kernel32", use_last_error=True)
     kernel.OpenProcess.restype = ctypes.c_void_p
     kernel.CloseHandle.argtypes = [ctypes.c_void_p]
     psapi = ctypes.WinDLL("psapi", use_last_error=True)
     psapi.GetProcessMemoryInfo.argtypes = [ctypes.c_void_p, ctypes.c_void_p, ctypes.c_ulong]
-    total = 0
+    total = private = faults = observed = 0
     for pid in pids:
         handle = kernel.OpenProcess(0x410, False, pid)
         if handle:
@@ -91,9 +91,29 @@ def memory_mb(pids):
                 data.cb = ctypes.sizeof(data)
                 if psapi.GetProcessMemoryInfo(handle, ctypes.byref(data), data.cb):
                     total += data.working
+                    private += data.private
+                    faults += data.faults
+                    observed += 1
             finally:
                 kernel.CloseHandle(handle)
-    return total / 1024**2
+    return {"working_mb": total / 1024**2, "private_commit_mb": private / 1024**2,
+            "page_faults": faults, "observed_processes": observed}
+
+
+def memory_mb(pids):
+    return memory_usage(pids)["working_mb"]
+
+
+def available_memory_mb():
+    class Status(ctypes.Structure):
+        _fields_ = [("length", ctypes.c_uint32), ("load", ctypes.c_uint32)] + [
+            (name, ctypes.c_uint64) for name in ("total", "available", "page_total", "page_available",
+                                               "virtual_total", "virtual_available", "extended")]
+    status = Status()
+    status.length = ctypes.sizeof(status)
+    if ctypes.windll.kernel32.GlobalMemoryStatusEx(ctypes.byref(status)):
+        return status.available / 1024**2
+    return None
 
 
 class MemorySampler:
@@ -102,10 +122,21 @@ class MemorySampler:
         self.stop = threading.Event()
         self.ram = []
         self.vram = []
+        self.private_commit = []
+        self.available_ram = []
+        self.page_faults = []
+        self.observed_processes = []
 
     def sample(self):
         while not self.stop.is_set():
-            self.ram.append(memory_mb(self.pids))
+            usage = memory_usage(self.pids)
+            self.ram.append(usage["working_mb"])
+            self.private_commit.append(usage["private_commit_mb"])
+            self.page_faults.append(usage["page_faults"])
+            self.observed_processes.append(usage["observed_processes"])
+            available = available_memory_mb()
+            if available is not None:
+                self.available_ram.append(available)
             try:
                 result = subprocess.run(
                     ["nvidia-smi", "--query-gpu=memory.used", "--format=csv,noheader,nounits"],

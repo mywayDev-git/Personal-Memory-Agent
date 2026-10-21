@@ -276,6 +276,11 @@ def quality(case, response, evidence, keys):
             "status": status, "validation": response.get("validation")}
 
 
+def check_cancelled(args):
+    if getattr(args, "cancel_file", None) and args.cancel_file.exists():
+        raise KeyboardInterrupt("LATENCY_EXPERIMENT_CANCELLED")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
@@ -294,6 +299,7 @@ def main():
     parser.add_argument("--candidate-options", nargs="+", choices=list(OPTIONS), default=[])
     parser.add_argument("--reset-prompt-cache", action="store_true",
                         help="Erase the owned experiment slot before each warmup/measured request")
+    parser.add_argument("--cancel-file", type=Path, help="Stop between requests when this file exists")
     parser.add_argument("--cases", nargs="+", choices=list(CASES), default=list(CASES))
     parser.add_argument("--multilingual", action="store_true")
     parser.add_argument("--multilingual-current-only", action="store_true")
@@ -309,23 +315,29 @@ def main():
     generation = Path("C:/models/Qwen3-8B-Q4_K_M.gguf") if args.generation == "baseline" else args.model_directory / MODELS[f"generation-{args.generation}"]["filename"]
     embedding = Path("C:/models/bge-m3-Q8_0.gguf") if args.embedding == "bge" else args.model_directory / MODELS["embedding-q8"]["filename"]
     hashes = {"generation": digest(generation), "embedding": digest(embedding), "server": digest(args.server)}
+    native_extensions = {str(path): digest(path) for path in Path("pma").glob("*.pyd")}
     artifact_verification_seconds = time.perf_counter() - preparation_started
     os.environ["PMA_GENERATION_REVISION"] = hashes["generation"]
     args.output.mkdir(parents=True)
     if shutil.disk_usage(args.output).free < 512 * 1024 * 1024:
         parser.error("at least 512 MiB free space required for evaluation output")
     report = {"schema_version": 1, "personal_database_used": False, "configuration": vars(args).copy(),
+              "status": "RUNNING", "execution_completed": False,
+              "cpu_placement_policy": "device-none-no-op-offload-no-kv-offload",
+              "gpu_absent_environment_verified": False,
               "measurement_scope": "response_return_before_quality_artifacts",
               "quality_scoring_version": SCORING_VERSION,
               "repository_reference_revision": repository_reference(),
               "artifact_verification_seconds": artifact_verification_seconds,
               "hashes": hashes, "seed_policy": "hand-authored synthetic memories, real document embeddings",
+              "native_extensions": native_extensions,
+              "keyword_backend_requested": os.getenv("PMA_KEYWORD_BACKEND", "auto"),
               "runs": [], "summary": {}, "sources": {
                   p.as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
                   for root in ("pma", "scripts/memory_agent") for p in Path(root).rglob("*.py")}}
     report["evaluator_sources"] = {p: digest(Path(p)) for p in (
         "evaluation/response_latency.py", "evaluation/multilingual_search.py", "evaluation/response_latency_report.py",
-        "evaluation/latency_variants.py", "evaluation/latency_recheck.py")}
+        "evaluation/latency_variants.py", "evaluation/latency_recheck.py", "evaluation/performance_benchmark.py")}
     if args.seed_template:
         report["seed_template_sha256"] = digest(args.seed_template)
 
@@ -368,6 +380,7 @@ def main():
                         print(json.dumps({"retrieval_gate": report["retrieval_gate"],
                                           "remaining_timing_cases": args.cases}), flush=True)
             for case_name in args.cases:
+                check_cancelled(args)
                 case = CASES[case_name]
                 case_seed, anchored_sid = seed, None
                 if case.get("anchor") and args.fixed_anchor:
@@ -392,6 +405,7 @@ def main():
                 for sample in range(args.samples + 1):
                     order = args.variants if sample % 2 == 0 else list(reversed(args.variants))
                     for variant in order:
+                        check_cancelled(args)
                         if args.reset_prompt_cache:
                             reset_experiment_slot(args.port)
                         variant_settings = replace(settings, request_token_cache=variant in {"cached", "combined"},
@@ -483,6 +497,12 @@ def main():
                                 row.get("quality", {}).get("passed") and row["arrival_during_extract"]
                                 and row["background_status"] == "succeeded")
                         row["ram_peak_mb"] = max(mem.ram, default=0)
+                        row["private_commit_peak_mb"] = max(mem.private_commit, default=None)
+                        row["system_available_ram_min_mb"] = min(mem.available_ram, default=None)
+                        row["memory_processes_complete"] = (bool(mem.observed_processes)
+                            and all(count == len(mem.pids) for count in mem.observed_processes))
+                        row["page_fault_delta"] = (max(mem.page_faults) - min(mem.page_faults)
+                                                   if mem.page_faults else None)
                         row["gpu_total_peak_mb"] = max(mem.vram, default=None)
                         report["runs"].append(row)
                         save()
@@ -491,7 +511,18 @@ def main():
                                              for path, expected in report["sources"].items())
             report["evaluator_unchanged"] = all(digest(Path(path)) == expected
                                                 for path, expected in report["evaluator_sources"].items())
-            report["execution_completed"] = report["source_unchanged"] and report["evaluator_unchanged"]
+            report["native_extensions_unchanged"] = all(digest(Path(path)) == expected
+                                                        for path, expected in native_extensions.items())
+            report["execution_completed"] = (report["source_unchanged"] and report["evaluator_unchanged"]
+                                             and report["native_extensions_unchanged"])
+            report["status"] = "COMPLETED" if report["execution_completed"] else "SOURCE_CHANGED"
+    except KeyboardInterrupt:
+        report["status"] = "INTERRUPTED"
+        raise
+    except BaseException as exc:
+        report["status"] = "ERROR"
+        report["fatal_error_type"] = type(exc).__name__
+        raise
     finally:
         save()
 

@@ -368,3 +368,16 @@ def test_study_stop_gold_rejects_denial_even_when_the_quitting_quote_is_present(
     assert not checked["answer_contradiction_free"] and not checked["passed"]
     response["items"][0]["text"] = "공부를 접었다는 기록이 있습니다. 중단한 정확한 날짜는 확인되지 않습니다."
     assert quality(CASES["stopped"], response, evidence, {"r": "stopped"})["passed"]
+
+
+def test_latency_cancel_requires_explicit_marker(tmp_path):
+    from types import SimpleNamespace
+    from evaluation.response_latency import check_cancelled
+
+    check_cancelled(SimpleNamespace(cancel_file=None))
+    marker = tmp_path / "cancel.request"
+    args = SimpleNamespace(cancel_file=marker)
+    check_cancelled(args)
+    marker.touch()
+    with pytest.raises(KeyboardInterrupt, match="LATENCY_EXPERIMENT_CANCELLED"):
+        check_cancelled(args)

@@ -92,6 +92,8 @@ def servers(server, generation, embedding, root, *, port=18481, cancelled=None):
                        "--port", str(port + index), "--alias", "main-generation" if index == 0 else "main-embedding",
                        "-c", str(spec["context"]), "-ngl", str(spec["gpu_layers"]),
                        "--log-disable", "-np", "1"]
+            if spec["gpu_layers"] == 0:
+                command += ["--device", "none", "--no-op-offload", "--no-kv-offload"]
             if spec["threads"]:
                 command += ["-t", str(spec["threads"])]
             if index:

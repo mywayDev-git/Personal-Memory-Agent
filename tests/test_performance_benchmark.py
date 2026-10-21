@@ -2,7 +2,7 @@ import os
 
 import pytest
 
-from evaluation.performance_benchmark import accelerator_available, memory_mb
+from evaluation.performance_benchmark import accelerator_available, available_memory_mb, memory_mb, memory_usage
 from evaluation.performance_report import summarize
 
 
@@ -20,6 +20,12 @@ def test_cpu_only_device_messages_cannot_be_labeled_gpu(output, code, expected):
 def test_sampler_reads_64_bit_process_handle():
     if os.name == "nt":
         assert memory_mb([os.getpid()]) > 0
+        usage = memory_usage([os.getpid()])
+        assert usage["working_mb"] > 0 and usage["private_commit_mb"] > 0
+        assert usage["observed_processes"] == 1 and usage["page_faults"] >= 0
+        assert available_memory_mb() is not None
+        missing = memory_usage([0])
+        assert missing["observed_processes"] == 0
 
 
 def test_summary_excludes_warmup_and_keeps_failures():

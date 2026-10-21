@@ -9,7 +9,7 @@ from evaluation.latency_bottlenecks import analyze
 
 def render(experiments):
     lines = ["10초 응답 목표 비교", "===================", "",
-             "Qwen3-8B Q4_K_M / BGE-M3 Q8_0, 합성 DB만 사용.",
+             "모델·실행 조건은 각 results.json의 해시와 명세로 확인합니다. 합성 DB만 사용합니다.",
              "준비 실행·색인·모델 로딩은 응답 시간에서 제외. 각 요청 전 실험 슬롯을 비웁니다.",
              "품질 통과 수는 자동 선별 검사입니다. 공식 메인 평가나 전 범위 의미 검증이 아닙니다.",
              "RAM은 Python·실험 모델 서버 작업 집합 합계, VRAM은 장치 전체 관측 최댓값입니다.",
@@ -27,6 +27,8 @@ def render(experiments):
                       f"자동 품질 {row['automatic_quality_passes']}/{row['requested']}; "
                       f"10초 이내·품질 충족 {row['target_successes']}/{row['requested']}.",
                       f"  RAM 최대 {row['ram_peak_mb']} MiB / 장치 VRAM 최대 {row['device_vram_peak_mb']} MiB."]
+            if row["private_commit_peak_mb"] is not None:
+                lines.append(f"  Private commit 최대 {row['private_commit_peak_mb']} MiB / 시스템 여유 RAM 최소 {row['system_available_ram_min_mb']} MiB.")
             stages = sorted(row["exclusive_stages_seconds"].items(),
                             key=lambda item: item[1]["median"] or 0, reverse=True)[:4]
             lines.append("  단계별 중앙값(배타 시간): " + ", ".join(
@@ -37,6 +39,8 @@ def render(experiments):
               "* 5회 반복의 최댓값은 긴 꼬리를 추정하는 데 부족합니다. 전체 앱의 95% 보장으로 해석하지 않습니다.",
               "* 빨리 실패한 요청은 목표 달성으로 계산하지 않습니다. 오류·미완료·검토 대기는 통과가 아닙니다.",
               "* 조건부 선별 검사의 통과만으로 모델 품질의 일반적 동등성이나 제품 기본값 변경을 승인하지 않습니다.", ""]
+    lines += ["CPU 격리는 서버 실행 명령으로 확인합니다. GPU가 물리적으로 없는 PC의 검증은 별도입니다.",
+              "Private commit은 물리 RAM과 다릅니다. page_fault_delta는 소프트 폴트를 포함하므로 디스크 페이징 횟수가 아닙니다.", ""]
     return "\n".join(lines)
 
 
