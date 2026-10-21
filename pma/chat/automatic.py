@@ -458,7 +458,12 @@ def run(engine, question, session, today, requested_mode="auto"):
                 if query in seen_queries:
                     query = "그 사건의 이유와 목적: " + question
             elif asks_identity(question):
-                query = "나의 지인들과 어떤 관계인지 알려줘"
+                from .identity import identity_discovery_redundant
+                if (getattr(engine.service.settings, 'scoped_identity_search', False)
+                        and identity_discovery_redundant(question, list(rows.values()))):
+                    count('identity_discovery_searches_saved')
+                else:
+                    query = "나의 지인들과 어떤 관계인지 알려줘"
     # Keep evidence from later relational lookups while retaining earlier context.
     from .policy import source_allowed
     chosen = [row for row in combine(batches) if source_allowed(original_reference, row)]

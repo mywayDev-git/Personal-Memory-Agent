@@ -56,3 +56,17 @@ def test_new_confirmation_requires_absolute_quality_not_only_nonregression():
     result = compare(data)
     assert result['automated_nonregression_gate'] is True
     assert result['candidate_absolute_quality_passed'] is False
+
+
+def test_candidate_only_independent_confirmation_never_claims_paired_nonregression():
+    from evaluation.identity_search_cases import CASES, manifest as search_manifest
+    data = {'configuration': {'fixture_split': 'identity_search_confirmation',
+        'fixture_manifest_sha256': search_manifest()['sha256'], 'cases': list(CASES)},
+        'execution_completed': True, 'runs': [{'case': name, 'variant': 'candidate', 'quality': {'passed': True}}
+                                             for name in CASES]}
+    result = compare(data)
+    assert result['candidate_complete_split'] and result['candidate_absolute_quality_passed']
+    assert result['candidate_scope_guard_passed']
+    assert not result['complete_split'] and not result['automated_nonregression_gate']
+    data['runs'].pop()
+    assert compare(data)['candidate_absolute_quality_passed'] is False

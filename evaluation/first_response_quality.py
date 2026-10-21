@@ -15,6 +15,9 @@ def compare(document):
     if config.get("fixture_split") == "identity_confirmation":
         from .identity_followup_cases import CASES, manifest as identity_manifest
         expected, expected_hash = CASES, identity_manifest()["sha256"]
+    if config.get('fixture_split') == 'identity_search_confirmation':
+        from .identity_search_cases import CASES, manifest as search_manifest
+        expected, expected_hash = CASES, search_manifest()['sha256']
     cases = {}
     for name in config["cases"]:
         grouped = {variant: [r for r in document.get("runs", [])
@@ -35,22 +38,25 @@ def compare(document):
                              and (row.get("quality") or {}).get("validation") == "model_checked"
                              and (row.get("quality") or {}).get("source_scope_valid") is False]
     candidate_scope_errors = [row for row in approved_scope_errors if row["variant"] == "candidate"]
-    complete = bool(document.get("execution_completed") and set(cases) == set(expected) and
-                    config.get("fixture_manifest_sha256") == expected_hash and
-                    all(row["baseline_observations"] and row["candidate_observations"] for row in cases.values()))
+    fixture_complete = bool(document.get('execution_completed') and set(cases) == set(expected)
+                            and config.get('fixture_manifest_sha256') == expected_hash)
+    candidate_complete = fixture_complete and all(row['candidate_observations'] for row in cases.values())
+    complete = candidate_complete and all(row['baseline_observations'] for row in cases.values())
     regressions = [key for key, row in cases.items() if row["regression"]]
-    absolute_pass = complete and all(row["candidate_passed"] for row in cases.values()) and not candidate_errors
+    absolute_pass = candidate_complete and all(row["candidate_passed"] for row in cases.values()) and not candidate_errors
     return {"complete_split": complete, "regressions": regressions,
             "candidate_absolute_quality_passed": absolute_pass,
+            'candidate_complete_split': candidate_complete,
             "improvements": [key for key, row in cases.items() if row["improvement"]],
             "unchanged_failures": [key for key, row in cases.items()
                                    if not row["baseline_passed"] and not row["candidate_passed"]],
             "errors": len(errors), "candidate_errors": len(candidate_errors),
             "automated_nonregression_gate": complete and not regressions and not candidate_errors,
             "approved_scope_errors": approved_scope_errors,
-            "candidate_scope_guard_passed": complete and not candidate_scope_errors and not candidate_errors,
+            "candidate_scope_guard_passed": candidate_complete and not candidate_scope_errors and not candidate_errors,
             "adoption": ("NOT_ELIGIBLE_SCOPE_FALSE_APPROVAL" if candidate_scope_errors else
                          "NOT_ELIGIBLE_REGRESSION_OR_ERROR" if regressions or candidate_errors else
+                         'PENDING_BASELINE_SOURCE_REVIEW_AND_PERFORMANCE' if not complete else
                          "PENDING_SOURCE_REVIEW_AND_PERFORMANCE"),
             "manual_semantic_review": "PENDING", "cases": cases,
             "note": "Unchanged baseline failures are not counted as correct answers or target successes."}
@@ -67,7 +73,7 @@ def main():
     result.update(source_sha256=hashlib.sha256(args.results.read_bytes()).hexdigest(),
                   reporter_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest())
     args.output.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(json.dumps({k: result[k] for k in ("complete_split", "regressions", "errors", "automated_nonregression_gate", "candidate_scope_guard_passed", "adoption")}))
+    print(json.dumps({k: result[k] for k in ("complete_split", "candidate_complete_split", "candidate_absolute_quality_passed", "regressions", "errors", "automated_nonregression_gate", "candidate_scope_guard_passed", "adoption")}))
 
 
 if __name__ == "__main__":

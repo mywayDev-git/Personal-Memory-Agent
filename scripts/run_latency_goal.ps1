@@ -9,6 +9,7 @@ param(
     [switch]$BoundedExpansions,
     [switch]$SourceDateDrafts,
     [switch]$ContextShortcut,
+    [switch]$ScopedIdentitySearch,
     [switch]$BatchEight,
     [switch]$QualityScreen,
     [switch]$BaselineOnly,
@@ -22,7 +23,7 @@ param(
     [ValidateSet('llama', 'openvino')][string]$Runtime = 'llama',
     [string]$RuntimePython = '',
     [string]$RuntimeModel = '',
-    [ValidateSet('legacy', 'development', 'holdout', 'identity_confirmation')][string]$FixtureSplit = 'legacy',
+    [ValidateSet('legacy', 'development', 'holdout', 'identity_confirmation', 'identity_search_confirmation')][string]$FixtureSplit = 'legacy',
     [ValidateSet('baseline', 'q4', 'q8')][string]$Generation = 'baseline',
     [string]$ModelDirectory = '.local/response-latency/models',
     [switch]$ColdInterpretations,
@@ -48,6 +49,7 @@ foreach ($mode in $placements) {
     if ($BoundedExpansions) { $candidateOptions += 'bounded_expansions' }
     if ($SourceDateDrafts) { $candidateOptions += 'source_dates' }
     if ($ContextShortcut) { $candidateOptions += 'context_shortcut' }
+    if ($ScopedIdentitySearch) { $candidateOptions += 'scoped_identity' }
     if ($BatchEight) { $candidateOptions += 'batch8' }
     $iterations = if ($QualityScreen) { 1 } else { $Samples }
     $arguments = @('-u', '-m', 'evaluation.response_latency', '--output', $output,

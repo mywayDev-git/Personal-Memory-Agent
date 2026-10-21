@@ -96,3 +96,21 @@ def explicit_person_lookup(question, evidence):
         r"(?:어떤|무슨)\s*일(?:을)?\s*(?:해|해요|하나요|합니까|하세요))\s*[?.!]*",
         tail
     )) and any(canonical_label(targets[0]) in canonical_label(row["source_text"]) for row in evidence)
+
+
+def identity_discovery_redundant(question, evidence):
+    """A model's empty next query needs no forced generic relationship lookup.
+
+    Only a complete explicit role lookup with one plain original statement can
+    use this shortcut. It neither approves that statement nor drops sources.
+    Unknown, ambiguous, conditional, conflicting and directive cases defer.
+    """
+    if not explicit_person_lookup(question, evidence):
+        return False
+    selected = [row for row in evidence if explicit_person_lookup(question, [row])]
+    from .review_sources import instruction_span, source_units
+    if any(row.get('warnings') or any(instruction_span(unit) for unit in source_units(row['source_text']))
+           or re.search(r'계획|예정|않|아니|불명|미상|충돌|전언|가정|취소', row['source_text']) for row in selected):
+        return False
+    from .evidence import direct_statement
+    return direct_statement(question, selected) is not None
