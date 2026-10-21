@@ -174,6 +174,7 @@ def servers(args, generation, embedding):
             process = subprocess.Popen(command, stdout=log, stderr=log,
                                        creationflags=0x08000000 if os.name == "nt" else 0)
             processes.append(process)
+            memory = None
             try:
                 if getattr(args, "startup_memory", False):
                     with MemorySampler([os.getpid()] + [p.pid for p in processes]) as memory:
@@ -185,10 +186,17 @@ def servers(args, generation, embedding):
                 else:
                     wait_ready(process, args.port + index)
             except BaseException as exc:
-                (args.output / "server-failure.json").write_text(json.dumps({
+                failure = {
                     "phase": "server_startup", "port": args.port + index,
                     "error_type": type(exc).__name__, "returncode": process.poll(),
-                    "owned_experiment_server": True}), encoding="utf-8")
+                    "owned_experiment_server": True}
+                if memory is not None:
+                    failure["startup_memory"] = {
+                        "ram_peak_mb": max(memory.ram, default=None),
+                        "private_commit_peak_mb": max(memory.private_commit, default=None),
+                        "gpu_total_peak_mb": max(memory.vram, default=None),
+                        "system_available_ram_min_mb": min(memory.available_ram, default=None)}
+                (args.output / "server-failure.json").write_text(json.dumps(failure), encoding="utf-8")
                 raise
         yield processes, {"seconds": time.perf_counter() - started, "commands": commands,
                           "memory": startup_memory}

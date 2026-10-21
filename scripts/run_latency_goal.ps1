@@ -108,6 +108,17 @@ $restoreErrors = @()
 $originalRepack = [Environment]::GetEnvironmentVariable('LLAMA_ARG_REPACK', 'Process')
 $serverEnvironment = @()
 $previousLocation = Get-Location
+$launchPlan = [ordered]@{
+    schema_version = 1
+    record_kind = 'captured before owned model start'
+    launcher_sha256 = (Get-FileHash -LiteralPath $PSCommandPath -Algorithm SHA256).Hash.ToLowerInvariant()
+    python = $PythonExe
+    placements = @($placements)
+    baseline_only = [bool]$BaselineOnly
+    commands = @($commands)
+    effective_trial_environment = @{ LLAMA_ARG_REPACK = $(if ($DisableCpuRepacking) { '0' } else { $originalRepack }) }
+}
+$launchPlan | ConvertTo-Json -Depth 12 | Set-Content -LiteralPath (Join-Path $outputRoot 'launch-plan.json') -Encoding utf8
 try {
     foreach ($model in $originals) {
         $live = Get-CimInstance Win32_Process -Filter "ProcessId = $($model.ProcessId)"

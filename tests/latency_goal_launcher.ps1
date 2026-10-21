@@ -52,6 +52,10 @@ if ($Scenario -eq 'plan') {
         throw 'Both original model commands must be restored, including after one restore failure.'
     }
     $output = Join-Path $Root '.local/latency-goal/test-failure'
+    $plan = Get-Content (Join-Path $output 'launch-plan.json') -Raw | ConvertFrom-Json
+    if ($plan.effective_trial_environment.LLAMA_ARG_REPACK -ne '0' -or $plan.launcher_sha256.Length -ne 64) {
+        throw 'Owned runtime environment and launcher revision must be captured.'
+    }
     if (-not (Test-Path (Join-Path $output 'ordinary-models-before.json'))) { throw 'Missing recovery snapshot.' }
     $errors = @(Get-Content (Join-Path $output 'ordinary-models-restore-errors.json') -Raw | ConvertFrom-Json)
     if ($Scenario -eq 'restore-first-failure' -and $errors.Count -ne 1) { throw 'Missing restoration failure report.' }
