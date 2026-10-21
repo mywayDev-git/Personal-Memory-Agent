@@ -26,6 +26,7 @@ from uuid import NAMESPACE_URL, uuid5
 
 from config.settings import Settings
 from evaluation.latency_models import MODELS, digest
+from evaluation.latency_variants import OPTIONS, configured, parameters
 from evaluation.performance_benchmark import MemorySampler, wait_ready
 from pma.chat.engine import ChatEngine
 from pma.models import LocalModels
@@ -133,6 +134,18 @@ def repository_reference():
         return None
 
 
+def reset_experiment_slot(port):
+    """Only the fresh owned experiment server; do not relax transport URL policy."""
+    from scripts.memory_agent.llm_client import local_session, validate_endpoint
+    endpoint = f"http://127.0.0.1:{port}/slots/0"
+    validate_endpoint(endpoint)
+    with local_session() as transport:
+        response = transport.post(endpoint, params={"action": "erase"}, json={},
+                                  timeout=30, allow_redirects=False)
+        if response.status_code != 200:
+            raise ValueError(f"EXPERIMENT_SLOT_RESET_HTTP_{response.status_code}")
+
+
 @contextmanager
 def servers(args, generation, embedding):
     processes, logs = [], []
@@ -152,14 +165,25 @@ def servers(args, generation, embedding):
                        "--flash-attn", args.flash, "--log-disable"]
             command += ["-np", "1"] if index == 0 else [
                 "--embedding", "--pooling", "last" if args.embedding == "qwen" else "cls",
-                "--embd-normalize", "2", "-b", "8192", "-ub", "8192"]
+                "--embd-normalize", "2", "-b", str(args.embedding_batch), "-ub", str(args.embedding_batch)]
+            if index == 0 and args.reset_prompt_cache:
+                slot_path = args.output / "owned-slots"
+                slot_path.mkdir()
+                command += ["--slots", "--slot-save-path", str(slot_path.resolve()), "--cache-ram", "0"]
             if args.threads:
                 command += ["-t", str(args.threads)]
             commands.append(command)
             process = subprocess.Popen(command, stdout=log, stderr=log,
                                        creationflags=0x08000000 if os.name == "nt" else 0)
             processes.append(process)
-            wait_ready(process, args.port + index)
+            try:
+                wait_ready(process, args.port + index)
+            except BaseException as exc:
+                (args.output / "server-failure.json").write_text(json.dumps({
+                    "phase": "server_startup", "port": args.port + index,
+                    "error_type": type(exc).__name__, "returncode": process.poll(),
+                    "owned_experiment_server": True}), encoding="utf-8")
+                raise
         yield processes, {"seconds": time.perf_counter() - started, "commands": commands}
     finally:
         for process in reversed(processes):
@@ -257,9 +281,13 @@ def main():
     parser.add_argument("--placement", choices=["cpu", "gpu", "hybrid"], default="cpu")
     parser.add_argument("--flash", choices=["auto", "on", "off"], default="auto")
     parser.add_argument("--threads", type=int, default=0)
+    parser.add_argument("--embedding-batch", type=int, choices=[512, 2048, 4096, 8192], default=8192)
     parser.add_argument("--samples", type=int, default=5)
     parser.add_argument("--port", type=int, default=18181)
-    parser.add_argument("--variants", nargs="+", choices=["baseline", "cached", "batch8", "plain", "combined", "planning", "planning_plain", "reuse", "source_first"], default=["baseline"])
+    parser.add_argument("--variants", nargs="+", choices=["baseline", "cached", "batch8", "plain", "combined", "planning", "planning_plain", "reuse", "source_first", "current", "candidate"], default=["baseline"])
+    parser.add_argument("--candidate-options", nargs="+", choices=list(OPTIONS), default=[])
+    parser.add_argument("--reset-prompt-cache", action="store_true",
+                        help="Erase the owned experiment slot before each warmup/measured request")
     parser.add_argument("--cases", nargs="+", choices=list(CASES), default=list(CASES))
     parser.add_argument("--multilingual", action="store_true")
     parser.add_argument("--multilingual-current-only", action="store_true")
@@ -289,7 +317,8 @@ def main():
                   p.as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
                   for root in ("pma", "scripts/memory_agent") for p in Path(root).rglob("*.py")}}
     report["evaluator_sources"] = {p: digest(Path(p)) for p in (
-        "evaluation/response_latency.py", "evaluation/multilingual_search.py", "evaluation/response_latency_report.py")}
+        "evaluation/response_latency.py", "evaluation/multilingual_search.py", "evaluation/response_latency_report.py",
+        "evaluation/latency_variants.py", "evaluation/latency_recheck.py")}
     if args.seed_template:
         report["seed_template_sha256"] = digest(args.seed_template)
 
@@ -356,11 +385,15 @@ def main():
                 for sample in range(args.samples + 1):
                     order = args.variants if sample % 2 == 0 else list(reversed(args.variants))
                     for variant in order:
+                        if args.reset_prompt_cache:
+                            reset_experiment_slot(args.port)
                         variant_settings = replace(settings, request_token_cache=variant in {"cached", "combined"},
                                                    request_reuse=variant == "reuse",
                                                    source_stop_drafts=variant in {"reuse", "source_first"},
                                                    selection_batch_size=8 if variant in {"batch8", "combined"} else 4,
                                                    chat_presentation="plain" if variant in {"plain", "combined", "planning_plain"} else "reviewed")
+                        if variant in {"current", "candidate"}:
+                            variant_settings = configured(settings, args.candidate_options if variant == "candidate" else ())
                         path = args.output / f"{case_name}-{sample}-{variant}.db"
                         shutil.copy2(case_seed, path)
                         service = Service(Store(path), LocalModels(variant_settings), variant_settings)
@@ -376,6 +409,8 @@ def main():
                                               "selection_batch_size": variant_settings.selection_batch_size,
                                               "chat_presentation": variant_settings.chat_presentation,
                                               "compact_planning": variant in {"planning", "planning_plain"}}}
+                        if variant in {"current", "candidate"}:
+                            row["parameters"] = parameters(variant_settings)
                         worker = None
                         background_record = None
                         if case.get("background"):
