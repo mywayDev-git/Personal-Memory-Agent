@@ -426,10 +426,12 @@ def run(engine, question, session, today, requested_mode="auto"):
             query = pending_parts.pop(0)
         else:
             from .intermediate import propose
+            planning_data = {**data, "searches": [{k: v for k, v in search.items() if k != "audit"}
+                                                  for search in searches], "evidence": combine(batches)}
             planning = propose(engine, question,
                                    {**session, "evidence": engine.store.freeze(combine(batches))},
                                    today, [{k: v for k, v in search.items() if k != "audit"}
-                                           for search in searches]) if getattr(
+                                           for search in searches], planning_data=planning_data) if getattr(
                                                engine.service.settings, "intermediate_planning", False) else None
             if planning is not None:
                 intermediate = planning
@@ -437,7 +439,7 @@ def run(engine, question, session, today, requested_mode="auto"):
             query = planned_query if planned_query is not None else structured(
                 engine,
                 NEXT_PROMPT,
-                {**data, "searches": [{k: v for k, v in search.items() if k != "audit"} for search in searches], "evidence": combine(batches)},
+                planning_data,
                 NEXT,
                 512,
             )["query"].strip()

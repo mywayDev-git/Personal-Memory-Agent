@@ -37,7 +37,7 @@ def reuse(question, session, today, field):
 
 @measured("intermediate_planning")
 @reuse_interpretation("proposal")
-def propose(engine, question, session, today, searches):
+def propose(engine, question, session, today, searches, planning_data=None):
     """Return None on invalid/oversized output; never trim sources or history."""
     from .automatic import NEXT_PROMPT
     from .engine import RESOLVE_PROMPT, RESOLVE_SCHEMA
@@ -47,6 +47,7 @@ def propose(engine, question, session, today, searches):
     from .record_reference import scoped_evidence
     from .identity import identity_conflict
     from ..relevance import topic_supported
+    from .review_sources import instruction_span, source_units
 
     if not getattr(engine.service.settings, "intermediate_planning", False):
         return None
@@ -57,6 +58,13 @@ def propose(engine, question, session, today, searches):
     selection_evidence = [row for row in context_evidence if topic_supported(question, row) and not identity_conflict(
         question, {"text": "", "citations": [row["id"]]}, [row])]
     if not context_evidence or not selection_evidence:
+        return None
+    # Joint selection misclassified an embedded command as contradictory
+    # factual evidence in the fixed development corpus. Use the independent
+    # legacy decisions for this class; retain all original sources and guards.
+    if any(instruction_span(unit) for row in context_evidence
+           for unit in source_units(row["source_text"])):
+        count("intermediate_instruction_fallbacks")
         return None
     ids = [row["id"] for row in selection_evidence]
     context_ids = [row["id"] for row in context_evidence]
@@ -168,8 +176,17 @@ def propose(engine, question, session, today, searches):
             raise
         count("intermediate_oversize_fallbacks")
         return None
+    query = None if invalid_query else result["query"].strip()
+    if (invalid_query and planning_data is not None
+            and getattr(engine.service.settings, "interpretation_reuse", False)):
+        # Cache the validated composite interpretation, never the inconsistent
+        # query. Include the exact legacy payload in the outer cache key. Its
+        # errors/cancellation propagate normally, outside proposal fallback.
+        from .automatic import NEXT, structured
+        query = structured(engine, NEXT_PROMPT, planning_data, NEXT, 512)["query"].strip()
+        count("intermediate_query_recoveries")
     return {"scope": scope(question, {**session, "evidence": context_evidence}, today),
             "selection_scope": scope(question, {**session, "evidence": selection_evidence}, today),
             "context": result["context"],
             "selection": [item["id"] for item in result["selection"] if item["selected"]],
-            "query": None if invalid_query else result["query"].strip()}
+            "query": query}
