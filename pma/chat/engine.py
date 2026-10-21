@@ -17,6 +17,7 @@ from ..answer_review import accepted, validate_review
 from ..errors import AppError
 from ..grounding import claims_supported
 from ..models import LocalModels
+from ..interpretation_cache import reuse_interpretation, context_history
 from ..relevance import study_topic, topic_supported
 from .answer_audit import answer_audit, attach_answer_audit, review_attempt
 from .evidence import (
@@ -125,13 +126,10 @@ class ChatEngine:
         )
 
     @measured("context_resolution")
+    @reuse_interpretation("context")
     def resolve(self, question, session, today, *, original_question=None):
         models = self.models
-        history = [
-            {"question": m["question"], "response": m["response"]}
-            for m in session["messages"]
-            if m["state"] == "completed" and m["response"] and not m.get("error_code")
-        ][-6:]
+        history = context_history(session["messages"])
         from .identity import explicit_person_lookup
 
         shortcut = getattr(self.service.settings, "explicit_context_shortcut", None)

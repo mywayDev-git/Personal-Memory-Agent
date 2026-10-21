@@ -42,6 +42,7 @@ class AppSettings:
     fair_model_scheduling: bool = field(default=False, kw_only=True)
     compact_model_ids: bool = field(default=False, kw_only=True)
     source_fact_drafts: bool = field(default=False, kw_only=True)
+    interpretation_reuse: bool = field(default=False, kw_only=True)
 
     @property
     def origin(self):
@@ -95,6 +96,7 @@ class AppSettings:
             chat_timeout=float(os.getenv("PMA_CHAT_TIMEOUT", "300")),
             request_token_cache=os.getenv("PMA_REQUEST_TOKEN_CACHE", "0") == "1",
             request_reuse=os.getenv("PMA_REQUEST_REUSE", "0") == "1",
+            interpretation_reuse=os.getenv("PMA_INTERPRETATION_REUSE", "0") == "1",
             source_stop_drafts=os.getenv("PMA_SOURCE_STOP_DRAFTS", "1") == "1",
             selection_batch_size=int(os.getenv("PMA_SELECTION_BATCH_SIZE", "4")),
             chat_presentation=os.getenv("PMA_CHAT_PRESENTATION", "reviewed"),

@@ -18,6 +18,7 @@ from .diagnostics import Stage
 from .errors import AppError
 from .model_diagnostics import observe, observed_model
 from .model_reuse import reuse_selection
+from .interpretation_cache import reuse_interpretation
 from .model_identifiers import compact_identifiers
 from .query_correction import EDIT_SCHEMA
 from .search_expressions import EXPANSION_SCHEMA
@@ -244,6 +245,7 @@ class LocalModels:
 
     @observed_model(Stage.MODEL_UNDERSTANDING)
     @measured("question_understanding")
+    @reuse_interpretation("question")
     def understand(self, question, today, *, expand=True):
         expansion_prompt = (
             "검색용 expansions를 최대 4개 제안하라. 각 항목은 start,end,before,after,kind다. "

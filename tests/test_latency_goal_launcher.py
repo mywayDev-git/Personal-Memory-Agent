@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 
 
-@pytest.mark.parametrize("scenario", ["plan", "failure", "restore-first-failure"])
+@pytest.mark.parametrize("scenario", ["plan", "failure", "restore-first-failure", "unset"])
 def test_latency_goal_requires_execute_and_restores_owned_servers(tmp_path, scenario):
     executable = shutil.which("pwsh")
     if executable is None:

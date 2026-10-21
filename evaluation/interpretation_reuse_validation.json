@@ -1,0 +1,45 @@
+{
+  "checks": [
+    {
+      "process_id": 32144,
+      "port": "8081",
+      "ready": true,
+      "command_matches": true
+    },
+    {
+      "process_id": 31708,
+      "port": "8082",
+      "ready": true,
+      "command_matches": true
+    }
+  ],
+  "official_main_suite_started": false,
+  "errors": "0",
+  "owned_experiment_processes": 0,
+  "failures": "0",
+  "personal_database_used": false,
+  "tests": "864",
+  "skipped": "0",
+  "time_utc": "2026-10-21T07:27:38.9480196Z",
+  "other_apps_stopped": false,
+  "app_ready": true,
+  "branch": "codex/interpretation-reuse",
+  "default_feature_adoption": false,
+  "application_restarted": false,
+  "post_cleanup_launcher_tests": 4,
+  "quality_scope": "Exact repeated synthetic question/history/evidence; answer text, search order and citation spans equal; not general quality equivalence",
+  "excluded_runs": [
+    {
+      "path": ".local/latency-goal/interpretation-gpu5",
+      "reason": "startup environment boolean rejected; no inference; manually restored then fixed null environment handling"
+    },
+    {
+      "path": ".local/latency-goal/interpretation-gpu5-v2",
+      "reason": "question-only prototype; context key still included request metadata"
+    }
+  ],
+  "report_hashes": {
+    "evaluation\\interpretation_reuse_results.rst": "5bb891f130a160906f63e4e193b4c6dbd6cbe148f57be69f507688ca4e398fad",
+    "evaluation\\interpretation_reuse_results.json": "5a64297bf13adb8eda0f81757149afb66a6734ad38c5e29b8f11aa1119894cea"
+  }
+}

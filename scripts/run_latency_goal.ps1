@@ -4,6 +4,8 @@ param(
     [ValidateRange(1, 1024)][int]$Threads = 8,
     [ValidateRange(0, 1024)][int]$GenerationBatchThreads = 0,
     [switch]$DisableCpuRepacking,
+    [switch]$InterpretationReuse,
+    [switch]$ColdInterpretations,
     [string[]]$Cases = @('simple_search', 'simple_answer'),
     [string]$RunName = ('manual-' + (Get-Date -Format 'yyyyMMdd-HHmmss')),
     [string]$PythonExe = '',
@@ -19,12 +21,19 @@ $placements = if ($Placement -eq 'both') { @('cpu', 'gpu') } else { @($Placement
 $commands = @()
 foreach ($mode in $placements) {
     $output = Join-Path $outputRoot $mode
+    $candidateOptions = @('compact_ids', 'source_facts')
+    if ($InterpretationReuse) { $candidateOptions += 'interpretation_cache' }
     $arguments = @('-u', '-m', 'evaluation.response_latency', '--output', $output,
         '--placement', $mode, '--samples', "$Samples", '--threads', "$Threads",
         '--generation-batch-threads', "$GenerationBatchThreads", '--embedding-batch', '4096',
         '--port', '18581', '--variants', 'current', 'candidate',
-        '--candidate-options', 'compact_ids', 'source_facts', '--cases') + $Cases + @(
+        '--candidate-options') + $candidateOptions + @('--cases') + $Cases + @(
         '--fixed-anchor', '--reset-prompt-cache', '--cancel-file', (Join-Path $output 'cancel.request'))
+    if ($InterpretationReuse) {
+        # Compare with the already measured source-draft/compact-ID candidate.
+        $arguments += @('--baseline-options', 'compact_ids', 'source_facts')
+    }
+    if ($ColdInterpretations) { $arguments += '--cold-interpretations' }
     $commands += ,$arguments
 }
 if (-not $Execute) {
@@ -68,18 +77,27 @@ try {
     foreach ($arguments in $commands) {
         $mode = $arguments[[Array]::IndexOf($arguments, '--placement') + 1]
         $repack = if ($DisableCpuRepacking -and $mode -eq 'cpu') { '0' } else { $originalRepack }
-        [Environment]::SetEnvironmentVariable('LLAMA_ARG_REPACK', $repack, 'Process')
+        if ($null -eq $repack) {
+            [Environment]::SetEnvironmentVariable('LLAMA_ARG_REPACK', [NullString]::Value, 'Process')
+        } else {
+            [Environment]::SetEnvironmentVariable('LLAMA_ARG_REPACK', $repack, 'Process')
+        }
         $serverEnvironment += @{placement=$mode; LLAMA_ARG_REPACK=$repack}
         ConvertTo-Json -InputObject @($serverEnvironment) | Set-Content (Join-Path $outputRoot 'model-server-environment.json')
         & $PythonExe @arguments
         if ($LASTEXITCODE -ne 0) { throw 'Measurement interrupted or failed. Partial results are preserved.' }
     }
     $results = @($placements | ForEach-Object { Join-Path $outputRoot "$_\results.json" })
-    & $PythonExe -m evaluation.latency_target_report @results --output (Join-Path $outputRoot 'comparison.rst')
+    $reportModule = if ($InterpretationReuse) { 'evaluation.interpretation_reuse_report' } else { 'evaluation.latency_target_report' }
+    & $PythonExe -m $reportModule @results --output (Join-Path $outputRoot 'comparison.rst')
     if ($LASTEXITCODE -ne 0) { throw 'Report generation failed; raw results remain available.' }
     Write-Host "Result: $(Join-Path $outputRoot 'comparison.rst')"
 } finally {
-    [Environment]::SetEnvironmentVariable('LLAMA_ARG_REPACK', $originalRepack, 'Process')
+    if ($null -eq $originalRepack) {
+        [Environment]::SetEnvironmentVariable('LLAMA_ARG_REPACK', [NullString]::Value, 'Process')
+    } else {
+        [Environment]::SetEnvironmentVariable('LLAMA_ARG_REPACK', $originalRepack, 'Process')
+    }
     Set-Location -LiteralPath $previousLocation.Path
     foreach ($model in $stopped) {
         $prefix = '"' + $model.ExecutablePath + '"'

@@ -297,6 +297,9 @@ def main():
     parser.add_argument("--port", type=int, default=18181)
     parser.add_argument("--variants", nargs="+", choices=["baseline", "cached", "batch8", "plain", "combined", "planning", "planning_plain", "reuse", "source_first", "current", "candidate"], default=["baseline"])
     parser.add_argument("--candidate-options", nargs="+", choices=list(OPTIONS), default=[])
+    parser.add_argument("--baseline-options", nargs="+", choices=list(OPTIONS), default=[])
+    parser.add_argument("--cold-interpretations", action="store_true",
+                        help="Clear only the interpretation cache before every trial, including warmup.")
     parser.add_argument("--reset-prompt-cache", action="store_true",
                         help="Erase the owned experiment slot before each warmup/measured request")
     parser.add_argument("--cancel-file", type=Path, help="Stop between requests when this file exists")
@@ -414,7 +417,10 @@ def main():
                                                    selection_batch_size=8 if variant in {"batch8", "combined"} else 4,
                                                    chat_presentation="plain" if variant in {"plain", "combined", "planning_plain"} else "reviewed")
                         if variant in {"current", "candidate"}:
-                            variant_settings = configured(settings, args.candidate_options if variant == "candidate" else ())
+                            variant_settings = configured(settings, args.candidate_options if variant == "candidate" else args.baseline_options)
+                        from pma.interpretation_cache import clear_interpretations, cache_info
+                        if args.cold_interpretations:
+                            clear_interpretations()
                         path = args.output / f"{case_name}-{sample}-{variant}.db"
                         shutil.copy2(case_seed, path)
                         service = Service(Store(path), LocalModels(variant_settings), variant_settings)
@@ -432,6 +438,7 @@ def main():
                                               "compact_planning": variant in {"planning", "planning_plain"}}}
                         if variant in {"current", "candidate"}:
                             row["parameters"] = parameters(variant_settings)
+                        row["interpretation_cache_before"] = cache_info()
                         worker = None
                         background_record = None
                         if case.get("background"):
@@ -490,6 +497,7 @@ def main():
                                     messages = engine.store.get(sid)["messages"]
                                     row["performance"] = (messages[-1].get("snapshot") or {}).get("performance", {}) if messages else {}
                             row.setdefault("seconds", time.perf_counter() - started)
+                            row["interpretation_cache_after"] = cache_info()
                         if worker is not None:
                             worker.join()
                             row["background_status"] = service.store.job(background_record["job_id"])["status"]
