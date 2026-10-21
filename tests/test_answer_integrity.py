@@ -57,3 +57,13 @@ def test_fixture_integrity_and_plan_only_do_not_load_models():
         docs, cases, manifest = load(split)
         assert len(cases) == 16
         assert manifest['case_counts'][split] == 16
+
+
+@pytest.mark.parametrize('text', ['직업은 알 수 없습니다.', '직업이 없습니다.'])
+def test_role_free_unrelated_record_cannot_establish_absence(text):
+    row = {'id': 'note', 'source_text': '구입 메모: 흰색 모자를 샀다.'}
+    response = {'status': 'answered', 'items': [{'text': text, 'citations': ['note']}]}
+    review = {'fulfillment': 'direct', 'items': [{'index': 0, 'support': 'supported', 'relevant': True,
+        'issue': 'none', 'evidence': [{'id': 'note', 'quote': row['source_text']}]}]}
+    enforce_answer_integrity('등산 모임 친구 도윤의 직업은?', [row], response, review)
+    assert review['items'][0]['support'] == 'unsupported'

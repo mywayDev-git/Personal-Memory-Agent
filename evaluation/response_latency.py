@@ -389,7 +389,8 @@ def main():
         "evaluation/review_bank.py", "evaluation/identity_followup_cases.py", "evaluation/identity_followup_manifest.json",
         "evaluation/anchor_templates.py", "evaluation/identity_search_cases.py", "evaluation/identity_search_manifest.json",
         "evaluation/identity_completion_cases.py", "evaluation/identity_completion_manifest.json",
-        "evaluation/answer_integrity_cases.py", "evaluation/answer_integrity_cases.json", "evaluation/answer_integrity_manifest.json")}
+        "evaluation/answer_integrity_cases.py", "evaluation/answer_integrity_cases.json", "evaluation/answer_integrity_manifest.json",
+        "evaluation/answer_integrity_review.py")}
     if args.seed_template:
         report["seed_template_sha256"] = digest(args.seed_template)
     if args.runtime == "openvino":
@@ -436,6 +437,10 @@ def main():
             report["initial_preparation_seconds"] = time.perf_counter() - preparation_started
             if args.review_bank:
                 from evaluation.review_bank import evaluate as evaluate_review
+                if (args.fixture_split or '').startswith('integrity_'):
+                    from functools import partial
+                    from evaluation.answer_integrity_review import evaluate
+                    evaluate_review = partial(evaluate, split=args.fixture_split.removeprefix('integrity_'))
                 from pma.chat.models import ChatLocalModels
                 review_memory = None
                 try:

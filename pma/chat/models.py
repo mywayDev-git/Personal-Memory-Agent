@@ -86,6 +86,8 @@ class ChatLocalModels(LocalModels):
             "모든 답변 항목 index를 정확히 한 번 평가한다. 답변 문장이나 원문을 다시 쓰지 않는다. "
             "supported이고 의미 오류가 없으면 issue=none이다. 날짜 미상이나 원하는 물건과 받은 물건의 차이는 인용 오류가 아니다. "
             "fulfillment는 직접 답하면 direct, 필요한 한계를 밝혀 답하면 limited, 질문에 답하지 못하면 missing이다. "
+            "직업 질문에 키만 답하면 missing이다. 직업 미확인을 설명할 때도 선택한 인물의 기록만 인용하고, "
+            "관련 없는 기록을 미기록의 근거로 쓰지 않는다. 미기록을 실제 직업이 없다는 뜻으로 바꾸지 않는다. "
             "빈 답변은 원문으로 답할 수 있는 경우 abstention=excessive, 아니면 appropriate다. 답변이 있으면 not_applicable이다. "
             "reason은 핵심 이유를 짧게 쓴다.",
             {"original_question": question, "source_records": sources,

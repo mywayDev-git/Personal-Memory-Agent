@@ -69,10 +69,20 @@ def enforce_answer_integrity(question, evidence, response, review):
         cited = [row for row in evidence if row['id'] in claim['citations']]
         unrelated = unrelated or any(ROLE.search(row['source_text']) and not target_text(target, row['source_text'])
                                      for row in cited)
+        # A role-free shopping/weather note is no more evidence about this
+        # person than a different person's record. Require a source-backed
+        # referent for every chosen quote, including when stating a limitation.
+        unrelated = unrelated or any(not target_text(target, ref['quote'])
+            and not any(row['id'] == ref['id'] and target_text(target, row['source_text'])
+                        for row in evidence) for ref in selected)
         if unrelated:
             checked.update(support='unsupported', relevant=False, issue='person')
             review['reason'] = '질문의 인물과 무관한 역할·인물의 인용이 포함됨'
         text = claim['text']
+        if (re.search(r'직업(?:이|은)?\s*없(?:다|습니다|어요|음)', text)
+                and not any(re.search(r'무직|직업(?:이|은)?\s*없', row['source_text']) for row in target_rows)):
+            checked.update(support='unsupported', issue='other')
+            review['reason'] = '직업 미기록은 실제로 직업이 없다는 주장의 근거가 아님'
         limited = bool(re.search(r'직업|어떤\s*일|무슨\s*일', text) and LIMIT.search(text))
         # Height-only quotations are true but do not answer an occupation query.
         if (ATTRIBUTE.search(text) and not limited
