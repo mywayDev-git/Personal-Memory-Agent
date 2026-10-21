@@ -11,24 +11,32 @@ from .first_response_cases import DEVELOPMENT, HOLDOUT, EXTRA_DOCUMENTS, HOLDOUT
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--execute", action="store_true")
-    parser.add_argument("--split", choices=["development", "holdout"], default="development")
+    parser.add_argument("--split", choices=["development", "holdout", "identity_confirmation"], default="development")
     args, remaining = parser.parse_known_args()
     declared = json.loads(Path(__file__).with_name("first_response_manifest.json").read_text(encoding="utf-8"))
     if declared != manifest():
         parser.error("Frozen fixture manifest differs; explicitly version the fixture before running comparisons")
+    if args.split == "identity_confirmation":
+        from .identity_followup_cases import DOCUMENTS, CASES, manifest as identity_manifest
+        declared = json.loads(Path(__file__).with_name("identity_followup_manifest.json").read_text("utf-8"))
+        if declared != identity_manifest():
+            parser.error("Frozen independent identity confirmation differs")
     if not args.execute:
-        print(json.dumps({"status": "PLAN_ONLY", "fixtures": manifest(), "split": args.split,
+        print(json.dumps({"status": "PLAN_ONLY", "fixtures": declared, "split": args.split,
                           "model_arguments": remaining, "models_started": False}, ensure_ascii=False, indent=2))
         return
     # Importing or viewing the plan cannot load models or invoke any evaluation.
     from . import response_latency as runner
-    if args.split == "development":
+    if args.split == "identity_confirmation":
+        runner.DOCUMENTS[:] = DOCUMENTS
+    elif args.split == "development":
         runner.DOCUMENTS.extend(EXTRA_DOCUMENTS)
     else:
         runner.DOCUMENTS[:] = HOLDOUT_DOCUMENTS
-    runner.CASES.update(DEVELOPMENT if args.split == "development" else HOLDOUT)
+    cases = CASES if args.split == "identity_confirmation" else DEVELOPMENT if args.split == "development" else HOLDOUT
+    runner.CASES.update(cases)
     if "--cases" not in remaining:
-        remaining += ["--cases", *(DEVELOPMENT if args.split == "development" else HOLDOUT)]
+        remaining += ["--cases", *cases]
     remaining += ["--fixture-manifest-sha256", declared["sha256"], "--fixture-split", args.split]
     sys.argv = [sys.argv[0], *remaining]
     runner.main()

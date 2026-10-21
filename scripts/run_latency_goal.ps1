@@ -18,7 +18,7 @@ param(
     [ValidateSet('llama', 'openvino')][string]$Runtime = 'llama',
     [string]$RuntimePython = '',
     [string]$RuntimeModel = '',
-    [ValidateSet('legacy', 'development', 'holdout')][string]$FixtureSplit = 'legacy',
+    [ValidateSet('legacy', 'development', 'holdout', 'identity_confirmation')][string]$FixtureSplit = 'legacy',
     [ValidateSet('baseline', 'q4', 'q8')][string]$Generation = 'baseline',
     [string]$ModelDirectory = '.local/response-latency/models',
     [switch]$ColdInterpretations,

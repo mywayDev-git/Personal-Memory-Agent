@@ -72,7 +72,7 @@ RESOLVE_PROMPT = (
     "근거 부족은 모호함이 아니다. 이유가 없는 경우 왜 질문을 그대로 유지한다. "
     "today는 현재 질문의 상대 날짜 기준이고 기록 저장일은 사건 날짜가 아니다."
 )
-CHAT_PROMPT_VERSION = 8
+CHAT_PROMPT_VERSION = 9
 
 AMBIGUITY_SCHEMA = {
     "type": "object",
@@ -247,6 +247,10 @@ class ChatEngine:
         return result, len(history)
 
     def generate(self, question, session, today, *, original_question=None):
+        from .identity import scoped_followup
+        question = scoped_followup(question, session)
+        if original_question is not None:
+            original_question = scoped_followup(original_question, session)
         from .policy import source_allowed
         from .record_reference import previously_supported, scoped_evidence
         session = {**session, "evidence": scoped_evidence(original_question or question,
@@ -386,13 +390,19 @@ class ChatEngine:
             attributes = claims_supported(response["items"], evidence) and causal_claims_supported(
                 intent_question, response, evidence
             )
+            # A model rewrite must not broaden the source-backed user referent.
+            # Enforce its role even when a later independent model approves.
+            attributes = attributes and all(not identity_conflict(intent_question, item, evidence)
+                                             for item in response["items"])
             cited_ids = {cid for item in response["items"] for cid in item["citations"]}
             attributes = attributes and all(set(group) <= cited_ids for group in explicit_completion_conflicts(evidence))
             try:
+                from .identity import positive_labels
+                review_question = intent_question if len(set(positive_labels(intent_question))) == 1 else question
                 checked = (
-                    models.review(question, evidence, response, feedback=review_feedback)
+                    models.review(review_question, evidence, response, feedback=review_feedback)
                     if isinstance(models, ChatLocalModels)
-                    else models.review(question, evidence, response)
+                    else models.review(review_question, evidence, response)
                 )
                 review = validate_review(checked, response, evidence)
                 review_ok = accepted(review, response) and review_spans_supported(response, review, evidence)

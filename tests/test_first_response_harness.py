@@ -31,3 +31,14 @@ def test_changed_fixtures_cannot_execute_under_the_old_manifest(monkeypatch):
     with pytest.raises(SystemExit) as exc:
         first_response.main()
     assert exc.value.code == 2
+
+
+def test_independent_identity_plan_uses_its_own_frozen_manifest():
+    from evaluation.identity_followup_cases import manifest as identity_manifest
+    result = subprocess.run([sys.executable, '-m', 'evaluation.first_response', '--split', 'identity_confirmation'],
+                            capture_output=True, text=True, encoding='utf-8', timeout=10, check=True)
+    plan = json.loads(result.stdout)
+    assert plan['models_started'] is False
+    assert plan['fixtures'] == identity_manifest()
+    assert len(plan['fixtures']['cases']) == 16
+    assert plan['fixtures']['sha256'] != manifest()['sha256']

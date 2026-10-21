@@ -11,6 +11,10 @@ from .first_response_cases import DEVELOPMENT, HOLDOUT, manifest
 def compare(document):
     config = document["configuration"]
     expected = DEVELOPMENT if config.get("fixture_split") == "development" else HOLDOUT
+    expected_hash = manifest()["sha256"]
+    if config.get("fixture_split") == "identity_confirmation":
+        from .identity_followup_cases import CASES, manifest as identity_manifest
+        expected, expected_hash = CASES, identity_manifest()["sha256"]
     cases = {}
     for name in config["cases"]:
         grouped = {variant: [r for r in document.get("runs", [])
@@ -32,10 +36,12 @@ def compare(document):
                              and (row.get("quality") or {}).get("source_scope_valid") is False]
     candidate_scope_errors = [row for row in approved_scope_errors if row["variant"] == "candidate"]
     complete = bool(document.get("execution_completed") and set(cases) == set(expected) and
-                    config.get("fixture_manifest_sha256") == manifest()["sha256"] and
+                    config.get("fixture_manifest_sha256") == expected_hash and
                     all(row["baseline_observations"] and row["candidate_observations"] for row in cases.values()))
     regressions = [key for key, row in cases.items() if row["regression"]]
+    absolute_pass = complete and all(row["candidate_passed"] for row in cases.values()) and not candidate_errors
     return {"complete_split": complete, "regressions": regressions,
+            "candidate_absolute_quality_passed": absolute_pass,
             "improvements": [key for key, row in cases.items() if row["improvement"]],
             "unchanged_failures": [key for key, row in cases.items()
                                    if not row["baseline_passed"] and not row["candidate_passed"]],

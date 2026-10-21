@@ -42,3 +42,17 @@ def test_shared_false_approval_blocks_adoption_even_without_a_relative_regressio
     assert result["candidate_scope_guard_passed"] is False
     assert result["adoption"] == "NOT_ELIGIBLE_SCOPE_FALSE_APPROVAL"
     assert len(result["approved_scope_errors"]) == 2
+
+
+def test_new_confirmation_requires_absolute_quality_not_only_nonregression():
+    from evaluation.identity_followup_cases import CASES, manifest as identity_manifest
+    data = {'configuration': {'fixture_split': 'identity_confirmation',
+        'fixture_manifest_sha256': identity_manifest()['sha256'], 'cases': list(CASES)},
+        'execution_completed': True, 'runs': [{'case': name, 'variant': variant, 'quality': {'passed': True}}
+            for name in CASES for variant in ('current', 'candidate')]}
+    assert compare(data)['candidate_absolute_quality_passed'] is True
+    data['runs'][0]['quality']['passed'] = False
+    data['runs'][1]['quality']['passed'] = False
+    result = compare(data)
+    assert result['automated_nonregression_gate'] is True
+    assert result['candidate_absolute_quality_passed'] is False

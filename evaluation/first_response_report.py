@@ -46,7 +46,7 @@ def compare(document):
                              candidate["device_vram_peak_mb"] is not None and
                              candidate["device_vram_peak_mb"] <= baseline["device_vram_peak_mb"] * 1.05)
         tail_ok = a["maximum"] is not None and b["maximum"] is not None and b["maximum"] <= a["maximum"] * 1.1
-        simple = name in {"simple_answer", "dev_fact", "final_fact", "dev_date", "final_date"}
+        simple = name in {"simple_answer", "dev_fact", "final_fact", "dev_date", "final_date", "control_fact", "control_date"}
         cold = document["configuration"].get("cold_interpretations", False)
         speed_ok = (b["median"] is not None and a["median"] is not None and
                     (b["median"] <= target if cold and simple else

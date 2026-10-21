@@ -333,7 +333,7 @@ def main():
     parser.add_argument("--review-only", action="store_true")
     parser.add_argument("--quality-only", action="store_true", help="One quality observation without latency warmup; never sufficient for speed adoption")
     parser.add_argument("--fixture-manifest-sha256")
-    parser.add_argument("--fixture-split", choices=["development", "holdout"])
+    parser.add_argument("--fixture-split", choices=["development", "holdout", "identity_confirmation"])
     parser.add_argument("--retrieval-only", action="store_true")
     parser.add_argument("--skip-timing-on-retrieval-failure", action="store_true")
     parser.add_argument("--multilingual-current-only", action="store_true")
@@ -380,7 +380,7 @@ def main():
         "evaluation/response_latency.py", "evaluation/multilingual_search.py", "evaluation/response_latency_report.py",
         "evaluation/latency_variants.py", "evaluation/latency_recheck.py", "evaluation/performance_benchmark.py",
         "evaluation/first_response.py", "evaluation/first_response_cases.py", "evaluation/first_response_manifest.json",
-        "evaluation/review_bank.py")}
+        "evaluation/review_bank.py", "evaluation/identity_followup_cases.py", "evaluation/identity_followup_manifest.json")}
     if args.seed_template:
         report["seed_template_sha256"] = digest(args.seed_template)
     if args.runtime == "openvino":

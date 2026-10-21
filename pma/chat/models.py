@@ -117,6 +117,10 @@ class ChatLocalModels(LocalModels):
             # Approval of a whole source cannot cover attributes missing from
             # the precise spans the independent reviewer actually selected.
             selected_text = "\n".join(ref["quote"] for ref in item["evidence"])
+            from .identity import identity_conflict
+            selected_sources = [{"id": ref["id"], "source_text": ref["quote"]} for ref in item["evidence"]]
+            if identity_conflict(question, claim, selected_sources):
+                issue = "person"
             if not {value for key, value in COLORS.items() if key in claim["text"]} <= {
                 value for key, value in COLORS.items() if key in selected_text
             }:

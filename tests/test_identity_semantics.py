@@ -28,6 +28,37 @@ def test_current_explicit_role_wins():
     assert scoped_followup("동아리 친구 민수는 그 사람과 친해?", session()) == "동아리 친구 민수는 그 사람과 친해?"
 
 
+@pytest.mark.parametrize("question,expected", [
+    ("그 친구는 어떤 일을 해?", "동아리 친구 민수는 어떤 일을 해?"),
+    ("그친구의 직업은?", "동아리 친구 민수의 직업은?"),
+    ("그 친구에게 무엇을 줬어?", "동아리 친구 민수에게 무엇을 줬어?"),
+    ("그 친구들은 누구야?", "그 친구들은 누구야?"),
+    ("그 친구네 집은?", "그 친구네 집은?"),
+    ("그분의 직업은?", "동아리 친구 민수의 직업은?"),
+])
+def test_friend_reference_keeps_checked_role_without_matching_other_words(question, expected):
+    assert scoped_followup(question, session("동아리 친구 민수는 누구야?",
+                                           "동아리 친구 민수는 교사다.")) == expected
+
+
+def test_friend_followup_does_not_trust_prose_or_failed_or_ambiguous_anchor():
+    for previous in (session("민수는 누구야?"), session(quote="민수는 개발자다."),
+                     session("회사 동료 민수의 친구는 누구야?")):
+        assert scoped_followup("그 친구 직업은?", previous) == "그 친구 직업은?"
+    previous = session()
+    previous["messages"][0]["response"]["status"] = "needs_clarification"
+    assert scoped_followup("그 친구 직업은?", previous) == "그 친구 직업은?"
+
+
+def test_friend_chain_revalidates_every_completed_anchor_quote():
+    previous = session("동아리 친구 민수는 누구야?", "동아리 친구 민수는 교사다.")
+    previous["messages"].append({"state": "completed", "question": "그 친구 직업은 뭐야?",
+        "response": {"status": "answered", "citation_details": [{"quote": "동아리 친구 민수는 교사다."}]}})
+    assert scoped_followup("그 친구는 어디 살아?", previous) == "동아리 친구 민수는 어디 살아?"
+    previous["messages"][-1]["response"]["citation_details"] = []
+    assert scoped_followup("그 친구는 어디 살아?", previous) == "그 친구는 어디 살아?"
+
+
 def test_friend_question_does_not_force_the_wrong_followup_referent():
     assert scoped_followup("그 사람 직업은?", session(
         question="회사 동료 민수의 친구는 누구야?", quote="회사 동료 민수의 친구는 지연이다."

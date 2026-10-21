@@ -17,7 +17,11 @@ def render(results, artifacts):
     document = json.loads(results.read_text(encoding="utf-8"))
     config = document["configuration"]
     cases = {"development": DEVELOPMENT, "holdout": HOLDOUT}.get(config.get("fixture_split"))
-    if cases is None or config.get("fixture_manifest_sha256") != manifest()["sha256"]:
+    expected_hash = manifest()["sha256"]
+    if config.get("fixture_split") == "identity_confirmation":
+        from .identity_followup_cases import CASES, manifest as identity_manifest
+        cases, expected_hash = CASES, identity_manifest()["sha256"]
+    if cases is None or config.get("fixture_manifest_sha256") != expected_hash:
         raise ValueError("UNKNOWN_OR_CHANGED_SYNTHETIC_FIXTURE")
     root = artifacts.resolve()
     scope_violations = {variant: sum(
