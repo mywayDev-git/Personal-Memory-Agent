@@ -5,9 +5,10 @@ import pytest
 from evaluation import response_latency
 
 
+@pytest.mark.parametrize('cache_type', ['f16', 'q8_0'])
 @pytest.mark.parametrize("placement,expected_cpu", [("cpu", [True, True]), ("gpu", [False, False]),
                                                    ("hybrid", [False, True])])
-def test_owned_cpu_servers_disable_device_operations_and_kv(tmp_path, monkeypatch, placement, expected_cpu):
+def test_owned_cpu_servers_disable_device_operations_and_kv(tmp_path, monkeypatch, placement, expected_cpu, cache_type):
     calls, processes = [], []
     class Socket:
         def __enter__(self): return self
@@ -27,7 +28,8 @@ def test_owned_cpu_servers_disable_device_operations_and_kv(tmp_path, monkeypatc
     monkeypatch.setattr(response_latency.subprocess, "Popen", spawn)
     monkeypatch.setattr(response_latency, "wait_ready", lambda *a: None)
     args = SimpleNamespace(output=tmp_path, port=18581, placement=placement, server=tmp_path / "fake.exe",
-                           flash="auto", embedding="bge", embedding_batch=4096, threads=8, reset_prompt_cache=True)
+                           flash="auto", embedding="bge", embedding_batch=4096, threads=8, reset_prompt_cache=True,
+                           generation_cache_type=cache_type)
     with response_latency.servers(args, tmp_path / "gen.gguf", tmp_path / "emb.gguf"):
         for command, cpu in zip(calls, expected_cpu):
             assert ("--no-op-offload" in command) == cpu
@@ -36,4 +38,7 @@ def test_owned_cpu_servers_disable_device_operations_and_kv(tmp_path, monkeypatc
             if cpu:
                 assert command[command.index("--device") + 1] == "none"
                 assert command[command.index("-ngl") + 1] == "0"
+        assert calls[0][calls[0].index('--cache-type-k') + 1] == cache_type
+        assert calls[0][calls[0].index('--cache-type-v') + 1] == cache_type
+        assert '--cache-type-k' not in calls[1]
     assert all(process.stopped for process in processes)

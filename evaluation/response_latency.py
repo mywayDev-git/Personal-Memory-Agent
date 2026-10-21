@@ -158,6 +158,9 @@ def servers(args, generation, embedding):
             command += ["-np", "1"] if index == 0 else [
                 "--embedding", "--pooling", "last" if args.embedding == "qwen" else "cls",
                 "--embd-normalize", "2", "-b", str(args.embedding_batch), "-ub", str(args.embedding_batch)]
+            if index == 0:
+                cache_type = getattr(args, 'generation_cache_type', 'f16')
+                command += ['--cache-type-k', cache_type, '--cache-type-v', cache_type]
             if index == 0 and args.reset_prompt_cache:
                 slot_path = args.output / "owned-slots"
                 slot_path.mkdir()
@@ -321,6 +324,7 @@ def main():
     parser.add_argument("--flash", choices=["auto", "on", "off"], default="auto")
     parser.add_argument("--threads", type=int, default=0)
     parser.add_argument("--generation-batch-threads", type=int, default=0)
+    parser.add_argument('--generation-cache-type', choices=['f16', 'q8_0'], default='f16')
     parser.add_argument("--embedding-batch", type=int, choices=[512, 2048, 4096, 8192], default=8192)
     parser.add_argument("--samples", type=int, default=5)
     parser.add_argument("--port", type=int, default=18181)
@@ -348,6 +352,8 @@ def main():
     parser.add_argument("--retrieval-baseline", type=Path,
                         help="Quality-screen against a fresh 90-case report; rejected models only run the two basic timing cases")
     args = parser.parse_args()
+    if args.runtime != 'llama' and args.generation_cache_type != 'f16':
+        parser.error('KV cache profile comparison requires the owned llama runtime')
     if (args.samples < 1 or args.output.exists() or not 1024 <= args.port < 65535
             or args.threads < 0 or args.generation_batch_threads < 0):
         parser.error("positive samples, unused output directory and valid port required")
