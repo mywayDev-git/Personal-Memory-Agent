@@ -19,6 +19,8 @@ OPTIONS = {
     "planning_compact": {"compact_search_planning": True},
     "plain": {"chat_presentation": "plain"},
     "fair_scheduling": {"fair_model_scheduling": True},
+    "compact_json": {"compact_model_json": True},
+    "compact_review": {"compact_review_output": True},
 }
 
 
@@ -34,7 +36,8 @@ def configured(settings, options=()):
                    chat_presentation="reviewed", compact_search_planning=False,
                    fair_model_scheduling=False, compact_model_ids=False, source_fact_drafts=False,
                    interpretation_reuse=False, intermediate_planning=False, bounded_expansions=False,
-                   source_date_drafts=False, scoped_identity_search=False)
+                   source_date_drafts=False, scoped_identity_search=False,
+                   compact_model_json=False, compact_review_output=False)
     for option in options:
         changes.update(OPTIONS[option])
     return replace(settings, **changes)
@@ -45,4 +48,5 @@ def parameters(settings):
         "request_token_cache", "request_reuse", "selection_reuse", "explicit_context_shortcut",
         "prompt_cache", "source_stop_drafts", "selection_batch_size", "chat_presentation",
         "compact_search_planning", "fair_model_scheduling", "compact_model_ids", "source_fact_drafts",
-        "interpretation_reuse", "intermediate_planning", "bounded_expansions", "source_date_drafts", "scoped_identity_search")}
+        "interpretation_reuse", "intermediate_planning", "bounded_expansions", "source_date_drafts", "scoped_identity_search",
+        "compact_model_json", "compact_review_output")}

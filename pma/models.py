@@ -204,7 +204,8 @@ class LocalModels:
 
     @compact_identifiers
     def structured(self, prompt, data, schema, max_tokens=None):
-        content = json.dumps(data, ensure_ascii=False)
+        content = json.dumps(data, ensure_ascii=False, **(
+            {"separators": (",", ":")} if getattr(self.settings, "compact_model_json", False) else {}))
         max_tokens = max_tokens or self.settings.llm.max_tokens
         with local_session() as session:
             self.budget(session, prompt + content, max_tokens)

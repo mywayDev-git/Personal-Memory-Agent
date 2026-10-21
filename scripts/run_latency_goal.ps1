@@ -9,6 +9,10 @@ param(
     [switch]$BoundedExpansions,
     [switch]$SourceDateDrafts,
     [switch]$ContextShortcut,
+    [switch]$PlanningBaseline,
+    [switch]$CompactJson,
+    [switch]$CompactReview,
+    [switch]$TokenCache,
     [switch]$ScopedIdentitySearch,
     [switch]$BatchEight,
     [switch]$QualityScreen,
@@ -51,6 +55,11 @@ foreach ($mode in $placements) {
     if ($ContextShortcut) { $candidateOptions += 'context_shortcut' }
     if ($ScopedIdentitySearch) { $candidateOptions += 'scoped_identity' }
     if ($BatchEight) { $candidateOptions += 'batch8' }
+    $planningOptions = @('compact_ids','source_facts','intermediate','bounded_expansions','source_dates','context_shortcut')
+    if ($PlanningBaseline) { $candidateOptions = @($planningOptions + $candidateOptions | Select-Object -Unique) }
+    if ($CompactJson) { $candidateOptions += 'compact_json' }
+    if ($CompactReview) { $candidateOptions += 'compact_review' }
+    if ($TokenCache) { $candidateOptions += 'token_cache' }
     $iterations = if ($QualityScreen) { 1 } else { $Samples }
     $arguments = @('-u', '-m', 'evaluation.response_latency', '--output', $output,
         '--placement', $mode, '--samples', "$iterations", '--threads', "$Threads",
@@ -68,7 +77,9 @@ foreach ($mode in $placements) {
         $variantIndex = [Array]::IndexOf($arguments, '--variants')
         $arguments = @($arguments[0..$variantIndex]) + @($arguments[($variantIndex + 2)..($arguments.Count - 1)])
     }
-    if ($BaselineOnly -or $InterpretationReuse -or $IntermediatePlanning) {
+    if ($PlanningBaseline) {
+        $arguments += @('--baseline-options') + $planningOptions
+    } elseif ($BaselineOnly -or $InterpretationReuse -or $IntermediatePlanning) {
         # Compare with the already measured source-draft/compact-ID candidate.
         $arguments += @('--baseline-options', 'compact_ids', 'source_facts')
         if ($InterpretationReuse -and ($IntermediatePlanning -or $BaselineOnly)) { $arguments += 'interpretation_cache' }
@@ -155,7 +166,7 @@ try {
         if ($LASTEXITCODE -ne 0) { throw 'Measurement interrupted or failed. Partial results are preserved.' }
     }
     $results = @($placements | ForEach-Object { Join-Path $outputRoot "$_\results.json" })
-    $reportModule = if ($BaselineOnly) { 'evaluation.latency_bottlenecks' } elseif ($IntermediatePlanning -or $FixtureSplit -ne 'legacy') { 'evaluation.first_response_report' } elseif ($InterpretationReuse) { 'evaluation.interpretation_reuse_report' } else { 'evaluation.latency_target_report' }
+    $reportModule = if ($BaselineOnly) { 'evaluation.latency_bottlenecks' } elseif ($IntermediatePlanning -or $PlanningBaseline -or $FixtureSplit -ne 'legacy') { 'evaluation.first_response_report' } elseif ($InterpretationReuse) { 'evaluation.interpretation_reuse_report' } else { 'evaluation.latency_target_report' }
     $reportFile = if ($BaselineOnly) { 'baseline.json' } elseif ($reportModule -eq 'evaluation.first_response_report') { 'comparison.json' } else { 'comparison.rst' }
     & $PythonExe -m $reportModule @results --output (Join-Path $outputRoot $reportFile)
     if ($LASTEXITCODE -ne 0) { throw 'Report generation failed; raw results remain available.' }

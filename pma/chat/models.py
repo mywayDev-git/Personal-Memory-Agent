@@ -77,6 +77,15 @@ class ChatLocalModels(LocalModels):
             cited_ids = {cid for item in response['items'] for cid in item['citations']}
             refs['properties']['id']['enum'] = sorted(cited_ids)
             refs['properties']['span_id']['enum'] = [key for key, span in catalog.items() if span['id'] in cited_ids]
+        compact_output = getattr(getattr(self, 'settings', None), 'compact_review_output', False)
+        if compact_output:
+            # Each span already identifies its record uniquely. Reason prose is
+            # diagnostic, never an acceptance condition. Restore both on the
+            # server; keep all independent decisions and coverage checks.
+            schema['required'].remove('reason')
+            schema['properties'].pop('reason')
+            refs['required'] = ['span_id']
+            refs['properties'].pop('id')
         result = self.structured(
             FACT_POLICY + FACT_REVIEW_POLICY + metadata_policy +
             "proposed_answer의 각 항목을 사실 검증한다. 표시는 검증 대상이 아니다. "
@@ -95,7 +104,9 @@ class ChatLocalModels(LocalModels):
             "직업 질문에 키만 답하면 missing이다. 직업 미확인을 설명할 때도 선택한 인물의 기록만 인용하고, "
             "관련 없는 기록을 미기록의 근거로 쓰지 않는다. 미기록을 실제 직업이 없다는 뜻으로 바꾸지 않는다. "
             "빈 답변은 원문으로 답할 수 있는 경우 abstention=excessive, 아니면 appropriate다. 답변이 있으면 not_applicable이다. "
-            "reason은 핵심 이유를 짧게 쓴다.",
+            + ("이유 문장과 기록 id를 다시 쓰지 않는다. 각 항목의 판정과 근거 span_id를 출력한다. "
+             "span_id의 기록 id와 판정 사유 표시는 서버에서 복원한다."
+             if compact_output else "reason은 핵심 이유를 짧게 쓴다."),
             {"original_question": question, "source_records": sources,
              "validation_feedback": feedback,
              "proposed_answer": {"status": response["status"], "items": [
@@ -106,12 +117,16 @@ class ChatLocalModels(LocalModels):
         if schema_errors(result, schema):
             raise ValueError("INVALID_REVIEW_SCHEMA")
         result = deepcopy(result)
+        if compact_output:
+            result['reason'] = '서버 표시: 상세 설명 생략. 독립 모델의 항목별 주장 지지·관련성·질문 충족 판정 참조'
         for item in result["items"]:
             item["answer_quote"] = response["items"][item["index"]]["text"]
             if item["support"] == "supported" and item["issue"] != "none":
                 raise ValueError("INCONSISTENT_REVIEW")
             for ref in item["evidence"]:
                 span = catalog[ref.pop("span_id")]
+                if compact_output:
+                    ref['id'] = span['id']
                 if span["id"] != ref["id"]:
                     raise ValueError("INVALID_REVIEW_CITATION")
                 ref["quote"] = span["quote"]
