@@ -18,6 +18,7 @@ from .diagnostics import Stage
 from .errors import AppError
 from .model_diagnostics import observe, observed_model
 from .model_reuse import reuse_selection
+from .model_identifiers import compact_identifiers
 from .query_correction import EDIT_SCHEMA
 from .search_expressions import EXPANSION_SCHEMA
 
@@ -198,6 +199,7 @@ class LocalModels:
     def embed_queries(self, texts):
         return self.embed(texts, query=True)
 
+    @compact_identifiers
     def structured(self, prompt, data, schema, max_tokens=None):
         content = json.dumps(data, ensure_ascii=False)
         max_tokens = max_tokens or self.settings.llm.max_tokens

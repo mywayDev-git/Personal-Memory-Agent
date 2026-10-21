@@ -40,6 +40,7 @@ class AppSettings:
     prompt_cache: bool | None = field(default=None, kw_only=True)
     compact_search_planning: bool = field(default=False, kw_only=True)
     fair_model_scheduling: bool = field(default=False, kw_only=True)
+    compact_model_ids: bool = field(default=False, kw_only=True)
 
     @property
     def origin(self):
@@ -104,6 +105,7 @@ class AppSettings:
                           if "PMA_PROMPT_CACHE" in os.environ else None),
             compact_search_planning=os.getenv("PMA_COMPACT_SEARCH_PLANNING", "0") == "1",
             fair_model_scheduling=os.getenv("PMA_FAIR_MODEL_SCHEDULING", "0") == "1",
+            compact_model_ids=os.getenv("PMA_COMPACT_MODEL_IDS", "0") == "1",
         )
         result.validate()
         return result
