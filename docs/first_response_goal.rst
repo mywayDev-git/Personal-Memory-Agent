@@ -8,6 +8,8 @@
 질문에서만 확장어 목록을 빈 배열로 제한합니다. 모든 검증 사전 항목이 계속 후보로
 남도록 보수적으로 검사하며, 가능한 확장에는 기존 모델 판단·검증을 그대로 사용합니다.
 최종 답변의 독립 검증과 원문·인용·주체·날짜·부정 검사는 그대로 실행됩니다.
+현재 후보는 최종 품질 선별에서 탈락해 채택되지 않았습니다. 이 도구는 재현 실험용이며
+목표 달성·적용 완료를 뜻하지 않습니다. 상세 결과는 ``docs/first_response_results.rst``에 있습니다.
 
 사용자가 실행하고 확인하기
 --------------------------
@@ -19,7 +21,7 @@
 
 기존 8B 모델에서 첫 질문·후속 질문을 비교하는 실행 계획::
 
-    ./scripts/run_latency_goal.ps1 -Placement gpu -Samples 5 -IntermediatePlanning -ColdInterpretations -FixtureSplit development -Cases dev_fact,dev_pronoun -PythonExe C:\development\Personal-Memory-Agent\.venv\Scripts\python.exe -PauseOrdinaryModels -RunName my-first-response
+    ./scripts/run_latency_goal.ps1 -Placement gpu -Samples 5 -IntermediatePlanning -BoundedExpansions -SourceDateDrafts -ColdInterpretations -FixtureSplit development -Cases @('dev_fact','dev_date','dev_pronoun','dev_compound') -PythonExe C:\development\Personal-Memory-Agent\.venv\Scripts\python.exe -PauseOrdinaryModels -RunName my-first-response
 
 명시적으로 ``-Execute``를 붙이면 실제 합성 DB와 모델을 사용합니다.
 ``-PauseOrdinaryModels``는 알려진 8081·8082 서버만 잠시 종료하고,
@@ -33,7 +35,7 @@ GPU가 물리적으로 없는 컴퓨터에서 검증한 것으로 해석하지 �
 ``-ColdInterpretations``를 생략합니다. 통합 해석 비교에서는 기준 경로에도 기존 해석 캐시를 켭니다.
 질문 글자뿐 아니라 이전 대화·근거·날짜·모델·설정이 같아야 재사용됩니다.
 실제 대화가 추가되거나 기록을 수정·삭제한 뒤 같은 질문을 하는 것은 동일 입력 반복과 다릅니다.
-두 번째 옵션을 비교하려면 ``-BoundedExpansions``를 추가합니다.
+검색 확장 출력 제한을 별도로 비교하려면 ``-BoundedExpansions`` 유무를 바꿉니다.
 ``-SourceDateDrafts``는 명시적 날짜가 검증된 유일한 대상 사건의 원문을 답변 후보로 제안합니다.
 같은 대상의 다른 언급·부정·미상 날짜가 있으면 기존 생성 경로를 사용합니다.
 다른 배경 원문은 최종 독립 검증 입력에서 제거하지 않습니다.
@@ -42,6 +44,8 @@ GPU가 물리적으로 없는 컴퓨터에서 검증한 것으로 해석하지 �
 ``-BaselineOnly``는 후보를 실행하지 않고 기존 8B 기준 경로만 측정합니다.
 품질 선별에서 후보가 탈락한 경우에도 현재 CPU·GPU의 기준 시간을 확인할 수 있습니다.
 이때 ``baseline.json``은 기준 측정값이며 최적화 전후 비교나 후보 채택 결과가 아닙니다.
+``-DisableCpuRepacking``은 실패한 메모리 옵션의 재현용입니다. 이번 환경에서 두 번의
+시간 초과가 발생했으므로 권장 설정으로 사용하지 않습니다.
 ``-RetrievalOnly``는 기존 90개 검색 사례만, ``-ReviewBank``는 정상·변조 답변 검사도 실행합니다.
 ``-ReviewOnly``는 고정 답변 묶음의 검증만 수행하며, 검색·답변 속도 채택 검사를 대신하지 않습니다.
 후보 파일 선택은 ``-Generation q4`` 또는 ``-Generation q8``이며 BGE는 유지됩니다.

@@ -1,0 +1,687 @@
+{
+  "schema_version": 1,
+  "status": "NO_QUALIFIED_CANDIDATE_ADOPTED",
+  "target_achieved": false,
+  "product_source_commit": "8e4e4ce",
+  "personal_database_used": false,
+  "gpu_absent_environment_verified": false,
+  "model_defaults_changed": false,
+  "official_main_suite_run": false,
+  "offline_tests_passed": 952,
+  "question_fixture_sha256": "d6a137678034dc27d768280cfd384d728c5c52b5f9d8d33641d9844abbf494df",
+  "quality": {
+    "development": {
+      "cases": 16,
+      "automatic_passes": {
+        "current": 13,
+        "candidate": 14
+      },
+      "agent_source_review_passes": {
+        "current": 15,
+        "candidate": 16
+      },
+      "critical_false_approvals": {
+        "current": 0,
+        "candidate": 0
+      },
+      "errors": {
+        "current": 1,
+        "candidate": 0
+      }
+    },
+    "holdout": {
+      "cases": 16,
+      "automatic_passes": {
+        "current": 11,
+        "candidate": 11
+      },
+      "agent_source_review_passes": {
+        "current": 13,
+        "candidate": 13
+      },
+      "critical_false_approvals": {
+        "current": 1,
+        "candidate": 1
+      },
+      "errors": {
+        "current": 1,
+        "candidate": 1
+      }
+    }
+  },
+  "gpu_quality_screen_observations": [
+    {
+      "case": "dev_fact",
+      "variant": "candidate",
+      "samples": 1,
+      "seconds": 10.421132300049067,
+      "generation_http_calls": 3,
+      "embedding_http_calls": 1,
+      "ram_peak_mb": 5698.140625,
+      "private_commit_peak_mb": 10461.7734375,
+      "gpu_total_peak_mb": 7730.0,
+      "system_available_ram_min_mb": 347.046875,
+      "used_for_latency_adoption": false
+    },
+    {
+      "case": "dev_fact",
+      "variant": "current",
+      "samples": 1,
+      "seconds": 16.369110999978147,
+      "generation_http_calls": 5,
+      "embedding_http_calls": 1,
+      "ram_peak_mb": 5485.265625,
+      "private_commit_peak_mb": 10474.203125,
+      "gpu_total_peak_mb": 7736.0,
+      "system_available_ram_min_mb": 412.84375,
+      "used_for_latency_adoption": false
+    },
+    {
+      "case": "dev_date",
+      "variant": "candidate",
+      "samples": 1,
+      "seconds": 9.848650299943984,
+      "generation_http_calls": 3,
+      "embedding_http_calls": 1,
+      "ram_peak_mb": 5505.01953125,
+      "private_commit_peak_mb": 10478.265625,
+      "gpu_total_peak_mb": 7736.0,
+      "system_available_ram_min_mb": 420.19140625,
+      "used_for_latency_adoption": false
+    },
+    {
+      "case": "dev_date",
+      "variant": "current",
+      "samples": 1,
+      "seconds": 21.651782999979332,
+      "generation_http_calls": 7,
+      "embedding_http_calls": 1,
+      "ram_peak_mb": 5588.80859375,
+      "private_commit_peak_mb": 10502.84765625,
+      "gpu_total_peak_mb": 7736.0,
+      "system_available_ram_min_mb": 320.29296875,
+      "used_for_latency_adoption": false
+    },
+    {
+      "case": "dev_pronoun",
+      "variant": "candidate",
+      "samples": 1,
+      "seconds": 49.50957540003583,
+      "generation_http_calls": 12,
+      "embedding_http_calls": 2,
+      "ram_peak_mb": 4636.09765625,
+      "private_commit_peak_mb": 10522.54296875,
+      "gpu_total_peak_mb": 7736.0,
+      "system_available_ram_min_mb": 859.57421875,
+      "used_for_latency_adoption": false
+    },
+    {
+      "case": "dev_pronoun",
+      "variant": "current",
+      "samples": 1,
+      "seconds": 51.094960999907926,
+      "generation_http_calls": 12,
+      "embedding_http_calls": 2,
+      "ram_peak_mb": 4667.43359375,
+      "private_commit_peak_mb": 10522.51171875,
+      "gpu_total_peak_mb": 7816.0,
+      "system_available_ram_min_mb": 547.1640625,
+      "used_for_latency_adoption": false
+    },
+    {
+      "case": "dev_compound",
+      "variant": "candidate",
+      "samples": 1,
+      "seconds": 32.7618251000531,
+      "generation_http_calls": 9,
+      "embedding_http_calls": 2,
+      "ram_peak_mb": 4674.64453125,
+      "private_commit_peak_mb": 10534.0546875,
+      "gpu_total_peak_mb": 7755.0,
+      "system_available_ram_min_mb": 470.984375,
+      "used_for_latency_adoption": false
+    },
+    {
+      "case": "dev_compound",
+      "variant": "current",
+      "samples": 1,
+      "seconds": 40.82301059993915,
+      "generation_http_calls": 12,
+      "embedding_http_calls": 2,
+      "ram_peak_mb": 4672.796875,
+      "private_commit_peak_mb": 10534.734375,
+      "gpu_total_peak_mb": 7755.0,
+      "system_available_ram_min_mb": 560.78125,
+      "used_for_latency_adoption": false
+    },
+    {
+      "case": "final_fact",
+      "variant": "candidate",
+      "samples": 1,
+      "seconds": 13.944771199952811,
+      "generation_http_calls": 5,
+      "embedding_http_calls": 1,
+      "ram_peak_mb": 7073.98828125,
+      "private_commit_peak_mb": 10507.03125,
+      "gpu_total_peak_mb": 7740.0,
+      "system_available_ram_min_mb": 110.23046875,
+      "used_for_latency_adoption": false
+    },
+    {
+      "case": "final_fact",
+      "variant": "current",
+      "samples": 1,
+      "seconds": 20.145125500042923,
+      "generation_http_calls": 7,
+      "embedding_http_calls": 1,
+      "ram_peak_mb": 6531.640625,
+      "private_commit_peak_mb": 10492.09765625,
+      "gpu_total_peak_mb": 7748.0,
+      "system_available_ram_min_mb": 389.59765625,
+      "used_for_latency_adoption": false
+    },
+    {
+      "case": "final_date",
+      "variant": "candidate",
+      "samples": 1,
+      "seconds": 16.497100800042972,
+      "generation_http_calls": 4,
+      "embedding_http_calls": 1,
+      "ram_peak_mb": 6461.0546875,
+      "private_commit_peak_mb": 10516.5546875,
+      "gpu_total_peak_mb": 7748.0,
+      "system_available_ram_min_mb": 216.390625,
+      "used_for_latency_adoption": false
+    },
+    {
+      "case": "final_date",
+      "variant": "current",
+      "samples": 1,
+      "seconds": 37.42249319993425,
+      "generation_http_calls": 10,
+      "embedding_http_calls": 2,
+      "ram_peak_mb": 6263.84375,
+      "private_commit_peak_mb": 10517.796875,
+      "gpu_total_peak_mb": 7748.0,
+      "system_available_ram_min_mb": 313.63671875,
+      "used_for_latency_adoption": false
+    }
+  ],
+  "baseline_reference": [
+    {
+      "device": "cpu",
+      "case": "dev_fact",
+      "samples": 5,
+      "median_seconds": 155.81839519995265,
+      "maximum_seconds": 156.2994717999827,
+      "quality_passes": 5,
+      "errors": 0,
+      "generation_http_calls_per_request": [
+        5,
+        5,
+        5,
+        5,
+        5
+      ],
+      "ram_peak_mb": 6730.80859375,
+      "private_commit_peak_mb": 8209.5,
+      "gpu_total_peak_mb": 716.0,
+      "system_available_ram_min_mb": 260.51953125,
+      "configuration": {
+        "output": "C:\\development\\Personal-Memory-Agent\\.local\\latency-validated-drafts\\.local\\latency-goal\\first-response-baseline-default-five\\cpu",
+        "server": "C:\\llama.cpp\\llama-server.exe",
+        "model_directory": ".local\\response-latency\\models",
+        "generation": "baseline",
+        "runtime": "llama",
+        "runtime_python": null,
+        "runtime_model": null,
+        "startup_memory": true,
+        "min_free_gib": 8.0,
+        "embedding": "bge",
+        "placement": "cpu",
+        "flash": "auto",
+        "threads": 8,
+        "generation_batch_threads": 16,
+        "embedding_batch": 4096,
+        "samples": 5,
+        "port": 18581,
+        "variants": [
+          "current"
+        ],
+        "candidate_options": [
+          "compact_ids",
+          "source_facts"
+        ],
+        "baseline_options": [
+          "compact_ids",
+          "source_facts"
+        ],
+        "cold_interpretations": true,
+        "reset_prompt_cache": true,
+        "cancel_file": "C:\\development\\Personal-Memory-Agent\\.local\\latency-validated-drafts\\.local\\latency-goal\\first-response-baseline-default-five\\cpu\\cancel.request",
+        "cases": [
+          "dev_fact"
+        ],
+        "multilingual": false,
+        "review_bank": false,
+        "review_only": false,
+        "quality_only": false,
+        "fixture_manifest_sha256": "d6a137678034dc27d768280cfd384d728c5c52b5f9d8d33641d9844abbf494df",
+        "fixture_split": "development",
+        "retrieval_only": false,
+        "skip_timing_on_retrieval_failure": false,
+        "multilingual_current_only": false,
+        "seed_template": null,
+        "fixed_anchor": true,
+        "retrieval_baseline": null
+      },
+      "is_optimization_before_after_comparison": false
+    },
+    {
+      "device": "gpu",
+      "case": "dev_fact",
+      "samples": 5,
+      "median_seconds": 16.391623899922706,
+      "maximum_seconds": 16.529020700021647,
+      "quality_passes": 5,
+      "errors": 0,
+      "generation_http_calls_per_request": [
+        5,
+        5,
+        5,
+        5,
+        5
+      ],
+      "ram_peak_mb": 7093.15625,
+      "private_commit_peak_mb": 10472.42578125,
+      "gpu_total_peak_mb": 7747.0,
+      "system_available_ram_min_mb": 271.109375,
+      "configuration": {
+        "output": "C:\\development\\Personal-Memory-Agent\\.local\\latency-validated-drafts\\.local\\latency-goal\\first-response-baseline-default-five\\gpu",
+        "server": "C:\\llama.cpp\\llama-server.exe",
+        "model_directory": ".local\\response-latency\\models",
+        "generation": "baseline",
+        "runtime": "llama",
+        "runtime_python": null,
+        "runtime_model": null,
+        "startup_memory": true,
+        "min_free_gib": 8.0,
+        "embedding": "bge",
+        "placement": "gpu",
+        "flash": "auto",
+        "threads": 8,
+        "generation_batch_threads": 16,
+        "embedding_batch": 4096,
+        "samples": 5,
+        "port": 18581,
+        "variants": [
+          "current"
+        ],
+        "candidate_options": [
+          "compact_ids",
+          "source_facts"
+        ],
+        "baseline_options": [
+          "compact_ids",
+          "source_facts"
+        ],
+        "cold_interpretations": true,
+        "reset_prompt_cache": true,
+        "cancel_file": "C:\\development\\Personal-Memory-Agent\\.local\\latency-validated-drafts\\.local\\latency-goal\\first-response-baseline-default-five\\gpu\\cancel.request",
+        "cases": [
+          "dev_fact"
+        ],
+        "multilingual": false,
+        "review_bank": false,
+        "review_only": false,
+        "quality_only": false,
+        "fixture_manifest_sha256": "d6a137678034dc27d768280cfd384d728c5c52b5f9d8d33641d9844abbf494df",
+        "fixture_split": "development",
+        "retrieval_only": false,
+        "skip_timing_on_retrieval_failure": false,
+        "multilingual_current_only": false,
+        "seed_template": null,
+        "fixed_anchor": true,
+        "retrieval_baseline": null
+      },
+      "is_optimization_before_after_comparison": false
+    }
+  ],
+  "candidate_screens": {
+    "q4": {
+      "model_hashes": {
+        "generation": "3605803b982cb64aead44f6c1b2ae36e3acdb41d8e46c8a94c6533bc4c67e597",
+        "embedding": "950f4a8e5e19477a6d3c26d2f162233c20002c601f75e4b002e3239997821167",
+        "server": "8d3422f50cf515a8f60ad0f1941ad4b37fa664c2746f7fbf460b8e2e4f3994f5"
+      },
+      "retrieval_gate": {
+        "passed": false,
+        "regressed_cases": [
+          "positive-kubernetes-4",
+          "positive-javascript-3",
+          "positive-javascript-4",
+          "positive-javascript-5",
+          "positive-receipt-2",
+          "positive-receipt-3",
+          "positive-receipt-4",
+          "positive-receipt-5",
+          "positive-fridge-3",
+          "positive-fridge-5",
+          "positive-budget-2",
+          "positive-ticket-5",
+          "positive-strength-3"
+        ],
+        "alias_invariance": true
+      },
+      "adopted": false,
+      "cpu_comparison_run": false
+    },
+    "q8": {
+      "model_hashes": {
+        "generation": "391c1e410fd9f4cf2de2b510273b56a84c19ce18f4fa3bfb3774031dac4ef068",
+        "embedding": "950f4a8e5e19477a6d3c26d2f162233c20002c601f75e4b002e3239997821167",
+        "server": "8d3422f50cf515a8f60ad0f1941ad4b37fa664c2746f7fbf460b8e2e4f3994f5"
+      },
+      "retrieval_gate": {
+        "passed": false,
+        "regressed_cases": [
+          "positive-kubernetes-2",
+          "positive-javascript-2",
+          "positive-javascript-3",
+          "positive-javascript-4",
+          "positive-javascript-5",
+          "positive-receipt-4",
+          "positive-receipt-5",
+          "positive-fridge-3",
+          "positive-fridge-5",
+          "positive-budget-2",
+          "positive-budget-3",
+          "positive-ticket-3",
+          "positive-ticket-5",
+          "positive-strength-3"
+        ],
+        "alias_invariance": true
+      },
+      "adopted": false,
+      "cpu_comparison_run": false
+    },
+    "openvino": {
+      "api_connection_compatible": true,
+      "quality_passed": false,
+      "model_hashes": {
+        "generation": "f2e6960fde61d24a83c477c46f9ee7158748762089f2018fc2bb6a6d6c7f2a7e",
+        "embedding": "950f4a8e5e19477a6d3c26d2f162233c20002c601f75e4b002e3239997821167",
+        "server": "8d3422f50cf515a8f60ad0f1941ad4b37fa664c2746f7fbf460b8e2e4f3994f5"
+      },
+      "false_approvals": 1,
+      "false_rejections": 1,
+      "processing_errors": 2,
+      "review_requests": 16,
+      "memory_workload": "authored review bank, not full-answer workload",
+      "memory": {
+        "ram_peak_mb": 7972.89453125,
+        "private_commit_peak_mb": 8464.2421875,
+        "gpu_total_peak_mb": 579.0,
+        "system_available_ram_min_mb": 11.28125,
+        "process_tree_complete": true,
+        "tracked_processes_peak": 6
+      },
+      "full_answer_latency_comparison_run": false,
+      "quantization_and_runtime_combination": true,
+      "adopted": false
+    },
+    "onnx": {
+      "version": "0.18.0",
+      "model": ".local\\first-response\\onnx",
+      "genai_config_present": false,
+      "inference_measured": false,
+      "cpu_quality_verified": false,
+      "gpu_quality_verified": false,
+      "configuration_loaded": false,
+      "error_type": "RuntimeError",
+      "error": "Error opening .local\\first-response\\onnx\\genai_config.json"
+    }
+  },
+  "artifacts": [
+    {
+      "path": ".local\\latency-goal\\first-response-quality-generation-stable\\gpu\\results.json",
+      "sha256": "d5163ad2a1483504ca198e9c58b4d0e408c4537eb1fc3b2f8a9089240f5790e4",
+      "status": "COMPLETED",
+      "execution_completed": true,
+      "repository_reference": "8e4e4ce809e4829da8ca282888f24dd2f4097367",
+      "model_hashes": {
+        "generation": "d98cdcbd03e17ce47681435b5150e34c1417f50b5c0019dd560e4882c5745785",
+        "embedding": "950f4a8e5e19477a6d3c26d2f162233c20002c601f75e4b002e3239997821167",
+        "server": "8d3422f50cf515a8f60ad0f1941ad4b37fa664c2746f7fbf460b8e2e4f3994f5"
+      },
+      "source_snapshot_sha256": "efc40220c7188240ab3893c8a8c398d25eba1e4a17578fcfc9b23ffab3483c1d"
+    },
+    {
+      "path": ".local\\latency-goal\\first-response-holdout-frozen\\gpu\\results.json",
+      "sha256": "312f8ed8ee14cbfb1b8a419149052608297d1a81f6ed781eb40477c9c547f100",
+      "status": "COMPLETED",
+      "execution_completed": true,
+      "repository_reference": "8e4e4ce809e4829da8ca282888f24dd2f4097367",
+      "model_hashes": {
+        "generation": "d98cdcbd03e17ce47681435b5150e34c1417f50b5c0019dd560e4882c5745785",
+        "embedding": "950f4a8e5e19477a6d3c26d2f162233c20002c601f75e4b002e3239997821167",
+        "server": "8d3422f50cf515a8f60ad0f1941ad4b37fa664c2746f7fbf460b8e2e4f3994f5"
+      },
+      "source_snapshot_sha256": "efc40220c7188240ab3893c8a8c398d25eba1e4a17578fcfc9b23ffab3483c1d"
+    },
+    {
+      "path": ".local\\latency-goal\\first-response-baseline-default-five\\cpu\\results.json",
+      "sha256": "8efc82ec9eac92ad4c8b5ce98f4b7211f89a60447eb19714b6de4f8a35057cb8",
+      "status": "COMPLETED",
+      "execution_completed": true,
+      "repository_reference": "48019481338e06f5445c4b2267d3f33804f178b6",
+      "model_hashes": {
+        "generation": "d98cdcbd03e17ce47681435b5150e34c1417f50b5c0019dd560e4882c5745785",
+        "embedding": "950f4a8e5e19477a6d3c26d2f162233c20002c601f75e4b002e3239997821167",
+        "server": "8d3422f50cf515a8f60ad0f1941ad4b37fa664c2746f7fbf460b8e2e4f3994f5"
+      },
+      "source_snapshot_sha256": "efc40220c7188240ab3893c8a8c398d25eba1e4a17578fcfc9b23ffab3483c1d"
+    },
+    {
+      "path": ".local\\latency-goal\\first-response-baseline-default-five\\gpu\\results.json",
+      "sha256": "d6a73b310de058cdd4ee7912edcf75e26019163c72a63caed1190b135fb5ff37",
+      "status": "COMPLETED",
+      "execution_completed": true,
+      "repository_reference": "48019481338e06f5445c4b2267d3f33804f178b6",
+      "model_hashes": {
+        "generation": "d98cdcbd03e17ce47681435b5150e34c1417f50b5c0019dd560e4882c5745785",
+        "embedding": "950f4a8e5e19477a6d3c26d2f162233c20002c601f75e4b002e3239997821167",
+        "server": "8d3422f50cf515a8f60ad0f1941ad4b37fa664c2746f7fbf460b8e2e4f3994f5"
+      },
+      "source_snapshot_sha256": "efc40220c7188240ab3893c8a8c398d25eba1e4a17578fcfc9b23ffab3483c1d"
+    },
+    {
+      "path": ".local\\latency-goal\\first-response-cpu-default-screen\\cpu\\results.json",
+      "sha256": "89af5359693cfdd32bb862ceeed2a0a22d7e643ddf4534e518e3dc5800a8aaa4",
+      "status": "COMPLETED",
+      "execution_completed": true,
+      "repository_reference": "48019481338e06f5445c4b2267d3f33804f178b6",
+      "model_hashes": {
+        "generation": "d98cdcbd03e17ce47681435b5150e34c1417f50b5c0019dd560e4882c5745785",
+        "embedding": "950f4a8e5e19477a6d3c26d2f162233c20002c601f75e4b002e3239997821167",
+        "server": "8d3422f50cf515a8f60ad0f1941ad4b37fa664c2746f7fbf460b8e2e4f3994f5"
+      },
+      "source_snapshot_sha256": "efc40220c7188240ab3893c8a8c398d25eba1e4a17578fcfc9b23ffab3483c1d"
+    },
+    {
+      "path": ".local\\latency-goal\\first-response-baseline-cpu-gpu-reference\\cpu\\results.json",
+      "sha256": "b69784890715eeab4851c7e4f1e358c3210098735cb26f43e46792257eeff328",
+      "status": "INTERRUPTED",
+      "execution_completed": false,
+      "repository_reference": "028797d887e7a6178c4302139a8c8d6cef89439c",
+      "model_hashes": {
+        "generation": "d98cdcbd03e17ce47681435b5150e34c1417f50b5c0019dd560e4882c5745785",
+        "embedding": "950f4a8e5e19477a6d3c26d2f162233c20002c601f75e4b002e3239997821167",
+        "server": "8d3422f50cf515a8f60ad0f1941ad4b37fa664c2746f7fbf460b8e2e4f3994f5"
+      },
+      "source_snapshot_sha256": "efc40220c7188240ab3893c8a8c398d25eba1e4a17578fcfc9b23ffab3483c1d"
+    },
+    {
+      "path": ".local\\latency-goal\\first-response-openvino-batched\\cpu\\results.json",
+      "sha256": "8ea73f6d16a3b5d53f89fa797005fe8f5e2038783970f1aced9af614fe7d0398",
+      "status": "COMPLETED",
+      "execution_completed": true,
+      "repository_reference": "48019481338e06f5445c4b2267d3f33804f178b6",
+      "model_hashes": {
+        "generation": "f2e6960fde61d24a83c477c46f9ee7158748762089f2018fc2bb6a6d6c7f2a7e",
+        "embedding": "950f4a8e5e19477a6d3c26d2f162233c20002c601f75e4b002e3239997821167",
+        "server": "8d3422f50cf515a8f60ad0f1941ad4b37fa664c2746f7fbf460b8e2e4f3994f5"
+      },
+      "source_snapshot_sha256": "efc40220c7188240ab3893c8a8c398d25eba1e4a17578fcfc9b23ffab3483c1d"
+    },
+    {
+      "path": ".local\\latency-goal\\first-response-retrieval-8b-control\\gpu\\results.json",
+      "sha256": "0a432611af08456afdee64b17563304f7854513acf0f0256504adc0ce8402673",
+      "status": "COMPLETED",
+      "execution_completed": true,
+      "repository_reference": "31a249328036142c54f7443e65b20a2fe6d93ce2",
+      "model_hashes": {
+        "generation": "d98cdcbd03e17ce47681435b5150e34c1417f50b5c0019dd560e4882c5745785",
+        "embedding": "950f4a8e5e19477a6d3c26d2f162233c20002c601f75e4b002e3239997821167",
+        "server": "8d3422f50cf515a8f60ad0f1941ad4b37fa664c2746f7fbf460b8e2e4f3994f5"
+      },
+      "source_snapshot_sha256": "8516932bd4b66b47df503cc6340689deba523253000d9d915da97d440273fb4b"
+    },
+    {
+      "path": ".local\\latency-goal\\first-response-retrieval-8b-bounded\\gpu\\results.json",
+      "sha256": "765d31cd66db5fddfb78d6b902b982ccb30d6a7d105251a05900fdad85c9acd5",
+      "status": "COMPLETED",
+      "execution_completed": true,
+      "repository_reference": "a10f153d2aa4dd94eca83682813be9258311aa65",
+      "model_hashes": {
+        "generation": "d98cdcbd03e17ce47681435b5150e34c1417f50b5c0019dd560e4882c5745785",
+        "embedding": "950f4a8e5e19477a6d3c26d2f162233c20002c601f75e4b002e3239997821167",
+        "server": "8d3422f50cf515a8f60ad0f1941ad4b37fa664c2746f7fbf460b8e2e4f3994f5"
+      },
+      "source_snapshot_sha256": "8516932bd4b66b47df503cc6340689deba523253000d9d915da97d440273fb4b"
+    },
+    {
+      "path": ".local\\latency-goal\\first-response-retrieval-4b-q4\\gpu\\results.json",
+      "sha256": "eb5aa4e15306d16d34da16c1d9348abcbf96849bae5d8c87e8dba5d488d2185a",
+      "status": "COMPLETED",
+      "execution_completed": true,
+      "repository_reference": "a10f153d2aa4dd94eca83682813be9258311aa65",
+      "model_hashes": {
+        "generation": "3605803b982cb64aead44f6c1b2ae36e3acdb41d8e46c8a94c6533bc4c67e597",
+        "embedding": "950f4a8e5e19477a6d3c26d2f162233c20002c601f75e4b002e3239997821167",
+        "server": "8d3422f50cf515a8f60ad0f1941ad4b37fa664c2746f7fbf460b8e2e4f3994f5"
+      },
+      "source_snapshot_sha256": "e6417d392b0bc961383b9a957e4de2118323ac3238a9db46525b94c45f2172fe"
+    },
+    {
+      "path": ".local\\latency-goal\\first-response-retrieval-4b-q8\\gpu\\results.json",
+      "sha256": "547cb89b3967a2c68a9dcecf5901aecf8147c08a846be06f9d6091d1b171c8c1",
+      "status": "COMPLETED",
+      "execution_completed": true,
+      "repository_reference": "a10f153d2aa4dd94eca83682813be9258311aa65",
+      "model_hashes": {
+        "generation": "391c1e410fd9f4cf2de2b510273b56a84c19ce18f4fa3bfb3774031dac4ef068",
+        "embedding": "950f4a8e5e19477a6d3c26d2f162233c20002c601f75e4b002e3239997821167",
+        "server": "8d3422f50cf515a8f60ad0f1941ad4b37fa664c2746f7fbf460b8e2e4f3994f5"
+      },
+      "source_snapshot_sha256": "3edcbba91d72366f306418287279a7808b147cab7843c9758d91bb13aa457abc"
+    }
+  ],
+  "conditional_runs_skipped_due_quality": [
+    "failed GPU candidate CPU comparison",
+    "candidate five-sample latency adoption",
+    "final GPU twenty-sample confirmation",
+    "five-sample identical-input warm adoption"
+  ],
+  "synthetic_database_digests": [
+    {
+      "path": ".local\\latency-goal\\first-response-quality-generation-stable\\gpu\\synthetic-seed.db",
+      "sha256": "ad81d7abbde44b3cd32d05a814c807d998f7b9f1b87c20c64fe169d5a970485c",
+      "kind": "synthetic seed; no personal DB"
+    },
+    {
+      "path": ".local\\latency-goal\\first-response-holdout-frozen\\gpu\\synthetic-seed.db",
+      "sha256": "3b6efd5a133b01369c5f15203f65dd9a9a1660065b974550186ae94cecf819cf",
+      "kind": "synthetic seed; no personal DB"
+    },
+    {
+      "path": ".local\\latency-goal\\first-response-baseline-default-five\\cpu\\synthetic-seed.db",
+      "sha256": "885ffde353eb3de88f87b591a46a61cf8cbe3be8d0d894899c96c79d8117a55b",
+      "kind": "synthetic seed; no personal DB"
+    },
+    {
+      "path": ".local\\latency-goal\\first-response-baseline-default-five\\gpu\\synthetic-seed.db",
+      "sha256": "ad81d7abbde44b3cd32d05a814c807d998f7b9f1b87c20c64fe169d5a970485c",
+      "kind": "synthetic seed; no personal DB"
+    },
+    {
+      "path": ".local\\latency-goal\\first-response-cpu-default-screen\\cpu\\synthetic-seed.db",
+      "sha256": "885ffde353eb3de88f87b591a46a61cf8cbe3be8d0d894899c96c79d8117a55b",
+      "kind": "synthetic seed; no personal DB"
+    },
+    {
+      "path": ".local\\latency-goal\\first-response-baseline-cpu-gpu-reference\\cpu\\synthetic-seed.db",
+      "sha256": "885ffde353eb3de88f87b591a46a61cf8cbe3be8d0d894899c96c79d8117a55b",
+      "kind": "synthetic seed; no personal DB"
+    },
+    {
+      "path": ".local\\latency-goal\\first-response-openvino-batched\\cpu\\synthetic-seed.db",
+      "sha256": "885ffde353eb3de88f87b591a46a61cf8cbe3be8d0d894899c96c79d8117a55b",
+      "kind": "synthetic seed; no personal DB"
+    },
+    {
+      "path": ".local\\latency-goal\\first-response-retrieval-8b-control\\gpu\\synthetic-seed.db",
+      "sha256": "38e5813f40ca309e7678c50d6345958302dca03c38bbc80e485d3852c25809d9",
+      "kind": "synthetic seed; no personal DB"
+    },
+    {
+      "path": ".local\\latency-goal\\first-response-retrieval-8b-bounded\\gpu\\synthetic-seed.db",
+      "sha256": "38e5813f40ca309e7678c50d6345958302dca03c38bbc80e485d3852c25809d9",
+      "kind": "synthetic seed; no personal DB"
+    },
+    {
+      "path": ".local\\latency-goal\\first-response-retrieval-4b-q4\\gpu\\synthetic-seed.db",
+      "sha256": "38e5813f40ca309e7678c50d6345958302dca03c38bbc80e485d3852c25809d9",
+      "kind": "synthetic seed; no personal DB"
+    },
+    {
+      "path": ".local\\latency-goal\\first-response-retrieval-4b-q8\\gpu\\synthetic-seed.db",
+      "sha256": "38e5813f40ca309e7678c50d6345958302dca03c38bbc80e485d3852c25809d9",
+      "kind": "synthetic seed; no personal DB"
+    }
+  ],
+  "disk_budget": {
+    "runtime_and_model_bytes": {
+      ".local\\response-latency\\models": 6777686720,
+      ".local\\first-response": 5290309341
+    },
+    "total_local_bytes": 17725958088,
+    "free_bytes": 20024823808,
+    "maximum_added_bytes": 21474836480,
+    "minimum_free_bytes": 8589934592
+  },
+  "final_server_state": {
+    "health": [
+      {
+        "port": 8081,
+        "status": 200
+      },
+      {
+        "port": 8082,
+        "status": 200
+      }
+    ],
+    "ordinary_options": [
+      {
+        "restored": true,
+        "port": "8081"
+      },
+      {
+        "restored": true,
+        "port": "8082"
+      }
+    ],
+    "owned_experiment_processes_remaining": 0
+  },
+  "final_server_state_sha256": "4ca2c1d0dd8805bcae9aa230bfaaadeddadd40b5d3eecb8f7f2ff3c15585ca08"
+}
