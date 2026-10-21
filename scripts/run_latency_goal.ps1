@@ -5,6 +5,19 @@ param(
     [ValidateRange(0, 1024)][int]$GenerationBatchThreads = 0,
     [switch]$DisableCpuRepacking,
     [switch]$InterpretationReuse,
+    [switch]$IntermediatePlanning,
+    [switch]$BoundedExpansions,
+    [switch]$BatchEight,
+    [switch]$QualityScreen,
+    [switch]$RetrievalOnly,
+    [switch]$ReviewBank,
+    [string]$RetrievalBaseline = '',
+    [ValidateSet('llama', 'openvino')][string]$Runtime = 'llama',
+    [string]$RuntimePython = '',
+    [string]$RuntimeModel = '',
+    [ValidateSet('legacy', 'development', 'holdout')][string]$FixtureSplit = 'legacy',
+    [ValidateSet('baseline', 'q4', 'q8')][string]$Generation = 'baseline',
+    [string]$ModelDirectory = '.local/response-latency/models',
     [switch]$ColdInterpretations,
     [string[]]$Cases = @('simple_search', 'simple_answer'),
     [string]$RunName = ('manual-' + (Get-Date -Format 'yyyyMMdd-HHmmss')),
@@ -23,17 +36,36 @@ foreach ($mode in $placements) {
     $output = Join-Path $outputRoot $mode
     $candidateOptions = @('compact_ids', 'source_facts')
     if ($InterpretationReuse) { $candidateOptions += 'interpretation_cache' }
+    if ($IntermediatePlanning) { $candidateOptions += 'intermediate' }
+    if ($BoundedExpansions) { $candidateOptions += 'bounded_expansions' }
+    if ($BatchEight) { $candidateOptions += 'batch8' }
+    $iterations = if ($QualityScreen) { 1 } else { $Samples }
     $arguments = @('-u', '-m', 'evaluation.response_latency', '--output', $output,
-        '--placement', $mode, '--samples', "$Samples", '--threads', "$Threads",
+        '--placement', $mode, '--samples', "$iterations", '--threads', "$Threads",
         '--generation-batch-threads', "$GenerationBatchThreads", '--embedding-batch', '4096',
+        '--generation', $Generation, '--model-directory', $ModelDirectory,
         '--port', '18581', '--variants', 'current', 'candidate',
-        '--candidate-options') + $candidateOptions + @('--cases') + $Cases + @(
+        '--candidate-options') + $candidateOptions + @(
         '--fixed-anchor', '--reset-prompt-cache', '--cancel-file', (Join-Path $output 'cancel.request'))
-    if ($InterpretationReuse) {
+    if ($InterpretationReuse -or $IntermediatePlanning) {
         # Compare with the already measured source-draft/compact-ID candidate.
         $arguments += @('--baseline-options', 'compact_ids', 'source_facts')
+        if ($IntermediatePlanning -and $InterpretationReuse) { $arguments += 'interpretation_cache' }
     }
     if ($ColdInterpretations) { $arguments += '--cold-interpretations' }
+    if ($FixtureSplit -ne 'legacy') {
+        $arguments[2] = 'evaluation.first_response'
+        $arguments += @('--execute', '--split', $FixtureSplit)
+    }
+    if ($FixtureSplit -eq 'legacy' -or $PSBoundParameters.ContainsKey('Cases')) { $arguments += @('--cases') + $Cases }
+    if ($RetrievalOnly) { $arguments += @('--retrieval-only', '--multilingual', '--multilingual-current-only', '--skip-timing-on-retrieval-failure') }
+    if ($RetrievalBaseline) { $arguments += @('--retrieval-baseline', $RetrievalBaseline) }
+    if ($ReviewBank) { $arguments += '--review-bank' }
+    if ($QualityScreen) { $arguments += '--quality-only' }
+    if ($Runtime -eq 'openvino') {
+        if ($mode -ne 'cpu' -or -not $RuntimePython -or -not $RuntimeModel) { throw 'OpenVINO requires CPU, RuntimePython and RuntimeModel.' }
+        $arguments += @('--runtime', 'openvino', '--runtime-python', $RuntimePython, '--runtime-model', $RuntimeModel)
+    }
     $commands += ,$arguments
 }
 if (-not $Execute) {
@@ -88,10 +120,11 @@ try {
         if ($LASTEXITCODE -ne 0) { throw 'Measurement interrupted or failed. Partial results are preserved.' }
     }
     $results = @($placements | ForEach-Object { Join-Path $outputRoot "$_\results.json" })
-    $reportModule = if ($InterpretationReuse) { 'evaluation.interpretation_reuse_report' } else { 'evaluation.latency_target_report' }
-    & $PythonExe -m $reportModule @results --output (Join-Path $outputRoot 'comparison.rst')
+    $reportModule = if ($IntermediatePlanning -or $FixtureSplit -ne 'legacy') { 'evaluation.first_response_report' } elseif ($InterpretationReuse) { 'evaluation.interpretation_reuse_report' } else { 'evaluation.latency_target_report' }
+    $reportFile = if ($reportModule -eq 'evaluation.first_response_report') { 'comparison.json' } else { 'comparison.rst' }
+    & $PythonExe -m $reportModule @results --output (Join-Path $outputRoot $reportFile)
     if ($LASTEXITCODE -ne 0) { throw 'Report generation failed; raw results remain available.' }
-    Write-Host "Result: $(Join-Path $outputRoot 'comparison.rst')"
+    Write-Host "Result: $(Join-Path $outputRoot $reportFile)"
 } finally {
     if ($null -eq $originalRepack) {
         [Environment]::SetEnvironmentVariable('LLAMA_ARG_REPACK', [NullString]::Value, 'Process')

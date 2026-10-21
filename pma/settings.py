@@ -43,6 +43,8 @@ class AppSettings:
     compact_model_ids: bool = field(default=False, kw_only=True)
     source_fact_drafts: bool = field(default=False, kw_only=True)
     interpretation_reuse: bool = field(default=False, kw_only=True)
+    intermediate_planning: bool = field(default=False, kw_only=True)
+    bounded_expansions: bool = field(default=False, kw_only=True)
 
     @property
     def origin(self):
@@ -97,6 +99,8 @@ class AppSettings:
             request_token_cache=os.getenv("PMA_REQUEST_TOKEN_CACHE", "0") == "1",
             request_reuse=os.getenv("PMA_REQUEST_REUSE", "0") == "1",
             interpretation_reuse=os.getenv("PMA_INTERPRETATION_REUSE", "0") == "1",
+            intermediate_planning=os.getenv("PMA_INTERMEDIATE_PLANNING", "0") == "1",
+            bounded_expansions=os.getenv("PMA_BOUNDED_EXPANSIONS", "0") == "1",
             source_stop_drafts=os.getenv("PMA_SOURCE_STOP_DRAFTS", "1") == "1",
             selection_batch_size=int(os.getenv("PMA_SELECTION_BATCH_SIZE", "4")),
             chat_presentation=os.getenv("PMA_CHAT_PRESENTATION", "reviewed"),

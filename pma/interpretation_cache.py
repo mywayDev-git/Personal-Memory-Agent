@@ -41,8 +41,8 @@ def cache_info():
 
 
 def reuse_interpretation(kind):
-    """Only decorate validated question understanding or context resolution methods."""
-    if kind not in {"question", "context"}:
+    """Only validated interpretations/proposals; never answers or reviews."""
+    if kind not in {"question", "context", "proposal"}:
         raise ValueError("INVALID_INTERPRETATION_KIND")
 
     def decorate(function):
@@ -62,15 +62,21 @@ def reuse_interpretation(kind):
             bound = signature.bind(self, *args, **kwargs)
             bound.apply_defaults()
             inputs = dict(bound.arguments)
-            inputs.pop("self")
-            if kind == "context":
+            inputs.pop(next(iter(signature.parameters)))
+            if kind in {"context", "proposal"}:
                 session = inputs["session"]
                 # These are all session fields read by resolve; never use a
                 # conversation ID alone as a substitute for its actual contents.
                 inputs["session"] = {"history": context_history(session["messages"]),
                                      "evidence": session["evidence"]}
                 inputs["scope"] = [session.get("owner"), session.get("owner_id")]
-                policy = [self.models.__class__.__module__, self.models.__class__.__qualname__,
+                if kind == "proposal":
+                    from .chat.engine import RESOLVE_PROMPT, RESOLVE_SCHEMA
+                    from .chat.automatic import NEXT_PROMPT
+                    policy = [RESOLVE_PROMPT, RESOLVE_SCHEMA, NEXT_PROMPT,
+                              repr(getattr(self.models, "settings", None))]
+                else:
+                    policy = [self.models.__class__.__module__, self.models.__class__.__qualname__,
                           repr(getattr(self.models, "settings", None)),
                           function.__globals__["RESOLVE_PROMPT"], function.__globals__["RESOLVE_SCHEMA"],
                           function.__globals__["AMBIGUITY_PROMPT"], function.__globals__["AMBIGUITY_SCHEMA"]]
@@ -103,6 +109,8 @@ def reuse_interpretation(kind):
             # Ambiguity needs its normal clarification path, never a cached
             # approval. Failures, cancellations and invalid results are not saved.
             if kind == "context" and result[0].get("needs_clarification"):
+                return result
+            if kind == "proposal" and (result is None or result["context"].get("needs_clarification")):
                 return result
             encoded = json.dumps(result, ensure_ascii=False, separators=(",", ":")).encode()
             if len(encoded) > MAX_BYTES // 4:

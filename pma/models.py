@@ -57,6 +57,8 @@ QUERY_SCHEMA = {
 # constrained decoder must explicitly consider this field rather than omit it.
 UNDERSTANDING_SCHEMA = deepcopy(QUERY_SCHEMA)
 UNDERSTANDING_SCHEMA["required"] = [*QUERY_SCHEMA["required"], "expansions"]
+NO_EXPANSION_SCHEMA = deepcopy(UNDERSTANDING_SCHEMA)
+NO_EXPANSION_SCHEMA["properties"]["expansions"]["maxItems"] = 0
 UNEXPANDED_SCHEMA = deepcopy(QUERY_SCHEMA)
 del UNEXPANDED_SCHEMA["properties"]["expansions"]
 ANSWER_SCHEMA = {
@@ -222,13 +224,13 @@ class LocalModels:
                    if getattr(self.settings, "prompt_cache", None) is not None else {}),
             )
         result = extract_json(raw)
-        query_schema = any(schema is candidate for candidate in (QUERY_SCHEMA, UNDERSTANDING_SCHEMA, UNEXPANDED_SCHEMA))
+        query_schema = any(schema is candidate for candidate in (QUERY_SCHEMA, UNDERSTANDING_SCHEMA, UNEXPANDED_SCHEMA, NO_EXPANSION_SCHEMA))
         # An optional misspelled/malformed edit must not discard valid date/role analysis.
         if query_schema and isinstance(result, dict) and "corrections" in result:
             if schema_errors(result["corrections"], EDIT_SCHEMA):
                 result = {**result, "corrections": []}
         invalid_expansions = False
-        if schema is UNDERSTANDING_SCHEMA and isinstance(result, dict) and "expansions" not in result:
+        if any(schema is s for s in (UNDERSTANDING_SCHEMA, NO_EXPANSION_SCHEMA)) and isinstance(result, dict) and "expansions" not in result:
             result = {**result, "expansions": []}
             invalid_expansions = True
         if query_schema and isinstance(result, dict) and "expansions" in result:
@@ -247,6 +249,8 @@ class LocalModels:
     @measured("question_understanding")
     @reuse_interpretation("question")
     def understand(self, question, today, *, expand=True):
+        from .search_expressions import expansion_possible
+        bounded = expand and getattr(self.settings, "bounded_expansions", False) and not expansion_possible(question)
         expansion_prompt = (
             "검색용 expansions를 최대 4개 제안하라. 각 항목은 start,end,before,after,kind다. "
             "start/end는 질문 원문 문자 구간이며 before는 원문 그대로다. "
@@ -261,7 +265,8 @@ class LocalModels:
             "확장으로 질문의 사실·조건을 추가하거나 변경하지 마라. "
         )
         return self.structured(
-            (expansion_prompt if expand else "") +
+            (("이 질문에는 검증 사전에 대응하는 확장 대상이 없으므로 expansions는 빈 배열이다. "
+              if bounded else expansion_prompt) if expand else "") +
             "오타가 명확한 일반 명사만 corrections에 최대 두 곳 제안하라. 없으면 빈 배열이다. "
             "start/end는 원문 유니코드 문자 기준 0부터 시작하는 반개방 구간이며 before는 정확한 원문이다. "
             "after는 교정 표현, kind는 spelling 또는 spacing이다. 이름, 장소, 날짜, 숫자, 부정, 동사, 조사, 상태는 변경하지 마라. "
@@ -277,7 +282,7 @@ class LocalModels:
             "누가/누구에게/언제처럼 알아내려는 값은 역할 조건에 넣지 말고 requested_slots에 넣는다. "
             "예: '민수가 누구에게 줬어?'는 actor 민수, recipient null, requested_slots [recipient]다.",
             {"question": question, "today": today},
-            UNDERSTANDING_SCHEMA if expand else UNEXPANDED_SCHEMA,
+            NO_EXPANSION_SCHEMA if bounded else UNDERSTANDING_SCHEMA if expand else UNEXPANDED_SCHEMA,
         )
 
     @observed_model(Stage.MODEL_ANSWER)

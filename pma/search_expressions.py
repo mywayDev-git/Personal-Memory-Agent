@@ -131,6 +131,18 @@ def lexical_key(text):
     return re.sub(r"\s+", " ", fold(text)).strip()
 
 
+def expansion_possible(question):
+    """Necessary (not sufficient) condition for a reviewed correspondence.
+
+    A valid `before` must be an exact question span, and changed_parts must
+    contain a registered noun. Substring matching intentionally overestimates
+    eligibility, including inside protected identifiers; validation stays put.
+    """
+    normalized = lexical_key(question)
+    return any(lexical_key(noun) in normalized
+               for group in (*GROUPS.values(), *TRANSLATIONS) for noun in group)
+
+
 def changed_parts(before, after):
     a, b = lexical_key(before).split(), lexical_key(after).split()
     while a and b and a[0] == b[0]:

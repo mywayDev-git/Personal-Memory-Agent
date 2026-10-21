@@ -177,6 +177,10 @@ def servers(args, generation, embedding):
                 command += ["-t", str(args.threads)]
             if index == 0 and getattr(args, "generation_batch_threads", 0):
                 command += ["-tb", str(args.generation_batch_threads)]
+            if index == 0 and getattr(args, "runtime", "llama") == "openvino":
+                command = [str(args.runtime_python), "-u", "-m", "evaluation.openvino_server",
+                           "--model", str(args.runtime_model.resolve()), "--port", str(args.port),
+                           "--threads", str(args.threads or 8)]
             commands.append(command)
             process = subprocess.Popen(command, stdout=log, stderr=log,
                                        creationflags=0x08000000 if os.name == "nt" else 0)
@@ -194,7 +198,11 @@ def servers(args, generation, embedding):
         for process in reversed(processes):
             if process.poll() is None:
                 process.terminate()
-                process.wait(timeout=30)
+                try:
+                    process.wait(timeout=30)
+                except subprocess.TimeoutExpired:
+                    process.kill()
+                    process.wait(timeout=30)
         for log in logs:
             log.close()
 
@@ -287,6 +295,9 @@ def main():
     parser.add_argument("--server", type=Path, default=Path("C:/llama.cpp/llama-server.exe"))
     parser.add_argument("--model-directory", type=Path, default=Path(".local/response-latency/models"))
     parser.add_argument("--generation", choices=["baseline", "q4", "q8"], default="baseline")
+    parser.add_argument("--runtime", choices=["llama", "openvino"], default="llama")
+    parser.add_argument("--runtime-python", type=Path)
+    parser.add_argument("--runtime-model", type=Path)
     parser.add_argument("--embedding", choices=["bge", "qwen"], default="bge")
     parser.add_argument("--placement", choices=["cpu", "gpu", "hybrid"], default="cpu")
     parser.add_argument("--flash", choices=["auto", "on", "off"], default="auto")
@@ -305,6 +316,10 @@ def main():
     parser.add_argument("--cancel-file", type=Path, help="Stop between requests when this file exists")
     parser.add_argument("--cases", nargs="+", choices=list(CASES), default=list(CASES))
     parser.add_argument("--multilingual", action="store_true")
+    parser.add_argument("--review-bank", action="store_true")
+    parser.add_argument("--quality-only", action="store_true", help="One quality observation without latency warmup; never sufficient for speed adoption")
+    parser.add_argument("--retrieval-only", action="store_true")
+    parser.add_argument("--skip-timing-on-retrieval-failure", action="store_true")
     parser.add_argument("--multilingual-current-only", action="store_true")
     parser.add_argument("--seed-template", type=Path, help="Reuse this evaluator's synthetic seed; only embeddings may be rebuilt")
     parser.add_argument("--fixed-anchor", action="store_true", help="Prepare and verify one shared anchor DB per case so variants receive identical history")
@@ -315,7 +330,11 @@ def main():
             or args.threads < 0 or args.generation_batch_threads < 0):
         parser.error("positive samples, unused output directory and valid port required")
     preparation_started = time.perf_counter()
+    if args.runtime == "openvino" and (args.placement != "cpu" or not args.runtime_python or not args.runtime_model):
+        parser.error("OpenVINO trials require cpu placement, --runtime-python and --runtime-model")
     generation = Path("C:/models/Qwen3-8B-Q4_K_M.gguf") if args.generation == "baseline" else args.model_directory / MODELS[f"generation-{args.generation}"]["filename"]
+    if args.runtime == "openvino":
+        generation = args.runtime_model / "openvino_model.bin"
     embedding = Path("C:/models/bge-m3-Q8_0.gguf") if args.embedding == "bge" else args.model_directory / MODELS["embedding-q8"]["filename"]
     hashes = {"generation": digest(generation), "embedding": digest(embedding), "server": digest(args.server)}
     native_extensions = {str(path): digest(path) for path in Path("pma").glob("*.pyd")}
@@ -330,6 +349,9 @@ def main():
               "gpu_absent_environment_verified": False,
               "measurement_scope": "response_return_before_quality_artifacts",
               "quality_scoring_version": SCORING_VERSION,
+              "synthetic_fixture_sha256": hashlib.sha256(json.dumps(
+                  {"documents": DOCUMENTS, "cases": CASES}, sort_keys=True,
+                  ensure_ascii=False).encode()).hexdigest(),
               "repository_reference_revision": repository_reference(),
               "artifact_verification_seconds": artifact_verification_seconds,
               "hashes": hashes, "seed_policy": "hand-authored synthetic memories, real document embeddings",
@@ -340,9 +362,17 @@ def main():
                   for root in ("pma", "scripts/memory_agent") for p in Path(root).rglob("*.py")}}
     report["evaluator_sources"] = {p: digest(Path(p)) for p in (
         "evaluation/response_latency.py", "evaluation/multilingual_search.py", "evaluation/response_latency_report.py",
-        "evaluation/latency_variants.py", "evaluation/latency_recheck.py", "evaluation/performance_benchmark.py")}
+        "evaluation/latency_variants.py", "evaluation/latency_recheck.py", "evaluation/performance_benchmark.py",
+        "evaluation/first_response.py", "evaluation/first_response_cases.py", "evaluation/review_bank.py")}
     if args.seed_template:
         report["seed_template_sha256"] = digest(args.seed_template)
+    if args.runtime == "openvino":
+        report["runtime_artifacts"] = {str(p): digest(p) for p in args.runtime_model.iterdir() if p.is_file() and p != generation}
+        report["runtime_gateway_sha256"] = digest(Path("evaluation/openvino_server.py"))
+    if args.retrieval_only:
+        args.multilingual = True
+        args.cases = []
+        report["configuration"]["cases"] = []
 
     def save():
         report["summary"] = {f"{variant}/{case}": summary([
@@ -366,10 +396,15 @@ def main():
             keys = seed_database(seed, LocalModels(settings), settings, template=args.seed_template)
             report["index_seconds"] = time.perf_counter() - started
             report["initial_preparation_seconds"] = time.perf_counter() - preparation_started
+            if args.review_bank:
+                from evaluation.review_bank import evaluate as evaluate_review
+                from pma.chat.models import ChatLocalModels
+                report["review_bank"] = evaluate_review(ChatLocalModels(settings))
+                save()
             if args.multilingual:
                 from evaluation.multilingual_search import evaluate
 
-                multilingual = evaluate(settings, args.output / "multilingual.json", current_only=args.multilingual_current_only)
+                multilingual = evaluate(configured(settings, args.candidate_options), args.output / "multilingual.json", current_only=args.multilingual_current_only)
                 if args.retrieval_baseline:
                     from evaluation.response_latency_report import retrieval_gate
 
@@ -378,7 +413,7 @@ def main():
                     if not report["retrieval_gate"]["passed"]:
                         report["screen_rejected"] = True
                         report["configuration"]["original_cases"] = args.cases
-                        args.cases = ["simple_search", "simple_answer"]
+                        args.cases = [] if args.skip_timing_on_retrieval_failure else ["simple_search", "simple_answer"]
                         report["configuration"]["cases"] = args.cases
                         print(json.dumps({"retrieval_gate": report["retrieval_gate"],
                                           "remaining_timing_cases": args.cases}), flush=True)
@@ -405,7 +440,7 @@ def main():
                         "preparation_seconds": time.perf_counter() - anchor_started,
                         "shared_between_variants": True,
                     }
-                for sample in range(args.samples + 1):
+                for sample in range(1 if args.quality_only else 0, args.samples + 1):
                     order = args.variants if sample % 2 == 0 else list(reversed(args.variants))
                     for variant in order:
                         check_cancelled(args)

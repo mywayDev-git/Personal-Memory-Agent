@@ -161,7 +161,11 @@ class ChatEngine:
                     422,
                 )
             history.pop(0)
-        result = models.structured(RESOLVE_PROMPT, data, RESOLVE_SCHEMA)
+        from .intermediate import reuse
+        result = reuse(question, session, today, "context") if getattr(
+            self.service.settings, "intermediate_planning", False) else None
+        if result is None:
+            result = models.structured(RESOLVE_PROMPT, data, RESOLVE_SCHEMA)
         if schema_errors(result, RESOLVE_SCHEMA):
             raise ValueError("INVALID_CHAT_CONTEXT")
         from .identity import canonical_label, labels, positive_labels
@@ -318,7 +322,11 @@ class ChatEngine:
         from .interpretation import dated_progress_draft
         progress_draft = dated_progress_draft(intent_question, evidence)
         if hasattr(models, "select") and not study_topic(intent_question):
-            selected = models.select(question, evidence)
+            from .intermediate import reuse
+            selected = reuse(question, {**session, "evidence": evidence}, today, "selection") if getattr(
+                getattr(self.service, "settings", None), "intermediate_planning", False) else None
+            if selected is None:
+                selected = models.select(question, evidence)
             if not isinstance(selected, list) or not set(selected) <= {r["id"] for r in evidence}:
                 raise ValueError("INVALID_SELECTION")
             if not selected:

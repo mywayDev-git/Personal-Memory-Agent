@@ -1,0 +1,40 @@
+{
+  "sha256": "4e62b7e23d1cb7ecc6124bfda2f2129f998182745aa4977f370a489ddd7ec62f",
+  "development": [
+    "dev_fact",
+    "dev_date",
+    "dev_negative",
+    "dev_plan",
+    "dev_identity",
+    "dev_pronoun",
+    "dev_compound",
+    "dev_conflict",
+    "dev_absent",
+    "dev_injection",
+    "dev_cause",
+    "dev_missing_cause",
+    "dev_role",
+    "dev_unknown_date",
+    "dev_scope",
+    "dev_long"
+  ],
+  "holdout": [
+    "final_fact",
+    "final_date",
+    "final_negative",
+    "final_plan",
+    "final_identity",
+    "final_pronoun",
+    "final_compound",
+    "final_conflict",
+    "final_absent",
+    "final_injection",
+    "final_cause",
+    "final_missing_cause",
+    "final_role",
+    "final_unknown_date",
+    "final_scope",
+    "final_long"
+  ],
+  "gold_origin": "hand_authored_synthetic_sources"
+}

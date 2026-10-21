@@ -377,6 +377,7 @@ def run(engine, question, session, today, requested_mode="auto"):
     query = pending_parts.pop(0) if pending_parts else route["query"].strip() or question
     searches, rows, seen_queries, batches = [], {}, set(), []
     unsupported = False
+    intermediate = None
     for _ in range(3):
         if not query or query in seen_queries:
             break
@@ -411,11 +412,18 @@ def run(engine, question, session, today, requested_mode="auto"):
         for row in found["results"]:
             rows[row["id"]] = row
         batches.append(found["results"])
+        intermediate = None  # An additional retrieval invalidates the earlier proposal.
         if found.get("query_correction", {}).get("status") == "rejected":
             break  # Do not let a follow-up rewrite bypass a rejected edit.
         if unsupported or len(searches) == 3:
             break
-        query = structured(
+        from .intermediate import propose
+        intermediate = propose(engine, question,
+                               {**session, "evidence": engine.store.freeze(combine(batches))},
+                               today, [{k: v for k, v in search.items() if k != "audit"}
+                                       for search in searches]) if getattr(
+                                           engine.service.settings, "intermediate_planning", False) else None
+        query = intermediate["query"] if intermediate is not None else structured(
             engine,
             NEXT_PROMPT,
             {**data, "searches": [{k: v for k, v in search.items() if k != "audit"} for search in searches], "evidence": combine(batches)},
@@ -487,7 +495,8 @@ def run(engine, question, session, today, requested_mode="auto"):
         # Retrieval expansion must not become the question used to judge the answer.
         # The context resolver handles pronouns using the original conversation.
         response = grounded(
-            engine, question, {**session, "evidence": evidence, "memory_interpretation": interpretation,
+            engine, question, {**session, "evidence": evidence, "_intermediate": intermediate,
+                               "memory_interpretation": interpretation,
                                "response_plan": {**response_plan, "suggestions_optional": False,
                                                  "personal_facts_only": True}}, today, original_question=question
         )
