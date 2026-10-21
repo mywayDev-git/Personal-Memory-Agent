@@ -1,0 +1,24 @@
+{
+  "sha256": "4413d478ac313f2b9bbfdd3d39b80fbf040184cc6d4099f2972f36209a541f0e",
+  "cases": [
+    "search2_scope_friend",
+    "search2_scope_friend_possessive",
+    "search2_scope_person",
+    "search2_scope_polite",
+    "search2_scope_female",
+    "search2_scope_switch",
+    "search2_scope_explicit",
+    "search2_scope_ambiguous",
+    "search2_control_fact",
+    "search2_control_date",
+    "search2_control_negation",
+    "search2_control_plan",
+    "search2_control_cause",
+    "search2_control_absent",
+    "search2_control_compound",
+    "search2_control_other_role"
+  ],
+  "version": 2,
+  "gold_origin": "hand_authored_synthetic_sources",
+  "purpose": "independent scoped-search confirmation frozen before call-structure change"
+}
