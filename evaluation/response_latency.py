@@ -175,6 +175,8 @@ def servers(args, generation, embedding):
                 command += ["--slots", "--slot-save-path", str(slot_path.resolve()), "--cache-ram", "0"]
             if args.threads:
                 command += ["-t", str(args.threads)]
+            if index == 0 and getattr(args, "generation_batch_threads", 0):
+                command += ["-tb", str(args.generation_batch_threads)]
             commands.append(command)
             process = subprocess.Popen(command, stdout=log, stderr=log,
                                        creationflags=0x08000000 if os.name == "nt" else 0)
@@ -284,6 +286,7 @@ def main():
     parser.add_argument("--placement", choices=["cpu", "gpu", "hybrid"], default="cpu")
     parser.add_argument("--flash", choices=["auto", "on", "off"], default="auto")
     parser.add_argument("--threads", type=int, default=0)
+    parser.add_argument("--generation-batch-threads", type=int, default=0)
     parser.add_argument("--embedding-batch", type=int, choices=[512, 2048, 4096, 8192], default=8192)
     parser.add_argument("--samples", type=int, default=5)
     parser.add_argument("--port", type=int, default=18181)
@@ -299,7 +302,8 @@ def main():
     parser.add_argument("--retrieval-baseline", type=Path,
                         help="Quality-screen against a fresh 90-case report; rejected models only run the two basic timing cases")
     args = parser.parse_args()
-    if args.samples < 1 or args.output.exists() or not 1024 <= args.port < 65535:
+    if (args.samples < 1 or args.output.exists() or not 1024 <= args.port < 65535
+            or args.threads < 0 or args.generation_batch_threads < 0):
         parser.error("positive samples, unused output directory and valid port required")
     preparation_started = time.perf_counter()
     generation = Path("C:/models/Qwen3-8B-Q4_K_M.gguf") if args.generation == "baseline" else args.model_directory / MODELS[f"generation-{args.generation}"]["filename"]

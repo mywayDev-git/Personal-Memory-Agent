@@ -6,6 +6,8 @@ param(
     [ValidateSet('auto', 'cpu', 'gpu')][string]$EmbeddingAcceleration = 'auto',
     [ValidateRange(0, 1024)][int]$GenerationThreads = 0,
     [ValidateRange(0, 1024)][int]$EmbeddingThreads = 0,
+    [ValidateRange(0, 1024)][int]$GenerationBatchThreads = 0,
+    [ValidateRange(0, 1024)][int]$EmbeddingBatchThreads = 0,
     [ValidateSet('raw-v1', 'qwen3-retrieval-v1')][string]$EmbeddingProfile = 'raw-v1',
     [ValidateSet('auto', 'on', 'off')][string]$FlashAttention = 'auto',
     [switch]$NoBrowser,
@@ -47,7 +49,7 @@ function Wait-Model([int]$Port, $Process) {
     throw "Model server on port $Port did not become ready."
 }
 function Start-ModelServers {
-    param($Server, $GenerationModel, $EmbeddingModel, $Acceleration, $GenerationThreads, $EmbeddingThreads, $EmbeddingAcceleration = 'auto', $EmbeddingProfile = 'raw-v1', $FlashAttention = 'auto')
+    param($Server, $GenerationModel, $EmbeddingModel, $Acceleration, $GenerationThreads, $EmbeddingThreads, $EmbeddingAcceleration = 'auto', $EmbeddingProfile = 'raw-v1', $FlashAttention = 'auto', $GenerationBatchThreads = 0, $EmbeddingBatchThreads = 0)
     $modes = @($Acceleration)
     if ($Acceleration -ne 'cpu') {
         # Query the installed backend, rather than assuming NVIDIA is required.
@@ -79,6 +81,8 @@ function Start-ModelServers {
             if ($mode -eq 'cpu' -or $EmbeddingAcceleration -eq 'cpu') {
                 $embeddingArgs += @('--device', 'none', '--no-op-offload', '--no-kv-offload')
             }
+            if ($GenerationBatchThreads -gt 0) { $generationArgs += @('-tb', "$GenerationBatchThreads") }
+            if ($EmbeddingBatchThreads -gt 0) { $embeddingArgs += @('-tb', "$EmbeddingBatchThreads") }
             if ($GenerationThreads -gt 0) { $generationArgs += @('-t', "$GenerationThreads") }
             if ($EmbeddingThreads -gt 0) { $embeddingArgs += @('-t', "$EmbeddingThreads") }
             Write-Host "[PMA] Launching models ($mode)..."
@@ -132,7 +136,7 @@ try {
             catch [System.Net.Sockets.SocketException] { }
             finally { $client.Dispose() }
         }
-        $ownedProcesses += @(Start-ModelServers -Server $Server -GenerationModel $GenerationModel -EmbeddingModel $EmbeddingModel -Acceleration $Acceleration -GenerationThreads $GenerationThreads -EmbeddingThreads $EmbeddingThreads -EmbeddingAcceleration $EmbeddingAcceleration -EmbeddingProfile $EmbeddingProfile -FlashAttention $FlashAttention)
+        $ownedProcesses += @(Start-ModelServers -Server $Server -GenerationModel $GenerationModel -EmbeddingModel $EmbeddingModel -Acceleration $Acceleration -GenerationThreads $GenerationThreads -EmbeddingThreads $EmbeddingThreads -EmbeddingAcceleration $EmbeddingAcceleration -EmbeddingProfile $EmbeddingProfile -FlashAttention $FlashAttention -GenerationBatchThreads $GenerationBatchThreads -EmbeddingBatchThreads $EmbeddingBatchThreads)
     }
     Write-Host '[PMA] Starting web app. Keep this terminal open; press Ctrl+C to stop.'
     $appArguments = @('-u', '-B', '-m', 'pma')

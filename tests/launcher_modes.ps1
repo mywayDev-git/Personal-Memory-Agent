@@ -57,6 +57,12 @@ Assert ((Layers $script:launched[0]) -eq '0' -and (Layers $script:launched[1]) -
 Assert-CpuOnly $script:launched[0]
 Assert-CpuOnly $script:launched[1]
 Assert ($script:launched[0].Args[-1] -eq '4' -and $script:launched[1].Args[-1] -eq '2') 'per-server thread options lost'
+Assert (-not ($script:launched[0].Args -contains '-tb')) 'unset batch threads must preserve the server default'
+
+Reset-Mocks
+$models = @(Start-ModelServers Test-Devices gen emb cpu 8 4 auto raw-v1 auto 16 8)
+Assert ($script:launched[0].Args[[Array]::IndexOf($script:launched[0].Args, '-tb') + 1] -eq '16') 'generation batch thread option lost'
+Assert ($script:launched[1].Args[[Array]::IndexOf($script:launched[1].Args, '-tb') + 1] -eq '8') 'embedding batch thread option lost'
 
 Reset-Mocks
 $script:failEmbeddingGpu = $true
