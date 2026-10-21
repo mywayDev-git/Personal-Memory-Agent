@@ -338,7 +338,7 @@ def main():
     parser.add_argument("--review-only", action="store_true")
     parser.add_argument("--quality-only", action="store_true", help="One quality observation without latency warmup; never sufficient for speed adoption")
     parser.add_argument("--fixture-manifest-sha256")
-    parser.add_argument("--fixture-split", choices=["development", "holdout", "identity_confirmation", "identity_search_confirmation", "identity_completion_confirmation"])
+    parser.add_argument("--fixture-split", choices=["development", "holdout", "identity_confirmation", "identity_search_confirmation", "identity_completion_confirmation", "integrity_development", "integrity_confirmation"])
     parser.add_argument("--retrieval-only", action="store_true")
     parser.add_argument("--skip-timing-on-retrieval-failure", action="store_true")
     parser.add_argument("--multilingual-current-only", action="store_true")
