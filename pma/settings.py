@@ -46,6 +46,7 @@ class AppSettings:
     intermediate_planning: bool = field(default=False, kw_only=True)
     bounded_expansions: bool = field(default=False, kw_only=True)
     scoped_identity_search: bool = field(default=False, kw_only=True)
+    verified_source_search: bool = field(default=False, kw_only=True)
     source_date_drafts: bool = field(default=False, kw_only=True)
     # Research profiles only; environment startup and defaults stay unchanged.
     compact_model_json: bool = field(default=False, kw_only=True)

@@ -100,3 +100,20 @@ def test_selection_reuse_comparison_keeps_both_review_formats_identical():
     assert set(baseline)-set(candidate)==set()
     assert {'compact_json','compact_review'}<=set(baseline)
     assert 'Plan only. Add -Execute' in result.stdout
+
+
+
+def test_source_completion_comparison_shares_scoped_identity_and_formats():
+    import json
+    executable=shutil.which('pwsh')
+    if executable is None:pytest.skip('PowerShell 7 unavailable')
+    result=subprocess.run([executable,'-NoProfile','-File','scripts/run_latency_goal.ps1',
+        '-PlanningBaseline','-CompactJson','-CompactReview','-SharedCompactFormats','-SharedScopedIdentity','-VerifiedSourceSearch'],
+        capture_output=True,text=True,encoding='utf-8',timeout=20,check=True)
+    command=json.loads(next(line for line in result.stdout.splitlines() if line.startswith('[')))
+    baseline=command[command.index('--baseline-options')+1:command.index('--cases')]
+    candidate=command[command.index('--candidate-options')+1:command.index('--fixed-anchor')]
+    assert set(candidate)-set(baseline)=={'source_completion'}
+    assert set(baseline)-set(candidate)==set()
+    assert 'scoped_identity' in baseline
+    assert 'Plan only. Add -Execute' in result.stdout

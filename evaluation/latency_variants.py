@@ -6,6 +6,7 @@ OPTIONS = {
     "intermediate": {"intermediate_planning": True},
     "bounded_expansions": {"bounded_expansions": True},
     "scoped_identity": {"scoped_identity_search": True},
+    "source_completion": {"verified_source_search": True},
     "source_dates": {"source_date_drafts": True},
     "interpretation_cache": {"interpretation_reuse": True},
     "source_facts": {"source_fact_drafts": True},
@@ -36,7 +37,7 @@ def configured(settings, options=()):
                    chat_presentation="reviewed", compact_search_planning=False,
                    fair_model_scheduling=False, compact_model_ids=False, source_fact_drafts=False,
                    interpretation_reuse=False, intermediate_planning=False, bounded_expansions=False,
-                   source_date_drafts=False, scoped_identity_search=False,
+                   source_date_drafts=False, scoped_identity_search=False, verified_source_search=False,
                    compact_model_json=False, compact_review_output=False)
     for option in options:
         changes.update(OPTIONS[option])
@@ -49,4 +50,4 @@ def parameters(settings):
         "prompt_cache", "source_stop_drafts", "selection_batch_size", "chat_presentation",
         "compact_search_planning", "fair_model_scheduling", "compact_model_ids", "source_fact_drafts",
         "interpretation_reuse", "intermediate_planning", "bounded_expansions", "source_date_drafts", "scoped_identity_search",
-        "compact_model_json", "compact_review_output")}
+        "compact_model_json", "compact_review_output", "verified_source_search")}

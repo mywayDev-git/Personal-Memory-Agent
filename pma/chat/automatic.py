@@ -295,6 +295,39 @@ def probe_identity_completion(engine, question, session, today, batches, interme
     return None
 
 
+def probe_source_completion(engine, question, session, today, batches):
+    """A literal proposal still needs this request's fresh independent review."""
+    from scripts.memory_agent.diagnostics import ProcessingError
+    from .source_completion import draft
+    from .intermediate import scope
+    evidence = engine.store.freeze(combine(batches, question=question))
+    proposal = draft(question, evidence, engine.service.settings)
+    if proposal is None:
+        return None
+    exact_scope = scope(question, {**session, 'evidence':evidence}, today)
+    count('source_completion_probes')
+    try:
+        response = grounded(engine, question, {**session,'evidence':evidence}, today,
+                            original_question=question, _source_probe=proposal)
+    except ProcessingError as exc:
+        if exc.code != 'MODEL_TRUNCATED':
+            raise
+        count('source_probe_truncated')
+        return None
+    except ValueError:
+        count('source_probe_invalid')
+        return None
+    except AppError as exc:
+        if exc.code != 'CONTEXT_LIMIT':
+            raise
+        count('source_probe_oversize')
+        return None
+    if (response.get('status') == 'answered' and response.get('validation') == 'model_checked'):
+        return exact_scope, response
+    count('source_probe_rejections')
+    return None
+
+
 def run(engine, question, session, today, requested_mode="auto"):
     from .identity import scoped_followup
     from .policy import memory_disabled, private_context
@@ -456,6 +489,13 @@ def run(engine, question, session, today, requested_mode="auto"):
         # only for context/selection when another lookup changes no inputs.
         if found.get("query_correction", {}).get("status") == "rejected":
             break  # Do not let a follow-up rewrite bypass a rejected edit.
+        if (len(searches) == 1 and not pending_parts and not data['history']
+                and not parts and question == original_reference and not unsupported
+                and getattr(engine.service.settings, 'verified_source_search', False)):
+            verified_completion = probe_source_completion(engine, question, session, today, batches)
+            if verified_completion is not None:
+                count('source_planning_calls_saved')
+                break
         if unsupported or len(searches) == 3:
             break
         if pending_parts and getattr(engine.service.settings, "intermediate_planning", False):

@@ -72,7 +72,7 @@ RESOLVE_PROMPT = (
     "근거 부족은 모호함이 아니다. 이유가 없는 경우 왜 질문을 그대로 유지한다. "
     "today는 현재 질문의 상대 날짜 기준이고 기록 저장일은 사건 날짜가 아니다."
 )
-CHAT_PROMPT_VERSION = 22
+CHAT_PROMPT_VERSION = 23
 
 AMBIGUITY_SCHEMA = {
     "type": "object",
@@ -246,7 +246,7 @@ class ChatEngine:
         )
         return result, len(history)
 
-    def generate(self, question, session, today, *, original_question=None, _direct_probe=False):
+    def generate(self, question, session, today, *, original_question=None, _direct_probe=False, _source_probe=None):
         from .identity import scoped_followup
         question = scoped_followup(question, session)
         if original_question is not None:
@@ -265,9 +265,18 @@ class ChatEngine:
             return response
 
         intent_question = original_question or question
-        resolved, history_count = self.resolve(
-            question, session, today, original_question=intent_question
-        )
+        if _source_probe is not None:
+            from .source_completion import draft as source_completion_draft
+            history_count = len(context_history(session['messages']))
+            if (not self.service.settings.verified_source_search or history_count or question != intent_question or
+                    source_completion_draft(intent_question, session['evidence'], self.service.settings) != _source_probe):
+                return finish({'status':'insufficient_evidence','items':[], 'validation':'probe_unavailable',
+                               'history_turns':history_count}, 'source_probe_unavailable')
+            resolved = {'question':question,'needs_clarification':False}
+        else:
+            resolved, history_count = self.resolve(
+                question, session, today, original_question=intent_question
+            )
         if resolved["needs_clarification"]:
             # Expose only the exact source labels already checked by resolve.
             # Their citation buttons explain the options without inventing facts.
@@ -326,7 +335,7 @@ class ChatEngine:
         purchase_draft = instruction_purchase_draft(intent_question, integrity_evidence)
         from .interpretation import dated_progress_draft
         progress_draft = dated_progress_draft(intent_question, evidence)
-        if hasattr(models, "select") and not study_topic(intent_question):
+        if _source_probe is None and hasattr(models, "select") and not study_topic(intent_question):
             from .intermediate import reuse
             selected = reuse(question, {**session, "evidence": evidence}, today, "selection") if getattr(
                 getattr(self.service, "settings", None), "intermediate_planning", False) else None
@@ -372,7 +381,7 @@ class ChatEngine:
             count("source_conflict_drafts" if conflict else "source_progress_drafts" if progress_draft else "source_stop_drafts")
         from .answer_integrity import occupation_limit_draft
         limit_draft = occupation_limit_draft(intent_question, integrity_evidence)
-        response = draft or limit_draft or purchase_draft or direct_statement(question, evidence, intent_question)
+        response = _source_probe or draft or limit_draft or purchase_draft or direct_statement(question, evidence, intent_question)
         if limit_draft and not draft:
             count('source_occupation_limit_drafts')
         if _direct_probe:
@@ -442,7 +451,7 @@ class ChatEngine:
                 review=review,
                 attributes_supported=attributes,
             )
-            direct_ok = not _direct_probe or review.get('fulfillment') == 'direct'
+            direct_ok = not (_direct_probe or _source_probe is not None) or review.get('fulfillment') == 'direct'
             attempts.append(review_attempt(response, review, attributes, attributes and review_ok and direct_ok))
             attempts[-1]["generation"] = generation_index
             if attributes and review_ok and direct_ok:
@@ -455,7 +464,7 @@ class ChatEngine:
                     "validation": "model_checked",
                     "history_turns": history_count,
                 })
-            if _direct_probe:
+            if _direct_probe or _source_probe is not None:
                 # A limited/rejected quote is not evidence that discovery is
                 # complete. Let the caller retain its original search fallback.
                 return finish({'status': 'insufficient_evidence', 'items': [],

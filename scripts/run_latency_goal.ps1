@@ -17,6 +17,8 @@ param(
     [switch]$SelectionReuse,
     [switch]$TokenCache,
     [switch]$ScopedIdentitySearch,
+    [switch]$SharedScopedIdentity,
+    [switch]$VerifiedSourceSearch,
     [switch]$BatchEight,
     [switch]$QualityScreen,
     [switch]$BaselineOnly,
@@ -46,6 +48,7 @@ if (-not $PythonExe) { $PythonExe = Join-Path $root '.venv\Scripts\python.exe' }
 if ($RunName -notmatch '^[a-zA-Z0-9_-]+$') { throw 'RunName must contain letters, digits, underscores or hyphens.' }
 if ($BaselineOnly -and $CandidateOnly) { throw 'Choose either BaselineOnly or CandidateOnly.' }
 if ($SharedCompactFormats -and -not $PlanningBaseline) { throw 'SharedCompactFormats requires PlanningBaseline.' }
+if ($SharedScopedIdentity -and -not $PlanningBaseline) { throw 'SharedScopedIdentity requires PlanningBaseline.' }
 $outputRoot = Join-Path $root ('.local\latency-goal\' + $RunName)
 $placements = if ($Placement -eq 'both') { @('cpu', 'gpu') } else { @($Placement) }
 $commands = @()
@@ -57,7 +60,8 @@ foreach ($mode in $placements) {
     if ($BoundedExpansions) { $candidateOptions += 'bounded_expansions' }
     if ($SourceDateDrafts) { $candidateOptions += 'source_dates' }
     if ($ContextShortcut) { $candidateOptions += 'context_shortcut' }
-    if ($ScopedIdentitySearch) { $candidateOptions += 'scoped_identity' }
+    if ($ScopedIdentitySearch -or $SharedScopedIdentity) { $candidateOptions += 'scoped_identity' }
+    if ($VerifiedSourceSearch) { $candidateOptions += 'source_completion' }
     if ($BatchEight) { $candidateOptions += 'batch8' }
     $planningOptions = @('compact_ids','source_facts','intermediate','bounded_expansions','source_dates','context_shortcut')
     if ($PlanningBaseline) { $candidateOptions = @($planningOptions + $candidateOptions | Select-Object -Unique) }
@@ -86,6 +90,7 @@ foreach ($mode in $placements) {
     if ($PlanningBaseline) {
         $arguments += @('--baseline-options') + $planningOptions
         if ($InterpretationReuse) { $arguments += 'interpretation_cache' }
+        if ($SharedScopedIdentity) { $arguments += 'scoped_identity' }
         if ($SharedCompactFormats) {
             if ($CompactJson) { $arguments += 'compact_json' }
             if ($CompactReview) { $arguments += 'compact_review' }
