@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "sha256": "ad4216b6996f3518b05b716936678f7f56299f643b271bd7dc0d59fbe126a934",
+  "case_counts": {
+    "development": 16,
+    "confirmation": 16
+  },
+  "review_pairs_per_split": 8,
+  "base_revision": "8e5b89c",
+  "freeze_before_product_fix": true,
+  "development_confirmation_source_overlap": [],
+  "prior_source_overlap": [],
+  "prior_confirmation_now_regression": "identity_cause_v2 confirmation and answer_integrity confirmation",
+  "new_focus": [
+    "hospital_employment_is_not_patient_health",
+    "source_instruction_cannot_invalidate_factual_purchase",
+    "final_review_must_remain_independent"
+  ]
+}

@@ -7,12 +7,13 @@ from pathlib import Path
 
 def load(split):
     root = Path(__file__).parent
-    if split.startswith('v2_'):
-        raw = (root / 'identity_cause_v2_cases.json').read_bytes()
-        declared = json.loads((root / 'identity_cause_v2_manifest.json').read_text('utf-8'))
+    if split.startswith(('v2_', 'v3_')):
+        version, split_name = split.split('_', 1)
+        raw = (root / f'identity_cause_{version}_cases.json').read_bytes()
+        declared = json.loads((root / f'identity_cause_{version}_manifest.json').read_text('utf-8'))
         if hashlib.sha256(raw).hexdigest() != declared['sha256']:
-            raise ValueError('Frozen identity/cause v2 fixtures differ')
-        data = json.loads(raw)['splits'][split.removeprefix('v2_')]
+            raise ValueError(f'Frozen identity/cause {version} fixtures differ')
+        data = json.loads(raw)['splits'][split_name]
         return data['documents'], data['cases'], declared
     if split == 'supplement':
         raw = (root / 'answer_integrity_supplement.json').read_bytes()

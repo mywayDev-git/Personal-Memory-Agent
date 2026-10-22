@@ -12,8 +12,9 @@ from .answer_integrity_cases import load
 
 def evaluate(models, artifact_path=None, *, before_call=None, split='development'):
     documents, _, manifest = load(split)
-    filename = 'identity_cause_v2_cases.json' if split.startswith('v2_') else 'answer_integrity_cases.json'
-    pairs = json.loads(Path(__file__).with_name(filename).read_text('utf-8'))['splits'][split.removeprefix('v2_')]['review_pairs']
+    versioned = split.startswith(('v2_', 'v3_'))
+    filename = f'identity_cause_{split.split("_", 1)[0]}_cases.json' if versioned else 'answer_integrity_cases.json'
+    pairs = json.loads(Path(__file__).with_name(filename).read_text('utf-8'))['splits'][split.split('_', 1)[1] if versioned else split]['review_pairs']
     evidence = [{'id': row[0], 'source_text': row[1]} for row in documents]
     rows, artifacts = [], []
     for pair in pairs:
