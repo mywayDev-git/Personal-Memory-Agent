@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "sha256": "c2cb2c7ff162ea36d07d1cb0f742c478b7b910266c33d48fead5bd5a3ef8554e",
+  "base_revision": "20d6fea",
+  "case_counts": {
+    "development": 16,
+    "confirmation": 16
+  },
+  "probe_contract_counts": {
+    "development": 4,
+    "confirmation": 4
+  },
+  "review_pairs_per_split": 8,
+  "freeze_before_product_fix": true,
+  "source_overlap_with_prior": [],
+  "development_confirmation_source_overlap": []
+}

@@ -11,7 +11,7 @@ from .first_response_cases import DEVELOPMENT, HOLDOUT, EXTRA_DOCUMENTS, HOLDOUT
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--execute", action="store_true")
-    parser.add_argument("--split", choices=["development", "holdout", "identity_confirmation", "identity_search_confirmation", "identity_completion_confirmation", "integrity_development", "integrity_confirmation", "integrity_supplement", "integrity_v2_development", "integrity_v2_confirmation", "integrity_v3_development", "integrity_v3_confirmation"], default="development")
+    parser.add_argument("--split", choices=["development", "holdout", "identity_confirmation", "identity_search_confirmation", "identity_completion_confirmation", "integrity_development", "integrity_confirmation", "integrity_supplement", "integrity_v2_development", "integrity_v2_confirmation", "integrity_v3_development", "integrity_v3_confirmation", "integrity_source_development", "integrity_source_confirmation"], default="development")
     args, remaining = parser.parse_known_args()
     declared = json.loads(Path(__file__).with_name("first_response_manifest.json").read_text(encoding="utf-8"))
     if declared != manifest():

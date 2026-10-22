@@ -30,7 +30,7 @@ param(
     [ValidateSet('llama', 'openvino')][string]$Runtime = 'llama',
     [string]$RuntimePython = '',
     [string]$RuntimeModel = '',
-    [ValidateSet('legacy', 'development', 'holdout', 'identity_confirmation', 'identity_search_confirmation', 'identity_completion_confirmation', 'integrity_development', 'integrity_confirmation', 'integrity_supplement', 'integrity_v2_development', 'integrity_v2_confirmation', 'integrity_v3_development', 'integrity_v3_confirmation')][string]$FixtureSplit = 'legacy',
+    [ValidateSet('legacy', 'development', 'holdout', 'identity_confirmation', 'identity_search_confirmation', 'identity_completion_confirmation', 'integrity_development', 'integrity_confirmation', 'integrity_supplement', 'integrity_v2_development', 'integrity_v2_confirmation', 'integrity_v3_development', 'integrity_v3_confirmation', 'integrity_source_development', 'integrity_source_confirmation')][string]$FixtureSplit = 'legacy',
     [ValidateSet('baseline', 'q4', 'q8')][string]$Generation = 'baseline',
     [string]$ModelDirectory = '.local/response-latency/models',
     [switch]$ColdInterpretations,
