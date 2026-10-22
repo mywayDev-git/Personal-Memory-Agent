@@ -9,7 +9,7 @@ from evaluation.latency_bottlenecks import analyze
 
 def render(experiments):
     lines = ["10초 응답 목표 비교", "===================", "",
-             "Qwen3-8B Q4_K_M / BGE-M3 Q8_0, 합성 DB만 사용.",
+             "모델·실행 조건은 각 results.json의 해시와 명세를 기준으로 확인합니다. 합성 DB만 사용합니다.",
              "준비 실행·색인·모델 로딩은 응답 시간에서 제외. 각 요청 전 실험 슬롯을 비웁니다.",
              "품질 통과 수는 자동 선별 검사입니다. 공식 메인 평가나 전 범위 의미 검증이 아닙니다.",
              "RAM은 Python·실험 모델 서버 작업 집합 합계, VRAM은 장치 전체 관측 최댓값입니다.",
