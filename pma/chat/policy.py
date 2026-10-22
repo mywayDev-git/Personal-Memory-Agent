@@ -58,7 +58,30 @@ def source_allowed(question, row):
         (r"비밀번호|주민등록번호|인증\s*토큰(?!(?:이|의)?\s*(?:만료|오류|갱신|재발급|문제))|계좌번호", r"비밀번호|주민등록번호|인증|계좌"),
         (r"성생활|성적\s*지향", r"성생활|성적\s*지향"),
     ]
+    employment = hospital_employment(question, text)
     return all(
         not re.search(source, text) or re.search(request, question)
-        for source, request in categories
+        or (index == 0 and employment)
+        for index, (source, request) in enumerate(categories)
     )
+
+
+def hospital_employment(question, text):
+    """A complete job introduction is not a patient's health history.
+
+    Only a single, positive role/name/job sentence qualifies. Additional health
+    facts, a patient label, instructions or other sensitive content cannot ride
+    along with the employment exception.
+    """
+    from .evidence import asks_identity
+    from .identity import ROLE
+    if not (asks_identity(question) or re.search(r'(?:어떤|무슨)\s*일', question)):
+        return False
+    match = ROLE.match(text.strip())
+    if not match:
+        return False
+    jobs = r'의사|약사|간호사|방사선사|임상병리사|치과위생사|물리치료사|작업치료사|응급구조사|행정직원|원무직원|접수직원|연구원|보안요원|미화원|조리사'
+    return bool(re.fullmatch(
+        re.escape(match.group()) + rf'(?:은|는|이|가)\s+(?:{jobs})(?:입니다|이다|다|이에요|예요)[.!?]?',
+        text.strip(),
+    ))
