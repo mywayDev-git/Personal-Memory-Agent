@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ko">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>동명이인 품질 수정과 속도 비교</title>
+<style>
+body{font:16px/1.7 system-ui,sans-serif;color:#1b2936;max-width:1060px;margin:36px auto;padding:0 24px;background:#f6f8fa}main{background:white;padding:32px;border:1px solid #dce3e9;border-radius:14px}h1{font-size:28px;line-height:1.35}h2{font-size:21px;margin-top:34px}.notice{background:#edf4fa;border-left:4px solid #3275a4;padding:14px 18px}.scroll{overflow:auto}table{width:100%;border-collapse:collapse;white-space:nowrap}th,td{padding:10px 12px;text-align:left;border-bottom:1px solid #dce3e9}th{background:#f0f4f7}a{color:#145b91}.muted{color:#536575}code{background:#eef1f4;padding:2px 4px}footer{font-size:14px;color:#536575;margin-top:30px}
+</style>
+<main>
+<h1>동명이인 품질 수정과 속도 비교</h1>
+<p class="notice"><strong>품질 수정은 작업 브랜치에 반영했습니다.</strong><br>단순 첫 질문은 GPU 10초·CPU 60초 목표를 충족했습니다. 긴 질문과 CPU 반복의 최댓값 조건은 남아 있어, 추가 성능 경로의 기본 적용은 보류했습니다.</p>
+<h2>무엇을 고쳤나</h2>
+<p>동명이인의 다른 역할 근거가 검색 중 빠지는 문제, 병원 근무 기록을 건강정보로 잘못 제외하는 문제, 정상적인 직업·이유 설명을 과도하게 거절하는 문제를 보완했습니다. 다른 사람의 인용이나 원문 속 명령을 사실로 승인하지 않는 검사도 유지합니다.</p>
+<p>수정 전에 새 자료를 고정했습니다. GPU 독립 확인에서 실제 질문 <strong>16/16</strong>, 정상·변조 답변 검증 <strong>16/16</strong>을 통과했고, 답변·인용을 합성 원문과 직접 대조했습니다. 오프라인 검사는 <strong>1,132개</strong> 통과했습니다. 고정 합성 사례에서의 결과이며 모든 질문의 무오류를 보장하지 않습니다.</p>
+<h2>모델 준비 후 첫 질문 — 중앙값</h2>
+<p class="muted">준비 실행 제외, 기준·후보 교대 각 5회. 같은 모델과 품질 수정 적용.</p>
+<div class="scroll"><table>
+<tr><th>사례</th><th>GPU 기준 → 후보</th><th>CPU 기준 → 후보</th></tr>
+<tr><td>단순 사실</td><td>8.46 → 6.24초</td><td>81.43 → 49.66초</td></tr>
+<tr><td>날짜</td><td>8.13 → 6.03초</td><td>76.86 → 48.61초</td></tr>
+<tr><td>인물 후속</td><td>39.09 → 14.99초</td><td>기준 300초 시간 초과 / 후보 153.39초</td></tr>
+<tr><td>복합</td><td>28.87 → 28.86초</td><td>기준 272.51초 1회 / 후보 미측정</td></tr>
+<tr><td>긴 본문</td><td>88.03 → 88.09초</td><td>기준·후보 모두 300초 시간 초과（각 1회）</td></tr>
+</table></div>
+<p>CPU 후속 후보는 5회 정상 완료했습니다. CPU 긴 본문은 양쪽 모두 실패해 확대 측정하지 않았습니다. 시간 초과를 정상 중앙값으로 삼아 개선율을 계산하지 않았습니다. 단순 질문의 GPU 후보 추가 확인은 각각 20회 모두 통과했습니다.</p>
+<h2>호출과 메모리</h2>
+<p>단순 질문의 Qwen 호출은 <strong>3→2회</strong>, 인물 후속은 <strong>11→4회</strong>로 줄었습니다. 최종 독립 검증은 매번 새로 호출합니다. 복합·긴 질문의 20% 단축 목표는 미달입니다.</p>
+<div class="scroll"><table>
+<tr><th>단순 사실 5회 최고값</th><th>RAM 기준 → 후보</th><th>private commit 기준 → 후보</th></tr>
+<tr><td>GPU</td><td>6779 → 6764MiB</td><td>9857 → 9857MiB</td></tr>
+<tr><td>CPU</td><td>5748 → 5736MiB</td><td>4374 → 4372MiB</td></tr>
+</table></div>
+<p>완료된 5회 대응 비교의 RAM·private commit 증가는 5% 이내였습니다. 장치 전체 VRAM은 GPU 측정에서 약 7600MiB였으며, CPU 측정의 장치 사용량에는 다른 앱도 포함됩니다. 낮은 여유 RAM을 관측했으므로 메모리가 넉넉해졌다고 해석하지 않습니다.</p>
+<h2>기본 적용을 보류한 이유</h2>
+<p>반복 요청의 중앙값은 유지됐습니다. 다만 CPU 사실 반복의 후보 최댓값 42.21초가 기준 38.35초보다 약 10.1% 느려 최대 10% 조건을 근소하게 넘었습니다. 동시에 여유 RAM 약 8MiB를 관측했지만 원인을 확정하지 않았고, 표본을 제거하지 않았습니다.</p>
+<p>더 큰 배치는 빨라도 관련 없는 내용을 추가해 제외했고, q8 캐시는 정상 답변 거절이 남아 제외했습니다. 모델·검증·원문을 유지한 선택 경로만 비교 도구에 남겼습니다.</p>
+<h2>직접 보기와 실행</h2>
+<p><a href="../.local/identity-optimization-review/index.html">답변·원문·인용 및 전체 실측 검토표 열기</a></p>
+<p><a href="identity_evidence_optimization_results.rst">검증 범위·실패 후보·실행 방법 상세 보고서</a> · <a href="identity_evidence_optimization_summary.json">보존된 수치와 환경 정보</a></p>
+<p>검토표를 열거나 새로고침해도 모델을 실행하지 않습니다. 비교 도구는 기본적으로 계획만 표시하며, 사용자가 <code>-Execute</code>를 지정할 때만 실행합니다.</p>
+<footer>i7-13700 · RAM 16GB · RTX 3060 8GB. CPU는 GPU 탑재 PC에서 강제 실행했으며 실제 GPU 없는 PC는 미검증입니다. 개인 DB를 사용하지 않았고 다른 앱과 기본 모델 설정을 유지했습니다. 브랜치: codex/first-response-cpu-gpu.</footer>
+</main>
+</html>
