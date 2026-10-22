@@ -1,0 +1,10 @@
+{
+  "sha256": "51c43ed8d427e0230c80b1951228cd7827d5457d29b829a9e8a9390dff887384",
+  "base_revision": "52fbb4f",
+  "freeze_before_product_fix": true,
+  "case_counts": {
+    "development": 4,
+    "confirmation": 4
+  },
+  "source_overlap": []
+}
