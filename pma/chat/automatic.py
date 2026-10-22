@@ -209,11 +209,16 @@ def general(engine, data):
     }
 
 
-def combine(batches):
+def combine(batches, *, question=None):
     """Rank all search batches together instead of favoring an earlier batch."""
     rows = [row for batch in batches for row in batch]
     recent = any(row.get("search_explanation", {}).get("selection", {}).get("reason") == "event_time_order" for row in rows)
-    return select_evidence(rows, prefer_recent=recent)
+    chosen = select_evidence(rows, prefer_recent=recent)
+    if question:
+        from .identity import ambiguity_reservations, identity_source_reservations, retain_ambiguity_rows
+        reserved = ambiguity_reservations(question, rows) | identity_source_reservations(question, rows)
+        chosen = retain_ambiguity_rows(rows, chosen, reserved, 8)
+    return chosen
 
 
 
@@ -263,9 +268,9 @@ def probe_identity_completion(engine, question, session, today, batches, interme
     from .identity import identity_probe_candidate
     from .intermediate import scope
 
-    if not identity_probe_candidate(question, combine(batches)):
+    if not identity_probe_candidate(question, combine(batches, question=question)):
         return None
-    evidence = engine.store.freeze(combine(batches))
+    evidence = engine.store.freeze(combine(batches, question=question))
     exact_scope = scope(question, {**session, 'evidence': evidence}, today)
     count('identity_completion_probes')
     try:
@@ -461,9 +466,9 @@ def run(engine, question, session, today, requested_mode="auto"):
         else:
             from .intermediate import propose
             planning_data = {**data, "searches": [{k: v for k, v in search.items() if k != "audit"}
-                                                  for search in searches], "evidence": combine(batches)}
+                                                  for search in searches], "evidence": combine(batches, question=question)}
             planning = propose(engine, question,
-                                   {**session, "evidence": engine.store.freeze(combine(batches))},
+                                   {**session, "evidence": engine.store.freeze(combine(batches, question=question))},
                                    today, [{k: v for k, v in search.items() if k != "audit"}
                                            for search in searches], planning_data=planning_data) if getattr(
                                                engine.service.settings, "intermediate_planning", False) else None
@@ -501,7 +506,7 @@ def run(engine, question, session, today, requested_mode="auto"):
                     query = "나의 지인들과 어떤 관계인지 알려줘"
     # Keep evidence from later relational lookups while retaining earlier context.
     from .policy import source_allowed
-    chosen = [row for row in combine(batches) if source_allowed(original_reference, row)]
+    chosen = [row for row in combine(batches, question=question) if source_allowed(original_reference, row)]
     final_ids = {row["id"] for row in chosen}
     final_reasons = {row["id"]: row["search_explanation"]["final_selection"]["reason"] for row in chosen}
     for search in searches:

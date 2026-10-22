@@ -22,7 +22,19 @@ def source_units(text):
     yield from (s["text"].strip() for s in sentences(text[cursor:]) if s["text"].strip())
 
 
-def alternative_span(alternative, source):
+def purchase_lookup(question):
+    return bool(re.search(r'구입|구매|샀|산\s*(?:물건|것)', question)
+                and re.search(r'색|물건|무엇|뭐', question)
+                and not re.search(r'선물|받|왜|이유|원인|언제|날짜|누가|누구|얼마|몇|모두|각각|비교|반납|실행|완료|계획|예정', question))
+
+
+def purchase_statement(unit):
+    return bool(not instruction_span(unit)
+                and not re.search(r'않|아니|거짓|가정|예시|계획|예정|싶', unit)
+                and re.search(r'(?:샀다|구입했다|구매했다)[.!]?$', unit.strip()))
+
+
+def alternative_span(alternative, source, question=''):
     """Locate a clarification label in a factual unit of the selected quote.
 
     Keep the entire source available. An embedded command alone cannot create
@@ -40,6 +52,8 @@ def alternative_span(alternative, source):
         cursor = start + len(unit)
         if instruction_span(unit):
             continue
+        if purchase_lookup(question) and not purchase_statement(unit):
+            continue
         for match in re.finditer(re.escape(label), unit):
             a, b = start + match.start(), start + match.end()
             if any(low <= a and b <= high for low, high in ranges):
@@ -47,8 +61,38 @@ def alternative_span(alternative, source):
     return None
 
 
+def instruction_purchase_draft(question, evidence):
+    """A unique actual purchase quote, never the instruction, for fresh review."""
+    if not purchase_lookup(question):
+        return None
+    from ..search_expressions import entity_overlap
+    choices = {}
+    generic = bool(re.search(r'물건|무엇|뭐(?:를)?', question))
+    for row in evidence:
+        for unit in source_units(row['source_text']):
+            if len(unit) > 300 or not purchase_statement(unit):
+                continue
+            obj = re.search(r'([가-힣A-Za-z0-9 ]+?)(?:을|를)\s*(?:샀다|구입했다|구매했다)[.!]?$', unit)
+            if not obj:
+                continue
+            noun = re.sub(r'(?:[가-힣]{1,5}색|파란|푸른|빨간|노란|검은|하얀)(?=\s|$)', '', obj[1]).strip()
+            if not generic and (len(noun) < 2 or not entity_overlap(question, noun)):
+                continue
+            choices[row['id'], unit] = row
+    if len(choices) != 1:
+        return None
+    (cid, quote), row = next(iter(choices.items()))
+    if not instruction_span(row['source_text']):
+        return None
+    return {'status': 'answered', 'items': [{'text': '기록 원문: “' + quote + '”', 'citations': [cid]}]}
+
+
+def asks_instruction(question):
+    return bool(re.search(r"(?:지시|명령).*(?:내용|문구|무엇|뭐)|(?:어떤|무슨)\s*(?:지시|명령)", question))
+
+
 def verbatim_instruction_report(question, text, quotes):
-    if not re.search(r"(?:지시|명령).*(?:내용|문구|무엇|뭐)|(?:어떤|무슨)\s*(?:지시|명령)", question):
+    if not asks_instruction(question):
         return False
     if not all(quote in text for quote in quotes):
         return False

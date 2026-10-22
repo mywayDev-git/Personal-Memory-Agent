@@ -495,8 +495,9 @@ class Service:
                 r["text"],
             )
         )
-        from .chat.identity import ambiguity_reservations, retain_ambiguity_rows
-        identity_reserved = ambiguity_reservations(selection_question or question, candidates)
+        from .chat.identity import ambiguity_reservations, identity_source_reservations, retain_ambiguity_rows
+        ambiguous_reserved = ambiguity_reservations(selection_question or question, candidates)
+        identity_reserved = ambiguous_reserved | identity_source_reservations(selection_question or question, candidates)
         self.trace("search_scope", total=len(rows), count=len(candidates), filters=applied)
         capture("filtered", rows, candidates, locations, known_names)
         term_specs, vocabulary = keyword_query(question, candidates)
@@ -780,7 +781,7 @@ class Service:
         results = retain_ambiguity_rows(selection_pool, results,
                                        identity_reserved - topic_excluded, evidence_limit)
         if identity_reserved:
-            count('identity_alternatives_preserved', len(identity_reserved & {r['id'] for r in results}))
+            count('identity_sources_preserved', len(identity_reserved & {r['id'] for r in results}))
         selected_ids = {r["id"] for r in results}
         audit_candidates = []
         for row in selection_pool:
@@ -790,7 +791,7 @@ class Service:
             if row["id"] in model_decisions and reason in {"model_selected", "model_not_selected"}:
                 reason = model_decisions[row["id"]]["category"]
             if row['id'] in identity_reserved and row['id'] in selected_ids:
-                reason = 'person_ambiguity_preserved'
+                reason = 'person_ambiguity_preserved' if row['id'] in ambiguous_reserved else 'person_scope_preserved'
             decision = {"status": "selected" if row["id"] in selected_ids else "excluded", "reason": reason}
             row["search_explanation"]["selection"] = decision
             for chosen in results:

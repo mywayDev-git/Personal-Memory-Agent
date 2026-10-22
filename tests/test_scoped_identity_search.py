@@ -40,7 +40,7 @@ def test_only_forced_generic_lookup_is_removed_and_model_requested_search_is_pre
     replies = iter([{'query': model_next}, {'query': ''}, {'query': ''}])
     monkeypatch.setattr(retrieval, 'retrieve', retrieve)
     monkeypatch.setattr(automatic, 'structured', lambda *a, **kw: next(replies))
-    monkeypatch.setattr(automatic, 'combine', lambda batches: [row])
+    monkeypatch.setattr(automatic, 'combine', lambda batches, **kwargs: [row])
     monkeypatch.setattr(interpretation, 'analyze', lambda *a: {'observations': []})
     monkeypatch.setattr(planner, 'prepare', lambda *a: {})
     monkeypatch.setattr(automatic, 'grounded', lambda *a, **kw: {'status': 'answered', 'validation': 'model_checked',

@@ -87,6 +87,9 @@ def test_repair_cannot_skip_or_override_the_independent_reviewer(approve_repair,
     engine.models = SimpleNamespace(select=lambda *a: ["r"], answer=answer, review=review)
     engine.resolve = lambda question, *a, **kw: ({"question": question, "needs_clarification": False}, 0)
     monkeypatch.setattr(module, "direct_statement", lambda *a: None)
+    # Exercise the repair-after-rejection path separately from the new initial
+    # source-quote proposal. Both must retain fresh independent review.
+    monkeypatch.setattr('pma.chat.review_sources.instruction_purchase_draft', lambda *a: None)
     result = engine.generate("어떤 색 공책을 샀어?", {"messages": [], "evidence": [row]}, "2026-10-19")
     assert calls == ["answer", "review", "review"]
     assert (result["status"] == "answered") is approve_repair

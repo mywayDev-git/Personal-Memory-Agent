@@ -118,7 +118,8 @@ def retain_ambiguity_rows(candidates, selected, reserved, limit):
     present = {row['id'] for row in result}
     for row in candidates:
         if row['id'] in reserved and row['id'] not in present:
-            result.append(row)
+            from copy import deepcopy
+            result.append(deepcopy(row))
             present.add(row['id'])
     while len(result) > limit:
         index = next((i for i in range(len(result)-1, -1, -1)
@@ -127,6 +128,26 @@ def retain_ambiguity_rows(candidates, selected, reserved, limit):
             raise ValueError('IDENTITY_ALTERNATIVES_EXCEED_EVIDENCE_LIMIT')
         result.pop(index)
     return result
+
+
+def identity_source_reservations(question, candidates):
+    """An explicit occupation query also needs its own non-occupation records.
+
+    Height is not an occupation answer, but it can support the carefully scoped
+    statement that the requested occupation is not established in these sources.
+    """
+    from .answer_integrity import occupation_target, target_text, plain_occupation
+    from .review_sources import source_units, instruction_span
+    target = occupation_target(question)
+    if not target:
+        return set()
+    matches = [row for row in candidates if any(target_text(target, unit)
+               for unit in source_units(row.get('source_text', row.get('text', '')))
+               if not instruction_span(unit))]
+    # Reserve proof sources, not every mention. A known job must not disappear
+    # behind many height records. All other candidates keep normal ranking.
+    matches.sort(key=lambda row: not bool(plain_occupation(target, row.get('source_text', row.get('text', '')))))
+    return {row['id'] for row in matches[:4]}
 
 
 def identity_probe_candidate(question, evidence):

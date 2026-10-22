@@ -47,7 +47,7 @@ def setup_routing(monkeypatch, *, change_scope=False, reject_probe=False):
                       'status': 'ok', 'filters': {}, 'query_plan': {}}
     monkeypatch.setattr(retrieval, 'retrieve', retrieve)
     monkeypatch.setattr(automatic, 'structured', lambda *a, **kw: {'query': ''})
-    monkeypatch.setattr(automatic, 'combine', lambda batches: list({r['id']:r for b in batches for r in b}.values()))
+    monkeypatch.setattr(automatic, 'combine', lambda batches, **kwargs: list({r['id']:r for b in batches for r in b}.values()))
     monkeypatch.setattr(interpretation, 'analyze', lambda *a: {'observations': []})
     monkeypatch.setattr(planner, 'prepare', lambda *a: {})
     def grounded(engine, question, session, today, **kw):

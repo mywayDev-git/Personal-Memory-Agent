@@ -7,6 +7,8 @@ from scripts.memory_agent.meaning import meaning_conflict
 
 from ..relevance import study_topic, topic_supported
 
+CAUSAL_CUES = r"때문|덕분|탓|느라|므로|어서|아서|여서|와서|워서|해서|라서|니까|위해|(?:으?로)\s*인(?:해|하여|한)"
+
 
 def quoted_topic_answer(question, evidence):
     """A bounded repair draft: exact source quotes, never an opposite paraphrase.
@@ -85,7 +87,7 @@ def causal_claims_supported(question, response, evidence, *, require_coverage=Tr
         identity_sources = {row["id"] for row in evidence
                             if label in canonical_label(row["source_text"])}
     identity_seen = cause_seen = False
-    causal = r"때문|덕분|탓|느라|므로|어서|아서|여서|와서|워서|해서|라서|니까|위해"
+    causal = CAUSAL_CUES
     for item in response["items"]:
         identity_item = bool(set(item["citations"]) & identity_sources)
         identity_seen = identity_seen or identity_item
@@ -132,7 +134,7 @@ def semantic_issue(question, item, evidence):
     if not causal_claims_supported(question, {"items": [item]}, evidence, require_coverage=False):
         return "cause"
     if re.search(r"때문|덕분|탓으로|원인이|이유로", text) and not any(
-        re.search(r"때문|덕분|탓|느라|므로|어서|아서|여서|와서|워서|해서|라서|니까|위해", source)
+        re.search(CAUSAL_CUES, source)
         for source in cited
     ):
         if not re.search(r"확인.*없|알.*없|단정.*없|불명", text):
@@ -147,6 +149,33 @@ def semantic_issue(question, item, evidence):
             if re.search(absence, text) and not any(re.search(absence, s) for s in cited):
                 return "negation"
     return None
+
+
+def unrecorded_cause_draft(question, evidence):
+    """Repair inferred causality with a bounded source quote and explicit limit.
+
+    Only a unique short cancellation record with no stated causal cue qualifies.
+    This is a proposal for fresh independent review, never an approval or a
+    claim that the entire database contains no reason.
+    """
+    from .questions import question_parts
+    from .review_sources import instruction_span
+    if (not re.search(r'왜|이유|원인', question) or '취소' not in question
+            or question_parts(question) or asks_identity(question) or len(evidence) != 1):
+        return None
+    row = evidence[0]
+    source = row['source_text'].strip()
+    key = (row.get('fact') or {}).get('object_key') or ''
+    compact = lambda value: re.sub(r'\s+', '', value)
+    if (len(source) > 300 or row.get('warnings') or instruction_span(source)
+            or re.search(CAUSAL_CUES + r'|이유|원인|목적|가정|예정|계획', source)
+            or not re.search(r'취소(?:했|하지\s*않)', source)
+            or len(key) < 2 or compact(key) not in compact(question) or compact(key) not in compact(source)):
+        return None
+    return {'status': 'answered', 'items': [{
+        'text': '기록 원문: “' + source + '” 이 기록만으로는 질문하신 이유를 확인할 수 없습니다.',
+        'citations': [row['id']],
+    }]}
 
 
 def review_spans_supported(response, review, evidence):

@@ -17,7 +17,7 @@ from ..models import LocalModels
 from ..relevance import topic_supported
 from .evidence import semantic_issue
 from .presentation import DISPLAY_POLICY, DISPLAY_SCHEMA
-from .review_sources import source_catalog, instruction_span, verbatim_instruction_report
+from .review_sources import source_catalog, instruction_span, verbatim_instruction_report, asks_instruction
 
 FACT_POLICY = (
     "공부 이력 질문에는 명시된 공부 주제의 기록만 사용한다. 선물·산책·담당 업무를 공부 사실로 연결하지 않는다. "
@@ -137,6 +137,11 @@ class ChatLocalModels(LocalModels):
             command_quotes = [ref["quote"] for ref in item["evidence"] if instruction_span(ref["quote"])]
             if command_quotes and not verbatim_instruction_report(question, claim["text"], command_quotes):
                 issue = "quotation"
+            # A reviewer can mistakenly omit the command span while approving
+            # an answer that still parrots its imperative. Check the claim too.
+            if (not asks_instruction(question)
+                    and (instruction_span(claim['text']) or re.search(r'(?:지시|명령).{0,30}(?:답|출력|따르)|(?:답|대답)해야', claim['text']))):
+                issue = 'quotation'
             # Approval of a whole source cannot cover attributes missing from
             # the precise spans the independent reviewer actually selected.
             selected_text = "\n".join(ref["quote"] for ref in item["evidence"])

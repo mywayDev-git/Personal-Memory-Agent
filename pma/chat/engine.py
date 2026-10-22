@@ -72,7 +72,7 @@ RESOLVE_PROMPT = (
     "근거 부족은 모호함이 아니다. 이유가 없는 경우 왜 질문을 그대로 유지한다. "
     "today는 현재 질문의 상대 날짜 기준이고 기록 저장일은 사건 날짜가 아니다."
 )
-CHAT_PROMPT_VERSION = 18
+CHAT_PROMPT_VERSION = 19
 
 AMBIGUITY_SCHEMA = {
     "type": "object",
@@ -189,7 +189,7 @@ class ChatEngine:
             result["needs_clarification"] = True
         from .review_sources import alternative_span
         valid = len({a["label"] for a in alternatives}) >= 2 and all(
-            alternative_span(a, sources.get(a['evidence_id'], '')) is not None
+            alternative_span(a, sources.get(a['evidence_id'], ''), original_question or question) is not None
             and not re.search(
                 r"(?:했다|봤다|이다|있다|없다|않았다|합니다|했습니다)[.!]?$", a["label"]
             )
@@ -277,7 +277,7 @@ class ChatEngine:
                 source = sources[alternative["evidence_id"]]
                 quote = alternative["label"]
                 from .review_sources import alternative_span
-                start, end = alternative_span(alternative, source['source_text'])
+                start, end = alternative_span(alternative, source['source_text'], intent_question)
                 items.append({"text": quote, "citations": [source["id"]]})
                 details.append(
                     {
@@ -322,6 +322,8 @@ class ChatEngine:
                                "clarification": "어떤 작업이 완료되었는지 원문에서 구분되지 않습니다. 완료한 작업을 알려주시겠어요?",
                                "history_turns": history_count}, "ambiguous_completion_object")
         integrity_evidence = list(evidence)
+        from .review_sources import instruction_purchase_draft
+        purchase_draft = instruction_purchase_draft(intent_question, integrity_evidence)
         from .interpretation import dated_progress_draft
         progress_draft = dated_progress_draft(intent_question, evidence)
         if hasattr(models, "select") and not study_topic(intent_question):
@@ -332,6 +334,10 @@ class ChatEngine:
                 selected = models.select(question, evidence)
             if not isinstance(selected, list) or not set(selected) <= {r["id"] for r in evidence}:
                 raise ValueError("INVALID_SELECTION")
+            from .identity import identity_source_reservations
+            selected = list(set(selected) | identity_source_reservations(intent_question, evidence))
+            if purchase_draft:
+                selected = list(set(selected) | {cid for item in purchase_draft['items'] for cid in item['citations']})
             if not selected:
                 selected = previously_supported(evidence)
                 if selected:
@@ -364,7 +370,11 @@ class ChatEngine:
                  or getattr(settings, "request_reuse", False) else None)
         if draft:
             count("source_conflict_drafts" if conflict else "source_progress_drafts" if progress_draft else "source_stop_drafts")
-        response = draft or direct_statement(question, evidence, intent_question)
+        from .answer_integrity import occupation_limit_draft
+        limit_draft = occupation_limit_draft(intent_question, integrity_evidence)
+        response = draft or limit_draft or purchase_draft or direct_statement(question, evidence, intent_question)
+        if limit_draft and not draft:
+            count('source_occupation_limit_drafts')
         if _direct_probe:
             response = direct_statement(question, evidence, intent_question)
             if response is None:
@@ -458,7 +468,11 @@ class ChatEngine:
                     item.get("issue") == "negation" for item in review.get("items", [])
                 )
                 from .answer_integrity import occupation_limit_draft
-                repair = occupation_limit_draft(intent_question, integrity_evidence) or instruction_statement_draft(intent_question, evidence)
+                from .evidence import unrecorded_cause_draft
+                repair = (occupation_limit_draft(intent_question, integrity_evidence)
+                          or instruction_purchase_draft(intent_question, evidence)
+                          or instruction_statement_draft(intent_question, evidence)
+                          or unrecorded_cause_draft(intent_question, evidence))
                 if repair:
                     count("source_instruction_repairs")
                 response = repair or (quoted_topic_answer(intent_question, evidence)
