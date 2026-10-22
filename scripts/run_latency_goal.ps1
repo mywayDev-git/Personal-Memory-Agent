@@ -13,6 +13,8 @@ param(
     [switch]$PlanningBaseline,
     [switch]$CompactJson,
     [switch]$CompactReview,
+    [switch]$SharedCompactFormats,
+    [switch]$SelectionReuse,
     [switch]$TokenCache,
     [switch]$ScopedIdentitySearch,
     [switch]$BatchEight,
@@ -43,6 +45,7 @@ $root = Split-Path -Parent $PSScriptRoot
 if (-not $PythonExe) { $PythonExe = Join-Path $root '.venv\Scripts\python.exe' }
 if ($RunName -notmatch '^[a-zA-Z0-9_-]+$') { throw 'RunName must contain letters, digits, underscores or hyphens.' }
 if ($BaselineOnly -and $CandidateOnly) { throw 'Choose either BaselineOnly or CandidateOnly.' }
+if ($SharedCompactFormats -and -not $PlanningBaseline) { throw 'SharedCompactFormats requires PlanningBaseline.' }
 $outputRoot = Join-Path $root ('.local\latency-goal\' + $RunName)
 $placements = if ($Placement -eq 'both') { @('cpu', 'gpu') } else { @($Placement) }
 $commands = @()
@@ -60,6 +63,7 @@ foreach ($mode in $placements) {
     if ($PlanningBaseline) { $candidateOptions = @($planningOptions + $candidateOptions | Select-Object -Unique) }
     if ($CompactJson) { $candidateOptions += 'compact_json' }
     if ($CompactReview) { $candidateOptions += 'compact_review' }
+    if ($SelectionReuse) { $candidateOptions += 'selection_cache' }
     if ($TokenCache) { $candidateOptions += 'token_cache' }
     $iterations = if ($QualityScreen) { 1 } else { $Samples }
     $arguments = @('-u', '-m', 'evaluation.response_latency', '--output', $output,
@@ -82,6 +86,10 @@ foreach ($mode in $placements) {
     if ($PlanningBaseline) {
         $arguments += @('--baseline-options') + $planningOptions
         if ($InterpretationReuse) { $arguments += 'interpretation_cache' }
+        if ($SharedCompactFormats) {
+            if ($CompactJson) { $arguments += 'compact_json' }
+            if ($CompactReview) { $arguments += 'compact_review' }
+        }
     } elseif ($BaselineOnly -or $InterpretationReuse -or $IntermediatePlanning) {
         # Compare with the already measured source-draft/compact-ID candidate.
         $arguments += @('--baseline-options', 'compact_ids', 'source_facts')
