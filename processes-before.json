@@ -1,0 +1,50 @@
+[
+  {
+    "ProcessId": 37520,
+    "ParentProcessId": 41552,
+    "ExecutablePath": "C:\\llama.cpp\\llama-server.exe",
+    "CommandLine": "\"C:\\llama.cpp\\llama-server.exe\" -m \"C:\\models\\Qwen3-8B-Q4_K_M.gguf\" --host 127.0.0.1 --port 8081 -c 16384 -np 1 --alias qwen3 --log-disable -ngl 99 --flash-attn auto"
+  },
+  {
+    "ProcessId": 8476,
+    "ParentProcessId": 41552,
+    "ExecutablePath": "C:\\llama.cpp\\llama-server.exe",
+    "CommandLine": "\"C:\\llama.cpp\\llama-server.exe\" -m \"C:\\models\\bge-m3-Q8_0.gguf\" --host 127.0.0.1 --port 8082 -c 8192 -b 8192 -ub 8192 --embedding --pooling cls --alias bge-m3 --log-disable -ngl 99 --embd-normalize 2 --flash-attn auto"
+  },
+  {
+    "ProcessId": 42616,
+    "ParentProcessId": 41552,
+    "ExecutablePath": "C:\\development\\Personal-Memory-Agent\\.venv\\Scripts\\python.exe",
+    "CommandLine": "\"C:\\development\\Personal-Memory-Agent\\.venv\\Scripts\\python.exe\" -u -B -m pma"
+  },
+  {
+    "ProcessId": 46468,
+    "ParentProcessId": 42616,
+    "ExecutablePath": "c:\\Users\\myway\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe",
+    "CommandLine": "\"C:\\development\\Personal-Memory-Agent\\.venv\\Scripts\\python.exe\" -u -B -m pma"
+  },
+  {
+    "ProcessId": 40644,
+    "ParentProcessId": 46468,
+    "ExecutablePath": "C:\\development\\Personal-Memory-Agent\\.venv\\Scripts\\python.exe",
+    "CommandLine": "C:\\development\\Personal-Memory-Agent\\.venv\\Scripts\\python.exe -m evaluation.main_suite --execute --profile core --models C:\\development\\Personal-Memory-Agent\\.local\\main-suite\\ui-f4a76ab2e0064599a666f86c60e8e78b\\models.json --server C:\\llama.cpp\\llama-server.exe --output C:\\development\\Personal-Memory-Agent\\.local\\main-suite\\ui-f4a76ab2e0064599a666f86c60e8e78b --publish-to C:\\Users\\myway\\AppData\\Local\\PersonalMemoryAgent\\evaluation\\evaluation.db --cancel-file C:\\development\\Personal-Memory-Agent\\.local\\main-suite\\ui-f4a76ab2e0064599a666f86c60e8e78b\\cancel.request --completion-file C:\\development\\Personal-Memory-Agent\\.local\\main-suite\\ui-f4a76ab2e0064599a666f86c60e8e78b\\execution-status.json"
+  },
+  {
+    "ProcessId": 42456,
+    "ParentProcessId": 40644,
+    "ExecutablePath": "c:\\Users\\myway\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe",
+    "CommandLine": "C:\\development\\Personal-Memory-Agent\\.venv\\Scripts\\python.exe -m evaluation.main_suite --execute --profile core --models C:\\development\\Personal-Memory-Agent\\.local\\main-suite\\ui-f4a76ab2e0064599a666f86c60e8e78b\\models.json --server C:\\llama.cpp\\llama-server.exe --output C:\\development\\Personal-Memory-Agent\\.local\\main-suite\\ui-f4a76ab2e0064599a666f86c60e8e78b --publish-to C:\\Users\\myway\\AppData\\Local\\PersonalMemoryAgent\\evaluation\\evaluation.db --cancel-file C:\\development\\Personal-Memory-Agent\\.local\\main-suite\\ui-f4a76ab2e0064599a666f86c60e8e78b\\cancel.request --completion-file C:\\development\\Personal-Memory-Agent\\.local\\main-suite\\ui-f4a76ab2e0064599a666f86c60e8e78b\\execution-status.json"
+  },
+  {
+    "ProcessId": 6744,
+    "ParentProcessId": 42456,
+    "ExecutablePath": "C:\\llama.cpp\\llama-server.exe",
+    "CommandLine": "C:\\llama.cpp\\llama-server.exe -m C:\\models\\Qwen3-8B-Q4_K_M.gguf --host 127.0.0.1 --port 18481 --alias main-generation -c 16384 -ngl 0 --log-disable -np 1"
+  },
+  {
+    "ProcessId": 41884,
+    "ParentProcessId": 42456,
+    "ExecutablePath": "C:\\llama.cpp\\llama-server.exe",
+    "CommandLine": "C:\\llama.cpp\\llama-server.exe -m C:\\models\\bge-m3-Q8_0.gguf --host 127.0.0.1 --port 18482 --alias main-embedding -c 8192 -ngl 0 --log-disable -np 1 --embedding --pooling cls --embd-normalize 2"
+  }
+]

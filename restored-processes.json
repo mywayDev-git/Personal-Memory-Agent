@@ -1,0 +1,12 @@
+[
+    {
+        "arguments":  "-m \"C:\\models\\Qwen3-8B-Q4_K_M.gguf\" --host 127.0.0.1 --port 8081 -c 16384 -np 1 --alias qwen3 --log-disable -ngl 99 --flash-attn auto",
+        "restored_pid":  13740,
+        "original_pid":  37520
+    },
+    {
+        "arguments":  "-m \"C:\\models\\bge-m3-Q8_0.gguf\" --host 127.0.0.1 --port 8082 -c 8192 -b 8192 -ub 8192 --embedding --pooling cls --alias bge-m3 --log-disable -ngl 99 --embd-normalize 2 --flash-attn auto",
+        "restored_pid":  42216,
+        "original_pid":  8476
+    }
+]
