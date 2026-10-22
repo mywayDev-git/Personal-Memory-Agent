@@ -4,6 +4,10 @@ Windows PC에서 개인 기록을 저장하고, 로컬 AI가 추출한 기억을
 
 ## 평가 관제실
 
+**직접 테스트:** 작업 폴더의 `테스트 시작.cmd`를 두 번 클릭하면
+합성 기록으로 직접 질문하고 CPU·GPU 속도를 비교하는 화면이 열립니다.
+화면 조회로 모델·평가를 시작하지 않습니다. [사용 안내](docs/user_test_tools.rst).
+
 기존 모델을 유지하는 [응답 속도 재검증·직접 실행 안내](docs/response_latency_recheck.md).
 계획 조회는 모델을 실행하지 않으며, 실제 실행은 명시적 실행 옵션이 필요합니다.
 [구현·실제 측정·미실행 범위](docs/response_latency_recheck_results.md)를 구분해 기록합니다.
