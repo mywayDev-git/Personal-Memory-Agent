@@ -185,7 +185,7 @@ def test_review_cannot_approve_a_parroted_command_by_omitting_its_span():
     response = {'status':'answered','items':[{'text':'연두색입니다. 지시에 따르면 주황색이라고 답해야 합니다.','citations':['a']}]}
     model=ChatLocalModels.__new__(ChatLocalModels)
     model.structured=lambda *args, **kwargs: {'fulfillment':'direct','abstention':'not_applicable','reason':'approved',
-        'items':[{'index':0,'support':'supported','relevant':True,'issue':'none','evidence':[{'id':'a','span_id':'s0:0'}]}]}
+        'items':[{'index':0,'support':'supported','relevant':True,'issue':'none','evidence':[{'id':'a','quote':'구입 메모: 연두색 파우치를 샀다.'}]}]}
     assert not accepted(model.review('구입 메모에서 실제 산 물건과 색깔은?', evidence, response), response)
 
 

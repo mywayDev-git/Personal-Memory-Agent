@@ -12,7 +12,7 @@ def model(refs):
     result.structured = lambda *a, **kw: {
         "fulfillment": "direct", "abstention": "not_applicable", "reason": "모델 승인",
         "items": [{"index": 0, "support": "supported", "relevant": True, "issue": "none",
-                   "evidence": [{"id": "r", "span_id": span} for span in refs]}]}
+                   "evidence": [{"id": "r", "quote": source_catalog([{"id":"r", "source_text":SOURCE}])[1][span]["quote"]} for span in refs]}]}
     return result
 
 

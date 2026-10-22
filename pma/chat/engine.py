@@ -72,7 +72,7 @@ RESOLVE_PROMPT = (
     "근거 부족은 모호함이 아니다. 이유가 없는 경우 왜 질문을 그대로 유지한다. "
     "today는 현재 질문의 상대 날짜 기준이고 기록 저장일은 사건 날짜가 아니다."
 )
-CHAT_PROMPT_VERSION = 20
+CHAT_PROMPT_VERSION = 21
 
 AMBIGUITY_SCHEMA = {
     "type": "object",
