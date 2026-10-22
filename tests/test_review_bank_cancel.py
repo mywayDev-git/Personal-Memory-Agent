@@ -9,7 +9,7 @@ from evaluation import review_bank
 def test_cancel_boundary_preserves_completed_synthetic_reviews_without_another_call(tmp_path, monkeypatch):
     calls, boundaries = [], []
     monkeypatch.setattr(review_bank, "accepted", lambda *args: True)
-    monkeypatch.setattr(review_bank, "review_spans_supported", lambda *args: True)
+    monkeypatch.setattr(review_bank, "review_spans_supported", lambda *args, **kwargs: True)
     def review(*args):
         calls.append(args)
         return {"synthetic_review": True}

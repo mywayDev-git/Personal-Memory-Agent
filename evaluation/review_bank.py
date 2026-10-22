@@ -36,7 +36,7 @@ def evaluate(models, artifact_path=None, *, before_call=None):
             with request_budget(300) as budget:
                 try:
                     checked = models.review(question, evidence, response)
-                    row["approved"] = bool(accepted(checked, response) and review_spans_supported(response, checked, evidence))
+                    row["approved"] = bool(accepted(checked, response) and review_spans_supported(response, checked, evidence, question=question))
                     artifacts.append({"pair": index, "expected_approval": expected, "question": question,
                                       "source": source, "proposed_answer": response, "review": checked})
                 except ValueError as exc:

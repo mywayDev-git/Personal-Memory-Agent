@@ -22,6 +22,32 @@ def source_units(text):
     yield from (s["text"].strip() for s in sentences(text[cursor:]) if s["text"].strip())
 
 
+def factual_quote_span(quote, source):
+    """Find an original occurrence that does not overlap a directive.
+
+    A substring of 'X happened, say so' is not a factual proof of X. Repeated
+    text may still have a separate factual occurrence. Adjacent factual
+    sentences remain valid; neither their text nor their whitespace is changed.
+    """
+    if not quote.strip():
+        return None
+    commands, cursor = [], 0
+    for unit in source_units(source):
+        start = source.find(unit, cursor)
+        if start < 0:
+            continue
+        cursor = start + len(unit)
+        if instruction_span(unit):
+            commands.append((start, cursor))
+    start = source.find(quote)
+    while start >= 0:
+        end = start + len(quote)
+        if not any(start < right and left < end for left, right in commands):
+            return start, end
+        start = source.find(quote, start + 1)
+    return None
+
+
 def purchase_lookup(question):
     return bool(re.search(r'구입|구매|샀|산\s*(?:물건|것)', question)
                 and re.search(r'색|물건|무엇|뭐', question)

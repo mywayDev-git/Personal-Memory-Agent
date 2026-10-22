@@ -180,6 +180,12 @@ class ChatLocalModels(LocalModels):
         for item in result["items"]:
             claim = response["items"][item["index"]]
             issue = semantic_issue(question, claim, evidence)
+            if literal_quotes:
+                from .review_sources import factual_quote_span
+                by_id = {row['id']: row['source_text'] for row in evidence}
+                if any(factual_quote_span(ref['quote'], by_id[ref['id']]) is None
+                       for ref in item['evidence']):
+                    issue = 'quotation'
             command_quotes = [ref["quote"] for ref in item["evidence"] if instruction_span(ref["quote"])]
             if command_quotes and not verbatim_instruction_report(question, claim["text"], command_quotes):
                 issue = "quotation"

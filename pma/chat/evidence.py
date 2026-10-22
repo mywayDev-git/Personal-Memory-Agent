@@ -178,11 +178,17 @@ def unrecorded_cause_draft(question, evidence):
     }]}
 
 
-def review_spans_supported(response, review, evidence):
+def review_spans_supported(response, review, evidence, *, question=None):
     """A true conclusion cannot cover uncited ancillary people, dates or plans."""
     rows = {r['id']: r for r in evidence}
+    from .review_sources import factual_quote_span, instruction_span, verbatim_instruction_report
     for checked in review.get('items', []):
         text = response['items'][checked['index']]['text']
+        for ref in checked['evidence']:
+            if factual_quote_span(ref['quote'], rows[ref['id']]['source_text']) is None:
+                if not (instruction_span(ref['quote']) and verbatim_instruction_report(
+                        question or '', text, [ref['quote']])):
+                    return False
         quote = '\n'.join(ref['quote'] for ref in checked['evidence'])
         sources = [rows[ref['id']] for ref in checked['evidence']]
         full = '\n'.join(r['source_text'] for r in sources)
@@ -209,7 +215,10 @@ def reviewed_citations(response, review, evidence):
         ]
         for ref in refs:
             row = sources[ref["id"]]
-            start = row["source_text"].find(ref["quote"])
+            from .review_sources import factual_quote_span, instruction_span
+            span = factual_quote_span(ref['quote'], row['source_text'])
+            start = span[0] if span else (row['source_text'].find(ref['quote'])
+                                         if instruction_span(ref['quote']) else -1)
             if start < 0:
                 raise ValueError("INVALID_SOURCE_SPAN")
             details.append(

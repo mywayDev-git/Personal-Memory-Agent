@@ -396,7 +396,7 @@ def main():
         "evaluation/anchor_templates.py", "evaluation/identity_search_cases.py", "evaluation/identity_search_manifest.json",
         "evaluation/identity_completion_cases.py", "evaluation/identity_completion_manifest.json",
         "evaluation/answer_integrity_cases.py", "evaluation/answer_integrity_cases.json", "evaluation/answer_integrity_manifest.json",
-        "evaluation/answer_integrity_review.py", "evaluation/identity_cause_v2_cases.json", "evaluation/identity_cause_v2_manifest.json", "evaluation/identity_cause_v3_cases.json", "evaluation/identity_cause_v3_manifest.json", "evaluation/answer_integrity_supplement.json", "evaluation/answer_integrity_supplement_manifest.json")}
+        "evaluation/answer_integrity_review.py", "evaluation/identity_cause_v2_cases.json", "evaluation/identity_cause_v2_manifest.json", "evaluation/identity_cause_v3_cases.json", "evaluation/identity_cause_v3_manifest.json", "evaluation/quote_boundary_cases.json", "evaluation/quote_boundary_manifest.json", "evaluation/answer_integrity_supplement.json", "evaluation/answer_integrity_supplement_manifest.json")}
     if args.seed_template:
         report["seed_template_sha256"] = digest(args.seed_template)
     if args.runtime == "openvino":
