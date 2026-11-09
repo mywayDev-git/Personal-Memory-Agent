@@ -1,0 +1,38 @@
+{
+  "ok": true,
+  "checks": 5294,
+  "errors": [],
+  "counts": {
+    "families": 36,
+    "sources": 59,
+    "contexts": 55,
+    "questions": 114,
+    "source_facts": 96,
+    "source_relations": 11,
+    "upstream_variables": 489,
+    "draft_linked_variables": 155
+  },
+  "negative_controls": [
+    {
+      "name": "wrong source quote",
+      "rejected": true
+    },
+    {
+      "name": "stale deleted evidence",
+      "rejected": true
+    },
+    {
+      "name": "cross-owner evidence",
+      "rejected": true
+    },
+    {
+      "name": "state replay mismatch",
+      "rejected": true
+    },
+    {
+      "name": "self-linked question variant",
+      "rejected": true
+    }
+  ],
+  "scope": "STATIC_DATA_INTEGRITY_ONLY; no model, retrieval service or product evaluation executed"
+}

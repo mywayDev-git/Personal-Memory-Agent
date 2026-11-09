@@ -1,0 +1,27 @@
+{
+  "variables": [],
+  "mapping_status": "NOT_MAPPED_TO_MAIN_SUITE_489_VARIABLES",
+  "profiles": [
+    {
+      "id": "natural_single",
+      "count": 48,
+      "case_count": 8,
+      "label": "자연 문맥 · 한 원문",
+      "description": "서로 다른 8개 이야기 × 질문 6개. 지시어·역할·시간·조건·범위 연결"
+    },
+    {
+      "id": "natural_multi",
+      "count": 24,
+      "case_count": 4,
+      "label": "자연 문맥 · 원문 간 연결",
+      "description": "서로 다른 4개 이야기의 원문 2개씩 × 질문 6개"
+    },
+    {
+      "id": "natural_control",
+      "count": 12,
+      "case_count": 12,
+      "label": "자연 문맥 · 짧은 대조",
+      "description": "새 이야기마다 첫 연결 질문의 타깃 의미를 보존한 짧은 대조. 독립 이야기 아님"
+    }
+  ]
+}

@@ -1,0 +1,230 @@
+{
+  "profiles": [
+    {
+      "id": "development",
+      "label": "개발용 · 30문항",
+      "count": 30,
+      "description": "수정과 회귀 확인용. 여섯 능력의 네 조건, 대화 5턴, 빈 기억 1문항."
+    },
+    {
+      "id": "confirmation",
+      "label": "확인용 · 30문항",
+      "count": 30,
+      "description": "새 이야기로 작성한 별도 확인용. 수정에 사용하면 이후 회귀용으로 전환하고 새 확인 사례를 확보하세요."
+    }
+  ],
+  "variables": [],
+  "groups": [
+    {
+      "id": "D-identity",
+      "split": "development",
+      "ability": "identity",
+      "family_id": "동명이인과 네 가지 날짜",
+      "question_ids": [
+        "D-identity-BASE",
+        "D-identity-PARAPHRASE",
+        "D-identity-DISTRACTOR",
+        "D-identity-CONTRAST"
+      ],
+      "expectations": {
+        "paraphrase": "same_required_meaning",
+        "distractor": "same_required_meaning",
+        "contrast": "changed_answer_or_abstention"
+      }
+    },
+    {
+      "id": "D-status",
+      "split": "development",
+      "ability": "status",
+      "family_id": "이사 상자와 신청 상태",
+      "question_ids": [
+        "D-status-BASE",
+        "D-status-PARAPHRASE",
+        "D-status-DISTRACTOR",
+        "D-status-CONTRAST"
+      ],
+      "expectations": {
+        "paraphrase": "same_required_meaning",
+        "distractor": "same_required_meaning",
+        "contrast": "changed_answer_or_abstention"
+      }
+    },
+    {
+      "id": "D-condition",
+      "split": "development",
+      "ability": "condition",
+      "family_id": "수리 비용과 다른 청소기",
+      "question_ids": [
+        "D-condition-BASE",
+        "D-condition-PARAPHRASE",
+        "D-condition-DISTRACTOR",
+        "D-condition-CONTRAST"
+      ],
+      "expectations": {
+        "paraphrase": "same_required_meaning",
+        "distractor": "same_required_meaning",
+        "contrast": "changed_answer_or_abstention"
+      }
+    },
+    {
+      "id": "D-multievidence",
+      "split": "development",
+      "ability": "multievidence",
+      "family_id": "공방을 옮기던 주",
+      "question_ids": [
+        "D-multievidence-BASE",
+        "D-multievidence-PARAPHRASE",
+        "D-multievidence-DISTRACTOR",
+        "D-multievidence-CONTRAST"
+      ],
+      "expectations": {
+        "paraphrase": "same_required_meaning",
+        "distractor": "same_required_meaning",
+        "contrast": "changed_answer_or_abstention"
+      }
+    },
+    {
+      "id": "D-cumulative",
+      "split": "development",
+      "ability": "cumulative",
+      "family_id": "월 경계의 사건일과 등록일",
+      "question_ids": [
+        "D-cumulative-BASE",
+        "D-cumulative-PARAPHRASE",
+        "D-cumulative-DISTRACTOR",
+        "D-cumulative-CONTRAST"
+      ],
+      "expectations": {
+        "paraphrase": "same_required_meaning",
+        "distractor": "same_required_meaning",
+        "contrast": "changed_answer_or_abstention"
+      }
+    },
+    {
+      "id": "D-access",
+      "split": "development",
+      "ability": "access",
+      "family_id": "작업실 출입 카드",
+      "question_ids": [
+        "D-access-BASE",
+        "D-access-PARAPHRASE",
+        "D-access-DISTRACTOR",
+        "D-access-CONTRAST"
+      ],
+      "expectations": {
+        "paraphrase": "same_required_meaning",
+        "distractor": "same_required_meaning",
+        "contrast": "changed_answer_or_abstention"
+      }
+    },
+    {
+      "id": "C-identity",
+      "split": "confirmation",
+      "ability": "identity",
+      "family_id": "수리 봉사 접수와 안전 점검",
+      "question_ids": [
+        "C-identity-BASE",
+        "C-identity-PARAPHRASE",
+        "C-identity-DISTRACTOR",
+        "C-identity-CONTRAST"
+      ],
+      "expectations": {
+        "paraphrase": "same_required_meaning",
+        "distractor": "same_required_meaning",
+        "contrast": "changed_answer_or_abstention"
+      }
+    },
+    {
+      "id": "C-status",
+      "split": "confirmation",
+      "ability": "status",
+      "family_id": "마을버스 우회 운행의 승인",
+      "question_ids": [
+        "C-status-BASE",
+        "C-status-PARAPHRASE",
+        "C-status-DISTRACTOR",
+        "C-status-CONTRAST"
+      ],
+      "expectations": {
+        "paraphrase": "same_required_meaning",
+        "distractor": "same_required_meaning",
+        "contrast": "changed_answer_or_abstention"
+      }
+    },
+    {
+      "id": "C-condition",
+      "split": "confirmation",
+      "ability": "condition",
+      "family_id": "공동구매 배송비 정산",
+      "question_ids": [
+        "C-condition-BASE",
+        "C-condition-PARAPHRASE",
+        "C-condition-DISTRACTOR",
+        "C-condition-CONTRAST"
+      ],
+      "expectations": {
+        "paraphrase": "same_required_meaning",
+        "distractor": "same_required_meaning",
+        "contrast": "changed_answer_or_abstention"
+      }
+    },
+    {
+      "id": "C-multievidence",
+      "split": "confirmation",
+      "ability": "multievidence",
+      "family_id": "관측회 장소 선택과 장비 운반",
+      "question_ids": [
+        "C-multievidence-BASE",
+        "C-multievidence-PARAPHRASE",
+        "C-multievidence-DISTRACTOR",
+        "C-multievidence-CONTRAST"
+      ],
+      "expectations": {
+        "paraphrase": "same_required_meaning",
+        "distractor": "same_required_meaning",
+        "contrast": "changed_answer_or_abstention"
+      }
+    },
+    {
+      "id": "C-cumulative",
+      "split": "confirmation",
+      "ability": "cumulative",
+      "family_id": "공동 텃밭의 분산 기록",
+      "question_ids": [
+        "C-cumulative-BASE",
+        "C-cumulative-PARAPHRASE",
+        "C-cumulative-DISTRACTOR",
+        "C-cumulative-CONTRAST"
+      ],
+      "expectations": {
+        "paraphrase": "same_required_meaning",
+        "distractor": "same_required_meaning",
+        "contrast": "changed_answer_or_abstention"
+      }
+    },
+    {
+      "id": "C-access",
+      "split": "confirmation",
+      "ability": "access",
+      "family_id": "공유 장비함 접근",
+      "question_ids": [
+        "C-access-BASE",
+        "C-access-PARAPHRASE",
+        "C-access-DISTRACTOR",
+        "C-access-CONTRAST"
+      ],
+      "expectations": {
+        "paraphrase": "same_required_meaning",
+        "distractor": "same_required_meaning",
+        "contrast": "changed_answer_or_abstention"
+      }
+    }
+  ],
+  "claims": {
+    "questions_are_not_independent_samples": true,
+    "capability_story_groups_per_split": 6,
+    "dialogue_sequences_per_split": 1,
+    "empty_memory_cases_per_split": 1,
+    "real_product_security_validated": false
+  }
+}

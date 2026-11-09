@@ -1,0 +1,279 @@
+{
+  "schema_version": "pma-context-standalone-1",
+  "dataset_version": "pma-context-v1.0.0",
+  "title": "자연 문맥 독립셋 v1.0.0",
+  "synthetic_only": true,
+  "model_execution": false,
+  "independent_gold": false,
+  "execution_input_path": "raw_original_v1",
+  "default_profile": "natural_single",
+  "composition": "natural_only_no_legacy_questions",
+  "counts": {
+    "sources": 28,
+    "contexts": 24,
+    "questions": 84,
+    "families": 12,
+    "source_facts": 276,
+    "new_sentence_meaning_bundles": 264,
+    "short_control_bundles": 12,
+    "natural_base_cases": 12,
+    "new_natural_questions": 72,
+    "paired_control_questions": 12,
+    "natural_single_cases": 8,
+    "natural_multi_cases": 4,
+    "source_relations": 59,
+    "legacy_questions": 0,
+    "upstream_variables": 0,
+    "draft_linked_variables": 0
+  },
+  "profiles": {
+    "natural_single": 48,
+    "natural_multi": 24,
+    "natural_control": 12
+  },
+  "families": [
+    {
+      "id": "NC-01",
+      "title": "서버 배포의 담당자 인계와 완료 상태",
+      "split": "development",
+      "variables": [],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-02",
+      "title": "이사 준비의 물건·열쇠·예약 구분",
+      "split": "development",
+      "variables": [],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-03",
+      "title": "장애의 추측·확인된 원인·복구 범위",
+      "split": "development",
+      "variables": [],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-04",
+      "title": "여행 예약 변경과 환불 조건",
+      "split": "development",
+      "variables": [],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-05",
+      "title": "성능 수치의 비교 조건과 채택 결정",
+      "split": "development",
+      "variables": [],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-06",
+      "title": "사람별 취향과 일시적 요청",
+      "split": "development",
+      "variables": [],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-07",
+      "title": "회의 발언·조건부 승인·작업 범위",
+      "split": "development",
+      "variables": [],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-08",
+      "title": "수리 견적·실제 지출·다른 장소 물건",
+      "split": "development",
+      "variables": [],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-09",
+      "title": "동명이인과 뒤늦게 읽은 상대 시간 메시지",
+      "split": "development",
+      "variables": [],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-10",
+      "title": "분리된 원문의 물건 위치 정정",
+      "split": "development",
+      "variables": [],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-11",
+      "title": "서로 다른 작성자의 완료 충돌",
+      "split": "development",
+      "variables": [],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-12",
+      "title": "모임 경로 변경·구매 담당·취소 이유",
+      "split": "development",
+      "variables": [],
+      "review_status": "AUTHOR_DRAFT"
+    }
+  ],
+  "partition": {
+    "development": [
+      "NC-01-Q1",
+      "NC-01-Q2",
+      "NC-01-Q3",
+      "NC-01-Q4",
+      "NC-01-Q5",
+      "NC-01-Q6",
+      "NC-01-CONTROL-Q1",
+      "NC-02-Q1",
+      "NC-02-Q2",
+      "NC-02-Q3",
+      "NC-02-Q4",
+      "NC-02-Q5",
+      "NC-02-Q6",
+      "NC-02-CONTROL-Q1",
+      "NC-03-Q1",
+      "NC-03-Q2",
+      "NC-03-Q3",
+      "NC-03-Q4",
+      "NC-03-Q5",
+      "NC-03-Q6",
+      "NC-03-CONTROL-Q1",
+      "NC-04-Q1",
+      "NC-04-Q2",
+      "NC-04-Q3",
+      "NC-04-Q4",
+      "NC-04-Q5",
+      "NC-04-Q6",
+      "NC-04-CONTROL-Q1",
+      "NC-05-Q1",
+      "NC-05-Q2",
+      "NC-05-Q3",
+      "NC-05-Q4",
+      "NC-05-Q5",
+      "NC-05-Q6",
+      "NC-05-CONTROL-Q1",
+      "NC-06-Q1",
+      "NC-06-Q2",
+      "NC-06-Q3",
+      "NC-06-Q4",
+      "NC-06-Q5",
+      "NC-06-Q6",
+      "NC-06-CONTROL-Q1",
+      "NC-07-Q1",
+      "NC-07-Q2",
+      "NC-07-Q3",
+      "NC-07-Q4",
+      "NC-07-Q5",
+      "NC-07-Q6",
+      "NC-07-CONTROL-Q1",
+      "NC-08-Q1",
+      "NC-08-Q2",
+      "NC-08-Q3",
+      "NC-08-Q4",
+      "NC-08-Q5",
+      "NC-08-Q6",
+      "NC-08-CONTROL-Q1",
+      "NC-09-Q1",
+      "NC-09-Q2",
+      "NC-09-Q3",
+      "NC-09-Q4",
+      "NC-09-Q5",
+      "NC-09-Q6",
+      "NC-09-CONTROL-Q1",
+      "NC-10-Q1",
+      "NC-10-Q2",
+      "NC-10-Q3",
+      "NC-10-Q4",
+      "NC-10-Q5",
+      "NC-10-Q6",
+      "NC-10-CONTROL-Q1",
+      "NC-11-Q1",
+      "NC-11-Q2",
+      "NC-11-Q3",
+      "NC-11-Q4",
+      "NC-11-Q5",
+      "NC-11-Q6",
+      "NC-11-CONTROL-Q1",
+      "NC-12-Q1",
+      "NC-12-Q2",
+      "NC-12-Q3",
+      "NC-12-Q4",
+      "NC-12-Q5",
+      "NC-12-Q6",
+      "NC-12-CONTROL-Q1"
+    ],
+    "final": []
+  },
+  "provenance": {
+    "creation_method": "independent_natural_only_snapshot",
+    "runtime_dependency_on_other_datasets": false,
+    "definition_sha256": "9179f3e4ab8b39255693eb2ba5dbb7b3f1b9af8193ba0d8d92e3a1c6ff3013ba"
+  },
+  "limits": [
+    "기존 56개 통제 질문과 원문은 포함하지 않는 별도 데이터셋",
+    "자연 문맥 이야기 12개와 질문 72개; 짧은 대조 12개는 그중 첫 질문의 별도 입력 변형",
+    "원문 28개 중 자연 원문 16개와 짧은 대조 원문 12개; 맥락 24개는 독립 이야기 24개가 아님",
+    "작성자 정답 초안이며 의미 정확성·완전성의 독립 검토는 미완료",
+    "문장 의미 묶음 264개와 대조 주석 12개는 원자 사실 276개라는 뜻이 아님",
+    "모델 토큰수·실제 모델 성능·합격률 미측정; 전부 개발용 합성 자료",
+    "원문 전체 입력 경로; 실제 가져오기 분할·전역 개체 병합·실사용 인증의 구현 검증이 아님",
+    "사례당 검색 원문 1~2개: 원문 순위 성능으로 일반화하지 않음",
+    "질문·프로필·원문을 고정해서 비교하고 짧은 대조를 독립 이야기로 합산하지 않음"
+  ],
+  "integrity": [
+    {
+      "file": "inputs.json",
+      "sha256": "7080cf976b843a1f4cd5f29028e31a44eae6beaf80c2757bd9274d0804b2dac0"
+    },
+    {
+      "file": "annotations.json",
+      "sha256": "a823d81e0185e5d289a09360fd4ae0f54812cd2746cda8d06691d8e445c6e844"
+    },
+    {
+      "file": "sources.json",
+      "sha256": "7f35ca701f6b31e278d2fc9c7d9699d5986493b4fa099d65beec250f28fe9813"
+    },
+    {
+      "file": "contexts.json",
+      "sha256": "7aac62fe581615dd0a62f8e855acae0058279244a8038bd66f331afe2bb69f29"
+    },
+    {
+      "file": "questions.json",
+      "sha256": "18a6bd87153ff77769b3ef2c67a4ccf95f9652553ffbd07e6a2079950569b731"
+    },
+    {
+      "file": "coverage.json",
+      "sha256": "68f352efb90408425245e9ad136582504add3a765333ce36ce747df94d9ba97c"
+    },
+    {
+      "file": "cases.json",
+      "sha256": "d176b3a037052a09f1d9e4948b6971b0c932049cb85a9efd1177195a4cf16e9f"
+    },
+    {
+      "file": "connections.json",
+      "sha256": "035ec079dc9fecafd9b1638b1ff9473d7b28f937b0ad00c2ccc78f0ddea240ab"
+    },
+    {
+      "file": "sentence_inventory.json",
+      "sha256": "3330bd4e2b1775f05592c8d1d94f5c9a5edb9e2789e23f80e50e952a845b0d01"
+    },
+    {
+      "file": "definition.json",
+      "sha256": "9179f3e4ab8b39255693eb2ba5dbb7b3f1b9af8193ba0d8d92e3a1c6ff3013ba"
+    },
+    {
+      "file": "lib.mjs",
+      "sha256": "ecefff51a3789bb9c7dc9efabbe6d95e47dca2f6502c6c8b8421dd53b477f4d3"
+    },
+    {
+      "file": "build.py",
+      "sha256": "47042be3c2cc125d0c5e7efd1dc7c52cf7e4751de8af4c0216ac42e8967739e3"
+    },
+    {
+      "file": "README.md",
+      "sha256": "93ec487384091e556b7b62e8d1140417a388ac0242c7025d6b4022d7873287bf"
+    }
+  ]
+}

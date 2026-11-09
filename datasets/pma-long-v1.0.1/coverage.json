@@ -1,0 +1,42 @@
+{
+  "variables": [],
+  "mapping_status": "NOT_MAPPED_TO_MAIN_SUITE_489_VARIABLES",
+  "profiles": [
+    {
+      "id": "smoke",
+      "count": 8,
+      "label": "짧은 대조군",
+      "description": "8개 의미 계열의 짧은 원문"
+    },
+    {
+      "id": "core",
+      "count": 24,
+      "label": "길이·위치 비교",
+      "description": "3000자 × 앞·중간·끝, 8개 의미 계열"
+    },
+    {
+      "id": "sentence",
+      "count": 8,
+      "label": "긴 단일 문장",
+      "description": "600·1800자, 4개 의미 계열, 목표는 끝에 위치"
+    },
+    {
+      "id": "boundary",
+      "count": 6,
+      "label": "가져오기 경계",
+      "description": "3999·4000·4001·7999·8000·8001자; 분할 계획만 제공"
+    },
+    {
+      "id": "dependency",
+      "count": 4,
+      "label": "원거리 근거 연결",
+      "description": "8500자, 떨어진 두 근거를 함께 확인"
+    },
+    {
+      "id": "stress",
+      "count": 6,
+      "label": "장문 부하",
+      "description": "12000·24000자 × 앞·중간·끝; 조건부 계획 계열 한정"
+    }
+  ]
+}

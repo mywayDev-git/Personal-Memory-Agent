@@ -1,0 +1,32 @@
+{
+  "version": "summary-preservation-v1",
+  "fixture_sha256": "fc965b83e7e0b35aebebcb6317a7bf1e71737aeed6550e522a2366e9cab94dd6",
+  "case_ids": [
+    "C01",
+    "C02",
+    "C03",
+    "C04",
+    "C05",
+    "C06",
+    "C07",
+    "C08",
+    "C09",
+    "C10",
+    "C11",
+    "C12",
+    "C13",
+    "C14",
+    "C15",
+    "C16",
+    "C17",
+    "C18",
+    "C19",
+    "C20",
+    "C21",
+    "C22"
+  ],
+  "case_count": 22,
+  "source_count": 16,
+  "accepted_count": 66,
+  "audit_sha256": "5bd0b9912d198fec045a597adbc43e873c6eb6a71024708e3931400fed429b25"
+}

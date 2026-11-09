@@ -1,0 +1,2773 @@
+{
+  "schema_version": "pma-memory-cases-2",
+  "cases": [
+    {
+      "id": "MC-01",
+      "title": "배포 인계와 검증 범위",
+      "domain": "work",
+      "split": "development",
+      "profile": "development_a",
+      "record_ids": [
+        "MC-01-R1",
+        "MC-01-R2",
+        "MC-01-R3",
+        "MC-01-R4",
+        "MC-01-R5",
+        "MC-01-R6",
+        "MC-01-R7",
+        "MC-01-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "MIS-1e3ba995d444ec1e",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-55bb5984e3ba2608",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-0195a011e0880abe",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-7ce3a97edda81bc0",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-5f5e5ef7882a48a0",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-80634f4e5945c984",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-38c5f8584d069058",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-4231c55782baa64d",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-0c19a381ce030fd0",
+      "question_ids": [
+        "MC-01-Q1",
+        "MC-01-Q2",
+        "MC-01-Q3",
+        "MC-01-Q4",
+        "MC-01-Q5",
+        "MC-01-Q6",
+        "MC-01-Q7",
+        "MC-01-Q8"
+      ],
+      "connection_ids": [
+        "MC-01-Q8-E4-5"
+      ],
+      "characters": 427,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": "NC-01",
+      "variables": [
+        "IN-42",
+        "EX-11",
+        "EX-17",
+        "AG-29",
+        "EV-07",
+        "EV-09"
+      ]
+    },
+    {
+      "id": "MC-02",
+      "title": "이사 상자와 신청 상태",
+      "domain": "life",
+      "split": "development",
+      "profile": "development_a",
+      "record_ids": [
+        "MC-02-R1",
+        "MC-02-R2",
+        "MC-02-R3",
+        "MC-02-R4",
+        "MC-02-R5",
+        "MC-02-R6",
+        "MC-02-R7",
+        "MC-02-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "MIS-f5c6f60aeaa09d97",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-1fddfd1eb84a2575",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-653e77e3842e7ad1",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-bc11643fae827122",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-84c17f850eafd350",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-3ec134bfec0e1c95",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-39cc3b349ad3eea6",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-e72668bd8c2f3c02",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-8ecdd1f4b059fe8c",
+      "question_ids": [
+        "MC-02-Q1",
+        "MC-02-Q2",
+        "MC-02-Q3",
+        "MC-02-Q4",
+        "MC-02-Q5",
+        "MC-02-Q6",
+        "MC-02-Q7",
+        "MC-02-Q8"
+      ],
+      "connection_ids": [],
+      "characters": 393,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": "NC-02",
+      "variables": [
+        "IN-33",
+        "EX-04",
+        "EX-19",
+        "AG-14",
+        "EV-05"
+      ]
+    },
+    {
+      "id": "MC-03",
+      "title": "장애 가설과 확인된 원인",
+      "domain": "work",
+      "split": "development",
+      "profile": "development_a",
+      "record_ids": [
+        "MC-03-R1",
+        "MC-03-R2",
+        "MC-03-R3",
+        "MC-03-R4",
+        "MC-03-R5",
+        "MC-03-R6",
+        "MC-03-R7",
+        "MC-03-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "MIS-3b86e19a9084ed73",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-5056f83f88e029b1",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-941f5a4ce85e0ab5",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-53e895401cbb5864",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-ae786e3650792641",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-0923cbc4a97d7d1a",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-f70e22c57e1ce78d",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-797d4a6b6f75172c",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-eac2d8565d2ee2d4",
+      "question_ids": [
+        "MC-03-Q1",
+        "MC-03-Q2",
+        "MC-03-Q3",
+        "MC-03-Q4",
+        "MC-03-Q5",
+        "MC-03-Q6",
+        "MC-03-Q7",
+        "MC-03-Q8"
+      ],
+      "connection_ids": [
+        "MC-03-Q1-E2-3",
+        "MC-03-Q2-E1-2"
+      ],
+      "characters": 427,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": "NC-03",
+      "variables": [
+        "IN-35",
+        "IN-36",
+        "EX-14",
+        "RR-08",
+        "EV-08",
+        "EV-23"
+      ]
+    },
+    {
+      "id": "MC-04",
+      "title": "여행의 예약과 개인 선호",
+      "domain": "life",
+      "split": "development",
+      "profile": "development_a",
+      "record_ids": [
+        "MC-04-R1",
+        "MC-04-R2",
+        "MC-04-R3",
+        "MC-04-R4",
+        "MC-04-R5",
+        "MC-04-R6",
+        "MC-04-R7",
+        "MC-04-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "MIS-dd2746a240fce73d",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-a4082a260f543191",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-1196b76528da5c1f",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-8b88ff771338de3f",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-c1a4b38c63c4bfd8",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-030620fb5b9225c3",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-4b1c4dd130b0f4c4",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-d609fa9eed0aa27c",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-5b65a16951cae994",
+      "question_ids": [
+        "MC-04-Q1",
+        "MC-04-Q2",
+        "MC-04-Q3",
+        "MC-04-Q4",
+        "MC-04-Q5",
+        "MC-04-Q6",
+        "MC-04-Q7",
+        "MC-04-Q8"
+      ],
+      "connection_ids": [],
+      "characters": 398,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": "NC-04",
+      "variables": [
+        "MW-05",
+        "EX-08",
+        "EX-11",
+        "AG-13",
+        "EV-07"
+      ]
+    },
+    {
+      "id": "MC-05",
+      "title": "성능 비교와 측정 근거",
+      "domain": "work",
+      "split": "development",
+      "profile": "development_a",
+      "record_ids": [
+        "MC-05-R1",
+        "MC-05-R2",
+        "MC-05-R3",
+        "MC-05-R4",
+        "MC-05-R5",
+        "MC-05-R6",
+        "MC-05-R7",
+        "MC-05-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "MIS-b40209dafdfd34c6",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-07de4381ea31d5b8",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-7e2a15ea3d06cf12",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-6c42adf9693fb555",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-d557f2488100e752",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-8d571caf68a62f4c",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-3709ec03183a470f",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-79ebeab7bbfe4b67",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-3540b5e1d64fd43d",
+      "question_ids": [
+        "MC-05-Q1",
+        "MC-05-Q2",
+        "MC-05-Q3",
+        "MC-05-Q4",
+        "MC-05-Q5",
+        "MC-05-Q6",
+        "MC-05-Q7",
+        "MC-05-Q8"
+      ],
+      "connection_ids": [],
+      "characters": 440,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": "NC-05",
+      "variables": [
+        "IN-34",
+        "EV-02",
+        "EV-24",
+        "RR-34",
+        "AG-34"
+      ]
+    },
+    {
+      "id": "MC-06",
+      "title": "가족의 선호와 준비 단계",
+      "domain": "life",
+      "split": "development",
+      "profile": "development_a",
+      "record_ids": [
+        "MC-06-R1",
+        "MC-06-R2",
+        "MC-06-R3",
+        "MC-06-R4",
+        "MC-06-R5",
+        "MC-06-R6",
+        "MC-06-R7",
+        "MC-06-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "MIS-f06780ef9cf8c1a4",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-9edf16f570ecebd3",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-1a056728a63f74bb",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-98062e61972596f9",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-0a489ef384c6bb65",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-586f3472d93e8dbe",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-b9a5bd7ab01e8e30",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-da4299ac9591cb49",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-eb83bc63ac307180",
+      "question_ids": [
+        "MC-06-Q1",
+        "MC-06-Q2",
+        "MC-06-Q3",
+        "MC-06-Q4",
+        "MC-06-Q5",
+        "MC-06-Q6",
+        "MC-06-Q7",
+        "MC-06-Q8"
+      ],
+      "connection_ids": [],
+      "characters": 405,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": "NC-06",
+      "variables": [
+        "EX-25",
+        "MW-05",
+        "EX-04",
+        "EV-04",
+        "AG-14"
+      ]
+    },
+    {
+      "id": "MC-07",
+      "title": "회의 제안과 실제 서비스",
+      "domain": "work",
+      "split": "development",
+      "profile": "development_a",
+      "record_ids": [
+        "MC-07-R1",
+        "MC-07-R2",
+        "MC-07-R3",
+        "MC-07-R4",
+        "MC-07-R5",
+        "MC-07-R6",
+        "MC-07-R7",
+        "MC-07-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "MIS-ddd8991c21306fee",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-c5d3f1a41650189d",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-325e177cec268740",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-aab53b091ab53df6",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-bcbca7fc82b2b63d",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-a96cc585b189398a",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-cd05cf523b82bd62",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-f024d0109979ea02",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-251bb47f3c5d8a60",
+      "question_ids": [
+        "MC-07-Q1",
+        "MC-07-Q2",
+        "MC-07-Q3",
+        "MC-07-Q4",
+        "MC-07-Q5",
+        "MC-07-Q6",
+        "MC-07-Q7",
+        "MC-07-Q8"
+      ],
+      "connection_ids": [
+        "MC-07-Q4-E4-5",
+        "MC-07-Q5-E3-5"
+      ],
+      "characters": 457,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": "NC-07",
+      "variables": [
+        "EX-11",
+        "EX-16",
+        "EV-07",
+        "AG-13",
+        "AG-29"
+      ]
+    },
+    {
+      "id": "MC-08",
+      "title": "수리 비용과 다른 청소기",
+      "domain": "life",
+      "split": "development",
+      "profile": "development_a",
+      "record_ids": [
+        "MC-08-R1",
+        "MC-08-R2",
+        "MC-08-R3",
+        "MC-08-R4",
+        "MC-08-R5",
+        "MC-08-R6",
+        "MC-08-R7",
+        "MC-08-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "MIS-bdb3ac2b31bd09f0",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-09659af26eaa9d7c",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-c5976fda5b08f934",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-dbced766150f01f0",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-2314e180f34f8715",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-07005ede79df1431",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-c137a4c6f40f3142",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-d6a8c731a4fb4092",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-14a8ecbbcd8e1f42",
+      "question_ids": [
+        "MC-08-Q1",
+        "MC-08-Q2",
+        "MC-08-Q3",
+        "MC-08-Q4",
+        "MC-08-Q5",
+        "MC-08-Q6",
+        "MC-08-Q7",
+        "MC-08-Q8"
+      ],
+      "connection_ids": [
+        "MC-08-Q2-E1-2"
+      ],
+      "characters": 395,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": "NC-08",
+      "variables": [
+        "IN-33",
+        "EX-09",
+        "EV-02",
+        "EV-05",
+        "AG-15"
+      ]
+    },
+    {
+      "id": "MC-09",
+      "title": "동명이인과 네 가지 날짜",
+      "domain": "work",
+      "split": "development",
+      "profile": "development_a",
+      "record_ids": [
+        "MC-09-R1",
+        "MC-09-R2",
+        "MC-09-R3",
+        "MC-09-R4",
+        "MC-09-R5",
+        "MC-09-R6",
+        "MC-09-R7",
+        "MC-09-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "MIS-bc38ba42186eaa8e",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-0f588e1cf1782e93",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-5b2cad365235e321",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-50ce19f59cca7891",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-b9aa9eb4822584c8",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-00029ca29116242f",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-6afee2fde2be9758",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-3cf2dfb56a84e085",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-a9ceb73ed43f3df6",
+      "question_ids": [
+        "MC-09-Q1",
+        "MC-09-Q2",
+        "MC-09-Q3",
+        "MC-09-Q4",
+        "MC-09-Q5",
+        "MC-09-Q6",
+        "MC-09-Q7",
+        "MC-09-Q8"
+      ],
+      "connection_ids": [
+        "MC-09-Q1-E1-4",
+        "MC-09-Q4-E1-2",
+        "MC-09-Q5-E4-5",
+        "MC-09-Q7-E1-2",
+        "MC-09-Q7-E2-7"
+      ],
+      "characters": 425,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": "NC-09",
+      "variables": [
+        "RR-23",
+        "RT-07",
+        "RT-08",
+        "EX-05",
+        "EX-06",
+        "CV-16"
+      ]
+    },
+    {
+      "id": "MC-10",
+      "title": "접수증 위치 정정과 문서 구분",
+      "domain": "life",
+      "split": "development",
+      "profile": "development_a",
+      "record_ids": [
+        "MC-10-R1",
+        "MC-10-R2",
+        "MC-10-R3",
+        "MC-10-R4",
+        "MC-10-R5",
+        "MC-10-R6",
+        "MC-10-R7",
+        "MC-10-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "MIS-94f9a334195f9f22",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-30bcef504dd33cd6",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-1e5fc74f5a9a87f8",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-7f5b228401d7cfda",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-4f664a2f070309b7",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-e433f28e28877a91",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-1d1d866dc8b64361",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-2c641682c426165a",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-1e211e0c40476d10",
+      "question_ids": [
+        "MC-10-Q1",
+        "MC-10-Q2",
+        "MC-10-Q3",
+        "MC-10-Q4",
+        "MC-10-Q5",
+        "MC-10-Q6",
+        "MC-10-Q7",
+        "MC-10-Q8"
+      ],
+      "connection_ids": [
+        "MC-10-Q1-E1-2",
+        "MC-10-Q3-E2-3"
+      ],
+      "characters": 400,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": "NC-10",
+      "variables": [
+        "ST-05",
+        "EX-17",
+        "EV-05",
+        "EV-09",
+        "QU-27"
+      ]
+    },
+    {
+      "id": "MC-11",
+      "title": "상반된 인수 보고와 증빙",
+      "domain": "work",
+      "split": "development",
+      "profile": "development_a",
+      "record_ids": [
+        "MC-11-R1",
+        "MC-11-R2",
+        "MC-11-R3",
+        "MC-11-R4",
+        "MC-11-R5",
+        "MC-11-R6",
+        "MC-11-R7",
+        "MC-11-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "MIS-7a6d80687e7830cc",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-2d1ddf6ccdc801f9",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-63b45512cb19120b",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-e255abf58865d045",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-6984aaa18c51324b",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-7f16bd3279da121f",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-b89343c38a72485d",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-0fb156c3ab338e5e",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-077f71a347c9b392",
+      "question_ids": [
+        "MC-11-Q1",
+        "MC-11-Q2",
+        "MC-11-Q3",
+        "MC-11-Q4",
+        "MC-11-Q5",
+        "MC-11-Q6",
+        "MC-11-Q7",
+        "MC-11-Q8"
+      ],
+      "connection_ids": [
+        "MC-11-Q1-E1-2",
+        "MC-11-Q2-E1-2"
+      ],
+      "characters": 418,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": "NC-11",
+      "variables": [
+        "AG-12",
+        "EV-11",
+        "EV-22",
+        "RR-08"
+      ]
+    },
+    {
+      "id": "MC-12",
+      "title": "모임의 부분 취소와 구매 인계",
+      "domain": "life",
+      "split": "development",
+      "profile": "development_a",
+      "record_ids": [
+        "MC-12-R1",
+        "MC-12-R2",
+        "MC-12-R3",
+        "MC-12-R4",
+        "MC-12-R5",
+        "MC-12-R6",
+        "MC-12-R7",
+        "MC-12-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "MIS-9a4b74be99ac10b1",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-c5110490889bd6a5",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-87eab77c42eb2d7e",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-e5a4663355d599c8",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-eb43bdba00bfede4",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-1069ba3a3f2403b4",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-cf4f0f6d39c77828",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-75f0fa22813bd936",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-44ea39be43fe6fed",
+      "question_ids": [
+        "MC-12-Q1",
+        "MC-12-Q2",
+        "MC-12-Q3",
+        "MC-12-Q4",
+        "MC-12-Q5",
+        "MC-12-Q6",
+        "MC-12-Q7",
+        "MC-12-Q8"
+      ],
+      "connection_ids": [
+        "MC-12-Q5-E1-3"
+      ],
+      "characters": 403,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": "NC-12",
+      "variables": [
+        "EX-11",
+        "MW-07",
+        "AG-15",
+        "EV-23",
+        "EV-25"
+      ]
+    },
+    {
+      "id": "MC-13",
+      "title": "기간 안 전체 작업과 중복 집계",
+      "domain": "work",
+      "split": "development",
+      "profile": "development_b",
+      "record_ids": [
+        "MC-13-R1",
+        "MC-13-R2",
+        "MC-13-R3",
+        "MC-13-R4",
+        "MC-13-R5",
+        "MC-13-R6",
+        "MC-13-R7",
+        "MC-13-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "MIS-26bae31561a5fe04",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-9ddb151028877656",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-1d724548e6484d72",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-1c0c6a8e2321caec",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-e58fe738b341f123",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-8974b637c437f046",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-b8abbf77f86dc0d2",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-df543345498f9c9b",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-544da5c9ccff9f2a",
+      "question_ids": [
+        "MC-13-Q1",
+        "MC-13-Q2",
+        "MC-13-Q3",
+        "MC-13-Q4",
+        "MC-13-Q5",
+        "MC-13-Q6",
+        "MC-13-Q7",
+        "MC-13-Q8"
+      ],
+      "connection_ids": [
+        "MC-13-Q2-E1-2",
+        "MC-13-Q2-E2-3",
+        "MC-13-Q2-E3-4",
+        "MC-13-Q2-E4-5",
+        "MC-13-Q2-E5-6",
+        "MC-13-Q2-E6-7",
+        "MC-13-Q3-E1-2",
+        "MC-13-Q3-E2-3",
+        "MC-13-Q3-E3-4",
+        "MC-13-Q3-E4-5",
+        "MC-13-Q3-E5-6",
+        "MC-13-Q3-E6-7",
+        "MC-13-Q7-E1-3",
+        "MC-13-Q7-E3-5",
+        "MC-13-Q7-E5-7"
+      ],
+      "characters": 410,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "QI-13",
+        "QI-14",
+        "RT-03",
+        "RT-25",
+        "RT-30",
+        "EV-25"
+      ]
+    },
+    {
+      "id": "MC-14",
+      "title": "같은 제목의 프로젝트와 식별자",
+      "domain": "work",
+      "split": "development",
+      "profile": "development_b",
+      "record_ids": [
+        "MC-14-R1",
+        "MC-14-R2",
+        "MC-14-R3",
+        "MC-14-R4",
+        "MC-14-R5",
+        "MC-14-R6",
+        "MC-14-R7",
+        "MC-14-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "MIS-9aa154b86dc300dd",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-2f62f5816f97550a",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-39e08a715b69dab6",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-44adeb7fb260e39b",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-3583aaeed066fe84",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-c314aec5763f2d6a",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-9b7c797499bbaf9c",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-019c2fe25fc63d00",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-c061fabdface0fae",
+      "question_ids": [
+        "MC-14-Q1",
+        "MC-14-Q2",
+        "MC-14-Q3",
+        "MC-14-Q4",
+        "MC-14-Q5",
+        "MC-14-Q6",
+        "MC-14-Q7",
+        "MC-14-Q8"
+      ],
+      "connection_ids": [
+        "MC-14-Q2-E1-2",
+        "MC-14-Q2-E2-3"
+      ],
+      "characters": 501,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "QU-23",
+        "QU-24",
+        "QU-25",
+        "RR-16",
+        "RR-23"
+      ]
+    },
+    {
+      "id": "MC-15",
+      "title": "정정의 정정과 과거 시점",
+      "domain": "life",
+      "split": "development",
+      "profile": "development_b",
+      "record_ids": [
+        "MC-15-R1",
+        "MC-15-R2",
+        "MC-15-R3",
+        "MC-15-R4",
+        "MC-15-R5",
+        "MC-15-R6",
+        "MC-15-R7",
+        "MC-15-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "MIS-147558c454e02151",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-619a4f6a4bb16c68",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-d8f0715229ddc10c",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-6755afdb9a5e91e2",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-8df8b0e72c97d936",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-6e335f1737c1068c",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-4a411a727f038ccb",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-54ab24850f9347c7",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-aa3ec4004932db28",
+      "question_ids": [
+        "MC-15-Q1",
+        "MC-15-Q2",
+        "MC-15-Q3",
+        "MC-15-Q4",
+        "MC-15-Q5",
+        "MC-15-Q6",
+        "MC-15-Q7",
+        "MC-15-Q8"
+      ],
+      "connection_ids": [
+        "MC-15-Q3-E1-2",
+        "MC-15-Q3-E2-3",
+        "MC-15-Q3-E3-7",
+        "MC-15-Q4-E1-2",
+        "MC-15-Q4-E2-3"
+      ],
+      "characters": 416,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "ST-06",
+        "ST-07",
+        "QI-16",
+        "QI-17",
+        "RT-07",
+        "EV-09"
+      ]
+    },
+    {
+      "id": "MC-16",
+      "title": "과거 기록을 늦게 저장한 경우",
+      "domain": "work",
+      "split": "development",
+      "profile": "development_b",
+      "record_ids": [
+        "MC-16-R1",
+        "MC-16-R2",
+        "MC-16-R3",
+        "MC-16-R4",
+        "MC-16-R5",
+        "MC-16-R6",
+        "MC-16-R7",
+        "MC-16-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "MIS-7877e61f8e183c3f",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-b2b710bace8a4db1",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-a36912b7c1fb9790",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-692e3818e27bd8ac",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-70e630aeac58e7a2",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-b7aa56dace3ecd05",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-0309413822606ad1",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-0db1aa21a19fdb81",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-1b5845e77858fa10",
+      "question_ids": [
+        "MC-16-Q1",
+        "MC-16-Q2",
+        "MC-16-Q3",
+        "MC-16-Q4",
+        "MC-16-Q5",
+        "MC-16-Q6",
+        "MC-16-Q7",
+        "MC-16-Q8"
+      ],
+      "connection_ids": [
+        "MC-16-Q2-E1-2",
+        "MC-16-Q2-E2-3",
+        "MC-16-Q2-E3-5",
+        "MC-16-Q3-E1-2",
+        "MC-16-Q6-E2-5",
+        "MC-16-Q8-E2-8"
+      ],
+      "characters": 433,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "RT-07",
+        "RT-08",
+        "RT-09",
+        "RR-06",
+        "RR-07"
+      ]
+    },
+    {
+      "id": "MC-17",
+      "title": "단위와 환불을 반영한 지출",
+      "domain": "life",
+      "split": "development",
+      "profile": "development_b",
+      "record_ids": [
+        "MC-17-R1",
+        "MC-17-R2",
+        "MC-17-R3",
+        "MC-17-R4",
+        "MC-17-R5",
+        "MC-17-R6",
+        "MC-17-R7",
+        "MC-17-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "MIS-3993e3c57212f9e0",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-303fbae82f54b6be",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-3aeecbc967e72356",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-0096d12a5ee90c1e",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-d85ee64af4735717",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-b9dd9a4e84c54075",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-381d6f179b9f7293",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-bf2784c486675ef8",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-9e9c55ead1ee0d2f",
+      "question_ids": [
+        "MC-17-Q1",
+        "MC-17-Q2",
+        "MC-17-Q3",
+        "MC-17-Q4",
+        "MC-17-Q5",
+        "MC-17-Q6",
+        "MC-17-Q7",
+        "MC-17-Q8"
+      ],
+      "connection_ids": [
+        "MC-17-Q2-E1-3",
+        "MC-17-Q3-E1-2",
+        "MC-17-Q5-E1-3",
+        "MC-17-Q5-E3-4",
+        "MC-17-Q5-E4-6"
+      ],
+      "characters": 385,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "QI-14",
+        "RR-34",
+        "RT-25",
+        "EV-02",
+        "EV-26"
+      ]
+    },
+    {
+      "id": "MC-18",
+      "title": "별칭과 혼합 언어의 작업 메모",
+      "domain": "work",
+      "split": "development",
+      "profile": "development_b",
+      "record_ids": [
+        "MC-18-R1",
+        "MC-18-R2",
+        "MC-18-R3",
+        "MC-18-R4",
+        "MC-18-R5",
+        "MC-18-R6",
+        "MC-18-R7",
+        "MC-18-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "MIS-d90a31c8eedeb863",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-4b338790b975078e",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-653f5f1e2ede5a46",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-502cf99819d75fd4",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-56528c30a1c886a1",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-8a04e37c5aa5e890",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-a8c2b49300e0b268",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-92f348dd32649d5b",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-29a0658577c3bfaf",
+      "question_ids": [
+        "MC-18-Q1",
+        "MC-18-Q2",
+        "MC-18-Q3",
+        "MC-18-Q4",
+        "MC-18-Q5",
+        "MC-18-Q6",
+        "MC-18-Q7",
+        "MC-18-Q8"
+      ],
+      "connection_ids": [
+        "MC-18-Q3-E2-3"
+      ],
+      "characters": 449,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "QU-08",
+        "QU-09",
+        "QU-10",
+        "QU-11",
+        "QU-12",
+        "RR-18"
+      ]
+    },
+    {
+      "id": "MC-19",
+      "title": "월 경계의 사건일과 등록일",
+      "domain": "life",
+      "split": "development",
+      "profile": "development_b",
+      "record_ids": [
+        "MC-19-R1",
+        "MC-19-R2",
+        "MC-19-R3",
+        "MC-19-R4",
+        "MC-19-R5",
+        "MC-19-R6",
+        "MC-19-R7",
+        "MC-19-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "MIS-7709b89f6b4def77",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-17292cf083a52c41",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-736ddcc62e92900d",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-e76467d36270d0a3",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-39917a26e8b5c165",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-10d7031da774cac6",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-fd0685b4bc32b670",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-6e73387c0f2a2150",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-31dc840307135a0a",
+      "question_ids": [
+        "MC-19-Q1",
+        "MC-19-Q2",
+        "MC-19-Q3",
+        "MC-19-Q4",
+        "MC-19-Q5",
+        "MC-19-Q6",
+        "MC-19-Q7",
+        "MC-19-Q8"
+      ],
+      "connection_ids": [
+        "MC-19-Q2-E1-2"
+      ],
+      "characters": 415,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "RT-03",
+        "RT-04",
+        "EX-05",
+        "EX-06",
+        "EV-03"
+      ]
+    },
+    {
+      "id": "MC-20",
+      "title": "서로 다른 경로의 복수 근거",
+      "domain": "work",
+      "split": "development",
+      "profile": "development_b",
+      "record_ids": [
+        "MC-20-R1",
+        "MC-20-R2",
+        "MC-20-R3",
+        "MC-20-R4",
+        "MC-20-R5",
+        "MC-20-R6",
+        "MC-20-R7",
+        "MC-20-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "MIS-2a199daa04641f8f",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-b35d4e5e0818b108",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-db53b62ba5cf0ccc",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-9e5878a6653e854c",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-54ca28544467a339",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-d8c9a074960ed1cd",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-31c60ff83ab0a864",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-29495b854a046932",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-62cd215f6085c5c4",
+      "question_ids": [
+        "MC-20-Q1",
+        "MC-20-Q2",
+        "MC-20-Q3",
+        "MC-20-Q4",
+        "MC-20-Q5",
+        "MC-20-Q6",
+        "MC-20-Q7",
+        "MC-20-Q8"
+      ],
+      "connection_ids": [
+        "MC-20-Q2-E1-3",
+        "MC-20-Q2-E3-4",
+        "MC-20-Q8-E3-4",
+        "MC-20-Q8-E4-6"
+      ],
+      "characters": 437,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "RR-32",
+        "AG-16",
+        "EV-14",
+        "QI-06"
+      ]
+    },
+    {
+      "id": "MC-21",
+      "title": "정보 부재와 부분 답변",
+      "domain": "life",
+      "split": "development",
+      "profile": "development_b",
+      "record_ids": [
+        "MC-21-R1",
+        "MC-21-R2",
+        "MC-21-R3",
+        "MC-21-R4",
+        "MC-21-R5",
+        "MC-21-R6",
+        "MC-21-R7",
+        "MC-21-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "MIS-023400eb2feee06a",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-3f4fd461c8baa4b8",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-2e41e43a725daac6",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-baf359daba2f5d86",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-7fda1c7567d9db98",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-a403e1ad4acb1004",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-087ea09bacb67daa",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-c339e795dea4cdd9",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-aac2ce8693af3cdd",
+      "question_ids": [
+        "MC-21-Q1",
+        "MC-21-Q2",
+        "MC-21-Q3",
+        "MC-21-Q4",
+        "MC-21-Q5",
+        "MC-21-Q6",
+        "MC-21-Q7",
+        "MC-21-Q8"
+      ],
+      "connection_ids": [],
+      "characters": 379,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "AG-08",
+        "AG-09",
+        "AG-14",
+        "AG-15",
+        "EV-19"
+      ]
+    },
+    {
+      "id": "MC-22",
+      "title": "문서 속 명령과 이전 AI 오답",
+      "domain": "work",
+      "split": "development",
+      "profile": "development_b",
+      "record_ids": [
+        "MC-22-R1",
+        "MC-22-R2",
+        "MC-22-R3",
+        "MC-22-R4",
+        "MC-22-R5",
+        "MC-22-R6",
+        "MC-22-R7",
+        "MC-22-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "MIS-05357a8869152148",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-eb7db16e055439c5",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-fe8816031bdc866e",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-959d9954e63fba74",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-a058658a2581aad4",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-7f764a3604b9ae01",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-d69d75c15c1e9e29",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-b8a6c7c7e44440bf",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-12b78addfac9d820",
+      "question_ids": [
+        "MC-22-Q1",
+        "MC-22-Q2",
+        "MC-22-Q3",
+        "MC-22-Q4",
+        "MC-22-Q5",
+        "MC-22-Q6",
+        "MC-22-Q7",
+        "MC-22-Q8"
+      ],
+      "connection_ids": [
+        "MC-22-Q1-E1-2",
+        "MC-22-Q2-E1-2",
+        "MC-22-Q3-E1-3",
+        "MC-22-Q4-E3-4",
+        "MC-22-Q7-E1-7"
+      ],
+      "characters": 438,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "SEC-08",
+        "SEC-09",
+        "EV-21",
+        "EV-27",
+        "MW-22"
+      ]
+    },
+    {
+      "id": "MC-23",
+      "title": "후속 질문의 조건과 주제 전환",
+      "domain": "work",
+      "split": "development",
+      "profile": "development_b",
+      "record_ids": [
+        "MC-23-R1",
+        "MC-23-R2",
+        "MC-23-R3",
+        "MC-23-R4",
+        "MC-23-R5",
+        "MC-23-R6",
+        "MC-23-R7",
+        "MC-23-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "MIS-c59ccbb066d1eedc",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-6294aec5c2c06cf2",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-11210ac797b7ba9f",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-38c5dee9b6a76cbc",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-f6b6b69a5325b917",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-2e212fb438abb11e",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-a736d54abc33d085",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-34be21171ce715e5",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-b88e44054f5ecc5f",
+      "question_ids": [
+        "MC-23-Q1",
+        "MC-23-Q2",
+        "MC-23-Q3",
+        "MC-23-Q4",
+        "MC-23-Q5",
+        "MC-23-Q6",
+        "MC-23-Q7",
+        "MC-23-Q8"
+      ],
+      "connection_ids": [
+        "MC-23-Q4-E3-7",
+        "MC-23-Q8-E2-3"
+      ],
+      "characters": 400,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "CV-05",
+        "CV-06",
+        "CV-07",
+        "CV-08",
+        "CV-27",
+        "RT-23"
+      ]
+    },
+    {
+      "id": "MC-24",
+      "title": "짧은 메모·목록·표의 수치",
+      "domain": "life",
+      "split": "development",
+      "profile": "development_b",
+      "record_ids": [
+        "MC-24-R1",
+        "MC-24-R2",
+        "MC-24-R3",
+        "MC-24-R4",
+        "MC-24-R5",
+        "MC-24-R6",
+        "MC-24-R7",
+        "MC-24-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "MIS-264d0381dc2902f3",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-b312117cfccb7dee",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-7190e9312717067b",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-5ba62c10be6489dc",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-36c4a96c00cd1dd7",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-562e13e8338b41ba",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-8a428940ce17dcb0",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-7430d310b306bf05",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-36cb2e65dfa6330f",
+      "question_ids": [
+        "MC-24-Q1",
+        "MC-24-Q2",
+        "MC-24-Q3",
+        "MC-24-Q4",
+        "MC-24-Q5",
+        "MC-24-Q6",
+        "MC-24-Q7",
+        "MC-24-Q8"
+      ],
+      "connection_ids": [
+        "MC-24-Q8-E3-8"
+      ],
+      "characters": 401,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "IN-02",
+        "IN-04",
+        "IN-54",
+        "IN-78",
+        "QU-12",
+        "EV-02"
+      ]
+    },
+    {
+      "id": "MC-25",
+      "title": "지역 전시의 담당과 실제 개막",
+      "domain": "life",
+      "split": "final",
+      "profile": "final",
+      "record_ids": [
+        "MC-25-R1",
+        "MC-25-R2",
+        "MC-25-R3",
+        "MC-25-R4",
+        "MC-25-R5",
+        "MC-25-R6",
+        "MC-25-R7",
+        "MC-25-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "MIS-c679c4b55afe2111",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-c67c04c92a2944b9",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-8137151282d83738",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-70fad9b94e9d4312",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-d206b57fa14fdfe8",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-9fba959e2652c4ec",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-2e08921302cf11f0",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-ad15389334a20cbc",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-de05328a3785323b",
+      "question_ids": [
+        "MC-25-Q1",
+        "MC-25-Q2",
+        "MC-25-Q3",
+        "MC-25-Q4",
+        "MC-25-Q5",
+        "MC-25-Q6",
+        "MC-25-Q7",
+        "MC-25-Q8"
+      ],
+      "connection_ids": [
+        "MC-25-Q3-E3-6",
+        "MC-25-Q8-E1-2"
+      ],
+      "characters": 380,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "EX-11",
+        "EX-17",
+        "EV-07",
+        "EV-09"
+      ]
+    },
+    {
+      "id": "MC-26",
+      "title": "악기 수리와 조건부 비용",
+      "domain": "life",
+      "split": "final",
+      "profile": "final",
+      "record_ids": [
+        "MC-26-R1",
+        "MC-26-R2",
+        "MC-26-R3",
+        "MC-26-R4",
+        "MC-26-R5",
+        "MC-26-R6",
+        "MC-26-R7",
+        "MC-26-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "MIS-d4fd4844918d0ae5",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-2b3cdf8be070ccfe",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-e5885ffd59479ad0",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-cc08f9a49bac3b86",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-31a54027e41726d3",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-fc13e84200ad81e3",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-b74b47cf0c32fc10",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-01de644d9f2bce92",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-fe7de296b6018fd3",
+      "question_ids": [
+        "MC-26-Q1",
+        "MC-26-Q2",
+        "MC-26-Q3",
+        "MC-26-Q4",
+        "MC-26-Q5",
+        "MC-26-Q6",
+        "MC-26-Q7",
+        "MC-26-Q8"
+      ],
+      "connection_ids": [
+        "MC-26-Q2-E1-2",
+        "MC-26-Q8-E1-8"
+      ],
+      "characters": 380,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "IN-33",
+        "EX-09",
+        "RR-34",
+        "EV-02"
+      ]
+    },
+    {
+      "id": "MC-27",
+      "title": "정원 공사의 시간순 변경",
+      "domain": "life",
+      "split": "final",
+      "profile": "final",
+      "record_ids": [
+        "MC-27-R1",
+        "MC-27-R2",
+        "MC-27-R3",
+        "MC-27-R4",
+        "MC-27-R5",
+        "MC-27-R6",
+        "MC-27-R7",
+        "MC-27-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "MIS-07eda620f6daa712",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-903bb75fcfbf8d84",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-98ee8baf9fad2024",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-937620a54c812a46",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-bae015b89173d556",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-694125f725538d79",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-19b1bfd6cc769ca2",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-209a2cbc86744751",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-afb08a68e7ecd89c",
+      "question_ids": [
+        "MC-27-Q1",
+        "MC-27-Q2",
+        "MC-27-Q3",
+        "MC-27-Q4",
+        "MC-27-Q5",
+        "MC-27-Q6",
+        "MC-27-Q7",
+        "MC-27-Q8"
+      ],
+      "connection_ids": [
+        "MC-27-Q3-E1-2",
+        "MC-27-Q3-E2-3",
+        "MC-27-Q4-E3-4"
+      ],
+      "characters": 385,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "ST-06",
+        "RT-07",
+        "QI-11",
+        "QI-12"
+      ]
+    },
+    {
+      "id": "MC-28",
+      "title": "대회 지원금과 문서 재인용",
+      "domain": "work",
+      "split": "final",
+      "profile": "final",
+      "record_ids": [
+        "MC-28-R1",
+        "MC-28-R2",
+        "MC-28-R3",
+        "MC-28-R4",
+        "MC-28-R5",
+        "MC-28-R6",
+        "MC-28-R7",
+        "MC-28-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "MIS-d06a4a072ba678a2",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-c4079e049ac3505c",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-6b1eeb7558a9ac19",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-0568a7099956ef94",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-8895581132de68e7",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-a2c828bb0ab8c7be",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-fdac7a26e5087f00",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-657bebb0dcddd945",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-7a03a8d48a3261f3",
+      "question_ids": [
+        "MC-28-Q1",
+        "MC-28-Q2",
+        "MC-28-Q3",
+        "MC-28-Q4",
+        "MC-28-Q5",
+        "MC-28-Q6",
+        "MC-28-Q7",
+        "MC-28-Q8"
+      ],
+      "connection_ids": [
+        "MC-28-Q2-E1-2",
+        "MC-28-Q3-E3-4",
+        "MC-28-Q4-E1-3",
+        "MC-28-Q4-E3-4",
+        "MC-28-Q4-E4-6",
+        "MC-28-Q4-E6-8",
+        "MC-28-Q7-E3-4",
+        "MC-28-Q7-E4-7"
+      ],
+      "characters": 374,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "RT-30",
+        "QI-14",
+        "EV-26",
+        "RR-34"
+      ]
+    },
+    {
+      "id": "MC-29",
+      "title": "동명 인물과 이름 없는 인용",
+      "domain": "work",
+      "split": "final",
+      "profile": "final",
+      "record_ids": [
+        "MC-29-R1",
+        "MC-29-R2",
+        "MC-29-R3",
+        "MC-29-R4",
+        "MC-29-R5",
+        "MC-29-R6",
+        "MC-29-R7",
+        "MC-29-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "MIS-7e6bb51ceeb7b8e6",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-ad1bdfd2e64f1949",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-0102acc37d7036bf",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-fb895e8a2de16f9b",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-56821d087c63d2bc",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-adb46a8775f5c3ce",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-e10eb133752e4381",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-75f9afbab8fa2cd0",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-0a72bf1b808ae866",
+      "question_ids": [
+        "MC-29-Q1",
+        "MC-29-Q2",
+        "MC-29-Q3",
+        "MC-29-Q4",
+        "MC-29-Q5",
+        "MC-29-Q6",
+        "MC-29-Q7",
+        "MC-29-Q8"
+      ],
+      "connection_ids": [
+        "MC-29-Q2-E2-4",
+        "MC-29-Q4-E1-5",
+        "MC-29-Q8-E3-4"
+      ],
+      "characters": 372,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "RR-23",
+        "EX-16",
+        "EX-25",
+        "AG-08"
+      ]
+    },
+    {
+      "id": "MC-30",
+      "title": "행사 참가 기록의 전체 목록",
+      "domain": "life",
+      "split": "final",
+      "profile": "final",
+      "record_ids": [
+        "MC-30-R1",
+        "MC-30-R2",
+        "MC-30-R3",
+        "MC-30-R4",
+        "MC-30-R5",
+        "MC-30-R6",
+        "MC-30-R7",
+        "MC-30-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "MIS-a9a8bbb982d9fcd7",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-018f869a0f4a0860",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-34ada08c00c13733",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-6b43aca073ed6d4c",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-f6b61ea5057b67be",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-36be6b2f6e2f6fd2",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-eb19a6182918ca67",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-49b6602227c7a4fc",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-9f0edc300305254c",
+      "question_ids": [
+        "MC-30-Q1",
+        "MC-30-Q2",
+        "MC-30-Q3",
+        "MC-30-Q4",
+        "MC-30-Q5",
+        "MC-30-Q6",
+        "MC-30-Q7",
+        "MC-30-Q8"
+      ],
+      "connection_ids": [
+        "MC-30-Q1-E1-2",
+        "MC-30-Q1-E2-3",
+        "MC-30-Q1-E3-4",
+        "MC-30-Q1-E4-5",
+        "MC-30-Q1-E5-6",
+        "MC-30-Q1-E6-7",
+        "MC-30-Q1-E7-8",
+        "MC-30-Q2-E1-2",
+        "MC-30-Q2-E2-3",
+        "MC-30-Q2-E3-4",
+        "MC-30-Q2-E4-5",
+        "MC-30-Q2-E5-6",
+        "MC-30-Q2-E6-7",
+        "MC-30-Q2-E7-8",
+        "MC-30-Q4-E1-3",
+        "MC-30-Q7-E1-2",
+        "MC-30-Q7-E2-3",
+        "MC-30-Q7-E3-5",
+        "MC-30-Q7-E5-7"
+      ],
+      "characters": 351,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "QI-13",
+        "QI-14",
+        "RT-23",
+        "RT-25",
+        "EV-25"
+      ]
+    },
+    {
+      "id": "MC-31",
+      "title": "장비 설정의 단위와 비교 범위",
+      "domain": "work",
+      "split": "final",
+      "profile": "final",
+      "record_ids": [
+        "MC-31-R1",
+        "MC-31-R2",
+        "MC-31-R3",
+        "MC-31-R4",
+        "MC-31-R5",
+        "MC-31-R6",
+        "MC-31-R7",
+        "MC-31-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "MIS-1139449b36eecaa8",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-730bfb046b2b17c9",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-d804ac0502c25b5f",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-9cec59544895bfcc",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-4f742e85d5cead22",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-e0abbfb6edfa056b",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-88c1bb6ee12550b3",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-6bf954f7851e83ff",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-99cb107b72a076c9",
+      "question_ids": [
+        "MC-31-Q1",
+        "MC-31-Q2",
+        "MC-31-Q3",
+        "MC-31-Q4",
+        "MC-31-Q5",
+        "MC-31-Q6",
+        "MC-31-Q7",
+        "MC-31-Q8"
+      ],
+      "connection_ids": [
+        "MC-31-Q1-E1-2",
+        "MC-31-Q3-E1-3",
+        "MC-31-Q6-E1-6"
+      ],
+      "characters": 405,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "RR-34",
+        "EV-24",
+        "QU-27",
+        "AG-34"
+      ]
+    },
+    {
+      "id": "MC-32",
+      "title": "평소 취향과 한정된 요청",
+      "domain": "life",
+      "split": "final",
+      "profile": "final",
+      "record_ids": [
+        "MC-32-R1",
+        "MC-32-R2",
+        "MC-32-R3",
+        "MC-32-R4",
+        "MC-32-R5",
+        "MC-32-R6",
+        "MC-32-R7",
+        "MC-32-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "MIS-d344872da7c3f35a",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-c6564e2eff6859fe",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-336de6bede89dc25",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-e64606057eefe51c",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-dc02e95f5300e479",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-a3f4cf7e862afcc2",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-c5f1a3654d636204",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-5e5892bc56236c28",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-b57484e5df5d3c6b",
+      "question_ids": [
+        "MC-32-Q1",
+        "MC-32-Q2",
+        "MC-32-Q3",
+        "MC-32-Q4",
+        "MC-32-Q5",
+        "MC-32-Q6",
+        "MC-32-Q7",
+        "MC-32-Q8"
+      ],
+      "connection_ids": [
+        "MC-32-Q3-E1-2"
+      ],
+      "characters": 392,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "MW-04",
+        "MW-05",
+        "MW-19",
+        "EX-25"
+      ]
+    },
+    {
+      "id": "MC-33",
+      "title": "지연 보고와 충돌하는 출고 상태",
+      "domain": "work",
+      "split": "final",
+      "profile": "final",
+      "record_ids": [
+        "MC-33-R1",
+        "MC-33-R2",
+        "MC-33-R3",
+        "MC-33-R4",
+        "MC-33-R5",
+        "MC-33-R6",
+        "MC-33-R7",
+        "MC-33-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "MIS-530d96d40d03f694",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-66381cf2326c6128",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-dc7267eb83236791",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-0d6694e6b96ed936",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-9c9ee57d63552771",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-ca31c569d178fd7f",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-a7e3c0fe59f8e389",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-2fca7636bffb7b7a",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-a5b576d8e1c382c4",
+      "question_ids": [
+        "MC-33-Q1",
+        "MC-33-Q2",
+        "MC-33-Q3",
+        "MC-33-Q4",
+        "MC-33-Q5",
+        "MC-33-Q6",
+        "MC-33-Q7",
+        "MC-33-Q8"
+      ],
+      "connection_ids": [
+        "MC-33-Q1-E1-2"
+      ],
+      "characters": 393,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "AG-12",
+        "EV-11",
+        "EV-22",
+        "RT-07",
+        "RT-08"
+      ]
+    },
+    {
+      "id": "MC-34",
+      "title": "강의 기록의 한영 별칭과 코드",
+      "domain": "work",
+      "split": "final",
+      "profile": "final",
+      "record_ids": [
+        "MC-34-R1",
+        "MC-34-R2",
+        "MC-34-R3",
+        "MC-34-R4",
+        "MC-34-R5",
+        "MC-34-R6",
+        "MC-34-R7",
+        "MC-34-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "MIS-e076ac6923172446",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-94f755010f6ff75f",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-11c08448b48bc2da",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-62e88b8255f697b0",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-c57a6863b10add2a",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-4dabc651e2ba8751",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-525bac04f2e18aca",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-7bb4a66efb029f1d",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-88d7243e76610ab7",
+      "question_ids": [
+        "MC-34-Q1",
+        "MC-34-Q2",
+        "MC-34-Q3",
+        "MC-34-Q4",
+        "MC-34-Q5",
+        "MC-34-Q6",
+        "MC-34-Q7",
+        "MC-34-Q8"
+      ],
+      "connection_ids": [],
+      "characters": 434,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "QU-09",
+        "QU-24",
+        "QU-25",
+        "IN-78",
+        "RR-18"
+      ]
+    },
+    {
+      "id": "MC-35",
+      "title": "분산된 재료 기록과 누락 없는 요약",
+      "domain": "life",
+      "split": "final",
+      "profile": "final",
+      "record_ids": [
+        "MC-35-R1",
+        "MC-35-R2",
+        "MC-35-R3",
+        "MC-35-R4",
+        "MC-35-R5",
+        "MC-35-R6",
+        "MC-35-R7",
+        "MC-35-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "MIS-4780e3de281b4d2d",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-f2cc06e4035808ce",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-e0c7c976b4d363ff",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-9fe693daa0edaeaa",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-9f1d42c26b1b4c7e",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-0e563f185ffa0be9",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-433e9935405e1919",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-7147d431e7779619",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-949128fef8c6ce63",
+      "question_ids": [
+        "MC-35-Q1",
+        "MC-35-Q2",
+        "MC-35-Q3",
+        "MC-35-Q4",
+        "MC-35-Q5",
+        "MC-35-Q6",
+        "MC-35-Q7",
+        "MC-35-Q8"
+      ],
+      "connection_ids": [
+        "MC-35-Q1-E1-5",
+        "MC-35-Q5-E1-2",
+        "MC-35-Q5-E2-3",
+        "MC-35-Q5-E3-5",
+        "MC-35-Q5-E5-7"
+      ],
+      "characters": 359,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "AG-16",
+        "AG-17",
+        "QI-13",
+        "RT-25",
+        "EV-14"
+      ]
+    },
+    {
+      "id": "MC-36",
+      "title": "기억의 주장과 외부 사실 구분",
+      "domain": "work",
+      "split": "final",
+      "profile": "final",
+      "record_ids": [
+        "MC-36-R1",
+        "MC-36-R2",
+        "MC-36-R3",
+        "MC-36-R4",
+        "MC-36-R5",
+        "MC-36-R6",
+        "MC-36-R7",
+        "MC-36-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "MIS-d9ad89e937cef001",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-d071c3f36ff51333",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-dfdd1f23b2a1a0b0",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-6fba8c945635db06",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-5383ca7654306545",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-ad14f8d6c88a8ab7",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-b2e4336cfdfe67a1",
+          "revision": 1
+        },
+        {
+          "source_id": "MIS-1c78836fecf8018e",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-408751ffb6851446",
+      "question_ids": [
+        "MC-36-Q1",
+        "MC-36-Q2",
+        "MC-36-Q3",
+        "MC-36-Q4",
+        "MC-36-Q5",
+        "MC-36-Q6",
+        "MC-36-Q7",
+        "MC-36-Q8"
+      ],
+      "connection_ids": [
+        "MC-36-Q5-E4-5"
+      ],
+      "characters": 418,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "EV-21",
+        "EV-22",
+        "EV-27",
+        "MW-16",
+        "AG-34"
+      ]
+    }
+  ]
+}

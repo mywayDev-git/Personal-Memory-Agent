@@ -1,0 +1,2 @@
+datasets/** -text
+tests/fixtures/** -text

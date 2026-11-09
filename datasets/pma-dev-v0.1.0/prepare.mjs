@@ -1,0 +1,24 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {loadDataset,validate,materialize,sha256} from './lib.mjs';
+const dir=path.dirname(fileURLToPath(import.meta.url)),args=process.argv.slice(2);
+function arg(name){const at=args.indexOf(name);return at<0?null:args[at+1];}
+const output=arg('--out');if(!output)throw Error('Usage: node prepare.mjs --out <new-folder> [--config config.example.json]');
+const target=path.resolve(output);
+if(fs.existsSync(target))throw Error('Choose a new output folder; existing snapshots are never overwritten.');
+const data=loadDataset(dir),check=validate(data,dir);if(!check.ok)throw Error(JSON.stringify(check.errors));
+const configPath=arg('--config')||path.join(dir,'config.example.json'),configBytes=fs.readFileSync(configPath),config=JSON.parse(configBytes);
+if(config.mode!=='offline_input_preview')throw Error('This preparer supports offline_input_preview only; it never executes a model.');
+const raw=s=>({source_id:s.id,revision:s.revision,text:s.text,metadata:s.metadata});
+const contexts=new Map(data.contexts.contexts.map(c=>[c.id,c]));
+const extraction=data.contexts.contexts.map(c=>({context_id:c.id,actor_id:c.actor_id,now:c.now,sources:materialize(c,data.sources.records).accessible.map(raw)}));
+const queries=data.questions.questions.map(q=>{const c=contexts.get(q.context_id);return {question_id:q.id,context_id:c.id,actor_id:c.actor_id,now:c.now,text:q.text,conversation:c.conversation,retrieval_scope:materialize(c,data.sources.records).accessible.map(s=>({source_id:s.id,revision:s.revision})),policy:c.input_policy};});
+fs.mkdirSync(target,{recursive:true});
+const write=(n,x)=>fs.writeFileSync(path.join(target,n),JSON.stringify(x,null,2)+'\n');
+write('model-extraction-inputs.json',{notice:'Raw accessible active sources only; no gold annotations. Snapshot extraction does not test preceding mutation/consent behavior.',contexts:extraction});
+write('question-inputs.json',{notice:'Retrieval entry points only. Answer stage must receive actual frozen retrieved evidence; this file contains no answer keys.',questions:queries});
+write('system-fixture.json',{notice:'Trusted test-harness fixture only. Do not pass other owners, deleted sources, setup expectations or private gold to any model.',sources:data.sources.records.map(raw),contexts:data.contexts.contexts.map(c=>({id:c.id,actor_id:c.actor_id,now:c.now,setup:c.setup,conversation:c.conversation,input_policy:c.input_policy,required_observations:c.required_observations}))});
+write('evaluation-private.json',{notice:'Evaluator-only. Never append this file to model prompts.',source_gold:data.sources.records.map(s=>({source_id:s.id,revision:s.revision,gold:s.gold})),relations:data.sources.relations,question_gold:data.questions.questions.map(q=>({question_id:q.id,gold:q.gold})),expected_states:data.contexts.contexts.map(c=>({context_id:c.id,expected_state:c.expected_state}))});
+write('run-plan.json',{kind:'offline_input_preview',execution_status:'NOT_RUN',dataset_id:data.manifest.id,dataset_manifest_sha256:sha256(fs.readFileSync(path.join(dir,'manifest.json'))),config,config_sha256:sha256(configBytes),files:fs.readdirSync(target).map(file=>({file,sha256:sha256(fs.readFileSync(path.join(target,file)))})),limitations:['No model/service execution.','No extraction, retrieval or answer scores.','Snapshot inputs alone cannot validate mutations, cache, consent, permissions or latency.','All semantic gold remains an author draft until human review.']});
+console.log(JSON.stringify({output:target,extraction_contexts:extraction.length,question_inputs:queries.length,execution_status:'NOT_RUN'},null,2));

@@ -1,0 +1,2649 @@
+{
+  "schema_version": "pma-context-1",
+  "dataset_version": "0.1.0",
+  "isolation": "Fresh synthetic store for every context/candidate/repeat; setup steps execute in order within that store.",
+  "contexts": [
+    {
+      "id": "F01-BASE",
+      "family_id": "F01",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F01-A",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F01-A",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F01-A",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F01-WITH_NOISE",
+      "family_id": "F01",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F01-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F01-NOISE",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F01-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F01-NOISE",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F01-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F01-NOISE",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F01-REORDERED",
+      "family_id": "F01",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F01-NOISE",
+            "revision": 1
+          },
+          {
+            "source_id": "F01-A",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F01-NOISE",
+            "revision": 1
+          },
+          {
+            "source_id": "F01-A",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F01-NOISE",
+            "revision": 1
+          },
+          {
+            "source_id": "F01-A",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F02-BASE",
+      "family_id": "F02",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F02-A",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F02-A",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F02-A",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F03-BASE",
+      "family_id": "F03",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F03-A",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F03-A",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F03-A",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F04-BASE",
+      "family_id": "F04",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F04-A",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F04-A",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F04-A",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F05-BASE",
+      "family_id": "F05",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F05-A",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F05-A",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F05-A",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F05-AFTER_DATE",
+      "family_id": "F05",
+      "split": "development",
+      "now": "2026-11-04T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F05-A",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F05-A",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F05-A",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F06-BEFORE",
+      "family_id": "F06",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F06-A",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F06-A",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F06-A",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F06-CONDITION_MET",
+      "family_id": "F06",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F06-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F06-B",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F06-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F06-B",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F06-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F06-B",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F07-HYPOTHESIS",
+      "family_id": "F07",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F07-A",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F07-A",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F07-A",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F07-CONFIRMED",
+      "family_id": "F07",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F07-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F07-B",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F07-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F07-B",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F07-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F07-B",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F08-BASE",
+      "family_id": "F08",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F08-A",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F08-A",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F08-A",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F09-BASE",
+      "family_id": "F09",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F09-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F09-B",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F09-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F09-B",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F09-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F09-B",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F10-BASE",
+      "family_id": "F10",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F10-A",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F10-A",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F10-A",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F11-BASE",
+      "family_id": "F11",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F11-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F11-B",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F11-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F11-B",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F11-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F11-B",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F12-BEFORE_CHANGE",
+      "family_id": "F12",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F12-A",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F12-A",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F12-A",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F12-AFTER_CHANGE",
+      "family_id": "F12",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F12-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F12-B",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F12-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F12-B",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F12-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F12-B",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F13-BASE",
+      "family_id": "F13",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F13-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F13-B",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F13-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F13-B",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F13-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F13-B",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F14-BASE",
+      "family_id": "F14",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F14-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F14-B",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F14-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F14-B",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F14-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F14-B",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F15-BASE",
+      "family_id": "F15",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F15-A",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F15-A",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F15-A",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F16-BASE",
+      "family_id": "F16",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F16-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F16-B",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F16-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F16-B",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F16-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F16-B",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F16-VALUE_CHANGED",
+      "family_id": "F16",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F16-VALUE48",
+            "revision": 1
+          },
+          {
+            "source_id": "F16-B",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F16-VALUE48",
+            "revision": 1
+          },
+          {
+            "source_id": "F16-B",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F16-VALUE48",
+            "revision": 1
+          },
+          {
+            "source_id": "F16-B",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F17-BASE",
+      "family_id": "F17",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F17-A",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F17-A",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F17-A",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F18-BASE",
+      "family_id": "F18",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F18-A",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F18-A",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F18-A",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F19-V1",
+      "family_id": "F19",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F19-V1",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F19-V1",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F19-V1",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F19-V2",
+      "family_id": "F19",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F19-V2",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F19-V2",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F19-V2",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F19-V3",
+      "family_id": "F19",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F19-V3",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F19-V3",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F19-V3",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F19-V4",
+      "family_id": "F19",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F19-V4",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F19-V4",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F19-V4",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F20-BASE",
+      "family_id": "F20",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F20-A",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F20-A",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F20-A",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F21-BASE",
+      "family_id": "F21",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F21-A",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F21-A",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F21-A",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F22-BASE",
+      "family_id": "F22",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F22-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F22-B",
+            "revision": 1
+          },
+          {
+            "source_id": "F22-C",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F22-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F22-B",
+            "revision": 1
+          },
+          {
+            "source_id": "F22-C",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F22-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F22-B",
+            "revision": 1
+          },
+          {
+            "source_id": "F22-C",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F23-BASE",
+      "family_id": "F23",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F23-A",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F23-A",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F23-A",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F24-BASE",
+      "family_id": "F24",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F24-A",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F24-A",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F24-A",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F25-BASE",
+      "family_id": "F25",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F25-A",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F25-A",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F25-A",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F26-NO_HISTORY",
+      "family_id": "F26",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F26-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F26-B",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F26-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F26-B",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F26-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F26-B",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F26-FOLLOW_UP",
+      "family_id": "F26",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F26-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F26-B",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F26-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F26-B",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F26-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F26-B",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [
+        {
+          "role": "user",
+          "text": "TASK-A 담당자가 누구야?"
+        },
+        {
+          "role": "assistant",
+          "text": "민수야.",
+          "origin": "fixed_test_fixture",
+          "source_refs": [
+            {
+              "source_id": "F26-A",
+              "revision": 1
+            }
+          ]
+        }
+      ],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F26-SELECTED_RESULT",
+      "family_id": "F26",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F26-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F26-B",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F26-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F26-B",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F26-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F26-B",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [
+        {
+          "role": "user",
+          "text": "TASK-A와 TASK-B를 보여줘."
+        },
+        {
+          "role": "tool",
+          "kind": "displayed_search_results",
+          "items": [
+            {
+              "result_id": "result-A",
+              "source_id": "F26-A",
+              "revision": 1
+            },
+            {
+              "result_id": "result-B",
+              "source_id": "F26-B",
+              "revision": 1
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "text": "두 번째 결과를 선택했어.",
+          "selected_result_id": "result-B"
+        }
+      ],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F26-TOPIC_SWITCH",
+      "family_id": "F26",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F26-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F26-B",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F26-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F26-B",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F26-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F26-B",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [
+        {
+          "role": "user",
+          "text": "TASK-A 담당자는?"
+        },
+        {
+          "role": "assistant",
+          "text": "민수야.",
+          "origin": "fixed_test_fixture"
+        },
+        {
+          "role": "user",
+          "text": "이제 TASK-B 이야기하자."
+        }
+      ],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F27-BEFORE",
+      "family_id": "F27",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F27-V1",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F27-V1",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F27-V1",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F27-AFTER",
+      "family_id": "F27",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F27-V1",
+            "revision": 1
+          }
+        ],
+        "steps": [
+          {
+            "action": "replace",
+            "logical_record_id": "record-27",
+            "old_source": "F27-V1",
+            "new_source": "F27-V2",
+            "at": "2026-10-20T09:30:00+09:00"
+          }
+        ],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F27-V2",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F27-V2",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "active_source_revision",
+        "source_to_index_revision",
+        "citation_spans",
+        "stale_cache_exclusion"
+      ]
+    },
+    {
+      "id": "F28-BEFORE",
+      "family_id": "F28",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F28-A",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F28-A",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F28-A",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F28-DELETED",
+      "family_id": "F28",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F28-A",
+            "revision": 1
+          }
+        ],
+        "steps": [
+          {
+            "action": "query",
+            "question_id": "F28-Q1"
+          },
+          {
+            "action": "delete",
+            "source_id": "F28-A"
+          }
+        ],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [],
+        "accessible_sources": []
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "deleted_source_excluded_from_retrieval",
+        "answer_cache_invalidated",
+        "citation_cache_invalidated"
+      ]
+    },
+    {
+      "id": "F28-RESTORED",
+      "family_id": "F28",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F28-A",
+            "revision": 1
+          }
+        ],
+        "steps": [
+          {
+            "action": "delete",
+            "source_id": "F28-A"
+          },
+          {
+            "action": "restore",
+            "source_id": "F28-A"
+          }
+        ],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F28-A",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F28-A",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "restore_index_state",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F29-ALLOW_NEW_SESSION",
+      "family_id": "F29",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [],
+        "steps": [
+          {
+            "action": "chat_input",
+            "source_id": "F29-ALLOW",
+            "storage_policy": "explicit_consent_only"
+          },
+          {
+            "action": "new_session"
+          }
+        ],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F29-ALLOW",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F29-ALLOW",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "consent_decision",
+        "persistent_store_writes",
+        "new_session_memory_access"
+      ]
+    },
+    {
+      "id": "F29-DENY_NEW_SESSION",
+      "family_id": "F29",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [],
+        "steps": [
+          {
+            "action": "chat_input",
+            "source_id": "F29-DENY",
+            "storage_policy": "explicit_consent_only"
+          },
+          {
+            "action": "new_session"
+          }
+        ],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [],
+        "accessible_sources": []
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "consent_decision",
+        "persistent_store_writes",
+        "new_session_context_isolation"
+      ]
+    },
+    {
+      "id": "F30-USER_A",
+      "family_id": "F30",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F30-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F30-B",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F30-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F30-B",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F30-A",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "server_authorization_filter",
+        "retrieval_candidate_owner_ids",
+        "citation_owner_ids"
+      ]
+    },
+    {
+      "id": "F30-USER_B",
+      "family_id": "F30",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-b",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F30-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F30-B",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F30-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F30-B",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F30-B",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "server_authorization_filter",
+        "retrieval_candidate_owner_ids",
+        "citation_owner_ids"
+      ]
+    },
+    {
+      "id": "F31-BASE",
+      "family_id": "F31",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F31-A",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F31-A",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F31-A",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F32-BASE",
+      "family_id": "F32",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F32-NOTE",
+            "revision": 1
+          },
+          {
+            "source_id": "F32-CHAT",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F32-NOTE",
+            "revision": 1
+          },
+          {
+            "source_id": "F32-CHAT",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F32-NOTE",
+            "revision": 1
+          },
+          {
+            "source_id": "F32-CHAT",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F33-BASE",
+      "family_id": "F33",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F33-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F33-B",
+            "revision": 1
+          },
+          {
+            "source_id": "F33-C",
+            "revision": 1
+          },
+          {
+            "source_id": "F33-D",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F33-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F33-B",
+            "revision": 1
+          },
+          {
+            "source_id": "F33-C",
+            "revision": 1
+          },
+          {
+            "source_id": "F33-D",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F33-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F33-B",
+            "revision": 1
+          },
+          {
+            "source_id": "F33-C",
+            "revision": 1
+          },
+          {
+            "source_id": "F33-D",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F33-FILTER_FOLLOW_UP",
+      "family_id": "F33",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F33-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F33-B",
+            "revision": 1
+          },
+          {
+            "source_id": "F33-C",
+            "revision": 1
+          },
+          {
+            "source_id": "F33-D",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F33-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F33-B",
+            "revision": 1
+          },
+          {
+            "source_id": "F33-C",
+            "revision": 1
+          },
+          {
+            "source_id": "F33-D",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F33-A",
+            "revision": 1
+          },
+          {
+            "source_id": "F33-B",
+            "revision": 1
+          },
+          {
+            "source_id": "F33-C",
+            "revision": 1
+          },
+          {
+            "source_id": "F33-D",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [
+        {
+          "role": "user",
+          "text": "10월 12일부터 18일까지 PMA에서 완료한 작업만 알려줘."
+        },
+        {
+          "role": "assistant",
+          "text": "현재 기록 범위에서는 10월 13일 API 테스트 완료가 해당해.",
+          "origin": "fixed_test_fixture",
+          "source_refs": [
+            {
+              "source_id": "F33-A",
+              "revision": 1
+            }
+          ]
+        }
+      ],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F34-EMPTY",
+      "family_id": "F34",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [],
+        "accessible_sources": []
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F35-BASE",
+      "family_id": "F35",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F35-A",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F35-A",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F35-A",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "F36-BASE",
+      "family_id": "F36",
+      "split": "development",
+      "now": "2026-10-20T10:00:00+09:00",
+      "actor_id": "user-a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "F36-PLAN",
+            "revision": 1
+          },
+          {
+            "source_id": "F36-CANCEL",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "F36-PLAN",
+            "revision": 1
+          },
+          {
+            "source_id": "F36-CANCEL",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "F36-PLAN",
+            "revision": 1
+          },
+          {
+            "source_id": "F36-CANCEL",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    }
+  ]
+}

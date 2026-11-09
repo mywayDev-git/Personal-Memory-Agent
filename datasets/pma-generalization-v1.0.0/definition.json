@@ -1,0 +1,227 @@
+{
+  "version": "pma-generalization-v1.0.0",
+  "upstream": {
+    "upstream_dataset": "pma-memory-v3.0.0",
+    "upstream_manifest_sha256": "c3907cb3b2bc54a7be4ca492de8e1b6e8dc64a5fee336b445707671a2585e613",
+    "development": "Original complete v3 contexts retained; controlled variants added.",
+    "exposure_audit": {
+      "v3_final_questions_previously_executed": 260,
+      "checked_on": "2026-11-07"
+    },
+    "confirmation": "Newly authored target stories and questions; disjoint v3 final notes reused only as retrieval backgrounds. Original final task history is not claimed unused. Authored to the frozen capability specification, no model-output-driven selection.",
+    "criteria_version": "answer-criteria-v2.0.0",
+    "created_on": "2026-11-07",
+    "confirmation_exposure": {
+      "model_execution": false,
+      "tuning_use": false,
+      "author_has_seen": true,
+      "independent_reviewer_has_seen": false
+    }
+  },
+  "groups": [
+    {
+      "id": "D-identity",
+      "split": "development",
+      "ability": "identity",
+      "family_id": "동명이인과 네 가지 날짜",
+      "question_ids": [
+        "D-identity-BASE",
+        "D-identity-PARAPHRASE",
+        "D-identity-DISTRACTOR",
+        "D-identity-CONTRAST"
+      ],
+      "expectations": {
+        "paraphrase": "same_required_meaning",
+        "distractor": "same_required_meaning",
+        "contrast": "changed_answer_or_abstention"
+      }
+    },
+    {
+      "id": "D-status",
+      "split": "development",
+      "ability": "status",
+      "family_id": "이사 상자와 신청 상태",
+      "question_ids": [
+        "D-status-BASE",
+        "D-status-PARAPHRASE",
+        "D-status-DISTRACTOR",
+        "D-status-CONTRAST"
+      ],
+      "expectations": {
+        "paraphrase": "same_required_meaning",
+        "distractor": "same_required_meaning",
+        "contrast": "changed_answer_or_abstention"
+      }
+    },
+    {
+      "id": "D-condition",
+      "split": "development",
+      "ability": "condition",
+      "family_id": "수리 비용과 다른 청소기",
+      "question_ids": [
+        "D-condition-BASE",
+        "D-condition-PARAPHRASE",
+        "D-condition-DISTRACTOR",
+        "D-condition-CONTRAST"
+      ],
+      "expectations": {
+        "paraphrase": "same_required_meaning",
+        "distractor": "same_required_meaning",
+        "contrast": "changed_answer_or_abstention"
+      }
+    },
+    {
+      "id": "D-multievidence",
+      "split": "development",
+      "ability": "multievidence",
+      "family_id": "공방을 옮기던 주",
+      "question_ids": [
+        "D-multievidence-BASE",
+        "D-multievidence-PARAPHRASE",
+        "D-multievidence-DISTRACTOR",
+        "D-multievidence-CONTRAST"
+      ],
+      "expectations": {
+        "paraphrase": "same_required_meaning",
+        "distractor": "same_required_meaning",
+        "contrast": "changed_answer_or_abstention"
+      }
+    },
+    {
+      "id": "D-cumulative",
+      "split": "development",
+      "ability": "cumulative",
+      "family_id": "월 경계의 사건일과 등록일",
+      "question_ids": [
+        "D-cumulative-BASE",
+        "D-cumulative-PARAPHRASE",
+        "D-cumulative-DISTRACTOR",
+        "D-cumulative-CONTRAST"
+      ],
+      "expectations": {
+        "paraphrase": "same_required_meaning",
+        "distractor": "same_required_meaning",
+        "contrast": "changed_answer_or_abstention"
+      }
+    },
+    {
+      "id": "D-access",
+      "split": "development",
+      "ability": "access",
+      "family_id": "작업실 출입 카드",
+      "question_ids": [
+        "D-access-BASE",
+        "D-access-PARAPHRASE",
+        "D-access-DISTRACTOR",
+        "D-access-CONTRAST"
+      ],
+      "expectations": {
+        "paraphrase": "same_required_meaning",
+        "distractor": "same_required_meaning",
+        "contrast": "changed_answer_or_abstention"
+      }
+    },
+    {
+      "id": "C-identity",
+      "split": "confirmation",
+      "ability": "identity",
+      "family_id": "수리 봉사 접수와 안전 점검",
+      "question_ids": [
+        "C-identity-BASE",
+        "C-identity-PARAPHRASE",
+        "C-identity-DISTRACTOR",
+        "C-identity-CONTRAST"
+      ],
+      "expectations": {
+        "paraphrase": "same_required_meaning",
+        "distractor": "same_required_meaning",
+        "contrast": "changed_answer_or_abstention"
+      }
+    },
+    {
+      "id": "C-status",
+      "split": "confirmation",
+      "ability": "status",
+      "family_id": "마을버스 우회 운행의 승인",
+      "question_ids": [
+        "C-status-BASE",
+        "C-status-PARAPHRASE",
+        "C-status-DISTRACTOR",
+        "C-status-CONTRAST"
+      ],
+      "expectations": {
+        "paraphrase": "same_required_meaning",
+        "distractor": "same_required_meaning",
+        "contrast": "changed_answer_or_abstention"
+      }
+    },
+    {
+      "id": "C-condition",
+      "split": "confirmation",
+      "ability": "condition",
+      "family_id": "공동구매 배송비 정산",
+      "question_ids": [
+        "C-condition-BASE",
+        "C-condition-PARAPHRASE",
+        "C-condition-DISTRACTOR",
+        "C-condition-CONTRAST"
+      ],
+      "expectations": {
+        "paraphrase": "same_required_meaning",
+        "distractor": "same_required_meaning",
+        "contrast": "changed_answer_or_abstention"
+      }
+    },
+    {
+      "id": "C-multievidence",
+      "split": "confirmation",
+      "ability": "multievidence",
+      "family_id": "관측회 장소 선택과 장비 운반",
+      "question_ids": [
+        "C-multievidence-BASE",
+        "C-multievidence-PARAPHRASE",
+        "C-multievidence-DISTRACTOR",
+        "C-multievidence-CONTRAST"
+      ],
+      "expectations": {
+        "paraphrase": "same_required_meaning",
+        "distractor": "same_required_meaning",
+        "contrast": "changed_answer_or_abstention"
+      }
+    },
+    {
+      "id": "C-cumulative",
+      "split": "confirmation",
+      "ability": "cumulative",
+      "family_id": "공동 텃밭의 분산 기록",
+      "question_ids": [
+        "C-cumulative-BASE",
+        "C-cumulative-PARAPHRASE",
+        "C-cumulative-DISTRACTOR",
+        "C-cumulative-CONTRAST"
+      ],
+      "expectations": {
+        "paraphrase": "same_required_meaning",
+        "distractor": "same_required_meaning",
+        "contrast": "changed_answer_or_abstention"
+      }
+    },
+    {
+      "id": "C-access",
+      "split": "confirmation",
+      "ability": "access",
+      "family_id": "공유 장비함 접근",
+      "question_ids": [
+        "C-access-BASE",
+        "C-access-PARAPHRASE",
+        "C-access-DISTRACTOR",
+        "C-access-CONTRAST"
+      ],
+      "expectations": {
+        "paraphrase": "same_required_meaning",
+        "distractor": "same_required_meaning",
+        "contrast": "changed_answer_or_abstention"
+      }
+    }
+  ]
+}

@@ -1,0 +1,4843 @@
+{
+  "schema_version": "pma-question-1",
+  "dataset_version": "pma-context-v1.0.0",
+  "questions": [
+    {
+      "id": "NC-01-Q1",
+      "revision": 1,
+      "display_case_id": "NC-01",
+      "family_id": "NC-01",
+      "split": "development",
+      "context_id": "NIC-c489c0151d900f6e",
+      "text": "현재 루멘 서버 배포를 맡기로 한 사람은?",
+      "question_type": "handover",
+      "profile": "natural_single",
+      "pair_group": "NC-01",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "민수가 인계를 요청했고 지연이 수락했으므로 현재 맡기로 한 사람은 지연이다.",
+        "required_claims": [
+          "지연",
+          "민수의 인계 요청과 지연의 수락"
+        ],
+        "forbidden_claims": [
+          "민수가 계속 현재 담당자라고 단정",
+          "수락 없이 요청만으로 인계 확정"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-01-Q1-G1",
+            "any_of_fact_ids": [
+              "NC-01-F-b"
+            ]
+          },
+          {
+            "id": "NC-01-Q1-G2",
+            "any_of_fact_ids": [
+              "NC-01-F-e"
+            ]
+          },
+          {
+            "id": "NC-01-Q1-G3",
+            "any_of_fact_ids": [
+              "NC-01-F-f"
+            ]
+          }
+        ],
+        "structured_expectations": {
+          "현재 담당자": "지연",
+          "이전 담당자": "민수"
+        },
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-01-Q2",
+      "revision": 1,
+      "display_case_id": "NC-01",
+      "family_id": "NC-01",
+      "split": "development",
+      "context_id": "NIC-c489c0151d900f6e",
+      "text": "루멘 서버 배포의 예정일과 선행 조건은?",
+      "question_type": "conditional_plan",
+      "profile": "natural_single",
+      "pair_group": "NC-01",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "11월 6일 예정이며 회귀 테스트 통과가 조건이다.",
+        "required_claims": [
+          "2026-11-06",
+          "회귀 테스트 통과"
+        ],
+        "forbidden_claims": [
+          "예정일을 실제 배포일로 변경"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-01-Q2-G1",
+            "any_of_fact_ids": [
+              "NC-01-F-b"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-01-Q3",
+      "revision": 1,
+      "display_case_id": "NC-01",
+      "family_id": "NC-01",
+      "split": "development",
+      "context_id": "NIC-c489c0151d900f6e",
+      "text": "루멘 서버는 이미 배포 완료됐어?",
+      "question_type": "unknown_completion",
+      "profile": "natural_single",
+      "pair_group": "NC-01",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "abstain",
+        "reference_answer": "완료 여부는 확인할 수 없다. 회귀 테스트는 통과하지 못했고 서버 배포 완료 기록도 없다.",
+        "required_claims": [
+          "서버 배포 완료 미확인"
+        ],
+        "forbidden_claims": [
+          "모바일 알림 완료를 루멘 서버에 연결",
+          "미확인을 실제 미실행으로 단정"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-01-Q3-G1",
+            "any_of_fact_ids": [
+              "NC-01-F-g"
+            ]
+          },
+          {
+            "id": "NC-01-Q3-G2",
+            "any_of_fact_ids": [
+              "NC-01-F-l"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-01-Q4",
+      "revision": 1,
+      "display_case_id": "NC-01",
+      "family_id": "NC-01",
+      "split": "development",
+      "context_id": "NIC-c489c0151d900f6e",
+      "text": "오늘 배포를 끝낸 기능과 담당자는?",
+      "question_type": "topic_separation",
+      "profile": "natural_single",
+      "pair_group": "NC-01",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "모바일 알림 기능을 도윤이 배포 완료했다.",
+        "required_claims": [
+          "모바일 알림 기능",
+          "도윤",
+          "배포 완료"
+        ],
+        "forbidden_claims": [
+          "루멘 서버를 완료 기능으로 포함"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-01-Q4-G1",
+            "any_of_fact_ids": [
+              "NC-01-F-i"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-01-Q5",
+      "revision": 1,
+      "display_case_id": "NC-01",
+      "family_id": "NC-01",
+      "split": "development",
+      "context_id": "NIC-c489c0151d900f6e",
+      "text": "검색 화면에서 발견한 문제와 조치 결과는?",
+      "question_type": "problem_resolution",
+      "profile": "natural_single",
+      "pair_group": "NC-01",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "프로젝트 이름이 두 줄로 잘렸고, 기록 작성자가 문구 너비를 조정한 뒤 테스트 계정에서 정상 표시를 확인했다.",
+        "required_claims": [
+          "프로젝트 이름 잘림",
+          "문구 너비 조정",
+          "테스트 계정 정상 표시"
+        ],
+        "forbidden_claims": [
+          "화면 수정을 서버 배포 완료로 해석"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-01-Q5-G1",
+            "any_of_fact_ids": [
+              "NC-01-F-c"
+            ]
+          },
+          {
+            "id": "NC-01-Q5-G2",
+            "any_of_fact_ids": [
+              "NC-01-F-d"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-01-Q6",
+      "revision": 1,
+      "display_case_id": "NC-01",
+      "family_id": "NC-01",
+      "split": "development",
+      "context_id": "NIC-c489c0151d900f6e",
+      "text": "운영 반영 안내문은 누가 작성·검토하고 고객에게 보냈어?",
+      "question_type": "document_handover",
+      "profile": "natural_single",
+      "pair_group": "NC-01",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "기록 작성자가 초안을 작성하고 배포 여부·시각이 정해지면 지연이 검토할 계획이다. 아직 내부 문서함에만 있고 고객에게 보내지 않았다.",
+        "required_claims": [
+          "기록 작성자 초안",
+          "지연 검토는 배포 여부·시각 결정 후",
+          "고객 미발송"
+        ],
+        "forbidden_claims": [
+          "검토 계획을 검토 완료로 바꿈",
+          "내부 저장을 고객 발송으로 바꿈"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-01-Q6-G1",
+            "any_of_fact_ids": [
+              "NC-01-F-n7"
+            ]
+          },
+          {
+            "id": "NC-01-Q6-G2",
+            "any_of_fact_ids": [
+              "NC-01-F-n8"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-01-CONTROL-Q1",
+      "revision": 1,
+      "display_case_id": "NC-01-CONTROL",
+      "family_id": "NC-01",
+      "split": "development",
+      "context_id": "NIC-0d2eec12188ca982",
+      "text": "현재 루멘 서버 배포를 맡기로 한 사람은?",
+      "question_type": "paired_short_control",
+      "profile": "natural_control",
+      "pair_group": "NC-01",
+      "position": null,
+      "variables": [],
+      "variant": {
+        "type": "target_preserving_short_control",
+        "paired_question_id": "NC-01-Q1",
+        "parent_case_id": "NC-01"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "민수가 인계를 요청했고 지연이 수락했으므로 현재 맡기로 한 사람은 지연이다.",
+        "required_claims": [
+          "지연",
+          "민수의 인계 요청과 지연의 수락"
+        ],
+        "forbidden_claims": [
+          "민수가 계속 현재 담당자라고 단정",
+          "수락 없이 요청만으로 인계 확정"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-01-CONTROL-Q1-G1",
+            "any_of_fact_ids": [
+              "NC-01-CONTROL-F1"
+            ]
+          }
+        ],
+        "structured_expectations": {
+          "현재 담당자": "지연",
+          "이전 담당자": "민수"
+        },
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-02-Q1",
+      "revision": 1,
+      "display_case_id": "NC-02",
+      "family_id": "NC-02",
+      "split": "development",
+      "context_id": "NIC-cfeffd3344cc2948",
+      "text": "주방 물건이 든 상자는 어느 것이야?",
+      "question_type": "label_correction",
+      "profile": "natural_single",
+      "pair_group": "NC-02",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "파란 테이프를 두른 상자다. ‘주방’ 라벨의 갈색 상자는 실제로 현관 신발장 물건이다.",
+        "required_claims": [
+          "파란 테이프 상자",
+          "갈색 상자의 주방 라벨은 오류"
+        ],
+        "forbidden_claims": [
+          "라벨만 보고 갈색 상자를 주방 물건으로 선택"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-02-Q1-G1",
+            "any_of_fact_ids": [
+              "NC-02-F-d"
+            ]
+          },
+          {
+            "id": "NC-02-Q1-G2",
+            "any_of_fact_ids": [
+              "NC-02-F-e"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-02-Q2",
+      "revision": 1,
+      "display_case_id": "NC-02",
+      "family_id": "NC-02",
+      "split": "development",
+      "context_id": "NIC-cfeffd3344cc2948",
+      "text": "이사 당일 엘리베이터 예약은 확정됐어?",
+      "question_type": "condition_status",
+      "profile": "natural_single",
+      "pair_group": "NC-02",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "아직 확정되지 않았다. 신청서 접수가 필요하지만 작성만 하고 접수하지 않았다.",
+        "required_claims": [
+          "예약 미확정",
+          "신청서 미접수"
+        ],
+        "forbidden_claims": [
+          "이용 가능 시간 안내를 예약 확정으로 처리"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-02-Q2-G1",
+            "any_of_fact_ids": [
+              "NC-02-F-b"
+            ]
+          },
+          {
+            "id": "NC-02-Q2-G2",
+            "any_of_fact_ids": [
+              "NC-02-F-c"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-02-Q3",
+      "revision": 1,
+      "display_case_id": "NC-02",
+      "family_id": "NC-02",
+      "split": "development",
+      "context_id": "NIC-cfeffd3344cc2948",
+      "text": "오늘 관리인에게 맡긴 게 새집 열쇠야?",
+      "question_type": "false_premise",
+      "profile": "natural_single",
+      "pair_group": "NC-02",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "deny",
+        "reference_answer": "아니다. 지금 집의 주차장 리모컨을 맡겼고 새집 열쇠는 11월 7일에 받기로 했다.",
+        "required_claims": [
+          "주차장 리모컨",
+          "새집 열쇠 수령은 11월 7일 예정"
+        ],
+        "forbidden_claims": [
+          "리모컨과 새집 열쇠를 같은 물건으로 병합"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-02-Q3-G1",
+            "any_of_fact_ids": [
+              "NC-02-F-g"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-02-Q4",
+      "revision": 1,
+      "display_case_id": "NC-02",
+      "family_id": "NC-02",
+      "split": "development",
+      "context_id": "NIC-cfeffd3344cc2948",
+      "text": "새집 열쇠는 누가 받아 오기로 했어?",
+      "question_type": "proposal_vs_decision",
+      "profile": "natural_single",
+      "pair_group": "NC-02",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "민지가 대리 수령을 제안했지만 기록 작성자가 직접 받기로 했다.",
+        "required_claims": [
+          "기록 작성자가 직접 수령",
+          "민지는 제안만 함"
+        ],
+        "forbidden_claims": [
+          "민지를 최종 수령자로 지정"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-02-Q4-G1",
+            "any_of_fact_ids": [
+              "NC-02-F-g"
+            ]
+          },
+          {
+            "id": "NC-02-Q4-G2",
+            "any_of_fact_ids": [
+              "NC-02-F-h"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-02-Q5",
+      "revision": 1,
+      "display_case_id": "NC-02",
+      "family_id": "NC-02",
+      "split": "development",
+      "context_id": "NIC-cfeffd3344cc2948",
+      "text": "리모컨이 들어간 서랍 번호와 책장 나눔 시간은?",
+      "question_type": "missing_details",
+      "profile": "natural_single",
+      "pair_group": "NC-02",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "abstain",
+        "reference_answer": "서랍 번호는 확인하지 못했고 책장 나눔 시간도 회신이 없어 미정이다.",
+        "required_claims": [
+          "서랍 번호 미확인",
+          "책장 나눔 시간 미정"
+        ],
+        "forbidden_claims": [
+          "서랍 번호나 시간을 임의 생성"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-02-Q5-G1",
+            "any_of_fact_ids": [
+              "NC-02-F-i"
+            ]
+          },
+          {
+            "id": "NC-02-Q5-G2",
+            "any_of_fact_ids": [
+              "NC-02-F-j"
+            ]
+          },
+          {
+            "id": "NC-02-Q5-G3",
+            "any_of_fact_ids": [
+              "NC-02-F-k"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-02-Q6",
+      "revision": 1,
+      "display_case_id": "NC-02",
+      "family_id": "NC-02",
+      "split": "development",
+      "context_id": "NIC-cfeffd3344cc2948",
+      "text": "가스 철거와 새집 가스 연결은 둘 다 신청이 끝났어?",
+      "question_type": "separate_requests",
+      "profile": "natural_single",
+      "pair_group": "NC-02",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "철거는 11월 7일 오후로 신청했고 정확한 방문 시각은 문자 대기다. 새집 연결은 별도 신청이 필요하며 아직 신청을 끝내지 않았다.",
+        "required_claims": [
+          "철거 신청",
+          "철거 세부 시각 대기",
+          "새집 연결 미신청"
+        ],
+        "forbidden_claims": [
+          "철거 신청을 새집 연결 신청으로 확대"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-02-Q6-G1",
+            "any_of_fact_ids": [
+              "NC-02-F-n6"
+            ]
+          },
+          {
+            "id": "NC-02-Q6-G2",
+            "any_of_fact_ids": [
+              "NC-02-F-n7"
+            ]
+          },
+          {
+            "id": "NC-02-Q6-G3",
+            "any_of_fact_ids": [
+              "NC-02-F-n8"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-02-CONTROL-Q1",
+      "revision": 1,
+      "display_case_id": "NC-02-CONTROL",
+      "family_id": "NC-02",
+      "split": "development",
+      "context_id": "NIC-0b1ab19dd27f5e6c",
+      "text": "주방 물건이 든 상자는 어느 것이야?",
+      "question_type": "paired_short_control",
+      "profile": "natural_control",
+      "pair_group": "NC-02",
+      "position": null,
+      "variables": [],
+      "variant": {
+        "type": "target_preserving_short_control",
+        "paired_question_id": "NC-02-Q1",
+        "parent_case_id": "NC-02"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "파란 테이프를 두른 상자다. ‘주방’ 라벨의 갈색 상자는 실제로 현관 신발장 물건이다.",
+        "required_claims": [
+          "파란 테이프 상자",
+          "갈색 상자의 주방 라벨은 오류"
+        ],
+        "forbidden_claims": [
+          "라벨만 보고 갈색 상자를 주방 물건으로 선택"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-02-CONTROL-Q1-G1",
+            "any_of_fact_ids": [
+              "NC-02-CONTROL-F1"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-03-Q1",
+      "revision": 1,
+      "display_case_id": "NC-03",
+      "family_id": "NC-03",
+      "split": "development",
+      "context_id": "NIC-861e8303970a226b",
+      "text": "조사로 확인한 주문 누락의 원인은?",
+      "question_type": "causal_evidence",
+      "profile": "natural_single",
+      "pair_group": "NC-03",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "확인한 테스트에서는 조회 범위를 브라우저 시각으로 만든 오류가 원인이었다. 다른 문의까지 같은 원인이라고 확인한 것은 아니다.",
+        "required_claims": [
+          "조회 시각 기준 오류",
+          "확인한 테스트 범위에 한정"
+        ],
+        "forbidden_claims": [
+          "캐시 갱신을 확정 원인으로 제시",
+          "모든 문의 원인을 동일하게 확정"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-03-Q1-G1",
+            "any_of_fact_ids": [
+              "NC-03-F-d"
+            ]
+          },
+          {
+            "id": "NC-03-Q1-G2",
+            "any_of_fact_ids": [
+              "NC-03-F-e"
+            ]
+          },
+          {
+            "id": "NC-03-Q1-G3",
+            "any_of_fact_ids": [
+              "NC-03-F-f"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-03-Q2",
+      "revision": 1,
+      "display_case_id": "NC-03",
+      "family_id": "NC-03",
+      "split": "development",
+      "context_id": "NIC-861e8303970a226b",
+      "text": "캐시 갱신이 원인이라는 처음 생각은 검증된 결론이야?",
+      "question_type": "hypothesis_revision",
+      "profile": "natural_single",
+      "pair_group": "NC-03",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "deny",
+        "reference_answer": "아니다. 처음의 추측이었으며 확인한 테스트의 결론은 조회 시각 기준 오류다. 캐시의 관련성 전체를 완전히 배제했다고도 할 수 없다.",
+        "required_claims": [
+          "캐시 원인은 최초 추측",
+          "확인된 테스트 결론과 구분",
+          "캐시 전체 무관성은 미확정"
+        ],
+        "forbidden_claims": [
+          "선후관계를 인과로 확정",
+          "캐시는 절대 무관하다고 단정"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-03-Q2-G1",
+            "any_of_fact_ids": [
+              "NC-03-F-b"
+            ]
+          },
+          {
+            "id": "NC-03-Q2-G2",
+            "any_of_fact_ids": [
+              "NC-03-F-c"
+            ]
+          },
+          {
+            "id": "NC-03-Q2-G3",
+            "any_of_fact_ids": [
+              "NC-03-F-f"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-03-Q3",
+      "revision": 1,
+      "display_case_id": "NC-03",
+      "family_id": "NC-03",
+      "split": "development",
+      "context_id": "NIC-861e8303970a226b",
+      "text": "수정은 운영에 반영됐고 모든 사용자의 문제가 해결됐어?",
+      "question_type": "scope_and_completion",
+      "profile": "natural_single",
+      "pair_group": "NC-03",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "검증 환경에는 반영됐지만 운영 반영은 승인 대기다. 모든 사용자 문제의 해결도 확인하지 않았다.",
+        "required_claims": [
+          "검증 환경 반영",
+          "운영 승인 대기",
+          "전체 해결 미확인"
+        ],
+        "forbidden_claims": [
+          "테스트 성공을 운영 완료로 확대"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-03-Q3-G1",
+            "any_of_fact_ids": [
+              "NC-03-F-h"
+            ]
+          },
+          {
+            "id": "NC-03-Q3-G2",
+            "any_of_fact_ids": [
+              "NC-03-F-k"
+            ]
+          },
+          {
+            "id": "NC-03-Q3-G3",
+            "any_of_fact_ids": [
+              "NC-03-F-l"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-03-Q4",
+      "revision": 1,
+      "display_case_id": "NC-03",
+      "family_id": "NC-03",
+      "split": "development",
+      "context_id": "NIC-861e8303970a226b",
+      "text": "영수증 파일 열기 오류도 이번에 해결됐어?",
+      "question_type": "unmeasured_result",
+      "profile": "natural_single",
+      "pair_group": "NC-03",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "abstain",
+        "reference_answer": "별도 증상이며 이번 수정으로 해결됐는지 검사하지 않아 확인할 수 없다.",
+        "required_claims": [
+          "별도 증상",
+          "해결 여부 미검사"
+        ],
+        "forbidden_claims": [
+          "주문 조회와 영수증 오류를 병합"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-03-Q4-G1",
+            "any_of_fact_ids": [
+              "NC-03-F-g"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-03-Q5",
+      "revision": 1,
+      "display_case_id": "NC-03",
+      "family_id": "NC-03",
+      "split": "development",
+      "context_id": "NIC-861e8303970a226b",
+      "text": "결제 처리를 중단한 거야, 무엇을 임시로 바꾼 거야?",
+      "question_type": "negation_scope",
+      "profile": "natural_single",
+      "pair_group": "NC-03",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "deny",
+        "reference_answer": "결제 처리 자체를 중단한 것은 아니다. 영향을 받는 계정의 조회 화면을 임시 안내로 바꿨다.",
+        "required_claims": [
+          "결제 처리 미중단",
+          "일부 계정 조회 화면 임시 안내"
+        ],
+        "forbidden_claims": [
+          "서비스 전체 결제 중단"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-03-Q5-G1",
+            "any_of_fact_ids": [
+              "NC-03-F-i"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-03-Q6",
+      "revision": 1,
+      "display_case_id": "NC-03",
+      "family_id": "NC-03",
+      "split": "development",
+      "context_id": "NIC-861e8303970a226b",
+      "text": "재현 자료와 고객 안내는 각각 누가 맡았고 승인도 받았어?",
+      "question_type": "roles_and_approval",
+      "profile": "natural_single",
+      "pair_group": "NC-03",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "재현 자료 작성자는 서윤이고 기록 작성자는 고객 안내 문구를 검토했다. 자료를 내부 결재함에 올렸지만 승인 회신은 아직 없다.",
+        "required_claims": [
+          "서윤 재현 자료 작성",
+          "기록 작성자 안내 문구 검토",
+          "승인 요청과 승인 회신 구분"
+        ],
+        "forbidden_claims": [
+          "자료 제출을 승인 완료로 변경"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-03-Q6-G1",
+            "any_of_fact_ids": [
+              "NC-03-F-n5"
+            ]
+          },
+          {
+            "id": "NC-03-Q6-G2",
+            "any_of_fact_ids": [
+              "NC-03-F-n8"
+            ]
+          },
+          {
+            "id": "NC-03-Q6-G3",
+            "any_of_fact_ids": [
+              "NC-03-F-n9"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-03-CONTROL-Q1",
+      "revision": 1,
+      "display_case_id": "NC-03-CONTROL",
+      "family_id": "NC-03",
+      "split": "development",
+      "context_id": "NIC-895c8b9d003167eb",
+      "text": "조사로 확인한 주문 누락의 원인은?",
+      "question_type": "paired_short_control",
+      "profile": "natural_control",
+      "pair_group": "NC-03",
+      "position": null,
+      "variables": [],
+      "variant": {
+        "type": "target_preserving_short_control",
+        "paired_question_id": "NC-03-Q1",
+        "parent_case_id": "NC-03"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "확인한 테스트에서는 조회 범위를 브라우저 시각으로 만든 오류가 원인이었다. 다른 문의까지 같은 원인이라고 확인한 것은 아니다.",
+        "required_claims": [
+          "조회 시각 기준 오류",
+          "확인한 테스트 범위에 한정"
+        ],
+        "forbidden_claims": [
+          "캐시 갱신을 확정 원인으로 제시",
+          "모든 문의 원인을 동일하게 확정"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-03-CONTROL-Q1-G1",
+            "any_of_fact_ids": [
+              "NC-03-CONTROL-F1"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-04-Q1",
+      "revision": 1,
+      "display_case_id": "NC-04",
+      "family_id": "NC-04",
+      "split": "development",
+      "context_id": "NIC-f0a74074a4d71885",
+      "text": "최종 예약한 숙소와 해온호텔의 상태는?",
+      "question_type": "alternative_and_booking",
+      "profile": "natural_single",
+      "pair_group": "NC-04",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "누리호텔을 예약·결제했다. 해온호텔은 요금만 조회했고 예약·취소 내역이 없다.",
+        "required_claims": [
+          "누리호텔 예약 및 결제",
+          "해온호텔 조회만 함"
+        ],
+        "forbidden_claims": [
+          "해온호텔을 예약 후 취소했다고 생성"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-04-Q1-G1",
+            "any_of_fact_ids": [
+              "NC-04-F-b"
+            ]
+          },
+          {
+            "id": "NC-04-Q1-G2",
+            "any_of_fact_ids": [
+              "NC-04-F-c"
+            ]
+          },
+          {
+            "id": "NC-04-Q1-G3",
+            "any_of_fact_ids": [
+              "NC-04-F-d"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-04-Q2",
+      "revision": 1,
+      "display_case_id": "NC-04",
+      "family_id": "NC-04",
+      "split": "development",
+      "context_id": "NIC-f0a74074a4d71885",
+      "text": "숙박비를 돌려받으려면 언제까지 취소해야 해?",
+      "question_type": "time_condition",
+      "profile": "natural_single",
+      "pair_group": "NC-04",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "11월 12일 오후 6시까지 취소해야 한다는 안내가 있다.",
+        "required_claims": [
+          "2026-11-12 18:00까지 취소"
+        ],
+        "forbidden_claims": [
+          "입금 완료 시각으로 오해"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-04-Q2-G1",
+            "any_of_fact_ids": [
+              "NC-04-F-e"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-04-Q3",
+      "revision": 1,
+      "display_case_id": "NC-04",
+      "family_id": "NC-04",
+      "split": "development",
+      "context_id": "NIC-f0a74074a4d71885",
+      "text": "이미 환불 신청을 했고 입금 날짜도 정해졌어?",
+      "question_type": "negation_and_unknown",
+      "profile": "natural_single",
+      "pair_group": "NC-04",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "deny",
+        "reference_answer": "환불 신청을 하지 않았고 실제 입금 날짜도 정해지지 않았다.",
+        "required_claims": [
+          "취소·환불 요청 없음",
+          "입금 날짜 미확정"
+        ],
+        "forbidden_claims": [
+          "취소 조건을 실제 신청으로 변경",
+          "입금 날짜 임의 생성"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-04-Q3-G1",
+            "any_of_fact_ids": [
+              "NC-04-F-f"
+            ]
+          },
+          {
+            "id": "NC-04-Q3-G2",
+            "any_of_fact_ids": [
+              "NC-04-F-g"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-04-Q4",
+      "revision": 1,
+      "display_case_id": "NC-04",
+      "family_id": "NC-04",
+      "split": "development",
+      "context_id": "NIC-f0a74074a4d71885",
+      "text": "교통편과 운전자는 모두 확정됐어?",
+      "question_type": "partial_plan",
+      "profile": "natural_single",
+      "pair_group": "NC-04",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "가는 기차만 결제했다. 돌아오는 편과 렌터카 운전자는 미정이다.",
+        "required_claims": [
+          "가는 기차 결제",
+          "돌아오는 편 미정",
+          "운전자 미정"
+        ],
+        "forbidden_claims": [
+          "수진을 운전자로 지정"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-04-Q4-G1",
+            "any_of_fact_ids": [
+              "NC-04-F-h"
+            ]
+          },
+          {
+            "id": "NC-04-Q4-G2",
+            "any_of_fact_ids": [
+              "NC-04-F-i"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-04-Q5",
+      "revision": 1,
+      "display_case_id": "NC-04",
+      "family_id": "NC-04",
+      "split": "development",
+      "context_id": "NIC-f0a74074a4d71885",
+      "text": "나는 원래 운전을 싫어하고 박물관 입장권도 샀지?",
+      "question_type": "preference_scope",
+      "profile": "natural_single",
+      "pair_group": "NC-04",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "deny",
+        "reference_answer": "이번 여행에서 운전하고 싶지 않다고 했을 뿐 영구적인 선호는 아니다. 박물관도 방문 희망이며 예약 확인 전이다.",
+        "required_claims": [
+          "이번 여행에 한정된 운전 의사",
+          "박물관 입장권 미구매"
+        ],
+        "forbidden_claims": [
+          "일시적 선택을 영구 선호로 저장",
+          "희망을 구매 완료로 저장"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-04-Q5-G1",
+            "any_of_fact_ids": [
+              "NC-04-F-j"
+            ]
+          },
+          {
+            "id": "NC-04-Q5-G2",
+            "any_of_fact_ids": [
+              "NC-04-F-k"
+            ]
+          },
+          {
+            "id": "NC-04-Q5-G3",
+            "any_of_fact_ids": [
+              "NC-04-F-l"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-04-Q6",
+      "revision": 1,
+      "display_case_id": "NC-04",
+      "family_id": "NC-04",
+      "split": "development",
+      "context_id": "NIC-f0a74074a4d71885",
+      "text": "12일 오후 3시가 호텔 취소 마감이고 조식도 결제에 포함됐어?",
+      "question_type": "time_and_cost_scope",
+      "profile": "natural_single",
+      "pair_group": "NC-04",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "deny",
+        "reference_answer": "아니다. 오후 3시는 개인 확인 알림이며 호텔 취소 기한은 오후 6시다. 조식은 숙박 결제에 포함되지 않았다.",
+        "required_claims": [
+          "15시는 개인 알림",
+          "18시는 취소 기한",
+          "조식 미포함"
+        ],
+        "forbidden_claims": [
+          "개인 알림 시각을 계약상 기한으로 변경"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-04-Q6-G1",
+            "any_of_fact_ids": [
+              "NC-04-F-e"
+            ]
+          },
+          {
+            "id": "NC-04-Q6-G2",
+            "any_of_fact_ids": [
+              "NC-04-F-n6"
+            ]
+          },
+          {
+            "id": "NC-04-Q6-G3",
+            "any_of_fact_ids": [
+              "NC-04-F-n9"
+            ]
+          },
+          {
+            "id": "NC-04-Q6-G4",
+            "any_of_fact_ids": [
+              "NC-04-F-n10"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-04-CONTROL-Q1",
+      "revision": 1,
+      "display_case_id": "NC-04-CONTROL",
+      "family_id": "NC-04",
+      "split": "development",
+      "context_id": "NIC-e18288be2d99dd15",
+      "text": "최종 예약한 숙소와 해온호텔의 상태는?",
+      "question_type": "paired_short_control",
+      "profile": "natural_control",
+      "pair_group": "NC-04",
+      "position": null,
+      "variables": [],
+      "variant": {
+        "type": "target_preserving_short_control",
+        "paired_question_id": "NC-04-Q1",
+        "parent_case_id": "NC-04"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "누리호텔을 예약·결제했다. 해온호텔은 요금만 조회했고 예약·취소 내역이 없다.",
+        "required_claims": [
+          "누리호텔 예약 및 결제",
+          "해온호텔 조회만 함"
+        ],
+        "forbidden_claims": [
+          "해온호텔을 예약 후 취소했다고 생성"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-04-CONTROL-Q1-G1",
+            "any_of_fact_ids": [
+              "NC-04-CONTROL-F1"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-05-Q1",
+      "revision": 1,
+      "display_case_id": "NC-05",
+      "family_id": "NC-05",
+      "split": "development",
+      "context_id": "NIC-492171ad8d2a4849",
+      "text": "80ms와 65ms를 보면 B가 A보다 빠르다고 결론낼 수 있어?",
+      "question_type": "comparison_conditions",
+      "profile": "natural_single",
+      "pair_group": "NC-05",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "deny",
+        "reference_answer": "장비와 질문 수·구성이 달라 두 값만으로 결론낼 수 없다. 동일 조건 재측정이 필요하다.",
+        "required_claims": [
+          "서로 다른 장비와 질문",
+          "동일 조건 재측정 전 비교 결론 불가"
+        ],
+        "forbidden_claims": [
+          "B가 성능 우위라고 확정",
+          "지연 차이를 개선율로 단정"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-05-Q1-G1",
+            "any_of_fact_ids": [
+              "NC-05-F-b"
+            ]
+          },
+          {
+            "id": "NC-05-Q1-G2",
+            "any_of_fact_ids": [
+              "NC-05-F-c"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-05-Q2",
+      "revision": 1,
+      "display_case_id": "NC-05",
+      "family_id": "NC-05",
+      "split": "development",
+      "context_id": "NIC-492171ad8d2a4849",
+      "text": "A의 설정 변경 전후 정확도 차이는 몇 퍼센트포인트야?",
+      "question_type": "numeric_derivation",
+      "profile": "natural_single",
+      "pair_group": "NC-05",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "같은 기준에서 0.82에서 0.86으로 바뀌었으므로 4퍼센트포인트다.",
+        "required_claims": [
+          "0.82에서 0.86",
+          "4퍼센트포인트"
+        ],
+        "forbidden_claims": [
+          "4% 상대 개선과 혼동"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-05-Q2-G1",
+            "any_of_fact_ids": [
+              "NC-05-F-d"
+            ]
+          },
+          {
+            "id": "NC-05-Q2-G2",
+            "any_of_fact_ids": [
+              "NC-05-F-e"
+            ]
+          }
+        ],
+        "structured_expectations": {
+          "이전 정확도": 0.82,
+          "변경 정확도": 0.86,
+          "차이": "4퍼센트포인트"
+        },
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-05-Q3",
+      "revision": 1,
+      "display_case_id": "NC-05",
+      "family_id": "NC-05",
+      "split": "development",
+      "context_id": "NIC-492171ad8d2a4849",
+      "text": "B 운영 도입과 A 설정은 각각 어떻게 결정됐어?",
+      "question_type": "decision_scope",
+      "profile": "natural_single",
+      "pair_group": "NC-05",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "B 운영 도입은 보류했다. A의 문장 경계 보존 설정은 개발 환경에 유지하기로 했으며 운영 배포 승인은 아니다.",
+        "required_claims": [
+          "B 운영 도입 보류",
+          "A 설정 개발 환경 유지",
+          "운영 승인과 별개"
+        ],
+        "forbidden_claims": [
+          "제안을 채택으로 처리"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-05-Q3-G1",
+            "any_of_fact_ids": [
+              "NC-05-F-f"
+            ]
+          },
+          {
+            "id": "NC-05-Q3-G2",
+            "any_of_fact_ids": [
+              "NC-05-F-h"
+            ]
+          },
+          {
+            "id": "NC-05-Q3-G3",
+            "any_of_fact_ids": [
+              "NC-05-F-i"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-05-Q4",
+      "revision": 1,
+      "display_case_id": "NC-05",
+      "family_id": "NC-05",
+      "split": "development",
+      "context_id": "NIC-492171ad8d2a4849",
+      "text": "B가 메모리를 덜 쓴다는 실측 근거가 있어?",
+      "question_type": "unsupported_performance",
+      "profile": "natural_single",
+      "pair_group": "NC-05",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "abstain",
+        "reference_answer": "B의 메모리 사용량을 측정한 기록이 없어 확인할 수 없다.",
+        "required_claims": [
+          "메모리 사용량 미측정"
+        ],
+        "forbidden_claims": [
+          "지연 시간이 낮다는 이유로 메모리 우위 생성"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-05-Q4-G1",
+            "any_of_fact_ids": [
+              "NC-05-F-k"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-05-Q5",
+      "revision": 1,
+      "display_case_id": "NC-05",
+      "family_id": "NC-05",
+      "split": "development",
+      "context_id": "NIC-492171ad8d2a4849",
+      "text": "재측정 담당자와 마감일은?",
+      "question_type": "partial_answer",
+      "profile": "natural_single",
+      "pair_group": "NC-05",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "partial_answer",
+        "reference_answer": "담당자는 민수이고 마감일은 아직 정하지 않았다.",
+        "required_claims": [
+          "민수",
+          "마감일 미정"
+        ],
+        "forbidden_claims": [
+          "이번 주를 마감일로 확정"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-05-Q5-G1",
+            "any_of_fact_ids": [
+              "NC-05-F-m"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-05-Q6",
+      "revision": 1,
+      "display_case_id": "NC-05",
+      "family_id": "NC-05",
+      "split": "development",
+      "context_id": "NIC-492171ad8d2a4849",
+      "text": "재측정 실행표 작성과 질문 구성 검토는 누가 맡고, 검토까지 끝났어?",
+      "question_type": "attribution_and_sequence",
+      "profile": "natural_single",
+      "pair_group": "NC-05",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "민수가 실행표 초안을 작성 중이고 지연은 공유 후 질문 구성을 검토할 계획이다. 검토 완료로 확인된 것은 아니다.",
+        "required_claims": [
+          "민수 실행표 작성 중",
+          "지연 질문 구성 검토 계획",
+          "검토 완료 미확인"
+        ],
+        "forbidden_claims": [
+          "B 제안자를 실행표 작성자로 바꿈"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-05-Q6-G1",
+            "any_of_fact_ids": [
+              "NC-05-F-n8"
+            ]
+          },
+          {
+            "id": "NC-05-Q6-G2",
+            "any_of_fact_ids": [
+              "NC-05-F-n9"
+            ]
+          },
+          {
+            "id": "NC-05-Q6-G3",
+            "any_of_fact_ids": [
+              "NC-05-F-n10"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-05-CONTROL-Q1",
+      "revision": 1,
+      "display_case_id": "NC-05-CONTROL",
+      "family_id": "NC-05",
+      "split": "development",
+      "context_id": "NIC-d25a53e1229a37a1",
+      "text": "80ms와 65ms를 보면 B가 A보다 빠르다고 결론낼 수 있어?",
+      "question_type": "paired_short_control",
+      "profile": "natural_control",
+      "pair_group": "NC-05",
+      "position": null,
+      "variables": [],
+      "variant": {
+        "type": "target_preserving_short_control",
+        "paired_question_id": "NC-05-Q1",
+        "parent_case_id": "NC-05"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "deny",
+        "reference_answer": "장비와 질문 수·구성이 달라 두 값만으로 결론낼 수 없다. 동일 조건 재측정이 필요하다.",
+        "required_claims": [
+          "서로 다른 장비와 질문",
+          "동일 조건 재측정 전 비교 결론 불가"
+        ],
+        "forbidden_claims": [
+          "B가 성능 우위라고 확정",
+          "지연 차이를 개선율로 단정"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-05-CONTROL-Q1-G1",
+            "any_of_fact_ids": [
+              "NC-05-CONTROL-F1"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-06-Q1",
+      "revision": 1,
+      "display_case_id": "NC-06",
+      "family_id": "NC-06",
+      "split": "development",
+      "context_id": "NIC-007e2a91dd7ded37",
+      "text": "수아는 평소 무엇을 좋아하고 이번 모임에는 무엇을 요청했어?",
+      "question_type": "temporary_preference",
+      "profile": "natural_single",
+      "pair_group": "NC-06",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "평소에는 차가운 복숭아차를 좋아하지만 이번 모임에는 따뜻한 물만 요청했다.",
+        "required_claims": [
+          "평소 차가운 복숭아차",
+          "이번 모임 따뜻한 물"
+        ],
+        "forbidden_claims": [
+          "평소 선호를 따뜻한 물로 영구 변경",
+          "사용자 취향과 수아 취향 병합"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-06-Q1-G1",
+            "any_of_fact_ids": [
+              "NC-06-F-b"
+            ]
+          },
+          {
+            "id": "NC-06-Q1-G2",
+            "any_of_fact_ids": [
+              "NC-06-F-c"
+            ]
+          },
+          {
+            "id": "NC-06-Q1-G3",
+            "any_of_fact_ids": [
+              "NC-06-F-d"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-06-Q2",
+      "revision": 1,
+      "display_case_id": "NC-06",
+      "family_id": "NC-06",
+      "split": "development",
+      "context_id": "NIC-007e2a91dd7ded37",
+      "text": "나는 평소 어떤 음료를 좋아해?",
+      "question_type": "owner_vs_other",
+      "profile": "natural_single",
+      "pair_group": "NC-06",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "기록 작성자는 따뜻한 보리차를 좋아한다.",
+        "required_claims": [
+          "따뜻한 보리차"
+        ],
+        "forbidden_claims": [
+          "수아의 복숭아차 선호를 사용자에게 연결"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-06-Q2-G1",
+            "any_of_fact_ids": [
+              "NC-06-F-b"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-06-Q3",
+      "revision": 1,
+      "display_case_id": "NC-06",
+      "family_id": "NC-06",
+      "split": "development",
+      "context_id": "NIC-007e2a91dd7ded37",
+      "text": "메뉴판 글씨와 설명 분량은 어떻게 하기로 했어?",
+      "question_type": "combined_preferences",
+      "profile": "natural_single",
+      "pair_group": "NC-06",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "큰 글씨에 음식 설명은 한 줄씩 적기로 했다. 글씨 크기는 아버지의 요구, 짧은 설명은 기록 작성자의 선호를 반영했다.",
+        "required_claims": [
+          "큰 글씨",
+          "음식별 한 줄 설명",
+          "사람별 요구 구분"
+        ],
+        "forbidden_claims": [
+          "아버지가 짧은 설명을 원했다고 바꿈"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-06-Q3-G1",
+            "any_of_fact_ids": [
+              "NC-06-F-e"
+            ]
+          },
+          {
+            "id": "NC-06-Q3-G2",
+            "any_of_fact_ids": [
+              "NC-06-F-f"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-06-Q4",
+      "revision": 1,
+      "display_case_id": "NC-06",
+      "family_id": "NC-06",
+      "split": "development",
+      "context_id": "NIC-007e2a91dd7ded37",
+      "text": "꽃무늬 접시는 배송이 끝났어?",
+      "question_type": "selection_vs_delivery",
+      "profile": "natural_single",
+      "pair_group": "NC-06",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "deny",
+        "reference_answer": "디자인만 골랐고 배송 완료는 아니다.",
+        "required_claims": [
+          "디자인 선택",
+          "배송 완료 아님"
+        ],
+        "forbidden_claims": [
+          "선택을 구매·배송 완료로 처리"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-06-Q4-G1",
+            "any_of_fact_ids": [
+              "NC-06-F-g"
+            ]
+          },
+          {
+            "id": "NC-06-Q4-G2",
+            "any_of_fact_ids": [
+              "NC-06-F-h"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-06-Q5",
+      "revision": 1,
+      "display_case_id": "NC-06",
+      "family_id": "NC-06",
+      "split": "development",
+      "context_id": "NIC-007e2a91dd7ded37",
+      "text": "참석 인원과 음식 주문 수량은 확정됐어?",
+      "question_type": "image_vs_fact",
+      "profile": "natural_single",
+      "pair_group": "NC-06",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "deny",
+        "reference_answer": "확정되지 않았다. 답장 두 명이 남았고 인원에 맞춰 수량을 정한 뒤 주문을 보낼 예정이다.",
+        "required_claims": [
+          "인원·수량 미확정",
+          "답장 두 명 미수신",
+          "업체에 주문 미전달"
+        ],
+        "forbidden_claims": [
+          "사진 속 여섯 좌석을 확정 인원으로 사용"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-06-Q5-G1",
+            "any_of_fact_ids": [
+              "NC-06-F-i"
+            ]
+          },
+          {
+            "id": "NC-06-Q5-G2",
+            "any_of_fact_ids": [
+              "NC-06-F-j"
+            ]
+          },
+          {
+            "id": "NC-06-Q5-G3",
+            "any_of_fact_ids": [
+              "NC-06-F-l"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-06-Q6",
+      "revision": 1,
+      "display_case_id": "NC-06",
+      "family_id": "NC-06",
+      "split": "development",
+      "context_id": "NIC-007e2a91dd7ded37",
+      "text": "메뉴판 인쇄와 형이 가져올 디저트는 확정됐어?",
+      "question_type": "intermediate_artifacts",
+      "profile": "natural_single",
+      "pair_group": "NC-06",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "큰 글씨 파일은 만들었지만 음식 목록 재확인 전이라 인쇄하지 않았다. 형은 디저트를 가져올 계획이지만 종류는 미정이며 케이크로 확정할 수 없다.",
+        "required_claims": [
+          "파일 작성과 인쇄 구분",
+          "형의 디저트 종류 미정",
+          "사진 속 케이크는 확정 근거 아님"
+        ],
+        "forbidden_claims": [
+          "파일 작성을 인쇄 완료로 변경",
+          "사진의 음식을 실제 약속으로 처리"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-06-Q6-G1",
+            "any_of_fact_ids": [
+              "NC-06-F-n2"
+            ]
+          },
+          {
+            "id": "NC-06-Q6-G2",
+            "any_of_fact_ids": [
+              "NC-06-F-n8"
+            ]
+          },
+          {
+            "id": "NC-06-Q6-G3",
+            "any_of_fact_ids": [
+              "NC-06-F-n9"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-06-CONTROL-Q1",
+      "revision": 1,
+      "display_case_id": "NC-06-CONTROL",
+      "family_id": "NC-06",
+      "split": "development",
+      "context_id": "NIC-2d4c5f51d9377561",
+      "text": "수아는 평소 무엇을 좋아하고 이번 모임에는 무엇을 요청했어?",
+      "question_type": "paired_short_control",
+      "profile": "natural_control",
+      "pair_group": "NC-06",
+      "position": null,
+      "variables": [],
+      "variant": {
+        "type": "target_preserving_short_control",
+        "paired_question_id": "NC-06-Q1",
+        "parent_case_id": "NC-06"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "평소에는 차가운 복숭아차를 좋아하지만 이번 모임에는 따뜻한 물만 요청했다.",
+        "required_claims": [
+          "평소 차가운 복숭아차",
+          "이번 모임 따뜻한 물"
+        ],
+        "forbidden_claims": [
+          "평소 선호를 따뜻한 물로 영구 변경",
+          "사용자 취향과 수아 취향 병합"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-06-CONTROL-Q1-G1",
+            "any_of_fact_ids": [
+              "NC-06-CONTROL-F1"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-07-Q1",
+      "revision": 1,
+      "display_case_id": "NC-07",
+      "family_id": "NC-07",
+      "split": "development",
+      "context_id": "NIC-117ac4bd8bfe68eb",
+      "text": "‘검색 완료’ 카드는 현재 문서 검색 기능이 완성됐다는 뜻이야?",
+      "question_type": "reference_scope",
+      "profile": "natural_single",
+      "pair_group": "NC-07",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "deny",
+        "reference_answer": "아니다. 지난달 검색 아이콘 디자인 완료를 뜻하며 현재 문서 검색 기능 구현 완료가 아니다.",
+        "required_claims": [
+          "지난달 검색 아이콘 디자인",
+          "현재 검색 기능 구현과 별개"
+        ],
+        "forbidden_claims": [
+          "같은 단어를 근거로 기능 완료를 확정"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-07-Q1-G1",
+            "any_of_fact_ids": [
+              "NC-07-F-g"
+            ]
+          },
+          {
+            "id": "NC-07-Q1-G2",
+            "any_of_fact_ids": [
+              "NC-07-F-h"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-07-Q2",
+      "revision": 1,
+      "display_case_id": "NC-07",
+      "family_id": "NC-07",
+      "split": "development",
+      "context_id": "NIC-117ac4bd8bfe68eb",
+      "text": "도움말 시안을 외부에 공유하려면 무엇이 필요하고 누가 검토해?",
+      "question_type": "conditional_approval",
+      "profile": "natural_single",
+      "pair_group": "NC-07",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "문구 검토가 끝나야 하며 검토자는 지수다.",
+        "required_claims": [
+          "문구 검토 완료",
+          "지수"
+        ],
+        "forbidden_claims": [
+          "팀장의 조건부 허용을 무조건 승인으로 변경"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-07-Q2-G1",
+            "any_of_fact_ids": [
+              "NC-07-F-d"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-07-Q3",
+      "revision": 1,
+      "display_case_id": "NC-07",
+      "family_id": "NC-07",
+      "split": "development",
+      "context_id": "NIC-117ac4bd8bfe68eb",
+      "text": "고객에게 자료를 이미 발송했어?",
+      "question_type": "cause_and_status",
+      "profile": "natural_single",
+      "pair_group": "NC-07",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "아직 발송하지 않았다. 개인 정보 예시 때문에 문구 검토가 끝나지 않아 수정 후 지수에게 다시 확인받기로 했다.",
+        "required_claims": [
+          "미발송",
+          "문구 검토 미완료",
+          "수정 후 지수 재확인"
+        ],
+        "forbidden_claims": [
+          "보여줄 수 있다는 발언을 발송 완료로 변경"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-07-Q3-G1",
+            "any_of_fact_ids": [
+              "NC-07-F-e"
+            ]
+          },
+          {
+            "id": "NC-07-Q3-G2",
+            "any_of_fact_ids": [
+              "NC-07-F-f"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-07-Q4",
+      "revision": 1,
+      "display_case_id": "NC-07",
+      "family_id": "NC-07",
+      "split": "development",
+      "context_id": "NIC-117ac4bd8bfe68eb",
+      "text": "윤호와 은서가 각각 약속하거나 제안한 범위는?",
+      "question_type": "speaker_attribution",
+      "profile": "natural_single",
+      "pair_group": "NC-07",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "윤호는 다음 주 고객 미팅에서 시안을 보여주는 것을 제안했다. 은서는 이번 주 시안 준비는 가능하지만 검색 기능 완성은 약속할 수 없다고 했다.",
+        "required_claims": [
+          "윤호는 고객용 시안 제안",
+          "은서는 시안과 검색 기능 완성을 구분"
+        ],
+        "forbidden_claims": [
+          "윤호가 검색 구현 완료를 약속했다고 바꿈"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-07-Q4-G1",
+            "any_of_fact_ids": [
+              "NC-07-F-b"
+            ]
+          },
+          {
+            "id": "NC-07-Q4-G2",
+            "any_of_fact_ids": [
+              "NC-07-F-c"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-07-Q5",
+      "revision": 1,
+      "display_case_id": "NC-07",
+      "family_id": "NC-07",
+      "split": "development",
+      "context_id": "NIC-117ac4bd8bfe68eb",
+      "text": "오늘 내가 바꾼 것과 실제 서비스 반영 여부는?",
+      "question_type": "artifact_scope",
+      "profile": "natural_single",
+      "pair_group": "NC-07",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "제목 두 개를 문구 시안 파일에서 수정했으며 실제 서비스 파일 변경이나 외부 공개는 아니다.",
+        "required_claims": [
+          "제목 두 개 수정",
+          "시안 파일 한정",
+          "서비스 변경·외부 공개 아님"
+        ],
+        "forbidden_claims": [
+          "시안 변경을 운영 변경으로 확대"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-07-Q5-G1",
+            "any_of_fact_ids": [
+              "NC-07-F-i"
+            ]
+          },
+          {
+            "id": "NC-07-Q5-G2",
+            "any_of_fact_ids": [
+              "NC-07-F-j"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-07-Q6",
+      "revision": 1,
+      "display_case_id": "NC-07",
+      "family_id": "NC-07",
+      "split": "development",
+      "context_id": "NIC-117ac4bd8bfe68eb",
+      "text": "오후 3시에 무엇이 끝났고 고객 공유가 가능해진 거야?",
+      "question_type": "timestamp_role",
+      "profile": "natural_single",
+      "pair_group": "NC-07",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "오후 3시는 합성 이름 수정 목록을 지수에게 전송한 시각이다. 지수의 검토 완료 회신은 대기 중이며 고객 공유 가능 시각을 확정하지 않았다.",
+        "required_claims": [
+          "15시는 수정 목록 전송",
+          "검토 완료 회신 대기",
+          "공유 가능 시각 미확정"
+        ],
+        "forbidden_claims": [
+          "전송 시각을 검토 완료 시각으로 변경"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-07-Q6-G1",
+            "any_of_fact_ids": [
+              "NC-07-F-n2"
+            ]
+          },
+          {
+            "id": "NC-07-Q6-G2",
+            "any_of_fact_ids": [
+              "NC-07-F-n8"
+            ]
+          },
+          {
+            "id": "NC-07-Q6-G3",
+            "any_of_fact_ids": [
+              "NC-07-F-n9"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-07-CONTROL-Q1",
+      "revision": 1,
+      "display_case_id": "NC-07-CONTROL",
+      "family_id": "NC-07",
+      "split": "development",
+      "context_id": "NIC-8ef858e237d48e9d",
+      "text": "‘검색 완료’ 카드는 현재 문서 검색 기능이 완성됐다는 뜻이야?",
+      "question_type": "paired_short_control",
+      "profile": "natural_control",
+      "pair_group": "NC-07",
+      "position": null,
+      "variables": [],
+      "variant": {
+        "type": "target_preserving_short_control",
+        "paired_question_id": "NC-07-Q1",
+        "parent_case_id": "NC-07"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "deny",
+        "reference_answer": "아니다. 지난달 검색 아이콘 디자인 완료를 뜻하며 현재 문서 검색 기능 구현 완료가 아니다.",
+        "required_claims": [
+          "지난달 검색 아이콘 디자인",
+          "현재 검색 기능 구현과 별개"
+        ],
+        "forbidden_claims": [
+          "같은 단어를 근거로 기능 완료를 확정"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-07-CONTROL-Q1-G1",
+            "any_of_fact_ids": [
+              "NC-07-CONTROL-F1"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-08-Q1",
+      "revision": 1,
+      "display_case_id": "NC-08",
+      "family_id": "NC-08",
+      "split": "development",
+      "context_id": "NIC-a56dc1ff6e57ada4",
+      "text": "오늘 실제로 지불한 돈과 8만 원의 의미는?",
+      "question_type": "estimate_vs_payment",
+      "profile": "natural_single",
+      "pair_group": "NC-08",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "실제로 낸 돈은 점검비 1만 원이고 8만 원은 배터리 교체를 할 경우의 견적이다.",
+        "required_claims": [
+          "실제 지출 1만 원",
+          "8만 원은 조건부 견적"
+        ],
+        "forbidden_claims": [
+          "실제 지출을 8만 원 또는 9만 원으로 계산"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-08-Q1-G1",
+            "any_of_fact_ids": [
+              "NC-08-F-c"
+            ]
+          },
+          {
+            "id": "NC-08-Q1-G2",
+            "any_of_fact_ids": [
+              "NC-08-F-k"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-08-Q2",
+      "revision": 1,
+      "display_case_id": "NC-08",
+      "family_id": "NC-08",
+      "split": "development",
+      "context_id": "NIC-a56dc1ff6e57ada4",
+      "text": "집 흰색 청소기는 배터리 문제로 확정돼 교체까지 끝났어?",
+      "question_type": "hypothesis_and_consent",
+      "profile": "natural_single",
+      "pair_group": "NC-08",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "deny",
+        "reference_answer": "아니다. 배터리는 가능성일 뿐 원인이 확정되지 않았고 교체 승인도 하지 않았다.",
+        "required_claims": [
+          "원인 미확정",
+          "교체 승인 없음"
+        ],
+        "forbidden_claims": [
+          "견적 제시를 수리 승인으로 해석"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-08-Q2-G1",
+            "any_of_fact_ids": [
+              "NC-08-F-b"
+            ]
+          },
+          {
+            "id": "NC-08-Q2-G2",
+            "any_of_fact_ids": [
+              "NC-08-F-e"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-08-Q3",
+      "revision": 1,
+      "display_case_id": "NC-08",
+      "family_id": "NC-08",
+      "split": "development",
+      "context_id": "NIC-a56dc1ff6e57ada4",
+      "text": "민호가 고쳐졌다고 한 청소기는 어느 것이야?",
+      "question_type": "object_coreference",
+      "profile": "natural_single",
+      "pair_group": "NC-08",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "작업실의 검은색 청소기다. 집의 흰색 청소기와 다른 물건이다.",
+        "required_claims": [
+          "작업실 검은색 청소기",
+          "집 흰색과 구분"
+        ],
+        "forbidden_claims": [
+          "집 청소기도 수리 완료됐다고 연결"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-08-Q3-G1",
+            "any_of_fact_ids": [
+              "NC-08-F-g"
+            ]
+          },
+          {
+            "id": "NC-08-Q3-G2",
+            "any_of_fact_ids": [
+              "NC-08-F-h"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-08-Q4",
+      "revision": 1,
+      "display_case_id": "NC-08",
+      "family_id": "NC-08",
+      "split": "development",
+      "context_id": "NIC-a56dc1ff6e57ada4",
+      "text": "충전대를 옮긴 것이 고장 원인이야?",
+      "question_type": "sequence_not_cause",
+      "profile": "natural_single",
+      "pair_group": "NC-08",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "abstain",
+        "reference_answer": "옮긴 사실은 있지만 고장의 원인인지는 확인하지 못했다.",
+        "required_claims": [
+          "충전대 이동 사실",
+          "고장과 인과 미확인"
+        ],
+        "forbidden_claims": [
+          "시간상 앞선 일을 원인으로 확정"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-08-Q4-G1",
+            "any_of_fact_ids": [
+              "NC-08-F-i"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-08-Q5",
+      "revision": 1,
+      "display_case_id": "NC-08",
+      "family_id": "NC-08",
+      "split": "development",
+      "context_id": "NIC-a56dc1ff6e57ada4",
+      "text": "언제 수리품을 받을 수 있고 추가 결제액은 얼마야?",
+      "question_type": "unknown_schedule",
+      "profile": "natural_single",
+      "pair_group": "NC-08",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "abstain",
+        "reference_answer": "출고 날짜와 추가 결제액은 아직 정해지거나 기록되지 않았다. 다음 날 연락하겠다는 안내만 있다.",
+        "required_claims": [
+          "출고 날짜 미정",
+          "추가 결제액 미확인",
+          "연락 예정과 출고를 구분"
+        ],
+        "forbidden_claims": [
+          "다음 날을 출고일로 변경",
+          "견적을 확정 추가 결제로 사용"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-08-Q5-G1",
+            "any_of_fact_ids": [
+              "NC-08-F-f"
+            ]
+          },
+          {
+            "id": "NC-08-Q5-G2",
+            "any_of_fact_ids": [
+              "NC-08-F-l"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-08-Q6",
+      "revision": 1,
+      "display_case_id": "NC-08",
+      "family_id": "NC-08",
+      "split": "development",
+      "context_id": "NIC-a56dc1ff6e57ada4",
+      "text": "민호가 가져다주겠다고 했으니 작업실 청소기 대여도 승인된 거야?",
+      "question_type": "proposal_vs_authority",
+      "profile": "natural_single",
+      "pair_group": "NC-08",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "deny",
+        "reference_answer": "아니다. 민호의 전달 제안은 있었지만 장비 관리자의 허락을 받지 못했으므로 대여 승인으로 볼 수 없다.",
+        "required_claims": [
+          "민호의 전달 제안",
+          "장비 관리자 허락 미수신",
+          "대여 승인 미확인"
+        ],
+        "forbidden_claims": [
+          "전달 제안자를 대여 승인자로 처리"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-08-Q6-G1",
+            "any_of_fact_ids": [
+              "NC-08-F-n7"
+            ]
+          },
+          {
+            "id": "NC-08-Q6-G2",
+            "any_of_fact_ids": [
+              "NC-08-F-n8"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-08-CONTROL-Q1",
+      "revision": 1,
+      "display_case_id": "NC-08-CONTROL",
+      "family_id": "NC-08",
+      "split": "development",
+      "context_id": "NIC-6095dc2c77379fdb",
+      "text": "오늘 실제로 지불한 돈과 8만 원의 의미는?",
+      "question_type": "paired_short_control",
+      "profile": "natural_control",
+      "pair_group": "NC-08",
+      "position": null,
+      "variables": [],
+      "variant": {
+        "type": "target_preserving_short_control",
+        "paired_question_id": "NC-08-Q1",
+        "parent_case_id": "NC-08"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "실제로 낸 돈은 점검비 1만 원이고 8만 원은 배터리 교체를 할 경우의 견적이다.",
+        "required_claims": [
+          "실제 지출 1만 원",
+          "8만 원은 조건부 견적"
+        ],
+        "forbidden_claims": [
+          "실제 지출을 8만 원 또는 9만 원으로 계산"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-08-CONTROL-Q1-G1",
+            "any_of_fact_ids": [
+              "NC-08-CONTROL-F1"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-09-Q1",
+      "revision": 1,
+      "display_case_id": "NC-09",
+      "family_id": "NC-09",
+      "split": "development",
+      "context_id": "NIC-37c6512c5279b670",
+      "text": "주간 보고서 검토를 끝낸 사람은 누구야?",
+      "question_type": "cross_record_identity",
+      "profile": "natural_multi",
+      "pair_group": "NC-09",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "회사 동료 하린이 표 두 개의 단위 검토를 끝냈다. 동명이인인 독서 모임 하린과 구분해야 한다.",
+        "required_claims": [
+          "회사 동료 하린",
+          "보고서 표 두 개 단위 검토 완료",
+          "동명이인 분리"
+        ],
+        "forbidden_claims": [
+          "독서 모임 하린에게 업무 완료를 연결"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-09-Q1-G1",
+            "any_of_fact_ids": [
+              "NC-09-F-a"
+            ]
+          },
+          {
+            "id": "NC-09-Q1-G2",
+            "any_of_fact_ids": [
+              "NC-09-F-c"
+            ]
+          },
+          {
+            "id": "NC-09-Q1-G3",
+            "any_of_fact_ids": [
+              "NC-09-F-h"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-09-Q2",
+      "revision": 1,
+      "display_case_id": "NC-09",
+      "family_id": "NC-09",
+      "split": "development",
+      "context_id": "NIC-37c6512c5279b670",
+      "text": "자료실 방문 예정일은 메시지를 읽은 다음 날이야?",
+      "question_type": "quoted_relative_time",
+      "profile": "natural_multi",
+      "pair_group": "NC-09",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "deny",
+        "reference_answer": "아니다. 10월 28일에 보낸 메시지의 ‘내일’이므로 예정일은 10월 29일이다. 11월 2일은 메시지를 읽은 날이다.",
+        "required_claims": [
+          "발언 기준 2026-10-28",
+          "예정일 2026-10-29",
+          "읽은 날 2026-11-02"
+        ],
+        "forbidden_claims": [
+          "예정일을 11월 3일로 해석"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-09-Q2-G1",
+            "any_of_fact_ids": [
+              "NC-09-F-d"
+            ]
+          },
+          {
+            "id": "NC-09-Q2-G2",
+            "any_of_fact_ids": [
+              "NC-09-F-e"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-09-Q3",
+      "revision": 1,
+      "display_case_id": "NC-09",
+      "family_id": "NC-09",
+      "split": "development",
+      "context_id": "NIC-37c6512c5279b670",
+      "text": "독서 모임 하린은 실제로 자료실에 다녀왔어?",
+      "question_type": "cross_record_unknown",
+      "profile": "natural_multi",
+      "pair_group": "NC-09",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "abstain",
+        "reference_answer": "방문 계획은 있었지만 후속 증거와 확인 답장이 없어 실제 방문 여부는 확인할 수 없다.",
+        "required_claims": [
+          "계획과 실제 방문 구분",
+          "실제 방문 미확인"
+        ],
+        "forbidden_claims": [
+          "예정일이 지났으므로 방문 완료로 단정"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-09-Q3-G1",
+            "any_of_fact_ids": [
+              "NC-09-F-e"
+            ]
+          },
+          {
+            "id": "NC-09-Q3-G2",
+            "any_of_fact_ids": [
+              "NC-09-F-k"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-09-Q4",
+      "revision": 1,
+      "display_case_id": "NC-09",
+      "family_id": "NC-09",
+      "split": "development",
+      "context_id": "NIC-37c6512c5279b670",
+      "text": "하린의 직업은 뭐야?",
+      "question_type": "ambiguous_entity",
+      "profile": "natural_multi",
+      "pair_group": "NC-09",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "clarify",
+        "reference_answer": "회사 동료 하린과 독서 모임 하린 중 누구를 말하는지 확인이 필요하다. 간호사라는 정보는 독서 모임 하린에 관한 것이다.",
+        "required_claims": [
+          "어느 하린인지 명확화",
+          "간호사는 독서 모임 하린"
+        ],
+        "forbidden_claims": [
+          "두 사람의 직업을 병합"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-09-Q4-G1",
+            "any_of_fact_ids": [
+              "NC-09-F-a"
+            ]
+          },
+          {
+            "id": "NC-09-Q4-G2",
+            "any_of_fact_ids": [
+              "NC-09-F-c"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-09-Q5",
+      "revision": 1,
+      "display_case_id": "NC-09",
+      "family_id": "NC-09",
+      "split": "development",
+      "context_id": "NIC-37c6512c5279b670",
+      "text": "검토가 끝났으니 보고서도 이미 발송됐지?",
+      "question_type": "dependent_workflow",
+      "profile": "natural_multi",
+      "pair_group": "NC-09",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "abstain",
+        "reference_answer": "그렇게 확인할 수 없다. 검토 후 두 번째 표의 금액 단위 수정과 발송을 계획했으며 실제 발송 기록은 없다.",
+        "required_claims": [
+          "검토 완료와 발송 완료 분리",
+          "두 번째 표 금액 단위 수정 계획",
+          "발송 미확인"
+        ],
+        "forbidden_claims": [
+          "선행 작업 완료를 후행 작업 완료로 확대"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-09-Q5-G1",
+            "any_of_fact_ids": [
+              "NC-09-F-h"
+            ]
+          },
+          {
+            "id": "NC-09-Q5-G2",
+            "any_of_fact_ids": [
+              "NC-09-F-i"
+            ]
+          },
+          {
+            "id": "NC-09-Q5-G3",
+            "any_of_fact_ids": [
+              "NC-09-F-j"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-09-Q6",
+      "revision": 1,
+      "display_case_id": "NC-09",
+      "family_id": "NC-09",
+      "split": "development",
+      "context_id": "NIC-37c6512c5279b670",
+      "text": "회사 하린의 직업도 간호사이고 캡처 저장일이 자료실 방문일이야?",
+      "question_type": "cross_record_metadata_scope",
+      "profile": "natural_multi",
+      "pair_group": "NC-09",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "abstain",
+        "reference_answer": "그렇게 확인할 수 없다. 간호사는 독서 모임 하린에 대한 정보이며 회사 하린의 직업은 제공되지 않았다. 캡처 저장일도 메시지 발신일이나 실제 방문일과 다르다.",
+        "required_claims": [
+          "회사 하린 직업 미제공",
+          "간호사는 모임 하린",
+          "캡처 저장일을 실제 방문일로 쓰지 않음"
+        ],
+        "forbidden_claims": [
+          "직업 병합",
+          "파일 시각을 사건 시각으로 대체"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-09-Q6-G1",
+            "any_of_fact_ids": [
+              "NC-09-F-c"
+            ]
+          },
+          {
+            "id": "NC-09-Q6-G2",
+            "any_of_fact_ids": [
+              "NC-09-F-d"
+            ]
+          },
+          {
+            "id": "NC-09-Q6-G3",
+            "any_of_fact_ids": [
+              "NC-09-F-e"
+            ]
+          },
+          {
+            "id": "NC-09-Q6-G4",
+            "any_of_fact_ids": [
+              "NC-09-F-n2"
+            ]
+          },
+          {
+            "id": "NC-09-Q6-G5",
+            "any_of_fact_ids": [
+              "NC-09-F-n3"
+            ]
+          },
+          {
+            "id": "NC-09-Q6-G6",
+            "any_of_fact_ids": [
+              "NC-09-F-n4"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-09-CONTROL-Q1",
+      "revision": 1,
+      "display_case_id": "NC-09-CONTROL",
+      "family_id": "NC-09",
+      "split": "development",
+      "context_id": "NIC-0981fd0fb6ee57df",
+      "text": "주간 보고서 검토를 끝낸 사람은 누구야?",
+      "question_type": "paired_short_control",
+      "profile": "natural_control",
+      "pair_group": "NC-09",
+      "position": null,
+      "variables": [],
+      "variant": {
+        "type": "target_preserving_short_control",
+        "paired_question_id": "NC-09-Q1",
+        "parent_case_id": "NC-09"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "회사 동료 하린이 표 두 개의 단위 검토를 끝냈다. 동명이인인 독서 모임 하린과 구분해야 한다.",
+        "required_claims": [
+          "회사 동료 하린",
+          "보고서 표 두 개 단위 검토 완료",
+          "동명이인 분리"
+        ],
+        "forbidden_claims": [
+          "독서 모임 하린에게 업무 완료를 연결"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-09-CONTROL-Q1-G1",
+            "any_of_fact_ids": [
+              "NC-09-CONTROL-F1"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-10-Q1",
+      "revision": 1,
+      "display_case_id": "NC-10",
+      "family_id": "NC-10",
+      "split": "development",
+      "context_id": "NIC-67c11d5fa35ca902",
+      "text": "접수번호 R-721 원본 접수증의 현재 보관 장소는?",
+      "question_type": "cross_record_correction",
+      "profile": "natural_multi",
+      "pair_group": "NC-10",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "작은 흰 봉투에 담겨 현관 초록 보관함에 있다. 거실 노란 서랍은 정정된 잘못된 기록이다.",
+        "required_claims": [
+          "현관 초록 보관함",
+          "작은 흰 봉투",
+          "이전 위치 기록 정정"
+        ],
+        "forbidden_claims": [
+          "여권의 안방 위치를 연결",
+          "이전 위치를 현재 위치로 사용"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-10-Q1-G1",
+            "any_of_fact_ids": [
+              "NC-10-F-a"
+            ]
+          },
+          {
+            "id": "NC-10-Q1-G2",
+            "any_of_fact_ids": [
+              "NC-10-F-b"
+            ]
+          },
+          {
+            "id": "NC-10-Q1-G3",
+            "any_of_fact_ids": [
+              "NC-10-F-g"
+            ]
+          },
+          {
+            "id": "NC-10-Q1-G4",
+            "any_of_fact_ids": [
+              "NC-10-F-h"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-10-Q2",
+      "revision": 1,
+      "display_case_id": "NC-10",
+      "family_id": "NC-10",
+      "split": "development",
+      "context_id": "NIC-67c11d5fa35ca902",
+      "text": "오늘 봉투를 노란 서랍에서 초록 보관함으로 옮긴 거야?",
+      "question_type": "correction_vs_change",
+      "profile": "natural_multi",
+      "pair_group": "NC-10",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "deny",
+        "reference_answer": "아니다. 처음부터 현관 초록 보관함에 있었고 이동이 아니라 기록을 정정했다.",
+        "required_claims": [
+          "실제 이동 아님",
+          "처음부터 현관 초록 보관함",
+          "위치 기록 정정"
+        ],
+        "forbidden_claims": [
+          "정정을 실제 이동 사건으로 생성"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-10-Q2-G1",
+            "any_of_fact_ids": [
+              "NC-10-F-g"
+            ]
+          },
+          {
+            "id": "NC-10-Q2-G2",
+            "any_of_fact_ids": [
+              "NC-10-F-h"
+            ]
+          },
+          {
+            "id": "NC-10-Q2-G3",
+            "any_of_fact_ids": [
+              "NC-10-F-i"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-10-Q3",
+      "revision": 1,
+      "display_case_id": "NC-10",
+      "family_id": "NC-10",
+      "split": "development",
+      "context_id": "NIC-67c11d5fa35ca902",
+      "text": "여권과 접수증은 같은 초록 보관함에 있어?",
+      "question_type": "similar_locations",
+      "profile": "natural_multi",
+      "pair_group": "NC-10",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "deny",
+        "reference_answer": "아니다. 여권은 안방 초록 보관함의 파란 케이스, 접수증은 현관 초록 보관함의 작은 흰 봉투다.",
+        "required_claims": [
+          "여권 안방 초록 보관함",
+          "접수증 현관 초록 보관함",
+          "서로 다른 공간"
+        ],
+        "forbidden_claims": [
+          "같은 색을 이유로 수납공간 병합"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-10-Q3-G1",
+            "any_of_fact_ids": [
+              "NC-10-F-c"
+            ]
+          },
+          {
+            "id": "NC-10-Q3-G2",
+            "any_of_fact_ids": [
+              "NC-10-F-h"
+            ]
+          },
+          {
+            "id": "NC-10-Q3-G3",
+            "any_of_fact_ids": [
+              "NC-10-F-j"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-10-Q4",
+      "revision": 1,
+      "display_case_id": "NC-10",
+      "family_id": "NC-10",
+      "split": "development",
+      "context_id": "NIC-67c11d5fa35ca902",
+      "text": "현수가 원본 접수증을 이미 받았어?",
+      "question_type": "communication_vs_transfer",
+      "profile": "natural_multi",
+      "pair_group": "NC-10",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "abstain",
+        "reference_answer": "새 위치를 문자로 알려 준 기록만 있고 실제로 원본을 전달했는지는 확인되지 않는다.",
+        "required_claims": [
+          "위치 안내와 실제 전달 구분",
+          "전달 미확인"
+        ],
+        "forbidden_claims": [
+          "안내 문자를 물건 전달로 해석"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-10-Q4-G1",
+            "any_of_fact_ids": [
+              "NC-10-F-e"
+            ]
+          },
+          {
+            "id": "NC-10-Q4-G2",
+            "any_of_fact_ids": [
+              "NC-10-F-k"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-10-Q5",
+      "revision": 1,
+      "display_case_id": "NC-10",
+      "family_id": "NC-10",
+      "split": "development",
+      "context_id": "NIC-67c11d5fa35ca902",
+      "text": "은행에 가져갈 원본은 몇 장이고 방문 시각은?",
+      "question_type": "count_and_unknown",
+      "profile": "natural_multi",
+      "pair_group": "NC-10",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "partial_answer",
+        "reference_answer": "원본 접수증은 한 장이고 은행 방문 시각은 아직 미정이다. 복사본 두 장과 구분해야 한다.",
+        "required_claims": [
+          "원본 한 장",
+          "복사본 두 장과 구분",
+          "방문 시각 미정"
+        ],
+        "forbidden_claims": [
+          "원본과 복사본을 합쳐 원본 세 장이라고 답함"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-10-Q5-G1",
+            "any_of_fact_ids": [
+              "NC-10-F-b"
+            ]
+          },
+          {
+            "id": "NC-10-Q5-G2",
+            "any_of_fact_ids": [
+              "NC-10-F-d"
+            ]
+          },
+          {
+            "id": "NC-10-Q5-G3",
+            "any_of_fact_ids": [
+              "NC-10-F-l"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-10-Q6",
+      "revision": 1,
+      "display_case_id": "NC-10",
+      "family_id": "NC-10",
+      "split": "development",
+      "context_id": "NIC-67c11d5fa35ca902",
+      "text": "접수번호가 같으니까 원본과 복사본도 같은 종이이고 투명 파일 전체가 접수증이야?",
+      "question_type": "document_identity",
+      "profile": "natural_multi",
+      "pair_group": "NC-10",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "deny",
+        "reference_answer": "아니다. 원본 한 장과 복사본 두 장은 구분되며 투명 파일에는 계좌 안내문도 있다. 같은 번호나 용도로 물리적 종이와 문서 종류를 합치면 안 된다.",
+        "required_claims": [
+          "원본·복사본 구분",
+          "투명 파일에 계좌 안내문도 존재",
+          "같은 번호와 물리적 동일성 구분"
+        ],
+        "forbidden_claims": [
+          "동일 번호를 물리적 동일 개체로 취급"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-10-Q6-G1",
+            "any_of_fact_ids": [
+              "NC-10-F-b"
+            ]
+          },
+          {
+            "id": "NC-10-Q6-G2",
+            "any_of_fact_ids": [
+              "NC-10-F-d"
+            ]
+          },
+          {
+            "id": "NC-10-Q6-G3",
+            "any_of_fact_ids": [
+              "NC-10-F-n1"
+            ]
+          },
+          {
+            "id": "NC-10-Q6-G4",
+            "any_of_fact_ids": [
+              "NC-10-F-n4"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-10-CONTROL-Q1",
+      "revision": 1,
+      "display_case_id": "NC-10-CONTROL",
+      "family_id": "NC-10",
+      "split": "development",
+      "context_id": "NIC-810a6139e23bb9f5",
+      "text": "접수번호 R-721 원본 접수증의 현재 보관 장소는?",
+      "question_type": "paired_short_control",
+      "profile": "natural_control",
+      "pair_group": "NC-10",
+      "position": null,
+      "variables": [],
+      "variant": {
+        "type": "target_preserving_short_control",
+        "paired_question_id": "NC-10-Q1",
+        "parent_case_id": "NC-10"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "작은 흰 봉투에 담겨 현관 초록 보관함에 있다. 거실 노란 서랍은 정정된 잘못된 기록이다.",
+        "required_claims": [
+          "현관 초록 보관함",
+          "작은 흰 봉투",
+          "이전 위치 기록 정정"
+        ],
+        "forbidden_claims": [
+          "여권의 안방 위치를 연결",
+          "이전 위치를 현재 위치로 사용"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-10-CONTROL-Q1-G1",
+            "any_of_fact_ids": [
+              "NC-10-CONTROL-F1"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-11-Q1",
+      "revision": 1,
+      "display_case_id": "NC-11",
+      "family_id": "NC-11",
+      "split": "development",
+      "context_id": "NIC-edcdf17ebdc24b07",
+      "text": "K-84의 인수 확인은 완료됐다고 확정할 수 있어?",
+      "question_type": "unresolved_conflict",
+      "profile": "natural_multi",
+      "pair_group": "NC-11",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "report_conflict",
+        "reference_answer": "서진의 완료 보고와 태오의 미완료 보고가 같은 장비에 대해 충돌하고 공식 정정 여부도 없어 확정할 수 없다.",
+        "required_claims": [
+          "같은 K-84에 대한 상충 보고",
+          "서진 완료·태오 미완료",
+          "정정 여부 미확인",
+          "최종 상태 확정 불가"
+        ],
+        "forbidden_claims": [
+          "최신 보고라는 이유만으로 태오를 정답으로 선택",
+          "상충 보고를 서로 다른 장비로 분리"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-11-Q1-G1",
+            "any_of_fact_ids": [
+              "NC-11-F-a"
+            ]
+          },
+          {
+            "id": "NC-11-Q1-G2",
+            "any_of_fact_ids": [
+              "NC-11-F-g"
+            ]
+          },
+          {
+            "id": "NC-11-Q1-G3",
+            "any_of_fact_ids": [
+              "NC-11-F-i"
+            ]
+          },
+          {
+            "id": "NC-11-Q1-G4",
+            "any_of_fact_ids": [
+              "NC-11-F-j"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-11-Q2",
+      "revision": 1,
+      "display_case_id": "NC-11",
+      "family_id": "NC-11",
+      "split": "development",
+      "context_id": "NIC-edcdf17ebdc24b07",
+      "text": "서진과 태오는 확인서에 대해 각각 뭐라고 했어?",
+      "question_type": "speaker_provenance",
+      "profile": "natural_multi",
+      "pair_group": "NC-11",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "서진은 확인서를 썼다고 했지만 첨부하지 않았고, 태오는 확인서가 작성되지 않았다고 보고했다.",
+        "required_claims": [
+          "서진 작성 주장·파일 미첨부",
+          "태오 미작성 주장"
+        ],
+        "forbidden_claims": [
+          "두 발언을 직접 확인된 사실로 단정"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-11-Q2-G1",
+            "any_of_fact_ids": [
+              "NC-11-F-b"
+            ]
+          },
+          {
+            "id": "NC-11-Q2-G2",
+            "any_of_fact_ids": [
+              "NC-11-F-h"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-11-Q3",
+      "revision": 1,
+      "display_case_id": "NC-11",
+      "family_id": "NC-11",
+      "split": "development",
+      "context_id": "NIC-edcdf17ebdc24b07",
+      "text": "두 보고가 충돌하는 건 K-84와 K-48을 혼동했기 때문이야?",
+      "question_type": "entity_and_conflict",
+      "profile": "natural_multi",
+      "pair_group": "NC-11",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "deny",
+        "reference_answer": "그렇게 정리할 근거가 없다. 두 보고 모두 K-84를 가리키고 K-48은 별도 장비다.",
+        "required_claims": [
+          "양쪽 모두 K-84",
+          "K-48은 별도 장비"
+        ],
+        "forbidden_claims": [
+          "장비 번호를 바꿔 충돌을 임의 해결"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-11-Q3-G1",
+            "any_of_fact_ids": [
+              "NC-11-F-c"
+            ]
+          },
+          {
+            "id": "NC-11-Q3-G2",
+            "any_of_fact_ids": [
+              "NC-11-F-i"
+            ]
+          },
+          {
+            "id": "NC-11-Q3-G3",
+            "any_of_fact_ids": [
+              "NC-11-F-l"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-11-Q4",
+      "revision": 1,
+      "display_case_id": "NC-11",
+      "family_id": "NC-11",
+      "split": "development",
+      "context_id": "NIC-edcdf17ebdc24b07",
+      "text": "32만 원은 이미 지급된 돈이야?",
+      "question_type": "invoice_vs_payment",
+      "profile": "natural_multi",
+      "pair_group": "NC-11",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "deny",
+        "reference_answer": "아니다. 청구서 금액이며 송금 요청과 정산 승인·확인서 접수는 완료되지 않았다.",
+        "required_claims": [
+          "32만 원은 청구 금액",
+          "지급 완료 아님"
+        ],
+        "forbidden_claims": [
+          "청구서를 지급 영수증으로 취급"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-11-Q4-G1",
+            "any_of_fact_ids": [
+              "NC-11-F-e"
+            ]
+          },
+          {
+            "id": "NC-11-Q4-G2",
+            "any_of_fact_ids": [
+              "NC-11-F-f"
+            ]
+          },
+          {
+            "id": "NC-11-Q4-G3",
+            "any_of_fact_ids": [
+              "NC-11-F-k"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-11-Q5",
+      "revision": 1,
+      "display_case_id": "NC-11",
+      "family_id": "NC-11",
+      "split": "development",
+      "context_id": "NIC-edcdf17ebdc24b07",
+      "text": "최종 상태를 확인하려고 무엇을 요청했어?",
+      "question_type": "clarification_action",
+      "profile": "natural_multi",
+      "pair_group": "NC-11",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "확인서와 당시 참석자 기록을 요청했으며 어느 보고를 최종 상태로 정하지 않았다.",
+        "required_claims": [
+          "확인서",
+          "당시 참석자 기록",
+          "최종 상태 보류"
+        ],
+        "forbidden_claims": [
+          "요청한 자료를 이미 받은 것으로 생성"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-11-Q5-G1",
+            "any_of_fact_ids": [
+              "NC-11-F-j"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-11-Q6",
+      "revision": 1,
+      "display_case_id": "NC-11",
+      "family_id": "NC-11",
+      "split": "development",
+      "context_id": "NIC-edcdf17ebdc24b07",
+      "text": "사진을 문서함에 저장했으니 K-84 인수와 정산 증빙이 충분하다고 승인한 거야?",
+      "question_type": "evidence_strength",
+      "profile": "natural_multi",
+      "pair_group": "NC-11",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "deny",
+        "reference_answer": "아니다. 사진에서 장비 번호를 온전히 확인할 수 없었고 서명 확인서도 빠져 있었다. 자료 저장은 승인과 다르다.",
+        "required_claims": [
+          "사진만으로 독립 확인 불가",
+          "확인서 부재",
+          "문서 저장과 승인 구분"
+        ],
+        "forbidden_claims": [
+          "자료 보관을 증빙 승인으로 변경"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-11-Q6-G1",
+            "any_of_fact_ids": [
+              "NC-11-F-b"
+            ]
+          },
+          {
+            "id": "NC-11-Q6-G2",
+            "any_of_fact_ids": [
+              "NC-11-F-n1"
+            ]
+          },
+          {
+            "id": "NC-11-Q6-G3",
+            "any_of_fact_ids": [
+              "NC-11-F-n3"
+            ]
+          },
+          {
+            "id": "NC-11-Q6-G4",
+            "any_of_fact_ids": [
+              "NC-11-F-n4"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-11-CONTROL-Q1",
+      "revision": 1,
+      "display_case_id": "NC-11-CONTROL",
+      "family_id": "NC-11",
+      "split": "development",
+      "context_id": "NIC-3ca87b5e7f340efc",
+      "text": "K-84의 인수 확인은 완료됐다고 확정할 수 있어?",
+      "question_type": "paired_short_control",
+      "profile": "natural_control",
+      "pair_group": "NC-11",
+      "position": null,
+      "variables": [],
+      "variant": {
+        "type": "target_preserving_short_control",
+        "paired_question_id": "NC-11-Q1",
+        "parent_case_id": "NC-11"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "report_conflict",
+        "reference_answer": "서진의 완료 보고와 태오의 미완료 보고가 같은 장비에 대해 충돌하고 공식 정정 여부도 없어 확정할 수 없다.",
+        "required_claims": [
+          "같은 K-84에 대한 상충 보고",
+          "서진 완료·태오 미완료",
+          "정정 여부 미확인",
+          "최종 상태 확정 불가"
+        ],
+        "forbidden_claims": [
+          "최신 보고라는 이유만으로 태오를 정답으로 선택",
+          "상충 보고를 서로 다른 장비로 분리"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-11-CONTROL-Q1-G1",
+            "any_of_fact_ids": [
+              "NC-11-CONTROL-F1"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-12-Q1",
+      "revision": 1,
+      "display_case_id": "NC-12",
+      "family_id": "NC-12",
+      "split": "development",
+      "context_id": "NIC-d0bb336833281e47",
+      "text": "산책과 실내 모임은 지금 각각 어떤 계획이야?",
+      "question_type": "cross_record_scope_change",
+      "profile": "natural_multi",
+      "pair_group": "NC-12",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "우천 예보 때문에 산책만 제외했고 실내 모임은 유지하기로 했다.",
+        "required_claims": [
+          "산책 제외",
+          "실내 모임 유지",
+          "우천 예보에 따른 변경"
+        ],
+        "forbidden_claims": [
+          "모임 전체 취소로 확대"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-12-Q1-G1",
+            "any_of_fact_ids": [
+              "NC-12-F-d"
+            ]
+          },
+          {
+            "id": "NC-12-Q1-G2",
+            "any_of_fact_ids": [
+              "NC-12-F-h"
+            ]
+          },
+          {
+            "id": "NC-12-Q1-G3",
+            "any_of_fact_ids": [
+              "NC-12-F-i"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-12-Q2",
+      "revision": 1,
+      "display_case_id": "NC-12",
+      "family_id": "NC-12",
+      "split": "development",
+      "context_id": "NIC-d0bb336833281e47",
+      "text": "간식은 누가 사기로 바뀌었고 구매는 끝났어?",
+      "question_type": "handover_and_purchase",
+      "profile": "natural_multi",
+      "pair_group": "NC-12",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "나래가 업무 일정 때문에 맡기 어려워 기록 작성자가 대신 사기로 했다. 인원 확정 전에는 주문하지 않기로 했고 아직 결제하지 않았다.",
+        "required_claims": [
+          "나래에서 기록 작성자로 인계",
+          "인원 확정 조건",
+          "구매·결제 미완료"
+        ],
+        "forbidden_claims": [
+          "담당 인계를 구매 완료로 처리"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-12-Q2-G1",
+            "any_of_fact_ids": [
+              "NC-12-F-b"
+            ]
+          },
+          {
+            "id": "NC-12-Q2-G2",
+            "any_of_fact_ids": [
+              "NC-12-F-c"
+            ]
+          },
+          {
+            "id": "NC-12-Q2-G3",
+            "any_of_fact_ids": [
+              "NC-12-F-j"
+            ]
+          },
+          {
+            "id": "NC-12-Q2-G4",
+            "any_of_fact_ids": [
+              "NC-12-F-k"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-12-Q3",
+      "revision": 1,
+      "display_case_id": "NC-12",
+      "family_id": "NC-12",
+      "split": "development",
+      "context_id": "NIC-d0bb336833281e47",
+      "text": "우진은 비 예보 때문에 못 온다고 한 거야?",
+      "question_type": "unwarranted_cause",
+      "profile": "natural_multi",
+      "pair_group": "NC-12",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "abstain",
+        "reference_answer": "산책 불참은 확정했지만 우진이 밝힌 사유는 없다. 실내 모임 참석 여부도 미응답이다.",
+        "required_claims": [
+          "개인 불참 사유 미제공",
+          "산책 불참과 실내 참석 구분"
+        ],
+        "forbidden_claims": [
+          "전체 일정 변경 이유를 개인 불참 이유로 연결"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-12-Q3-G1",
+            "any_of_fact_ids": [
+              "NC-12-F-e"
+            ]
+          },
+          {
+            "id": "NC-12-Q3-G2",
+            "any_of_fact_ids": [
+              "NC-12-F-l"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-12-Q4",
+      "revision": 1,
+      "display_case_id": "NC-12",
+      "family_id": "NC-12",
+      "split": "development",
+      "context_id": "NIC-d0bb336833281e47",
+      "text": "최종 참석 인원은 네 명으로 정해졌어?",
+      "question_type": "count_scope",
+      "profile": "natural_multi",
+      "pair_group": "NC-12",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "deny",
+        "reference_answer": "아니다. 네 명은 어제까지 답장한 인원이며 최종 참석 인원은 추가 회신과 변경 의사를 모으는 중이다.",
+        "required_claims": [
+          "네 명은 답장 인원",
+          "최종 인원 미정"
+        ],
+        "forbidden_claims": [
+          "회신 수를 최종 참석 인원으로 확정"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-12-Q4-G1",
+            "any_of_fact_ids": [
+              "NC-12-F-f"
+            ]
+          },
+          {
+            "id": "NC-12-Q4-G2",
+            "any_of_fact_ids": [
+              "NC-12-F-m"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-12-Q5",
+      "revision": 1,
+      "display_case_id": "NC-12",
+      "family_id": "NC-12",
+      "split": "development",
+      "context_id": "NIC-d0bb336833281e47",
+      "text": "이미 결제한 비용은 무엇이고 간식비도 포함됐어?",
+      "question_type": "payment_scope",
+      "profile": "natural_multi",
+      "pair_group": "NC-12",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "결제한 비용은 장소 대관료 2만 원이다. 간식비는 별개이고 아직 결제하지 않았다.",
+        "required_claims": [
+          "대관료 2만 원 결제",
+          "간식비 별개·미결제"
+        ],
+        "forbidden_claims": [
+          "간식비를 이미 낸 돈에 포함"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-12-Q5-G1",
+            "any_of_fact_ids": [
+              "NC-12-F-g"
+            ]
+          },
+          {
+            "id": "NC-12-Q5-G2",
+            "any_of_fact_ids": [
+              "NC-12-F-k"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-12-Q6",
+      "revision": 1,
+      "display_case_id": "NC-12",
+      "family_id": "NC-12",
+      "split": "development",
+      "context_id": "NIC-d0bb336833281e47",
+      "text": "산책을 빼면 실내 장소 예약도 취소해야 하고 빵도 제공받는 거야?",
+      "question_type": "booking_and_supplies",
+      "profile": "natural_multi",
+      "pair_group": "NC-12",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "deny",
+        "reference_answer": "그렇지 않다. 예약은 실내 테이블 사용이며 강변 시설 예약은 포함하지 않았다. 제공받을 수 있는 것은 물이고 빵 제공 안내는 없다.",
+        "required_claims": [
+          "실내 예약과 산책 일정 분리",
+          "물 제공 안내",
+          "빵 제공 미확인"
+        ],
+        "forbidden_claims": [
+          "실내 예약까지 자동 취소",
+          "물 제공을 모든 간식 제공으로 확대"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-12-Q6-G1",
+            "any_of_fact_ids": [
+              "NC-12-F-n1"
+            ]
+          },
+          {
+            "id": "NC-12-Q6-G2",
+            "any_of_fact_ids": [
+              "NC-12-F-n2"
+            ]
+          },
+          {
+            "id": "NC-12-Q6-G3",
+            "any_of_fact_ids": [
+              "NC-12-F-h"
+            ]
+          },
+          {
+            "id": "NC-12-Q6-G4",
+            "any_of_fact_ids": [
+              "NC-12-F-i"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    },
+    {
+      "id": "NC-12-CONTROL-Q1",
+      "revision": 1,
+      "display_case_id": "NC-12-CONTROL",
+      "family_id": "NC-12",
+      "split": "development",
+      "context_id": "NIC-26e76475761841f1",
+      "text": "산책과 실내 모임은 지금 각각 어떤 계획이야?",
+      "question_type": "paired_short_control",
+      "profile": "natural_control",
+      "pair_group": "NC-12",
+      "position": null,
+      "variables": [],
+      "variant": {
+        "type": "target_preserving_short_control",
+        "paired_question_id": "NC-12-Q1",
+        "parent_case_id": "NC-12"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ],
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": "answer",
+        "reference_answer": "우천 예보 때문에 산책만 제외했고 실내 모임은 유지하기로 했다.",
+        "required_claims": [
+          "산책 제외",
+          "실내 모임 유지",
+          "우천 예보에 따른 변경"
+        ],
+        "forbidden_claims": [
+          "모임 전체 취소로 확대"
+        ],
+        "evidence_groups": [
+          {
+            "id": "NC-12-CONTROL-Q1-G1",
+            "any_of_fact_ids": [
+              "NC-12-CONTROL-F1"
+            ]
+          }
+        ],
+        "structured_expectations": {},
+        "annotation_status": {
+          "reference_answer": "AUTHOR_DRAFT",
+          "expected_action": "AUTHOR_DRAFT"
+        },
+        "answer_policy": "semantic review required; use all required evidence groups, preserve uncertainty, source attribution and scope",
+        "citation_policy": "Every evidence group is required; each group lists alternative sufficient fact annotations.",
+        "judging": "semantic review with exact source provenance; no keyword PASS",
+        "coverage": "question target meanings; source inventory is a separate author draft"
+      }
+    }
+  ]
+}

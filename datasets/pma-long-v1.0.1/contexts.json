@@ -1,0 +1,2358 @@
+{
+  "schema_version": "pma-context-1",
+  "dataset_version": "pma-long-v1.0.1",
+  "contexts": [
+    {
+      "id": "LIC-1537cefe96f4cf2f",
+      "family_id": "roles",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-1537cefe96f4cf2f",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-1537cefe96f4cf2f",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-1537cefe96f4cf2f",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-1537cefe96f4cf2f",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-a8b9d9a23ff9fb7c",
+      "family_id": "roles",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-a8b9d9a23ff9fb7c",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-a8b9d9a23ff9fb7c",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-a8b9d9a23ff9fb7c",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-a8b9d9a23ff9fb7c",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-f105a7f1d93c398c",
+      "family_id": "roles",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-f105a7f1d93c398c",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-f105a7f1d93c398c",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-f105a7f1d93c398c",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-f105a7f1d93c398c",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-6b7bd8d60536e7ff",
+      "family_id": "roles",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-6b7bd8d60536e7ff",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-6b7bd8d60536e7ff",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-6b7bd8d60536e7ff",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-6b7bd8d60536e7ff",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-1829fbf8717b1a48",
+      "family_id": "negation",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-1829fbf8717b1a48",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-1829fbf8717b1a48",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-1829fbf8717b1a48",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-1829fbf8717b1a48",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-1461d8cbd12ed0c4",
+      "family_id": "negation",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-1461d8cbd12ed0c4",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-1461d8cbd12ed0c4",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-1461d8cbd12ed0c4",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-1461d8cbd12ed0c4",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-5d1f3fc0c00de480",
+      "family_id": "negation",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-5d1f3fc0c00de480",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-5d1f3fc0c00de480",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-5d1f3fc0c00de480",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-5d1f3fc0c00de480",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-9652fa0d23fe0088",
+      "family_id": "negation",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-9652fa0d23fe0088",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-9652fa0d23fe0088",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-9652fa0d23fe0088",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-9652fa0d23fe0088",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-dfe425ca4efe640f",
+      "family_id": "conditional_plan",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-dfe425ca4efe640f",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-dfe425ca4efe640f",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-dfe425ca4efe640f",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-dfe425ca4efe640f",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-b5c4aa3505bebf10",
+      "family_id": "conditional_plan",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-b5c4aa3505bebf10",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-b5c4aa3505bebf10",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-b5c4aa3505bebf10",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-b5c4aa3505bebf10",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-1ccac9f2ebfe4474",
+      "family_id": "conditional_plan",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-1ccac9f2ebfe4474",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-1ccac9f2ebfe4474",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-1ccac9f2ebfe4474",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-1ccac9f2ebfe4474",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-dc0e1cba13e9cfc0",
+      "family_id": "conditional_plan",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-dc0e1cba13e9cfc0",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-dc0e1cba13e9cfc0",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-dc0e1cba13e9cfc0",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-dc0e1cba13e9cfc0",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-0d0f0467e7468927",
+      "family_id": "correction",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-0d0f0467e7468927",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-0d0f0467e7468927",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-0d0f0467e7468927",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-0d0f0467e7468927",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-c796ece425db6c7a",
+      "family_id": "correction",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-c796ece425db6c7a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-c796ece425db6c7a",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-c796ece425db6c7a",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-c796ece425db6c7a",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-560a5bed33f2d9b4",
+      "family_id": "correction",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-560a5bed33f2d9b4",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-560a5bed33f2d9b4",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-560a5bed33f2d9b4",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-560a5bed33f2d9b4",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-c6638d32295c8bca",
+      "family_id": "correction",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-c6638d32295c8bca",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-c6638d32295c8bca",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-c6638d32295c8bca",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-c6638d32295c8bca",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-255883af3aa73e83",
+      "family_id": "identity",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-255883af3aa73e83",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-255883af3aa73e83",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-255883af3aa73e83",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-255883af3aa73e83",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-23a08c5f0f54f99c",
+      "family_id": "identity",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-23a08c5f0f54f99c",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-23a08c5f0f54f99c",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-23a08c5f0f54f99c",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-23a08c5f0f54f99c",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-1a1784142e13f9df",
+      "family_id": "identity",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-1a1784142e13f9df",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-1a1784142e13f9df",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-1a1784142e13f9df",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-1a1784142e13f9df",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-b228d312dc793467",
+      "family_id": "identity",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-b228d312dc793467",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-b228d312dc793467",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-b228d312dc793467",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-b228d312dc793467",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-4c78671077ce33f3",
+      "family_id": "quoted_time",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-4c78671077ce33f3",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-4c78671077ce33f3",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-4c78671077ce33f3",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-4c78671077ce33f3",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-257dd1c143212482",
+      "family_id": "quoted_time",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-257dd1c143212482",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-257dd1c143212482",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-257dd1c143212482",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-257dd1c143212482",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-44158c9b57305deb",
+      "family_id": "quoted_time",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-44158c9b57305deb",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-44158c9b57305deb",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-44158c9b57305deb",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-44158c9b57305deb",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-9ec02cc5bceb60e5",
+      "family_id": "quoted_time",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-9ec02cc5bceb60e5",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-9ec02cc5bceb60e5",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-9ec02cc5bceb60e5",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-9ec02cc5bceb60e5",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-474263124e2da9e5",
+      "family_id": "unknown_actor",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-474263124e2da9e5",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-474263124e2da9e5",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-474263124e2da9e5",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-474263124e2da9e5",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-c61a925342453293",
+      "family_id": "unknown_actor",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-c61a925342453293",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-c61a925342453293",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-c61a925342453293",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-c61a925342453293",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-f0772fcbcb93acb4",
+      "family_id": "unknown_actor",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-f0772fcbcb93acb4",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-f0772fcbcb93acb4",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-f0772fcbcb93acb4",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-f0772fcbcb93acb4",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-f4d786e9621d54bb",
+      "family_id": "unknown_actor",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-f4d786e9621d54bb",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-f4d786e9621d54bb",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-f4d786e9621d54bb",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-f4d786e9621d54bb",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-980463ea525a3583",
+      "family_id": "cause_unknown",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-980463ea525a3583",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-980463ea525a3583",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-980463ea525a3583",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-980463ea525a3583",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-7bd784c114d03d01",
+      "family_id": "cause_unknown",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-7bd784c114d03d01",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-7bd784c114d03d01",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-7bd784c114d03d01",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-7bd784c114d03d01",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-d29cdbc5d7892c37",
+      "family_id": "cause_unknown",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-d29cdbc5d7892c37",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-d29cdbc5d7892c37",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-d29cdbc5d7892c37",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-d29cdbc5d7892c37",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-9324c4fcc2d8d350",
+      "family_id": "cause_unknown",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-9324c4fcc2d8d350",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-9324c4fcc2d8d350",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-9324c4fcc2d8d350",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-9324c4fcc2d8d350",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-c4c9f2554775dd9b",
+      "family_id": "roles",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-c4c9f2554775dd9b",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-c4c9f2554775dd9b",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-c4c9f2554775dd9b",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-c4c9f2554775dd9b",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-cae4d44521d7acdc",
+      "family_id": "roles",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-cae4d44521d7acdc",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-cae4d44521d7acdc",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-cae4d44521d7acdc",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-cae4d44521d7acdc",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-0e406241fbb01c27",
+      "family_id": "negation",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-0e406241fbb01c27",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-0e406241fbb01c27",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-0e406241fbb01c27",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-0e406241fbb01c27",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-7a16ca17ec90604a",
+      "family_id": "negation",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-7a16ca17ec90604a",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-7a16ca17ec90604a",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-7a16ca17ec90604a",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-7a16ca17ec90604a",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-f5ad715473d9fabd",
+      "family_id": "conditional_plan",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-f5ad715473d9fabd",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-f5ad715473d9fabd",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-f5ad715473d9fabd",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-f5ad715473d9fabd",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-f1b632c35108f7f0",
+      "family_id": "conditional_plan",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-f1b632c35108f7f0",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-f1b632c35108f7f0",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-f1b632c35108f7f0",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-f1b632c35108f7f0",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-3e1984c72a9046fe",
+      "family_id": "correction",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-3e1984c72a9046fe",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-3e1984c72a9046fe",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-3e1984c72a9046fe",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-3e1984c72a9046fe",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-d266686fb0c3a85d",
+      "family_id": "correction",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-d266686fb0c3a85d",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-d266686fb0c3a85d",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-d266686fb0c3a85d",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-d266686fb0c3a85d",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-abf72737d55b153b",
+      "family_id": "import_boundary",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-abf72737d55b153b",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-abf72737d55b153b",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-abf72737d55b153b",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-abf72737d55b153b",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-7dee86251c5363cd",
+      "family_id": "import_boundary",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-7dee86251c5363cd",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-7dee86251c5363cd",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-7dee86251c5363cd",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-7dee86251c5363cd",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-f55ac741e439e834",
+      "family_id": "import_boundary",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-f55ac741e439e834",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-f55ac741e439e834",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-f55ac741e439e834",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-f55ac741e439e834",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-b214ec0bb6a49011",
+      "family_id": "import_boundary",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-b214ec0bb6a49011",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-b214ec0bb6a49011",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-b214ec0bb6a49011",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-b214ec0bb6a49011",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-2ef6885a8d26ced5",
+      "family_id": "import_boundary",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-2ef6885a8d26ced5",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-2ef6885a8d26ced5",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-2ef6885a8d26ced5",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-2ef6885a8d26ced5",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-0ab5fced6b42d545",
+      "family_id": "import_boundary",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-0ab5fced6b42d545",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-0ab5fced6b42d545",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-0ab5fced6b42d545",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-0ab5fced6b42d545",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-ff0a2db6411b7960",
+      "family_id": "conditional_plan",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-ff0a2db6411b7960",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-ff0a2db6411b7960",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-ff0a2db6411b7960",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-ff0a2db6411b7960",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-e899b2c6bf23b736",
+      "family_id": "conditional_plan",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-e899b2c6bf23b736",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-e899b2c6bf23b736",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-e899b2c6bf23b736",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-e899b2c6bf23b736",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-a4bf63b6e14e5b92",
+      "family_id": "conditional_plan",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-a4bf63b6e14e5b92",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-a4bf63b6e14e5b92",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-a4bf63b6e14e5b92",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-a4bf63b6e14e5b92",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-b5e9429f21918e98",
+      "family_id": "conditional_plan",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-b5e9429f21918e98",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-b5e9429f21918e98",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-b5e9429f21918e98",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-b5e9429f21918e98",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-88761acac72f6c40",
+      "family_id": "conditional_plan",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-88761acac72f6c40",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-88761acac72f6c40",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-88761acac72f6c40",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-88761acac72f6c40",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-505a789582af11b9",
+      "family_id": "conditional_plan",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-505a789582af11b9",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-505a789582af11b9",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-505a789582af11b9",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-505a789582af11b9",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-ac350a95e0955082",
+      "family_id": "distant_correction",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-ac350a95e0955082",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-ac350a95e0955082",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-ac350a95e0955082",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-ac350a95e0955082",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-9654cba75c142afa",
+      "family_id": "distant_actor",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-9654cba75c142afa",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-9654cba75c142afa",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-9654cba75c142afa",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-9654cba75c142afa",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-f88bf5ea7ca856f3",
+      "family_id": "distant_cause",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-f88bf5ea7ca856f3",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-f88bf5ea7ca856f3",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-f88bf5ea7ca856f3",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-f88bf5ea7ca856f3",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    },
+    {
+      "id": "LIC-5331eb29f4705140",
+      "family_id": "distant_conflict",
+      "split": "development",
+      "now": "2026-11-02T12:00:00+09:00",
+      "actor_id": "fixture-5331eb29f4705140",
+      "setup": {
+        "initial_sources": [
+          {
+            "source_id": "LIS-5331eb29f4705140",
+            "revision": 1
+          }
+        ],
+        "steps": [],
+        "history_visibility": "active_only"
+      },
+      "expected_state": {
+        "active_sources": [
+          {
+            "source_id": "LIS-5331eb29f4705140",
+            "revision": 1
+          }
+        ],
+        "accessible_sources": [
+          {
+            "source_id": "LIS-5331eb29f4705140",
+            "revision": 1
+          }
+        ]
+      },
+      "conversation": [],
+      "input_policy": {
+        "auto_save": false,
+        "search_scope": "actor_accessible_active_sources_only",
+        "input_path": "raw_original_v1"
+      },
+      "required_observations": [
+        "retrieved_source_revisions",
+        "answer_claims",
+        "citation_spans"
+      ]
+    }
+  ]
+}

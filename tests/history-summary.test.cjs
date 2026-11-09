@@ -1,0 +1,13 @@
+const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),os=require('node:os'),path=require('node:path'),{Store}=require('../local/store.cjs');
+test('history summaries keep automatic failures, human decisions, and unprocessed questions separate',()=>{
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'memory-history-')),store=new Store(dir);const run={id:'HISTORY-TEST',created_at:new Date().toISOString(),status:'CANCELLED',stage:'end_to_end',config:{model:'test-only'},question_ids:['Q1','Q2','Q3','Q4'],results:[{question_id:'Q1',status:'FAIL',stages:{}},{question_id:'Q2',status:'PENDING_REVIEW',stages:{}}],deleted_at:null};
+ store.putRun(run);store.review(run.id,'Q1',{verdict:'PASS',notes:'A human decision does not erase automatic failure'});let row=store.list()[0];assert.equal(row.summary.automatic.FAIL,1);assert.equal(row.summary.human.PASS,1);assert.equal(row.summary.unreviewed,1);assert.equal(row.summary.unprocessed,2);assert.ok(!('results' in row));
+ assert.deepEqual(row.summary.result_counts,{normal:0,error:1,needs_review:1,cancelled:0});
+ store.review(run.id,'Q2',{verdict:'FAIL',notes:'reviewed'});row=store.list()[0];assert.equal(row.summary.human.FAIL,1);assert.equal(row.summary.unreviewed,0);assert.deepEqual(row.summary.result_counts,{normal:0,error:2,needs_review:0,cancelled:0});run.deleted_at=new Date().toISOString();store.putRun(run);assert.equal(store.list().length,0);assert.equal(store.list(true)[0].summary.human_decided,2);store.db.close();
+});
+test('result totals do not double count failures or treat unreviewed and unprocessed questions as normal',()=>{
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'memory-outcomes-')),store=new Store(dir),run={id:'OUTCOMES',created_at:new Date().toISOString(),status:'CANCELLED',stage:'end_to_end',config:{},question_ids:['A','B','C','D','E','F'],results:[{question_id:'A',status:'PENDING_REVIEW'},{question_id:'B',status:'FAIL'},{question_id:'C',status:'ERROR'},{question_id:'D',status:'PENDING_REVIEW'},{question_id:'E',status:'CANCELLED'}]};
+ store.putRun(run);store.review(run.id,'A',{verdict:'PASS'});store.review(run.id,'B',{verdict:'FAIL'});store.review(run.id,'F',{verdict:'PASS'});
+ let row=store.list()[0];assert.deepEqual(row.summary.result_counts,{normal:1,error:2,needs_review:1,cancelled:1});assert.equal(row.summary.unprocessed,1);assert.equal(Object.values(row.summary.result_counts).reduce((a,b)=>a+b,0),row.completed);
+ store.review(run.id,'A',{verdict:'PENDING_REVIEW'});row=store.list()[0];assert.equal(row.summary.result_counts.normal,0);assert.equal(row.summary.result_counts.needs_review,2);store.db.close();
+});

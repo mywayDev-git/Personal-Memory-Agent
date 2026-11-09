@@ -1,0 +1,183 @@
+{
+  "schema_version": "pma-generalization-1",
+  "dataset_version": "pma-generalization-v1.0.0",
+  "title": "v3 기반 일반화 최소 기준점 · 개발 30 / 확인 30",
+  "default_profile": "development",
+  "profiles": {
+    "development": 30,
+    "confirmation": 30
+  },
+  "synthetic_only": true,
+  "model_execution": false,
+  "independent_gold": false,
+  "execution_input_path": "raw_original_v1",
+  "counts": {
+    "sources": 199,
+    "questions": 60,
+    "contexts": 60,
+    "families": 16,
+    "source_facts": 233,
+    "authored_notes": 190,
+    "fixture_sources": 1,
+    "derived_exports": 0,
+    "behavior_groups": 12
+  },
+  "families": [
+    {
+      "id": "동명이인과 네 가지 날짜",
+      "title": "동명이인과 네 가지 날짜",
+      "split": "development"
+    },
+    {
+      "id": "이사 상자와 신청 상태",
+      "title": "이사 상자와 신청 상태",
+      "split": "development"
+    },
+    {
+      "id": "수리 비용과 다른 청소기",
+      "title": "수리 비용과 다른 청소기",
+      "split": "development"
+    },
+    {
+      "id": "공방을 옮기던 주",
+      "title": "공방을 옮기던 주",
+      "split": "development"
+    },
+    {
+      "id": "월 경계의 사건일과 등록일",
+      "title": "월 경계의 사건일과 등록일",
+      "split": "development"
+    },
+    {
+      "id": "작업실 출입 카드",
+      "title": "작업실 출입 카드",
+      "split": "development"
+    },
+    {
+      "id": "수리 봉사 접수와 안전 점검",
+      "title": "수리 봉사 접수와 안전 점검",
+      "split": "confirmation"
+    },
+    {
+      "id": "마을버스 우회 운행의 승인",
+      "title": "마을버스 우회 운행의 승인",
+      "split": "confirmation"
+    },
+    {
+      "id": "공동구매 배송비 정산",
+      "title": "공동구매 배송비 정산",
+      "split": "confirmation"
+    },
+    {
+      "id": "관측회 장소 선택과 장비 운반",
+      "title": "관측회 장소 선택과 장비 운반",
+      "split": "confirmation"
+    },
+    {
+      "id": "공동 텃밭의 분산 기록",
+      "title": "공동 텃밭의 분산 기록",
+      "split": "confirmation"
+    },
+    {
+      "id": "공유 장비함 접근",
+      "title": "공유 장비함 접근",
+      "split": "confirmation"
+    },
+    {
+      "id": "배포 인계와 검증 범위",
+      "title": "배포 인계와 검증 범위",
+      "split": "development"
+    },
+    {
+      "id": "도서 반납 행사 인계",
+      "title": "도서 반납 행사 인계",
+      "split": "confirmation"
+    },
+    {
+      "id": "D-빈 기억과 비저장",
+      "title": "D-빈 기억과 비저장",
+      "split": "development"
+    },
+    {
+      "id": "C-빈 기억과 비저장",
+      "title": "C-빈 기억과 비저장",
+      "split": "confirmation"
+    }
+  ],
+  "provenance": {
+    "upstream_dataset": "pma-memory-v3.0.0",
+    "upstream_manifest_sha256": "c3907cb3b2bc54a7be4ca492de8e1b6e8dc64a5fee336b445707671a2585e613",
+    "development": "Original complete v3 contexts retained; controlled variants added.",
+    "exposure_audit": {
+      "v3_final_questions_previously_executed": 260,
+      "checked_on": "2026-11-07"
+    },
+    "confirmation": "Newly authored target stories and questions; disjoint v3 final notes reused only as retrieval backgrounds. Original final task history is not claimed unused. Authored to the frozen capability specification, no model-output-driven selection.",
+    "criteria_version": "answer-criteria-v2.0.0",
+    "created_on": "2026-11-07",
+    "confirmation_exposure": {
+      "model_execution": false,
+      "tuning_use": false,
+      "author_has_seen": true,
+      "independent_reviewer_has_seen": false
+    }
+  },
+  "limits": [
+    "문항 수는 독립 표본 수가 아닙니다. 능력별 변형·대화는 묶음으로 판정합니다.",
+    "원문·정답은 작성자 재검토를 거쳤으나 독립 사람 검토와 모델 의미 평가는 미완료입니다.",
+    "삭제·권한·비저장은 합성 fixture이며 실제 제품 DB·인증·캐시 검증을 대신하지 않습니다.",
+    "확인용은 새로 작성했지만 평가용으로 암호화·접근 통제된 자료는 아닙니다. 수정에 사용한 후에는 미사용 확인용으로 다시 주장하지 마세요.",
+    "정확한 8500/12000자 길이나 토큰 경계 검사는 포함하지 않습니다. 실제 입력 예산은 실행 시 계산합니다.",
+    "확인용 공개·보관은 모델 평가나 일반화 성능의 입증을 의미하지 않습니다."
+  ],
+  "integrity": [
+    {
+      "file": "acceptance.json",
+      "sha256": "60f39bb97fdb45890636f11fc82f9e1b3da63b3abd53e068871d17f4a0f15f7d"
+    },
+    {
+      "file": "cases.json",
+      "sha256": "ee32274c043692e08c32da4f7755c6b274c1751ccc18ea2cc151e992a4fed309"
+    },
+    {
+      "file": "connections.json",
+      "sha256": "d0bfbe7d404dc0cdae997ba38f724e123db17aba406afce3a9ccd14266822cad"
+    },
+    {
+      "file": "contexts.json",
+      "sha256": "eca5726b50db02d6a7d1bcbfbfbad94b75be36b233d8aa393594c97adbc9f33b"
+    },
+    {
+      "file": "coverage.json",
+      "sha256": "cfbf259e15c348b1623dd82a732eb3507091da6f7a0b22fd8dd773eb7bdd2802"
+    },
+    {
+      "file": "definition.json",
+      "sha256": "c1b8d2b0e60e5569e69782947b9bfb4d534653a5a6d13bb065a19be6888832be"
+    },
+    {
+      "file": "editorial_review.json",
+      "sha256": "fdbfc1f64f9ad67e8c8241404ef93a8af5e308b02337132745bae5ec74d18653"
+    },
+    {
+      "file": "lib.mjs",
+      "sha256": "2026cc390b592bb998752d7f099c0cacf5601501306cee2dcfc4e7ff3750e50f"
+    },
+    {
+      "file": "questions.json",
+      "sha256": "7ff3525736b56b1da956d5c29310df1f75f44b7d6005073b39a7e37c5ccef74e"
+    },
+    {
+      "file": "README.md",
+      "sha256": "a0c18d251bf869f32c05c51ebcf9c5e17c4c14bce67bda22b9e1b2a17836e9d3"
+    },
+    {
+      "file": "sources.json",
+      "sha256": "5d97ffa83d4ea5975cec71d5fd8d0fc5e54cab567b45caeaf8cacdf1c600a622"
+    },
+    {
+      "file": "token_measurements.json",
+      "sha256": "90ec83550d87de97ac34717262093484ac6f7f843162c8b0f2a0bd160e609022"
+    }
+  ]
+}
