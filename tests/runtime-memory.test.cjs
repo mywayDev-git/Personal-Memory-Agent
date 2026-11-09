@@ -20,16 +20,17 @@ function offline(){
  vm.runInContext(fs.readFileSync(runtimeFile,'utf8'),context,{filename:runtimeFile});
  return {runtime:new context.module.exports.Runtime('C:\\offline-memory-fixture'),launches};
 }
-function expectedArgs(role,model){const file=path.join('C:\\offline-memory-fixture','.models',model.file),key=path.join('C:\\offline-memory-fixture','.local','baseline','runtime',role+'.key');return ['-m',file,'--host','127.0.0.1','--port',role==='generation'?'18491':'18492','-c','8192','-np','1','--no-warmup','--api-key-file',key,'--cors-origins','http://127.0.0.1:'+(process.env.PORT||4319),'--no-cors-credentials',...(role==='generation'?['-b','512','-ub','256','-ngl','99','--reasoning','off','--cache-ram','0']:['-b','8192','-ub','8192','-ngl','0','--embedding','--pooling','last'])];}
+function expectedArgs(role,model){const file=path.join('C:\\offline-memory-fixture','.models',model.file),key=path.join('C:\\offline-memory-fixture','.local','baseline','runtime',role+'.key');const args=['-m',file,'--host','127.0.0.1','--port',role==='generation'?'18491':'18492','-c','8192','-np','1','--no-warmup','--api-key-file',key,'--cors-origins','http://127.0.0.1:'+(process.env.PORT||4319),'--no-cors-credentials',...(role==='generation'?['-b','512','-ub','256','-ngl','99','--reasoning','off','--cache-ram','0']:['-b','8192','-ub','8192','-ngl','0','--embedding','--pooling','last'])];if(model.id==='kanana15-8b-q4')args.push('--reverse-prompt','<|eot_id|>');return args;}
 
-test('both supported generation models disable only host prompt cache and record the exact launch settings',async()=>{
+test('generation models record the exact launch settings, including the Kanana stop token',async()=>{
  for(const model of models.filter(m=>m.role==='generation')){
   const {runtime,launches}=offline();await runtime.ensure('generation',model.id);
   assert.equal(launches.length,1);assert.deepEqual(Array.from(launches[0].args),expectedArgs('generation',model));
   const state=runtime.status().states.generation;
   assert.equal(state.status,'ready');assert.equal(state.args[state.args.indexOf('--cache-ram')+1],'0');
   assert.equal(state.runtime_hash,core.hash({version:runtime.version,args:launches[0].args,model_sha256:model.sha256}));
-  const previousArgs=Array.from(launches[0].args).slice(0,-2);
+  const previousArgs=Array.from(launches[0].args);
+  previousArgs.splice(previousArgs.indexOf('--cache-ram'),2);
   assert.notEqual(state.runtime_hash,core.hash({version:runtime.version,args:previousArgs,model_sha256:model.sha256}),'New runs must distinguish the changed cache setting');
  }
 });
