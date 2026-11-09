@@ -1,5 +1,7 @@
 module.exports = [
  {id:'qwen35-4b-q4',role:'generation',name:'Qwen3.5 4B · Q4_K_M',repo:'unsloth/Qwen3.5-4B-GGUF',revision:'e87f176479d0855a907a41277aca2f8ee7a09523',file:'Qwen3.5-4B-Q4_K_M.gguf',bytes:2740937888,sha256:'00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4',default:true},
  {id:'qwen35-2b-q4',role:'generation',name:'Qwen3.5 2B · Q4_K_M',repo:'unsloth/Qwen3.5-2B-GGUF',revision:'f6d5376be1edb4d416d56da11e5397a961aca8ae',file:'Qwen3.5-2B-Q4_K_M.gguf',bytes:1280835840,sha256:'aaf42c8b7c3cab2bf3d69c355048d4a0ee9973d48f16c731c0520ee914699223'},
+ {id:'kanana15-8b-q4',role:'generation',name:'Kanana 1.5 8B Instruct · Q4_K_M',repo:'parkjw/kanana-1.5-8b-instruct-2505-Q4_K_M-GGUF',revision:'34f6101ef6bfb71c4cb807059779b26da21937f2',file:'kanana-1.5-8b-instruct-2505-q4_k_m.gguf',bytes:4920765440,sha256:'887825d277f138e0c6069a02bb1a264142629c61c570935e4562210f691e3f6e',stop_token:'<|eot_id|>'},
+ {id:'gemma4-12b-q4',role:'generation',name:'Gemma 4 12B Instruct · Q4_K_M',repo:'unsloth/gemma-4-12b-it-GGUF',revision:'fc034cfff751157913579611efad8462ac1be606',file:'gemma-4-12b-it-Q4_K_M.gguf',bytes:7121861440,sha256:'0a270ec9fe6b34f4a0d33992b6135117b484ebc4766ab76b51d4ae8c457e4c42'},
  {id:'qwen3-embedding-06b-q8',role:'embedding',name:'Qwen3 Embedding 0.6B · Q8_0',repo:'Qwen/Qwen3-Embedding-0.6B-GGUF',revision:'370f27d7550e0def9b39c1f16d3fbaa13aa67728',file:'Qwen3-Embedding-0.6B-Q8_0.gguf',bytes:639150592,sha256:'06507c7b42688469c4e7298b0a1e16deff06caf291cf0a5b278c308249c3e439',default:true}
 ];

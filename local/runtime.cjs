@@ -40,6 +40,7 @@ class Runtime{
   const args=['-m',file,'--host','127.0.0.1','--port',String(port),'-c','8192','-np','1','--no-warmup','--api-key-file',keyFile,'--cors-origins','http://127.0.0.1:'+(process.env.PORT||4319),'--no-cors-credentials'];
   if(role==='generation')args.push('-b','512','-ub','256','-ngl','99','--reasoning','off','--cache-ram','0');
   else args.push('-b','8192','-ub','8192','-ngl','0','--embedding','--pooling','last');
+  if(m.stop_token)args.push('--reverse-prompt',m.stop_token);
   const child=spawn(this.exe,args,{cwd:path.dirname(this.exe),windowsHide:true,stdio:['ignore',fd,fd]});fs.closeSync(fd);
   this.children[role]=child;this.states[role]={status:'loading',model_id:m.id,pid:child.pid,port,log_file:logPath,args,runtime_hash:hash({version:this.version,args,model_sha256:m.sha256})};
   let spawnError;child.once('error',e=>{spawnError=e;this.states[role]={...this.states[role],status:'error',error:e.message};});
