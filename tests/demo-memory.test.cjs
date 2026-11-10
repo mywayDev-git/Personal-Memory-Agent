@@ -4,7 +4,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const vm = require('node:vm');
-const { seoulDate, dateForDiary, dateForDiaryQuestion, dateForStoredMemory, dateForSchedule, timeForSchedule, scheduleForText } = require('../local/diary-dates.js');
+const { seoulDate, dateForDiary, dateForDiaryQuestion, dateForStoredMemory, isDiaryDate, dateForSchedule, timeForSchedule, scheduleForText } = require('../local/diary-dates.js');
 const { buildConstellation } = require('../demo-frontend/constellation.js');
 
 test('the diary date changes at midnight in Seoul, including year rollover', () => {
@@ -58,13 +58,14 @@ test('calendar scheduling resolves one day and a supplied time without defaultin
   assert.throws(() => scheduleForText('내일 18:60 회의', '', now), /시각/);
 });
 
-async function demoFixture(handler, { status = () => ({ stage: null }), timing = {} } = {}) {
+async function demoFixture(handler, { status = () => ({ stage: null }), timing = {}, archive = [] } = {}) {
   const elements = new Map();
   function element() {
     return {
       value: '', isConnected: true, children: [], dataset: {},
-      addEventListener() {}, focus() {}, remove() {}, setAttribute() {},
+      addEventListener(event, listener) { this['on' + event] = listener; }, focus() {}, remove() {}, setAttribute() {},
       append(...children) { this.children.push(...children); },
+      replaceChildren(...children) { this.children = children; },
       before(node) { this.previous = node; node.remove = () => { if (this.previous === node) delete this.previous; }; },
       after(node) { this.next = node; node.remove = () => { if (this.next === node) delete this.next; }; },
     };
@@ -77,12 +78,16 @@ async function demoFixture(handler, { status = () => ({ stage: null }), timing =
   const saved = [];
   const navigation = [];
   const context = {
-    document: { getElementById: get, querySelector: get, createElement: element, addEventListener() {} },
+    document: {
+      getElementById: get, querySelector: get, createElement: element, addEventListener() {},
+      querySelectorAll: () => get('conversation').children.flatMap(bubble =>
+        (bubble.children[0]?.next?.children || []).filter(button => button.className?.includes('chat-save-memory'))),
+    },
     Option: class {},
     crypto: require('node:crypto').webcrypto,
     AbortController, performance, setInterval, clearInterval, setTimeout, clearTimeout, ...timing,
     go: page => navigation.push(page),
-    dateForDiary, dateForSchedule, timeForSchedule, records: [], year: 2026, month: 10, selected: '2026-11-10',
+    dateForDiary, dateForSchedule, timeForSchedule, dateForStoredMemory, isDiaryDate, records: [], year: 2026, month: 10, selected: '2026-11-10',
     renderCalendar() {}, renderRecent() {}, runSearch() {}, scrollChatToBottom() {},
     fetch: async (url, options) => ({ ok: true, json: async () => {
       if (url.endsWith('/bootstrap')) return {
@@ -94,7 +99,11 @@ async function demoFixture(handler, { status = () => ({ stage: null }), timing =
       }
       if (url.includes('/summary-memory/progress?id=')) return status(url);
       if (options) return handler(url, JSON.parse(options.body));
-      return { memories: [] };
+      if (url.includes('/summary-memory/original?key=')) {
+        const key = decodeURIComponent(url.split('key=')[1]);
+        return { source: { text: archive.find(memory => memory.memory_key === key).text } };
+      }
+      return { memories: archive };
     } }),
   };
   vm.runInNewContext(fs.readFileSync(require.resolve('../demo-frontend/demo.js'), 'utf8'), context);
@@ -113,43 +122,83 @@ test('home records go through chat confirmation before saving', async () => {
   assert.match(saved[0], /기록일: 2026-11-08/);
 });
 
-for (const choice of ['네', '기록 없이 답변']) {
-  test('emotion support waits for the record choice: ' + choice, async () => {
-    const body = '오늘은 과제가 많아서 힘들었다';
-    let answers = 0;
-    const { context, saved, last } = await demoFixture((url, data) => {
-      if (url.endsWith('/intent')) return { intent: 'emotion' };
-      answers++;
-      assert.equal(data.query, body);
-      assert.equal(data.emotion_support, true);
-      assert.equal(saved.length, choice === '네' ? 1 : 0);
-      assert.equal(data.exclude_memory_key, choice === '네' ? 'memory-1' : undefined);
-      return { answer: { answer: '과제가 많아서 힘들었겠어요.\n잠깐 쉬어가는 건 어때요?', citations: [] } };
-    });
-    await context.handleChatInput(body);
-    assert.match(last().textContent, /일기로 기록할까요/);
-    assert.deepEqual(last().next.children.map(button => button.textContent), ['기록하기', '기록 없이 답변']);
-    assert.equal(answers, 0);
+test('emotion support answers first and saves the user message only when clicked', async () => {
+  const body = '오늘은 과제가 많아서 힘들었다';
+  let answers = 0;
+  const { context, get, saved, last } = await demoFixture((url, data) => {
+    if (url.endsWith('/intent')) return { intent: 'emotion' };
+    answers++;
+    assert.equal(data.query, body);
+    assert.equal(data.emotion_support, true);
     assert.equal(saved.length, 0);
-    await context.handleChatInput(choice);
-    assert.equal(answers, 1);
-    assert.match(last().textContent, /힘들었겠어요/);
-    assert.equal(last().next.textContent, '현재 이야기 바탕 · 참고 기록 없음');
+    return { answer: { answer: '과제가 많아서 힘들었겠어요. 잠깐 쉬어가는 건 어때요?', citations: [] } };
   });
-}
+  await context.handleChatInput(body);
+  assert.equal(answers, 1);
+  assert.equal(saved.length, 0);
+  assert.match(last().textContent, /힘들었겠어요/);
+  assert.equal(last().next.textContent, '현재 이야기 바탕 · 참고 기록 없음');
+  const userMessage = get('conversation').children[0].children[0];
+  assert.equal(userMessage.textContent, body);
+  const [save] = userMessage.next.children;
+  assert.equal(save.textContent, '이 내용 저장');
+  await save.onclick();
+  assert.equal(answers, 1);
+  assert.equal(saved.length, 1);
+  assert.ok(saved[0].endsWith(body));
+  assert.deepEqual(userMessage.next.children.map(node => node.textContent), ['일기로 저장했어요.', '달력에서 보기']);
+});
 
-test('a clarification retains the original question and shows only its answer citation', async () => {
+test('emotion support shows a reference without offering to save', async () => {
+  const { context, get, saved, last } = await demoFixture(url => url.endsWith('/intent')
+    ? { intent: 'emotion' }
+    : { answer: { answer: '잠깐 걸어보는 건 어때요?', citations: [{ quote: '운동장을 산책했다.' }] } });
+  await context.handleChatInput('오늘 힘든데 어떡하지?');
+  assert.match(last().next.textContent, /참고한 기록/);
+  assert.equal(get('conversation').children[0].children[0].next, undefined);
+  assert.equal(saved.length, 0);
+});
+
+test('emotion support answers an already saved message without offering a duplicate', async () => {
+  const body = '2026-11-08 과제가 많아서 힘들었다.';
+  const archive = [{ memory_key: 'existing', text: '제목: 일기\n기록일: 2026-11-08\n감정: 미지정\n\n' + body }];
+  const { context, get, saved, last } = await demoFixture((url, data) => {
+    if (url.endsWith('/intent')) return { intent: 'emotion' };
+    assert.equal(data.exclude_memory_key, 'existing');
+    return { answer: { answer: '힘들었겠어요.', citations: [] } };
+  }, { archive });
+  await context.handleChatInput(body);
+  assert.match(last().textContent, /힘들었겠어요/);
+  assert.equal(get('conversation').children[0].children[0].next, undefined);
+  assert.equal(saved.length, 0);
+});
+
+test('a clarification asks again without searching until the user names the event', async () => {
+  let searches = 0;
   const { context, last } = await demoFixture((url, data) => {
-    if (url.endsWith('/intent')) return { intent: 'question' };
-    if (data.query === '그거 언제였지?') return { answer: { action: 'clarify', answer: '어떤 일정을 말씀하시나요?' } };
-    assert.equal(data.query, '그거 언제였지?\n추가 설명: 팀 회의');
+    if (url.endsWith('/intent')) {
+      if (!data.follow_up) {
+        assert.equal(data.text, '그거 언제였지?');
+        return { intent: 'unclear', clarification_kind: 'question', clarification: '어떤 일을 말씀하시는지 알려주실래요?' };
+      }
+      assert.equal(data.clarification_kind, 'question');
+      if (data.follow_up === '그거 있잖아') {
+        return { intent: 'unclear', clarification_kind: 'question', clarification: '기억을 찾으려면 사건 이름이나 날짜를 알려주실래요?' };
+      }
+      assert.equal(data.follow_up, '팀 회의');
+      return { intent: 'question' };
+    }
+    searches++;
+    assert.equal(data.query, '그거 언제였지?\n추가 설명: 그거 있잖아\n추가 설명: 팀 회의');
     return { answer: { answer: '11월 12일이에요.', citations: [{ diary_date: '2026-11-12', quote: '팀 회의는 11월 12일이다.' }] } };
   });
   await context.handleChatInput('그거 언제였지?');
-  const clarification = last();
-  assert.equal(clarification.textContent, '어떤 일정을 말씀하시나요?');
+  assert.equal(last().textContent, '어떤 일을 말씀하시는지 알려주실래요?');
+  await context.handleChatInput('그거 있잖아');
+  assert.equal(last().textContent, '기억을 찾으려면 사건 이름이나 날짜를 알려주실래요?');
+  assert.equal(searches, 0);
   await context.handleChatInput('팀 회의');
-  assert.equal(clarification.next, undefined);
+  assert.equal(searches, 1);
   assert.equal(last().next.textContent, '참고한 기록 · 2026-11-12 “팀 회의는 11월 12일이다.”');
 });
 

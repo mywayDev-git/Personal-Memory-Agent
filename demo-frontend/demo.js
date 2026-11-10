@@ -30,6 +30,7 @@ function updateDemoControls() {
   sendButton.disabled = disabled;
   homeSubmit.disabled = disabled;
   for (const button of pendingRecord?.actions.children || []) button.disabled = disabled;
+  for (const button of document.querySelectorAll('.chat-save-memory')) button.disabled = disabled;
 }
 
 async function demoJson(path, options) {
@@ -124,7 +125,6 @@ async function persistDemoRecord({ date, title, body, mood, tags, type, schedule
   if (!memory?.memory_key) throw new Error('저장한 기록을 확인하지 못했습니다.');
   addArchiveRecord({ date, title, body, mood, tags, type }, memory);
   refreshRecords();
-  return memory.memory_key;
 }
 
 async function restoreArchive() {
@@ -272,6 +272,7 @@ function addChatAction(actions, label, style, onClick) {
   button.textContent = label;
   button.addEventListener('click', onClick);
   actions.append(button);
+  return button;
 }
 
 function showRecordInCalendar(date) {
@@ -299,12 +300,11 @@ function confirmRecord(draft, approved, userReply) {
   if (draft !== pendingRecord || demoBusy || !modelPicker.value) return;
   addBubble('user', userReply);
   return withDemoRequest(async () => {
-    let savedKey;
     if (approved) {
       const reply = addBubble('bot', '기록을 요약하고 검색을 준비하는 중입니다…');
       chatStatus.textContent = '기록 저장 중…';
       try {
-        savedKey = await persistDemoRecord(draft.record);
+        await persistDemoRecord(draft.record);
       } catch (error) {
         if (!reply.isConnected) return;
         reply.textContent = '저장 실패: ' + error.message + ' 기록하기를 눌러 다시 시도할 수 있어요.';
@@ -321,7 +321,6 @@ function confirmRecord(draft, approved, userReply) {
     }
     if (pendingRecord === draft) pendingRecord = null;
     draft.actions.remove();
-    if (draft.emotion) await answerEmotionInChat(draft.record.body, savedKey);
     chatInput.focus();
     scrollChatToBottom();
   });
@@ -331,20 +330,23 @@ function normalizeRecordBody(text) {
   return text.normalize('NFC').replace(/\s+/g, ' ').trim();
 }
 
-async function offerRecord(reply, record, emotion = false) {
+function findSameRecord(items, record) {
+  const body = normalizeRecordBody(record.body);
+  return items.find(item => item.date === record.date && normalizeRecordBody(item.body) === body);
+}
+
+async function offerRecord(reply, record) {
   activeChatProgress?.setStage('같은 날짜에 저장한 기록을 확인하는 중…');
   const restored = await restoreArchive();
   if (!reply.isConnected) return;
   if (!restored) throw new Error('기존 기록을 확인하지 못했어요. 잠시 뒤 다시 보내 주세요.');
-  const body = normalizeRecordBody(record.body);
   const sameDay = restored.filter(item => item.date === record.date);
-  const existing = sameDay.find(item => normalizeRecordBody(item.body) === body);
+  const existing = findSameRecord(sameDay, record);
   const description = recordDescription(record);
   if (existing) {
     reply.textContent = description + ' 기록에 같은 내용이 이미 있어요.';
     offerCalendarLink(reply, existing.date);
     chatStatus.textContent = '기존 기록 확인';
-    if (emotion) await answerEmotionInChat(record.body, existing.memoryKey);
     return;
   }
   const [, month, day] = record.date.split('-').map(Number);
@@ -353,15 +355,14 @@ async function offerRecord(reply, record, emotion = false) {
   const previous = sameDay.length
     ? dateLabel + ' 기록에 같은 내용은 없어요.'
     : dateLabel + '에 저장된 기록을 찾지 못했어요.';
-  reply.textContent = emotion ? '이 이야기를 일기로 기록할까요? 선택하시면 이어서 답해드릴게요.'
-    : previous + ' 이 내용을 ' + recordAs + ' 기록할까요?' + (record.schedule ? ' (' + description + ')' : '');
+  reply.textContent = previous + ' 이 내용을 ' + recordAs + ' 기록할까요?' + (record.schedule ? ' (' + description + ')' : '');
   const actions = document.createElement('div');
   actions.className = 'chat-record-actions';
   reply.after(actions);
-  const draft = { record, actions, emotion };
+  const draft = { record, actions };
   pendingRecord = draft;
   addChatAction(actions, '기록하기', 'primary', () => confirmRecord(draft, true, '네, 기록해 주세요.'));
-  addChatAction(actions, emotion ? '기록 없이 답변' : '취소', 'ghost', () => confirmRecord(draft, false, '아니요, 기록하지 않을게요.'));
+  addChatAction(actions, '취소', 'ghost', () => confirmRecord(draft, false, '아니요, 기록하지 않을게요.'));
   updateDemoControls();
   chatStatus.textContent = '저장 여부를 확인해 주세요.';
 }
@@ -400,7 +401,7 @@ function handleChatInput(body, knownIntent) {
     if (/^(?:네|예|응|그래|좋아|기록하기|(?:기록|저장)해\s*(?:줘|주세요|줘요)|네,?\s*(?:기록|저장)해\s*(?:줘|주세요|줘요))$/.test(choice)) {
       return confirmRecord(pendingRecord, true, body);
     }
-    if (/^(?:아니|아니오|아니요|취소|취소해\s*줘|기록 없이 답변|(?:기록|저장)하지\s*마)$/.test(choice)) {
+    if (/^(?:아니|아니오|아니요|취소|취소해\s*줘|(?:기록|저장)하지\s*마)$/.test(choice)) {
       return confirmRecord(pendingRecord, false, body);
     }
     addBubble('user', body);
@@ -412,7 +413,7 @@ function handleChatInput(body, knownIntent) {
   pendingClarification = null;
   const submittedAt = new Date();
   return withDemoRequest(async () => {
-    addBubble('user', body);
+    const userMessage = addBubble('user', body);
     const reply = addBubble('bot', '');
     const progress = startChatProgress(reply, '입력 내용을 확인하는 중…');
     chatStatus.textContent = '입력 목적을 확인하고 있어요.';
@@ -428,20 +429,23 @@ function handleChatInput(body, knownIntent) {
         return;
       }
       const text = clarification ? clarification.text + '\n추가 설명: ' + body : body;
-      const intent = clarification?.kind === 'question' ? 'question' : knownIntent;
-      const classified = intent ? { intent } : await demoRequest('intent', clarification ? { text: clarification.text, follow_up: body } : { text });
+      const classified = knownIntent && !clarification ? { intent: knownIntent } : await demoRequest('intent', clarification
+        ? { text: clarification.text, follow_up: body, clarification_kind: clarification.kind }
+        : { text });
       if (!reply.isConnected) return;
       if (classified.intent === 'question') {
         await answerInChat(text, reply, progress);
       } else if (classified.intent === 'schedule') {
         await offerSchedule(reply, { body: text, title: classified.title || '일정', submittedAt });
-      } else if (classified.intent === 'diary' || classified.intent === 'emotion') {
+      } else if (classified.intent === 'diary') {
         const date = dateForDiary(text, '', submittedAt);
-        await offerRecord(reply, { date, title: '일기', body: text, mood: '미지정', type: '일기' }, classified.intent === 'emotion');
+        await offerRecord(reply, { date, title: '일기', body: text, mood: '미지정', type: '일기' });
+      } else if (classified.intent === 'emotion') {
+        await replyToEmotion(text, submittedAt, userMessage, reply, progress);
       } else {
         const kind = classified.clarification_kind === 'question' ? 'question' : 'intent';
-        const question = classified.clarification || (kind === 'question' ? '어떤 날짜나 사건을 말씀하시는지 알려주실래요?' : '기록을 남길까요, 아니면 저장된 기억에서 무엇을 찾아볼까요?');
-        askForClarification(reply, question, { kind, text });
+        if (!classified.clarification) throw new Error('로컬 모델의 확인 질문을 받지 못했어요.');
+        askForClarification(reply, classified.clarification, { kind, text });
       }
     } catch (error) {
       if (!reply.isConnected) return;
@@ -464,17 +468,48 @@ function sendChat() {
   return handleChatInput(body);
 }
 
-async function answerEmotionInChat(query, excludeMemoryKey) {
-  const reply = addBubble('bot', '');
-  const progress = startChatProgress(reply, '이야기에 답할 준비를 하는 중…');
+function offerEmotionSave(userMessage, record) {
+  const actions = document.createElement('div');
+  actions.className = 'chat-record-actions';
+  userMessage.after(actions);
+  const save = addChatAction(actions, '이 내용 저장', 'ghost chat-save-memory', () => {
+    if (!save.isConnected || demoBusy || !modelPicker.value) return;
+    return withDemoRequest(async () => {
+      chatStatus.textContent = '기록 저장 중…';
+      try {
+        const restored = await restoreArchive();
+        if (!restored) throw new Error('기존 기록을 확인하지 못했어요. 다시 시도해 주세요.');
+        const existing = findSameRecord(restored, record);
+        if (!existing) await persistDemoRecord(record);
+        if (!userMessage.isConnected) return;
+        actions.replaceChildren();
+        const status = document.createElement('small');
+        status.textContent = existing ? '이미 저장된 기록이에요.' : '일기로 저장했어요.';
+        actions.append(status);
+        addChatAction(actions, '달력에서 보기', 'ghost', () => showRecordInCalendar(record.date));
+        chatStatus.textContent = status.textContent;
+      } catch (error) {
+        if (userMessage.isConnected) chatStatus.textContent = '저장 실패: ' + error.message;
+      }
+    });
+  });
+}
+
+async function replyToEmotion(body, submittedAt, userMessage, reply, progress) {
+  let date;
   try {
-    await answerInChat(query, reply, progress, true, excludeMemoryKey);
-  } catch (error) {
-    if (!reply.isConnected) return;
-    reply.textContent = '답변을 불러오지 못했어요. ' + error.message;
-    chatStatus.textContent = '답변 생성 실패';
-  } finally {
-    progress.stop();
+    date = dateForDiary(body, '', submittedAt);
+  } catch {
+    // An invalid date can prevent saving, but should not prevent an answer.
+  }
+  const record = date ? { date, title: '일기', body, mood: '미지정', type: '일기' } : null;
+  const existing = record && findSameRecord(records, record);
+  const answer = await answerInChat(body, reply, progress, true, existing?.memoryKey);
+  if (!answer || answer.citations?.length || !record || !userMessage.isConnected) return;
+
+  const restored = await restoreArchive();
+  if (userMessage.isConnected && restored && !findSameRecord(restored, record)) {
+    offerEmotionSave(userMessage, record);
   }
 }
 
@@ -489,25 +524,35 @@ async function answerInChat(query, reply, progress, emotion = false, excludeMemo
   if (!reply.isConnected) return;
   reply.textContent = answer?.answer || '저장된 기록에서 질문에 답할 만한 내용을 찾지 못했어요.';
   if (answer?.action === 'clarify') {
-    askForClarification(reply, answer.answer || '어떤 날짜나 사건을 말씀하시는지 조금 더 알려주실래요?', { kind: 'question', text: query });
+    if (!answer.answer?.trim()) throw new Error('로컬 모델의 확인 질문을 받지 못했어요.');
+    askForClarification(reply, answer.answer, { kind: 'question', text: query });
     return;
   }
   const citations = answer?.citations || [];
   const citationErrors = answer?.citation_errors || [];
-  const snippets = [...new Set(citations.map(({ quote, diary_date: date }) => {
+  const snippet = ({ quote, diary_date: date }) => {
     const compact = quote.replace(/\s+/g, ' ').trim();
     const excerpt = compact.length > 90 ? compact.slice(0, 89) + '…' : compact;
     return (date ? date + ' ' : '') + '“' + excerpt + '”';
-  }))].slice(0, 2);
+  };
+  const snippets = [...new Set(citations.map(snippet))].slice(0, 2);
+  const notes = [];
   if (snippets.length || emotion) {
+    notes.push(snippets.length ? '참고한 기록 · ' + snippets.join(' / ') : '현재 이야기 바탕 · 참고 기록 없음');
+  }
+  if (answer?.examined_record) {
+    notes.push('함께 검토한 기록 · ' + snippet(answer.examined_record));
+  }
+  reply.after(...notes.map(text => {
     const note = document.createElement('small');
     note.className = 'chat-source';
-    note.textContent = snippets.length ? '참고한 기록 · ' + snippets.join(' / ') : '현재 이야기 바탕 · 참고 기록 없음';
-    reply.after(note);
-  }
+    note.textContent = text;
+    return note;
+  }));
   chatStatus.textContent = citationErrors.length
     ? '인용 검사를 통과하지 못했습니다. 요약 근거를 확인해 주세요.'
     : diary_date ? diary_date + ' 기록 기준 · 답변 완료' : '답변 완료';
+  return answer;
 }
 
 const homeForm = document.getElementById('homeMemoryForm');
