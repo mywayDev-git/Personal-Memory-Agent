@@ -256,6 +256,7 @@ class Engine{
   }else{
    const plan=c.route==='M1'?citationPlan(used,prompts.answerSchema):null;
    messages=prompts.answerMessages(c,q,['M0','M1'].includes(c.route)?summary.summaryContext(context):context,used,plan,calculation);
+   if(c.personal_chat)messages[0].content+='\n'+prompts.PERSONAL_CHAT_STYLE;
    response=await this.runtime.chat(messages,plan?.schema||prompts.answerSchema,c,signal);
    if(plan&&used.length&&!arithmeticTask(q.text)){const audited=await auditAnswer(this.runtime,q,context,used,plan,calculation,response,c,signal);response=audited.response;answerAudit=audited.trace;}
    if(plan){response.model_parsed=response.parsed;response.parsed=resolveCitations(response.parsed,plan);}

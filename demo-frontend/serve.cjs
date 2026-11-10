@@ -4,12 +4,15 @@ const path = require('node:path');
 
 const pages = new Map([
   ['/', ['index.html', 'text/html; charset=utf-8']],
+  ['/diary-dates.js', ['../local/diary-dates.js', 'text/javascript; charset=utf-8']],
   ['/layout.js', ['layout.js', 'text/javascript; charset=utf-8']],
+  ['/constellation.js', ['constellation.js', 'text/javascript; charset=utf-8']],
   ['/demo.js', ['demo.js', 'text/javascript; charset=utf-8']],
 ]);
 const api = new Map([
   ['/api/baseline/bootstrap', 'GET'],
   ['/api/baseline/summary-memory', 'GET'],
+  ['/api/baseline/summary-memory/intent', 'POST'],
   ['/api/baseline/summary-memory/save', 'POST'],
   ['/api/baseline/summary-memory/search', 'POST'],
 ]);

@@ -1,5 +1,6 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),os=require('node:os'),path=require('node:path'),http=require('node:http');
 const {Store}=require('../local/store.cjs'),{Engine}=require('../local/engine.cjs'),{createApi}=require('../local/api.cjs'),{createSummaryApi}=require('../local/summary-api.cjs'),{parts,VERSION}=require('../local/summary.cjs'),{buildReview}=require('../local/review.cjs');
+const {dateForDiary}=require('../local/diary-dates.js'),{createDemoServer}=require('../demo-frontend/serve.cjs');
 const root=path.resolve(__dirname,'..'),SENTINEL='ORIGINAL_ONLY_9472',SUMMARY='회의는 11월 7일 오후 3시로 변경됐다. 금액 30만원은 확정되지 않았다.';
 class Runtime{
  constructor(){this.calls=[];this.version='SUMMARY_OFFLINE';this.states={generation:{status:'stopped'},embedding:{status:'stopped'}};}
@@ -8,8 +9,9 @@ class Runtime{
  async tokenize(text){return Math.ceil(text.length/2);}
  async embed(text,query,signal){signal?.throwIfAborted();if(this.failEmbed)throw Error('embedding failed');this.calls.push({kind:'embed',text,query});return [1,text.length/100+1,2];}
  async chat(messages,schema,config,signal){signal?.throwIfAborted();this.calls.push({kind:'chat',messages});const payload=JSON.parse(messages[1].content);let parsed;
-  if(schema.properties.summary){if(this.failSummary)throw Error('summary failed');if(this.invalid)parsed={summary:' '};else parsed={summary:this.summary||SUMMARY};}
-  else{const e=payload.evidence[0];parsed={action:e?'answer':'abstain',answer:e?e.text:'요약에 정보가 없습니다.',citations:e?[{evidence_id:e.evidence_id,quote:e.text,occurrence:1}]:[]};}
+  if(schema.properties.summary){if(this.failSummary)throw Error('summary failed');if(this.invalid)parsed={summary:' '};else parsed={summary:this.summary||SUMMARY,...(schema.properties.mood?{mood:this.mood||'단서 없음'}:{})};}
+  else if(schema.properties.intent){parsed={intent:this.intent||'unclear',title:this.title||''};}
+  else{const e=payload.evidence[0];parsed=this.abstain?{action:'abstain',answer:'확인 불가',citations:[]}:{action:e?'answer':'abstain',answer:e?e.text:'요약에 정보가 없습니다.',citations:e?[{evidence_id:e.evidence_id,quote:e.text,occurrence:1}]:[]};}
   return {parsed,raw:JSON.stringify(parsed),usage:{prompt_tokens:10,completion_tokens:10},elapsed_ms:1};
  }
 }
@@ -31,6 +33,98 @@ test('originals are archived separately; only summaries reach lexical, vector an
 });
 test('persisted summaries survive restart and search does not summarize again',async()=>{
  const f=fixture();try{await save(f);const count=f.runtime.calls.filter(c=>c.kind==='chat').length;await f.api.post('/summary-memory/search',{query:'회의',answer:false});assert.equal(f.runtime.calls.filter(c=>c.kind==='chat').length,count);f.store.db.close();f.store=new Store(f.dir);f.engine=new Engine(f.dir,f.store,f.runtime);f.api=createSummaryApi(f.engine,f.runtime);assert.equal((await get(f)).memories.length,1);await f.api.post('/summary-memory/search',{query:'회의'});assert.equal(f.runtime.calls.filter(c=>c.kind==='chat').length,count);}finally{f.store.db.close();}
+});
+test('demo dates scope searches to the recorded Korean calendar day, including older diary rows',async t=>{
+ const now=new Date('2026-11-09T15:00:00Z');t.mock.timers.enable({apis:['Date'],now});
+ const f=fixture();try{
+  const ask=query=>f.api.post('/summary-memory/search',{query,answer:true,use_diary_dates:true});
+  const empty=await ask('어제 어디서 자료를 정리했어');
+  assert.equal(empty.diary_date,'2026-11-09');
+  assert.equal(empty.answer.action,'abstain');
+  assert.deepEqual(empty.answer.citations,[]);
+  assert.deepEqual(f.runtime.calls,[]);
+
+  f.runtime.summary='민수와 도서관에서 자료를 정리했다.';
+  const body='어제 '+f.runtime.summary;
+  const {memory:yesterday}=await save(f,'제목: 일기\n기록일: '+dateForDiary(body)+'\n감정: 미지정\n\n'+body);
+  assert.equal(yesterday.diary_date,'2026-11-09');
+  const oldRow=f.engine.summary.get(yesterday.memory_key);
+  delete oldRow.diary_date;
+  f.engine.summary.write(oldRow);
+  f.runtime.summary='민수와 카페에서 자료를 정리했다.';
+  const {memory:today}=await save(f,'제목: 일기\n기록일: '+dateForDiary('오늘')+'\n감정: 미지정\n\n'+f.runtime.summary);
+  assert.equal(today.diary_date,'2026-11-10');
+  for(const [word,expected,wrong] of [['어제',yesterday,today],['오늘',today,yesterday],['9일에',yesterday,today],['11월 10일에',today,yesterday]]){
+   const result=await ask(word+' 어디서 자료를 정리했어');
+   assert.equal(result.diary_date,expected===today?'2026-11-10':'2026-11-09');
+   assert.ok(result.answer.citations.some(c=>c.summary_id===expected.summary_artifact_id));
+   assert.ok(result.retrieval.evidence.every(e=>e.summary_id!==wrong.summary_artifact_id));
+  }
+  const before=f.runtime.calls.length;
+  const missing=await ask('8일에 어디서 자료를 정리했어');
+  assert.equal(missing.diary_date,'2026-11-08');
+  assert.equal(missing.answer.action,'abstain');
+  assert.equal(missing.answer.answer,'11월 8일에 저장된 기록을 찾지 못했어요.');
+  assert.equal(f.runtime.calls.length,before);
+ }finally{f.store.db.close();}
+});
+test('personal chat asks for conversational answers and explains abstention after reading evidence',async()=>{
+ const f=fixture();try{
+  f.runtime.summary='11 월 8 일에는 도서관에서 책을 읽었어요.';
+  await save(f,'제목: 일기\n기록일: 2026-11-08\n감정: 미지정\n\n도서관에서 책을 읽었다.');
+  f.runtime.abstain=true;
+  const request={query:'2026-11-08에 책 제목이 뭐였어?',answer:true};
+  const result=await f.api.post('/summary-memory/search',{...request,use_diary_dates:true});
+  assert.equal(result.answer.action,'abstain');
+  assert.equal(result.answer.answer,'11월 8일 기록에서 질문에 답할 만한 내용을 찾지 못했어요.');
+  assert.equal(result.answer.response.parsed.answer,'확인 불가');
+  assert.equal(result.answer.evidence_used.length,1);
+  assert.match(result.answer.request_messages[0].content,/해요체/);
+  const standard=await f.api.post('/summary-memory/search',request);
+  assert.equal(standard.answer.answer,'확인 불가');
+  assert.doesNotMatch(standard.answer.request_messages[0].content,/해요체/);
+  f.runtime.abstain=false;
+  const found=await f.api.post('/summary-memory/search',{query:'2026-11-08에 뭐 했어?',answer:true,use_diary_dates:true});
+  assert.equal(found.answer.answer,'11월 8일에는 도서관에서 책을 읽었어요.');
+  assert.equal(found.answer.citations[0].quote,f.runtime.summary);
+ }finally{f.store.db.close();}
+});
+test('diary mood is inferred in the summary call, persisted, and available for legacy re-summaries',async()=>{
+ const f=fixture();try{
+  const text='제목: 일기\n기록일: 2026-11-08\n감정: 미지정\n\n발표가 잘 끝나서 뿌듯했다.';
+  f.runtime.mood='기쁨';
+  const {memory}=await save(f,text);
+  assert.equal(memory.mood,'기쁨');
+  assert.equal(f.runtime.calls.filter(c=>c.kind==='chat').length,1);
+  const {memory:manual}=await save(f,text.replace('감정: 미지정','감정: 슬픔'));
+  assert.equal(manual.mood,undefined);
+  const original=(await get(f,'/summary-memory/original?key='+manual.memory_key)).source;
+  assert.match(original.text,/감정: 슬픔/);
+  const legacy=await f.engine.summary.save(memory.namespace,{id:'LEGACY',revision:1,text,metadata:{owner_id:memory.owner}},f.engine.config({route:'M0'}),new AbortController().signal);
+  assert.equal(legacy.mood,undefined);
+  const updated=await f.api.post('/summary-memory/resummarize',{key:legacy.memory_key,expected:legacy.summary_artifact_id});
+  assert.equal(updated.memory.original_fingerprint,legacy.original_fingerprint);
+  assert.equal(updated.memory.mood,'기쁨');
+  f.store.db.close();f.store=new Store(f.dir);f.engine=new Engine(f.dir,f.store,f.runtime);f.api=createSummaryApi(f.engine,f.runtime);
+  assert.ok((await get(f)).memories.some(item=>item.memory_key===memory.memory_key&&item.mood==='기쁨'));
+ }finally{f.store.db.close();}
+});
+test('a scheduled memory keeps its calendar date and exact start time in storage and search evidence',async t=>{
+ t.mock.timers.enable({apis:['Date'],now:new Date('2026-11-09T15:00:00Z')});
+ const f=fixture();try{
+  f.runtime.summary='캡스톤 회의가 예정되어 있다.';
+  const text='제목: 캡스톤 회의\n기록일: 2026-11-12\n감정: 미지정\n일정 시각: 15:30\n\n내일 모레 오후 3시 반 캡스톤 회의';
+  const {memory}=await save(f,text);
+  assert.equal(memory.diary_date,'2026-11-12');
+  assert.deepEqual(memory.schedule,{title:'캡스톤 회의',time:'15:30'});
+  assert.equal(memory.summary,'일정: 캡스톤 회의 · 2026-11-12 15:30');
+  f.store.db.close();f.store=new Store(f.dir);f.engine=new Engine(f.dir,f.store,f.runtime);f.api=createSummaryApi(f.engine,f.runtime);
+  assert.deepEqual((await get(f)).memories[0].schedule,memory.schedule);
+  const result=await f.api.post('/summary-memory/search',{query:'내일 모레 일정 뭐 있어?',answer:true,use_diary_dates:true});
+  assert.equal(result.diary_date,'2026-11-12');
+  assert.ok(result.answer.citations.some(c=>c.quote.includes('15:30')));
+  await assert.rejects(()=>save(f,text.replace('15:30','25:30')),/시각/);
+ }finally{f.store.db.close();}
 });
 test('failed generation, empty output, embedding failure and cancellation keep the old active summary',async()=>{
  const f=fixture();try{const {memory:m}=await save(f);
@@ -84,5 +178,34 @@ test('HTTP summary mutations require a token and same origin; GETs never start m
  try{assert.equal((await fetch(base+'/summary-memory')).status,200);assert.equal(f.runtime.calls.length,0);const {token}=await(await fetch(base+'/bootstrap')).json();const post=(headers,body)=>fetch(base+'/summary-memory/save',{method:'POST',headers:{'Content-Type':'application/json',...headers},body:JSON.stringify(body)});
   assert.equal((await post({},{})).status,403);assert.equal((await post({'X-Memory-Lab-Token':token,Origin:'https://example.invalid'},{})).status,403);assert.equal((await post({'X-Memory-Lab-Token':token},{text:SENTINEL})).status,200);assert.equal((await(await fetch(base+'/summary-memory')).json()).memories.length,1);
  }finally{await new Promise(r=>server.close(r));await api.close();}
+});
+test('demo intent is proxied with same-origin authentication and does not store a memory',async()=>{
+ const f=fixture(),api=createApi(f.dir,{store:f.store,runtime:f.runtime}),backend=http.createServer((req,res)=>api.handle(req,res,new URL(req.url,'http://'+req.headers.host)));
+ await new Promise(r=>backend.listen(0,'127.0.0.1',r));
+ const demo=createDemoServer(backend.address().port);await new Promise(r=>demo.listen(0,'127.0.0.1',r));
+ const origin='http://127.0.0.1:'+demo.address().port,base=origin+'/api/baseline';
+ try{
+  const {token}=await(await fetch(base+'/bootstrap')).json();
+  const post=(headers,text)=>fetch(base+'/summary-memory/intent',{method:'POST',headers:{'Content-Type':'application/json',Origin:origin,...headers},body:JSON.stringify({text})});
+  assert.equal((await post({},'민수')).status,403);
+  assert.equal((await post({'X-Memory-Lab-Token':token,Origin:'https://example.invalid'},'민수')).status,403);
+  const headers={'X-Memory-Lab-Token':token};
+  for(const [intent,input] of [['diary','어제 도서관에 갔다.'],['question','어제 어디 갔었지'],['unclear','민수']]){
+   f.runtime.intent=intent;
+   const response=await post(headers,input);
+   assert.equal(response.status,200);
+   assert.equal((await response.json()).intent,intent);
+   const chat=f.runtime.calls.at(-1);
+   assert.deepEqual(JSON.parse(chat.messages[1].content),{text:input});
+  }
+  f.runtime.intent='schedule';
+  f.runtime.title='캡스톤 회의';
+  const scheduled=await(await post(headers,'내일 모레 오후 3시 캡스톤 회의 등록해 줘')).json();
+  assert.equal(scheduled.intent,'schedule');
+  assert.equal(scheduled.title,'캡스톤 회의');
+  assert.equal((await(await fetch(base+'/summary-memory')).json()).memories.length,0);
+  assert.ok(f.runtime.calls.filter(c=>c.kind==='ensure').every(c=>c.role==='generation'));
+  for(const asset of ['/diary-dates.js','/constellation.js'])assert.equal((await fetch(origin+asset)).status,200);
+ }finally{await new Promise(r=>demo.close(r));await new Promise(r=>backend.close(r));await api.close();}
 });
 

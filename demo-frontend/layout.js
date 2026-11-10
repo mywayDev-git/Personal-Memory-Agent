@@ -6,21 +6,15 @@ const pages = [
   'home','chat','emotion','map','archive','settings'
 ];
 
-const now = new Date();
 const pad = n => String(n).padStart(2,'0');
 
 const key = (y,m,d) =>
   `${y}-${pad(m+1)}-${pad(d)}`;
 
-const today = key(
-  now.getFullYear(),
-  now.getMonth(),
-  now.getDate()
-);
-
-let year = now.getFullYear();
-let month = now.getMonth();
-let selected = today;
+let selected = seoulDate();
+const [initialYear, initialMonth] = selected.split('-').map(Number);
+let year = initialYear;
+let month = initialMonth - 1;
 let searchFilter = 'all';
 
 function safe(v) {
@@ -55,6 +49,8 @@ function go(id) {
 
   if(id==='home') renderRecent();
 
+  if(id==='map') renderConstellation();
+
   if(id==='chat') {
     requestAnimationFrame(scrollChatToBottom);
   }
@@ -62,59 +58,24 @@ function go(id) {
 
 /* ========== RECORDS ========== */
 
-const records = [
-  {
-    date:'2026-11-03',
-    title:'조금 복잡했던 하루',
-    body:'해야 할 일이 많아 마음이 조급했다.',
-    mood:'불안함',
-    type:'감정'
-  },
-  {
-    date:'2026-11-03',
-    title:'프로젝트 회의',
-    body:'팀원들과 앞으로의 진행 방향을 논의했다.',
-    mood:'평온함',
-    type:'일상'
-  },
-  {
-    date:'2026-11-05',
-    title:'작은 성취',
-    body:'미뤄둔 작업을 마무리해 뿌듯했다.',
-    mood:'기쁨',
-    type:'감정'
-  },
-  {
-    date:'2026-11-07',
-    title:'친구와 나눈 이야기',
-    body:'친구와 편안한 시간을 보냈다.',
-    mood:'기쁨',
-    type:'일상'
-  },
-  {
-    date:'2026-10-20',
-    title:'일정이 늦어진 날',
-    body:'팀 프로젝트 일정이 밀려 화가 났다.',
-    mood:'화남',
-    type:'감정'
-  },
-  {
-    date:'2026-10-25',
-    title:'중요한 결정',
-    body:'새로운 작업 방식을 시도하기로 결정했다.',
-    mood:'복잡함',
-    type:'결정'
-  }
-];
+const records = [];
+
+function recordDetail(record) {
+  return record.schedule ? record.schedule.time || '시각 미정' : '감정 · ' + record.mood;
+}
 
 function renderRecent() {
+  if(!records.length) {
+    document.getElementById('homeRecent').textContent = '아직 저장한 기록이 없습니다.';
+    return;
+  }
   document.getElementById('homeRecent').innerHTML =
     [...records]
       .sort((a,b)=>b.date.localeCompare(a.date))
       .slice(0,3)
       .map(r=>`
         <div class="record">
-          <small>${safe(r.date)} · ${safe(r.type)}</small>
+          <small>${safe(r.date)} · ${safe(r.type)}${r.schedule ? ' · ' + safe(recordDetail(r)) : ''}</small>
           <p><b>${safe(r.title)}</b></p>
           <p>${safe(r.body)}</p>
         </div>
@@ -130,8 +91,9 @@ function renderCalendar() {
   document.getElementById('monthTitle').textContent =
     `${year}년 ${month+1}월`;
 
-  const offset=new Date(year,month,1).getDay();
-  const days=new Date(year,month+1,0).getDate();
+  const today=seoulDate();
+  const offset=new Date(Date.UTC(year,month,1)).getUTCDay();
+  const days=new Date(Date.UTC(year,month+1,0)).getUTCDate();
 
   for(let i=0;i<offset;i++) {
     const gap=document.createElement('div');
@@ -172,7 +134,7 @@ function renderCalendar() {
 }
 
 function renderSelected() {
-  const list=records.filter(r=>r.date===selected);
+  const list=records.filter(r=>r.date===selected).sort((a,b)=>(a.schedule?.time||'').localeCompare(b.schedule?.time||''));
   const parts=selected.split('-').map(Number);
 
   document.getElementById('selectedDate').textContent =
@@ -192,7 +154,7 @@ function renderSelected() {
             ${safe(r.title)}
           </h3>
           <p>${safe(r.body)}</p>
-          <small>감정 · ${safe(r.mood)}</small>
+          <small>${safe(recordDetail(r))}</small>
         </div>
       `).join(''):
       '<p class="muted small">그날의 이야기를 새로 남겨보세요.</p>';
@@ -207,9 +169,10 @@ function moveMonth(n) {
 }
 
 function todayMonth() {
-  year=now.getFullYear();
-  month=now.getMonth();
-  selected=today;
+  selected=seoulDate();
+  const [todayYear,todayMonthNumber]=selected.split('-').map(Number);
+  year=todayYear;
+  month=todayMonthNumber-1;
   renderCalendar();
 }
 
@@ -222,13 +185,6 @@ function writeSelected() {
 
 function chooseMood(el) {
   document.querySelectorAll('.mood').forEach(b=>{
-    b.classList.remove('on');
-  });
-  el.classList.add('on');
-}
-
-function selectChip(el) {
-  el.parentElement.querySelectorAll('.chip').forEach(b=>{
     b.classList.remove('on');
   });
   el.classList.add('on');
@@ -453,11 +409,11 @@ function runSearch() {
           <div class="line"></div>
 
           <span class="muted small">
-            ${safe(r.date)} · ${safe(r.mood)}
+            ${safe(r.date)} · ${safe(recordDetail(r))}
           </span>
         </div>
       `).join(''):
-      '<p class="muted small">해당 조건의 예시 기록이 없습니다.</p>';
+      '<p class="muted small">해당 조건의 저장된 기록이 없습니다.</p>';
 
   document.getElementById('searchNotice').innerHTML=`
     <b>달력과 보관소 미리보기</b>
@@ -501,8 +457,6 @@ document.getElementById('chatInput')
 
 /* ========== INITIALIZE ========== */
 
-document.getElementById('recordDate').value=today;
-
 newChat();
 renderCalendar();
 renderRecent();
@@ -543,10 +497,6 @@ document.querySelector('[data-layout-event="31"]').addEventListener('click', fun
 document.querySelector('[data-layout-event="32"]').addEventListener('click', function(event) { chooseMood(this) });
 document.querySelector('[data-layout-event="33"]').addEventListener('click', function(event) { chooseMood(this) });
 document.querySelector('[data-layout-event="34"]').addEventListener('click', function(event) { addRecord() });
-document.querySelector('[data-layout-event="35"]').addEventListener('click', function(event) { selectChip(this) });
-document.querySelector('[data-layout-event="36"]').addEventListener('click', function(event) { selectChip(this) });
-document.querySelector('[data-layout-event="37"]').addEventListener('click', function(event) { selectChip(this) });
-document.querySelector('[data-layout-event="38"]').addEventListener('click', function(event) { selectChip(this) });
 document.querySelector('[data-layout-event="39"]').addEventListener('click', function(event) { runSearch() });
 document.querySelector('[data-layout-event="40"]').addEventListener('click', function(event) { setFilter(this,'all') });
 document.querySelector('[data-layout-event="41"]').addEventListener('click', function(event) { setFilter(this,'exact') });

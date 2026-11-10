@@ -11,6 +11,7 @@ const homeSubmit = document.getElementById('homeSubmit');
 const homeStatus = document.getElementById('homeStatus');
 const homeDate = document.getElementById('homeDate');
 const archiveStatus = document.getElementById('archiveStatus');
+const homeSaved = document.getElementById('homeSaved');
 let demoBusy = false;
 
 function updateDemoControls() {
@@ -62,7 +63,7 @@ async function loadDemoModels() {
       modelPicker.value = 'qwen35-2b-q4';
     }
     chatStatus.textContent = '저장한 기록을 질문해 보세요.';
-    homeStatus.textContent = '일기 첫머리에 날짜나 “어제”를 적을 수 있어요. 날짜가 없으면 오늘로 저장합니다.';
+    homeStatus.textContent = '로컬 AI가 일기, 일정, 기억 질문을 구분합니다. 날짜는 한국 시간 기준입니다.';
   } catch (error) {
     chatStatus.textContent = error.message;
     saveStatus.textContent = error.message;
@@ -84,52 +85,35 @@ async function withDemoRequest(action) {
   }
 }
 
-function validDiaryDate(year, month, day) {
-  const date = new Date(year, month - 1, day, 12);
-  if (date.getFullYear() !== year || date.getMonth() + 1 !== month || date.getDate() !== day) {
-    throw new Error('기록 날짜를 확인해 주세요.');
-  }
-  return key(year, month - 1, day);
+function addArchiveRecord(record, memory) {
+  const item = {
+    ...record,
+    memoryKey: memory.memory_key,
+    summary: memory.summary,
+    mood: memory.mood || record.mood,
+    schedule: memory.schedule,
+    entities: (memory.structured_index?.cards || []).flatMap(card => card.entities || []),
+  };
+  const index = records.findIndex(existing => existing.memoryKey === item.memoryKey);
+  if (index === -1) records.push(item);
+  else records[index] = item;
 }
 
-function diaryDate(text, chosenDate, now = new Date()) {
-  const dateText = chosenDate || text.replace(/^일기\s*[:：]\s*/, '');
-  const full = dateText.match(/^(\d{4})[-./](\d{1,2})[-./](\d{1,2})(?!\d)/)
-    || dateText.match(/^(\d{4})\s*년\s*(\d{1,2})\s*월\s*(\d{1,2})\s*일/);
-  if (full) return validDiaryDate(...full.slice(1).map(Number));
-  const monthDay = dateText.match(/^(\d{1,2})\s*월\s*(\d{1,2})\s*일/);
-  if (monthDay) return validDiaryDate(now.getFullYear(), ...monthDay.slice(1).map(Number));
-  const relative = dateText.match(/^(그저께|엊그제|어제|오늘)(?:는|에)?(?=\s|[,.!:：]|$)/)?.[1];
-  const daysBack = { 그저께: 2, 엊그제: 2, 어제: 1, 오늘: 0 }[relative] || 0;
-  const date = new Date(now.getFullYear(), now.getMonth(), now.getDate() - daysBack, 12);
-  return key(date.getFullYear(), date.getMonth(), date.getDate());
+function refreshRecords() {
+  renderCalendar();
+  renderRecent();
+  runSearch();
+  renderConstellation();
 }
 
-function homeIntent(text) {
-  if (/^일기\s*[:：]/.test(text)) return 'diary';
-  if (/[?？]\s*$|(?:알려\s*줘|찾아\s*줘|보여\s*줘|뭐지|뭐였지|했지|였지|인가요|나요|까요|맞아)\s*[.!。]*$/.test(text)) return 'question';
-  if (/(?:^|\s)(?:누가|누구|뭐|무엇|언제|어디|왜|어떻게)/.test(text)
-      && /(?:었어|았어|했어|였어|이야|야)\s*[.!。]*$/.test(text)) return 'question';
-  // A final ㅆ before “다” catches past forms such as “마셨다” and “갔다”.
-  const pastStatement = /\u11bb\u1103\u1161\s*[.!。]*$/.test(text.normalize('NFD'));
-  if (/^(?:오늘|어제|그저께|엊그제)(?:는|에)?(?:\s|[,.!:：])/.test(text)
-      || pastStatement
-      || /(?:한다|된다|있다|없다|이다|같다|했어|갔어|봤어|었어|았어|였어|어요|아요|습니다)\s*[.!。]*$/.test(text)) {
-    return 'diary';
-  }
-  return 'question';
-}
-
-function addArchiveRecord(record) {
-  if (!records.some(item => item.memoryKey === record.memoryKey)) records.push(record);
-}
-
-async function persistDemoRecord({ date, title, body, mood, tags, type }) {
+async function persistDemoRecord({ date, title, body, mood, tags, type, schedule }) {
   const fields = ['제목: ' + title, '기록일: ' + date, '감정: ' + mood];
+  if (schedule) fields.push('일정 시각: ' + (schedule.time || '미정'));
   if (tags) fields.push('태그: ' + tags);
   const { memory } = await demoRequest('save', { text: fields.join('\n') + '\n\n' + body });
   if (!memory?.memory_key) throw new Error('저장한 기록을 확인하지 못했습니다.');
-  addArchiveRecord({ date, title, body, mood, type, memoryKey: memory.memory_key });
+  addArchiveRecord({ date, title, body, mood, tags, type }, memory);
+  refreshRecords();
 }
 
 async function restoreArchive() {
@@ -137,54 +121,83 @@ async function restoreArchive() {
     const { memories } = await demoJson('/summary-memory');
     for (const memory of memories) {
       const { source } = await demoJson('/summary-memory/original?key=' + encodeURIComponent(memory.memory_key));
-      const fields = source?.text.match(/^제목: ([^\r\n]+)\r?\n기록일: (\d{4}-\d{2}-\d{2})\r?\n감정: ([^\r\n]+)(?:\r?\n태그: [^\r\n]*)?\r?\n\r?\n([\s\S]+)$/);
-      if (!fields) continue;
-      const [, title, date, mood, body] = fields;
-      addArchiveRecord({ title, date, mood, body, type: title === '일기' ? '일기' : '감정', memoryKey: memory.memory_key });
+      const fields = source?.text.match(/^제목: ([^\r\n]+)\r?\n기록일: (\d{4}-\d{2}-\d{2})\r?\n감정: ([^\r\n]*)(?:\r?\n일정 시각: [^\r\n]*)?(?:\r?\n태그: ([^\r\n]*))?\r?\n\r?\n([\s\S]+)$/);
+      if (!fields) {
+        if (typeof source?.text !== 'string') continue;
+        const date = dateForStoredMemory(source.text, memory.source_timestamp || memory.created_at);
+        if (date) addArchiveRecord({ date, title: '기록', body: source.text, mood: '미지정', type: '기록' }, memory);
+        continue;
+      }
+      const [, title, date, mood, tags, body] = fields;
+      if (!isDiaryDate(date)) continue;
+      const type = memory.schedule ? '일정' : title === '일기' ? '일기' : '감정';
+      addArchiveRecord({ title, date, mood, tags, body, type }, memory);
     }
   } catch (error) {
     archiveStatus.textContent = '저장된 기록 목록을 불러오지 못했습니다. ' + error.message;
   }
-  renderCalendar();
-  renderRecent();
-  runSearch();
+  refreshRecords();
+}
+
+function openHomeChat() {
+  go('chat');
+  newChat();
 }
 
 function askFromHome(query) {
-  if (demoBusy || !modelPicker.value) return;
-  go('chat');
-  newChat();
-  document.getElementById('chatInput').value = query;
-  return sendChat();
+  return withDemoRequest(async () => {
+    openHomeChat();
+    await answerInChat(query);
+  });
 }
 
 async function submitHome(event) {
   event.preventDefault();
   const body = homeInput.value.trim();
   if (!body || demoBusy || !modelPicker.value) return;
-  const mode = document.getElementById('homeMode').value;
-  if ((mode === 'auto' ? homeIntent(body) : mode) === 'question') {
-    homeInput.value = '';
-    await askFromHome(body);
-    return;
-  }
-
+  const modePicker = document.getElementById('homeMode');
+  const mode = modePicker.value;
   const chosenDate = homeDate.value;
+  const submittedAt = new Date();
   await withDemoRequest(async () => {
+    let intent = mode;
+    let scheduleTitle;
+    if (mode === 'auto') {
+      homeStatus.textContent = '로컬 AI가 일기, 일정, 기억 질문을 확인하는 중입니다…';
+      try {
+        ({ intent, title: scheduleTitle } = await demoRequest('intent', { text: body }));
+      } catch (error) {
+        homeStatus.textContent = '자동 판단 실패: ' + error.message + ' 입력 방식을 직접 선택해 주세요.';
+        return;
+      }
+    }
+    if (intent === 'question') {
+      if (homeInput.value.trim() === body) homeInput.value = '';
+      homeStatus.textContent = '기억 질문으로 보냈습니다.';
+      openHomeChat();
+      await answerInChat(body);
+      return;
+    }
+    if (intent !== 'diary' && intent !== 'schedule') {
+      homeStatus.textContent = '입력 목적이 확실하지 않습니다. 일기, 일정, 질문 중에서 직접 선택해 주세요.';
+      modePicker.focus();
+      return;
+    }
     try {
-      const date = diaryDate(body, chosenDate);
-      homeStatus.textContent = date + ' 일기를 요약해 저장하는 중입니다…';
-      await persistDemoRecord({ date, title: '일기', body, mood: '미지정', type: '일기' });
+      const schedule = intent === 'schedule' ? scheduleForText(body, chosenDate, submittedAt) : null;
+      const date = schedule?.date || dateForDiary(body, chosenDate, submittedAt);
+      const type = schedule ? '일정' : '일기';
+      const title = schedule ? scheduleTitle || '일정' : '일기';
+      homeStatus.textContent = date + (schedule ? ' 일정을' : ' 일기를') + ' 저장하는 중입니다…';
+      await persistDemoRecord({ date, title, body, mood: '미지정', type, schedule });
       if (homeInput.value.trim() === body) homeInput.value = '';
       if (homeDate.value === chosenDate) homeDate.value = '';
-      const [recordYear, recordMonth] = date.split('-').map(Number);
-      year = recordYear;
-      month = recordMonth - 1;
-      selected = date;
-      document.getElementById('archiveInput').value = '';
-      archiveStatus.textContent = date + ' 일기 저장 완료';
-      homeStatus.textContent = date + ' 일기를 저장했습니다.';
-      go('archive');
+      const [, month, day] = date.split('-').map(Number);
+      const when = month + '월 ' + day + '일' + (schedule?.time ? ' ' + schedule.time : '');
+      const message = when + (schedule ? ' 일정이' : ' 일기가') + ' 저장되었습니다.';
+      homeStatus.textContent = message;
+      document.getElementById('homeSavedMessage').textContent = message;
+      homeSaved.showModal();
     } catch (error) {
       homeStatus.textContent = '저장 실패: ' + error.message;
     }
@@ -202,16 +215,19 @@ async function addRecord() {
     return;
   }
   const title = titleInput.value.trim() || '새로운 기록';
-  const date = document.getElementById('recordDate').value || today;
-  const mood = document.querySelector('.mood.on')?.textContent.trim() || '평온함';
+  const dateInput = document.getElementById('recordDate');
+  const chosenDate = dateInput.value;
+  const mood = document.querySelector('.mood.on')?.lastChild?.textContent.trim() || '평온함';
   const tags = tagsInput.value.trim();
   await withDemoRequest(async () => {
     saveStatus.textContent = '기록을 요약하고 검색을 준비하는 중입니다…';
     try {
+      const date = dateForDiary(body, chosenDate);
       await persistDemoRecord({ date, title, body, mood, tags, type: '감정' });
       if (bodyInput.value.trim() === body) bodyInput.value = '';
       if ((titleInput.value.trim() || '새로운 기록') === title) titleInput.value = '';
       if (tagsInput.value.trim() === tags) tagsInput.value = '';
+      if (dateInput.value === chosenDate) dateInput.value = '';
       saveStatus.textContent = '저장 완료. 사색 대화에서 이 기록에 대해 물어보세요.';
     } catch (error) {
       saveStatus.textContent = '저장 실패: ' + error.message;
@@ -234,8 +250,14 @@ async function sendChat() {
   const query = input.value.trim();
   if (!query) return;
 
-  await withDemoRequest(async () => {
+  await withDemoRequest(() => {
     input.value = '';
+    return answerInChat(query);
+  });
+}
+
+async function answerInChat(query) {
+    const input = document.getElementById('chatInput');
     addBubble('user', query);
     const reply = addBubble('bot', '저장된 기억을 검색하고 있습니다…');
     const details = document.getElementById('evidenceDetails');
@@ -244,12 +266,12 @@ async function sendChat() {
     details.open = false;
     chatStatus.textContent = '답변 생성 중…';
     try {
-      const { answer } = await demoRequest('search', { query, answer: true });
+      const { answer, diary_date } = await demoRequest('search', { query, answer: true, use_diary_dates: true });
       if (!reply.isConnected) {
         chatStatus.textContent = '질문을 입력해 주세요.';
         return;
       }
-      reply.textContent = answer?.answer || '이 질문에 답할 수 있는 기억을 찾지 못했습니다.';
+      reply.textContent = answer?.answer || '저장된 기록에서 질문에 답할 만한 내용을 찾지 못했어요.';
       const citations = answer?.citations || [];
       const citationErrors = answer?.citation_errors || [];
       for (const citation of citations) {
@@ -261,7 +283,7 @@ async function sendChat() {
       if (citations.length === 0) evidence.textContent = '표시할 요약 인용이 없습니다.';
       chatStatus.textContent = citationErrors.length
         ? '인용 검사를 통과하지 못했습니다. 요약 근거를 확인해 주세요.'
-        : '답변 완료';
+        : diary_date ? diary_date + ' 기록 기준 · 답변 완료' : '답변 완료';
     } catch (error) {
       reply.textContent = '질문 처리 실패: ' + error.message;
       chatStatus.textContent = '질문 처리 실패';
@@ -269,7 +291,6 @@ async function sendChat() {
     }
     input.focus();
     scrollChatToBottom();
-  });
 }
 
 const homeForm = document.getElementById('homeMemoryForm');
