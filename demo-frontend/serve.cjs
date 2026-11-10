@@ -43,7 +43,7 @@ function createDemoServer(backendPort = 4319) {
     if (request.method === 'GET' && page) {
       const [file, type] = page;
       response.setHeader('Content-Type', type);
-      response.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'");
+      response.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'");
       const stream = fs.createReadStream(path.join(__dirname, file));
       stream.on('error', () => errorResponse(response, 500, '시연 화면 파일을 읽지 못했습니다.'));
       stream.pipe(response);

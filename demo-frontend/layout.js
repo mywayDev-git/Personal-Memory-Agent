@@ -28,17 +28,21 @@ function safe(v) {
 }
 
 function go(id) {
+  const page = document.getElementById(id);
+  if (!page?.classList.contains('page')) return;
+  const menuPage = id === 'recordDetail' ? 'archive' : id;
+
   document.querySelectorAll('.page').forEach(p=>{
     p.classList.remove('active');
   });
 
-  document.getElementById(id).classList.add('active');
+  page.classList.add('active');
 
   document.querySelectorAll('#nav button').forEach((b,i)=>{
-    b.classList.toggle('active',pages[i]===id);
+    b.classList.toggle('active',pages[i]===menuPage);
   });
 
-  document.getElementById('mobileSelect').value=id;
+  document.getElementById('mobileSelect').value=menuPage;
 
   window.scrollTo(0,0);
 
@@ -63,6 +67,27 @@ function recordDetail(record) {
   return record.schedule ? record.schedule.time || '시각 미정' : '감정 · ' + record.mood;
 }
 
+function recordDetailsButton(record) {
+  return `<button class="ghost small record-more" type="button"
+    data-open-record="${safe(record.memoryKey)}">기록 자세히 보기</button>`;
+}
+
+function openRecord(memoryKey) {
+  const record = records.find(item => item.memoryKey === memoryKey);
+  if (!record) return;
+
+  document.getElementById('detailTitle').textContent = record.title;
+  document.getElementById('detailDate').textContent =
+    [record.date, record.type, recordDetail(record), record.tags].filter(Boolean).join(' · ');
+  document.getElementById('detailBody').textContent = record.body;
+  go('recordDetail');
+}
+
+document.addEventListener('click', event => {
+  const button = event.target.closest('[data-open-record]');
+  if (button) openRecord(button.dataset.openRecord);
+});
+
 function renderRecent() {
   if(!records.length) {
     document.getElementById('homeRecent').textContent = '아직 저장한 기록이 없습니다.';
@@ -77,6 +102,7 @@ function renderRecent() {
           <small>${safe(r.date)} · ${safe(r.type)}${r.schedule ? ' · ' + safe(recordDetail(r)) : ''}</small>
           <p><b>${safe(r.title)}</b></p>
           <p>${safe(r.body)}</p>
+          ${recordDetailsButton(r)}
         </div>
       `).join('');
 }
@@ -154,6 +180,7 @@ function renderSelected() {
           </h3>
           <p>${safe(r.body)}</p>
           <small>${safe(recordDetail(r))}</small>
+          <div>${recordDetailsButton(r)}</div>
         </div>
       `).join(''):
       '<p class="muted small">그날의 이야기를 새로 남겨보세요.</p>';
@@ -272,11 +299,6 @@ function scrollChatToBottom() {
 function scenario(n) {
   document.dispatchEvent(new Event('pma-chat-reset'));
 
-  document.querySelectorAll('#scenarioTabs button')
-    .forEach((b,i)=>{
-      b.classList.toggle('active',i===n);
-    });
-
   const s=scenarios[n];
 
   document.getElementById('conversation').innerHTML=`
@@ -305,9 +327,6 @@ function scenario(n) {
 /* 새 대화 화면 */
 function newChat() {
   document.dispatchEvent(new Event('pma-chat-reset'));
-  document.querySelectorAll('#scenarioTabs button')
-    .forEach(b=>b.classList.remove('active'));
-
   document.getElementById('conversation').innerHTML=`
     <div class="bubble bot">
       안녕하세요. 오늘의 일기나 일정을 남기거나 지난 기억을 물어보세요.
@@ -355,7 +374,7 @@ function setFilter(el,type) {
   runSearch();
 }
 
-function runSearch() {
+function runSearch(scrollToResults = false) {
   const q=
     document.getElementById('archiveInput')
       .value.trim().toLowerCase();
@@ -414,14 +433,18 @@ function runSearch() {
           <span class="muted small">
             ${safe(r.date)} · ${safe(recordDetail(r))}
           </span>
+          <div>${recordDetailsButton(r)}</div>
         </div>
       `).join(''):
       '<p class="muted small">해당 조건의 저장된 기록이 없습니다.</p>';
 
   document.getElementById('searchNotice').innerHTML=`
-    <b>달력과 보관소 미리보기</b>
+    <b>달력과 보관소</b>
     <p>달력에서 저장한 기록을 날짜별로 확인할 수 있습니다. 모델로 기억을 검색하려면 서재 홈이나 사색 대화에서 질문하세요.</p>
   `;
+  if (scrollToResults) {
+    document.getElementById('searchResultsHeading').scrollIntoView({ block: 'start' });
+  }
 }
 
 /* ========== AUTH ========== */
@@ -450,7 +473,7 @@ function authDemo(e,mode) {
 
 document.getElementById('archiveInput')
   .addEventListener('keydown',e=>{
-    if(e.key==='Enter')runSearch();
+    if(e.key==='Enter' && !e.isComposing) runSearch(true);
   });
 
 document.getElementById('chatInput')
@@ -484,13 +507,10 @@ document.querySelector('[data-layout-event="16"]').addEventListener('click', fun
 document.querySelector('[data-layout-event="17"]').addEventListener('click', function(event) { scenario(0) });
 document.querySelector('[data-layout-event="18"]').addEventListener('click', function(event) { scenario(6) });
 document.querySelector('[data-layout-event="19"]').addEventListener('click', function(event) { scenario(4) });
-document.querySelector('[data-layout-event="20"]').addEventListener('click', function(event) { scenario(0) });
 document.querySelector('[data-layout-event="21"]').addEventListener('click', function(event) { scenario(1) });
 document.querySelector('[data-layout-event="22"]').addEventListener('click', function(event) { scenario(2) });
 document.querySelector('[data-layout-event="23"]').addEventListener('click', function(event) { scenario(3) });
-document.querySelector('[data-layout-event="24"]').addEventListener('click', function(event) { scenario(4) });
 document.querySelector('[data-layout-event="25"]').addEventListener('click', function(event) { scenario(5) });
-document.querySelector('[data-layout-event="26"]').addEventListener('click', function(event) { scenario(6) });
 document.querySelector('[data-layout-event="27"]').addEventListener('click', function(event) { alert('파일 첨부는 현재 UI 시연용입니다.') });
 document.querySelector('[data-layout-event="28"]').addEventListener('click', function(event) { sendChat() });
 document.querySelector('[data-layout-event="29"]').addEventListener('click', function(event) { chooseMood(this) });
@@ -499,7 +519,7 @@ document.querySelector('[data-layout-event="31"]').addEventListener('click', fun
 document.querySelector('[data-layout-event="32"]').addEventListener('click', function(event) { chooseMood(this) });
 document.querySelector('[data-layout-event="33"]').addEventListener('click', function(event) { chooseMood(this) });
 document.querySelector('[data-layout-event="34"]').addEventListener('click', function(event) { addRecord() });
-document.querySelector('[data-layout-event="39"]').addEventListener('click', function(event) { runSearch() });
+document.querySelector('[data-layout-event="39"]').addEventListener('click', function(event) { runSearch(true) });
 document.querySelector('[data-layout-event="40"]').addEventListener('click', function(event) { setFilter(this,'all') });
 document.querySelector('[data-layout-event="41"]').addEventListener('click', function(event) { setFilter(this,'exact') });
 document.querySelector('[data-layout-event="42"]').addEventListener('click', function(event) { setFilter(this,'semantic') });
@@ -514,3 +534,4 @@ document.querySelector('[data-layout-event="50"]').addEventListener('click', fun
 document.querySelector('[data-layout-event="51"]').addEventListener('click', function(event) { alert('서비스 안내 UI 준비 중') });
 document.querySelector('[data-layout-event="52"]').addEventListener('click', function(event) { alert('개인정보 보호 UI 준비 중') });
 document.querySelector('[data-layout-event="53"]').addEventListener('click', function(event) { alert('도움말 UI 준비 중') });
+document.querySelector('[data-layout-event="54"]').addEventListener('click', () => go('archive'));
