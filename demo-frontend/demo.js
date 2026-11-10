@@ -545,7 +545,7 @@ function handleChatInput(body, knownIntent) {
         : { text });
       if (!reply.isConnected) return;
       if (classified.intent === 'question') {
-        await answerInChat(text, reply, progress);
+        await answerInChat(classified.query || text, reply, progress);
       } else if (classified.intent === 'schedule') {
         await offerSchedule(reply, { body: text, title: classified.title || '일정', submittedAt });
       } else if (classified.intent === 'diary') {
@@ -553,7 +553,10 @@ function handleChatInput(body, knownIntent) {
         await offerRecord(reply, { date, title: '일기', body: text, mood: '미지정', type: '일기' });
       } else if (classified.intent === 'emotion') {
         await replyToEmotion(text, submittedAt, userMessage, reply, progress);
-
+      } else if (classified.intent === 'assistant') {
+        if (!classified.reply?.trim()) throw new Error('로컬 모델의 답변을 받지 못했어요.');
+        reply.textContent = classified.reply;
+        chatStatus.textContent = '답변 완료';
       } else {
         const kind = classified.clarification_kind === 'question' ? 'question' : 'intent';
         if (!classified.clarification) throw new Error('로컬 모델의 확인 질문을 받지 못했어요.');

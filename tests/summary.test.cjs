@@ -11,8 +11,9 @@ class Runtime{
  async chat(messages,schema,config,signal){signal?.throwIfAborted();this.calls.push({kind:'chat',messages});const payload=JSON.parse(messages[1].content);let parsed;
   if(schema.properties.summary){if(this.failSummary)throw Error('summary failed');if(this.invalid)parsed={summary:' '};else parsed={summary:this.summary||SUMMARY,...(schema.properties.mood?{mood:this.mood||'단서 없음'}:{})};}
   else if(schema.properties.intent){parsed={intent:this.intent||'unclear',title:this.title||'',clarification:this.clarification||''};}
-  else if(schema.properties.tone){parsed={tone:'overwhelmed',next_step:'walk',anchor:'산책',reference:this.useEmotionMemory&&payload.memories.length?payload.memories[0].sentences[0].sentence_id:'NONE'};}
-  else{const e=payload.evidence[0];parsed=this.abstain?{action:'abstain',answer:'확인 불가',citations:[]}:{action:e?'answer':'abstain',answer:e?e.text:'요약에 정보가 없습니다.',citations:e?[{evidence_id:e.evidence_id,quote:e.text,occurrence:1}]:[]};}
+  else if(schema.properties.reference){parsed={anchor:'산책',reference:this.useEmotionMemory&&payload.memories.length?payload.memories[0].sentences[0].sentence_id:'NONE'};}
+  else if(!schema.properties.citations&&schema.properties.answer){parsed={answer:this.chatReplies?.shift()||this.chatReply||'과제가 많아 버겁게 느껴질 수 있어요. 가능하면 잠깐 걸어보는 건 어때요?'};}
+  else{const e=payload.evidence[0];parsed=this.abstain?{action:'abstain',answer:'확인 불가',citations:[]}:{action:e?'answer':'abstain',answer:e?e.text:'요약에 정보가 없습니다.',citations:e&&!this.noCitation?[{evidence_id:e.evidence_id,quote:e.text,occurrence:1}]:[]};}
   return {parsed,raw:JSON.stringify(parsed),usage:{prompt_tokens:10,completion_tokens:10},elapsed_ms:1};
  }
 }
@@ -105,6 +106,11 @@ test('personal chat asks for conversational answers and explains abstention afte
   const found=await f.api.post('/summary-memory/search',{query:'2026-11-08에 뭐 했어?',answer:true,use_diary_dates:true});
   assert.equal(found.answer.answer,'11월 8일에는 도서관에서 책을 읽었어요.');
   assert.equal(found.answer.citations[0].quote,f.runtime.summary);
+  f.runtime.noCitation=true;
+  const uncited=await f.api.post('/summary-memory/search',{query:'2026-11-08에 뭐 했어?',answer:true,use_diary_dates:true});
+  assert.equal(uncited.answer.action,'abstain');
+  assert.equal(uncited.answer.answer,'11월 8일 기록에서 질문에 답할 만한 내용을 찾지 못했어요.');
+  assert.deepEqual(uncited.answer.citations,[]);
  }finally{f.store.db.close();}
 });
 test('diary mood is inferred in the summary call, persisted, and available for legacy re-summaries',async()=>{
@@ -144,12 +150,110 @@ test('a scheduled memory keeps its calendar date and exact start time in storage
   await assert.rejects(()=>save(f,text.replace('15:30','25:30')),/시각/);
  }finally{f.store.db.close();}
 });
+test('a short dated lookup finds the saved schedule even when the model asks for clarification',async t=>{
+ t.mock.timers.enable({apis:['Date'],now:new Date('2026-11-09T15:00:00Z')});
+ const f=fixture();try{
+  const query='15일에 뭐있지?';
+  assert.equal((await f.api.post('/summary-memory/intent',{text:query})).intent,'question');
+  const followUp=await f.api.post('/summary-memory/intent',{text:'그거 언제였지?',follow_up:query,clarification_kind:'question'});
+  assert.equal(followUp.query,query);
+  assert.equal(f.runtime.calls.length,0);
+
+  const {memory}=await save(f,'제목: 팀플\n기록일: 2026-11-15\n감정: 미지정\n일정 시각: 미정\n\n11월 15일에 팀플 예정');
+  await save(f,'제목: 동아리\n기록일: 2026-11-16\n감정: 미지정\n일정 시각: 미정\n\n11월 16일 동아리');
+  t.mock.method(f.engine,'answer',async(_run,_ds,question)=>{
+   assert.match(question.text,/2026-11-15에 저장된/);
+   return {action:'clarify',answer:'무슨 일을 말씀하시는지 알려 주시겠어요?',citations:[],citation_errors:[]};
+  });
+  const found=await f.api.post('/summary-memory/search',{query,answer:true,use_diary_dates:true});
+  assert.equal(found.diary_date,'2026-11-15');
+  assert.equal(found.answer.action,'answer');
+  assert.match(found.answer.answer,/팀플/);
+  assert.doesNotMatch(found.answer.answer,/동아리/);
+  assert.equal(found.answer.citations[0].summary_id,memory.summary_artifact_id);
+  assert.equal(found.answer.citations[0].quote,memory.summary);
+ }finally{f.store.db.close();}
+});
+test('assistant identity and role questions return a generated local reply without looking up or saving memories',async()=>{
+ const f=fixture();try{
+  f.runtime.chatReply='저는 Plant Thought예요. 일기와 일정 관리를 돕고 고민에는 짧게 조언해요.';
+  for(const text of ['너는 누구냐','안녕 넌 누구야?','안녕하세요! 자기소개해 주세요.','반가워, 넌 이름이 뭐야?']){
+   const before=f.runtime.calls.filter(call=>call.kind==='chat').length;
+   const identity=await f.api.post('/summary-memory/intent',{text});
+   assert.equal(identity.intent,'assistant');
+   assert.equal(identity.reply,f.runtime.chatReply);
+   assert.equal(f.runtime.calls.filter(call=>call.kind==='chat').length,before+1);
+   const facts=JSON.parse(f.runtime.calls.at(-1).messages[1].content);
+   assert.equal(facts.name,'Plant Thought');
+   assert.equal(facts.text,undefined);
+  }
+  const followUp=await f.api.post('/summary-memory/intent',{text:'그건 언제야?',follow_up:'안녕 넌 누구야?',clarification_kind:'question'});
+  assert.equal(followUp.reply,f.runtime.chatReply);
+  f.runtime.intent='assistant';
+  const role=await f.api.post('/summary-memory/intent',{text:'이 앱에서 어떤 도움을 받을 수 있나요?'});
+  assert.equal(role.reply,f.runtime.chatReply);
+  assert.equal(f.runtime.calls.some(call=>call.role==='embedding'||call.kind==='embed'),false);
+  assert.deepEqual((await get(f)).memories,[]);
+ }finally{f.store.db.close();}
+});
+test('assistant introductions retry an unrelated model reply while memory questions keep their normal route',async()=>{
+ const f=fixture();try{
+  const unrelated='저는 인공지능이에요. 혹시 김치나 다른 사건을 찾으세요?';
+  const introduction='저는 Plant Thought라는 개인 AI예요. 일기와 일정 관리를 돕고 고민에 조언해요.';
+  f.runtime.chatReplies=[unrelated,introduction];
+  const result=await f.api.post('/summary-memory/intent',{text:'안녕 넌 누구야?'});
+  assert.equal(result.reply,introduction);
+  assert.equal(f.runtime.calls.filter(call=>call.kind==='chat').length,2);
+  assert.deepEqual(JSON.parse(f.runtime.calls.at(-1).messages[1].content),JSON.parse(f.runtime.calls.at(-2).messages[1].content));
+  f.runtime.chatReplies=[unrelated,unrelated];
+  await assert.rejects(f.api.post('/summary-memory/intent',{text:'안녕 넌 누구야?'}),/자기소개를 만들지 못했어요/);
+  f.runtime.intent='question';
+  const query='안녕, 내가 어제 누구랑 점심 먹었지?';
+  const lookup=await f.api.post('/summary-memory/intent',{text:query});
+  assert.equal(lookup.intent,'question');
+  assert.equal(JSON.parse(f.runtime.calls.at(-1).messages[1].content).text,query);
+ }finally{f.store.db.close();}
+});
+test('emotion support preserves the time of a past feeling and keeps advice available when asked',async()=>{
+ const f=fixture();try{
+  const ask=query=>f.api.post('/summary-memory/search',{query,answer:true,use_diary_dates:true,emotion_support:true});
+  const cases=[
+   ['어제는 과제가 많아서 힘들었어','오늘도 과제를 많이 했나요? 오늘 저녁에는 드라마를 볼까요?','어제 과제가 많아서 버거웠겠어요.'],
+   ['어제는 과제가 너무 많아서 힘들었음','오늘도 과제를 많이 해야 하는 게 아쉽네요. 다음 주에는 여유 있게 보내세요.','어제 과제가 너무 많아서 버거웠겠어요.'],
+   ['그제는 발표 준비 때문에 힘들었음','다음 주에는 준비할 게 줄어들 거예요.','그제 발표 준비로 힘들었겠어요.'],
+  ];
+  for(const [input,incorrect,empathy] of cases){
+   const before=f.runtime.calls.length;
+   f.runtime.chatReplies=[incorrect,empathy];
+   const past=await ask(input);
+   assert.equal(past.answer.answer,empathy);
+   assert.deepEqual(past.answer.citations,[]);
+   const attempts=f.runtime.calls.slice(before).filter(call=>call.kind==='chat');
+   assert.equal(attempts.length,2);
+   assert.match(attempts[0].messages[0].content,/감정에 한 문장으로 공감/);
+   assert.match(attempts[1].messages[0].content,/다시 작성해/);
+   assert.equal(JSON.parse(attempts[1].messages[1].content).text,input);
+  }
+
+  f.runtime.chatReplies=['어제 과제가 많아서 버거웠겠어요. 오늘은 과제를 많이 해야겠네요.'];
+  assert.equal((await ask('어제는 과제가 많아서 힘들었어')).answer.answer,'어제 과제가 많아서 버거웠겠어요.');
+  f.runtime.chatReplies=['오늘도 힘드세요?','오늘 할 일이 더 있나요?'];
+  const reflected=await ask('어제는 과제가 많아서 힘들었어');
+  assert.match(reflected.answer.answer,/어제는 과제가 많아서 힘들었어/);
+  assert.doesNotMatch(reflected.answer.answer,/오늘|[?？]/);
+
+  f.runtime.chatReply='오늘은 마감이 가장 가까운 과제 하나부터 확인해 보는 건 어때요?';
+  const requested=await ask('어제는 과제가 많아서 힘들었어. 오늘은 뭘 먼저 하면 좋을까?');
+  assert.equal(requested.answer.answer,f.runtime.chatReply);
+  assert.doesNotMatch(f.runtime.calls.at(-1).messages[0].content,/이 입력은 지나간 일에 대한 감정 공유/);
+ }finally{f.store.db.close();}
+});
 test('emotion support uses only earlier dates and quotes past actions without inventing facts',async t=>{
  t.mock.timers.enable({apis:['Date'],now:new Date('2026-11-09T15:00:00Z')});
  const f=fixture();try{
   const ask=exclude_memory_key=>f.api.post('/summary-memory/search',{query:'오늘은 과제가 많아서 힘들었다',answer:true,use_diary_dates:true,emotion_support:true,exclude_memory_key});
   const empty=await ask();
-  assert.equal(empty.answer.answer.split('\n').length,2);
+  assert.equal(empty.answer.answer,'과제가 많아 버겁게 느껴질 수 있어요. 가능하면 잠깐 걸어보는 건 어때요?');
   assert.deepEqual(empty.answer.citations,[]);
   assert.equal(f.runtime.calls.some(c=>c.role==='embedding'),false);
 
@@ -164,7 +268,7 @@ test('emotion support uses only earlier dates and quotes past actions without in
   assert.deepEqual(todayOnly.answer.citations,[]);
   assert.doesNotMatch(todayOnly.answer.answer,/과거|이전 기록|가졌어요/);
   assert.match(todayOnly.answer.answer,/걸어보는 건 어때요/);
-  assert.deepEqual(JSON.parse(f.runtime.calls.at(-1).messages[1].content).memories,[]);
+  assert.equal(JSON.parse(f.runtime.calls.at(-1).messages[1].content).verified_action,null);
 
   f.runtime.summary='마음이 무거웠지만 운동장을 산책하니 기분이 나아졌다.';
   const {memory}=await save(f,'제목: 산책\n기록일: 2026-11-08\n감정: 슬픔\n\n'+SENTINEL+' 운동장을 산책했다.');
@@ -174,9 +278,10 @@ test('emotion support uses only earlier dates and quotes past actions without in
   assert.equal(related.answer.citations[0].original_artifact_id,memory.original_artifact_id);
   assert.equal(related.answer.citations[0].diary_date,'2026-11-08');
   assert.match(related.answer.citations[0].quote,/산책/);
-  assert.equal(related.answer.answer.split('\n')[1],'이전 기록에는 “'+related.answer.citations[0].quote+'”라고 적혀 있어요.');
+  assert.equal(related.answer.answer.split('\n')[0],'이전 기록에는 “'+related.answer.citations[0].quote+'”라고 적혀 있어요.');
   assert.deepEqual(related.retrieval.source_refs.map(ref=>ref.source_id),[memory.source_id]);
   assert.ok(!f.runtime.calls.at(-1).messages[1].content.includes(SENTINEL));
+  assert.equal(JSON.parse(f.runtime.calls.at(-1).messages[1].content).verified_action,'산책');
 
   const justSaved=await ask(memory.memory_key);
   assert.deepEqual(justSaved.answer.citations,[]);
