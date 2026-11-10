@@ -124,14 +124,26 @@ function refreshRecords() {
   runSearch();
 }
 
-async function persistDemoRecord({ date, title, body, mood, tags, type, schedule }) {
+async function persistDemoRecord({ date, title, body, mood, tags, type, schedule }, status) {
   const fields = ['제목: ' + title, '기록일: ' + date, '감정: ' + mood];
   if (schedule) fields.push('일정 시각: ' + (schedule.time || '미정'));
   if (tags) fields.push('태그: ' + tags);
-  const { memory } = await demoRequest('save', { text: fields.join('\n') + '\n\n' + body });
-  if (!memory?.memory_key) throw new Error('저장한 기록을 확인하지 못했습니다.');
-  addArchiveRecord({ date, title, body, mood, tags, type }, memory);
-  refreshRecords();
+  const elapsed = document.createElement('span');
+  elapsed.setAttribute('aria-hidden', 'true');
+  status.textContent = '기록을 요약하고 검색을 준비하는 중입니다…';
+  status.append(elapsed);
+  const stopTimer = startElapsedTimer(seconds => {
+    elapsed.textContent = ' (' + seconds + '초 경과)';
+  });
+  try {
+    const { memory } = await demoRequest('save', { text: fields.join('\n') + '\n\n' + body });
+    if (!memory?.memory_key) throw new Error('저장한 기록을 확인하지 못했습니다.');
+    addArchiveRecord({ date, title, body, mood, tags, type }, memory);
+    refreshRecords();
+  } finally {
+    stopTimer();
+    elapsed.remove();
+  }
 }
 
 async function restoreArchive() {
@@ -194,10 +206,9 @@ async function addRecord() {
   const calendar = document.getElementById('emotionCalendar');
   await withDemoRequest(async () => {
     calendar.hidden = true;
-    saveStatus.textContent = '기록을 요약하고 검색을 준비하는 중입니다…';
     try {
       const date = dateForDiary(body, chosenDate);
-      await persistDemoRecord({ date, title, body, mood, tags, type: '감정' });
+      await persistDemoRecord({ date, title, body, mood, tags, type: '감정' }, saveStatus);
       if (bodyInput.value.trim() === body) bodyInput.value = '';
       if ((titleInput.value.trim() || '새로운 기록') === title) titleInput.value = '';
       if (tagsInput.value.trim() === tags) tagsInput.value = '';
@@ -305,6 +316,20 @@ function renderChatBubble(kind, text) {
   return paragraph;
 }
 
+function startElapsedTimer(render) {
+  const startedAt = performance.now();
+  let lastSecond = -1;
+  const updateTime = () => {
+    const seconds = Math.floor((performance.now() - startedAt) / 1000);
+    if (seconds === lastSecond) return;
+    lastSecond = seconds;
+    render(seconds);
+  };
+  updateTime();
+  const timer = setInterval(updateTime, 250);
+  return () => clearInterval(timer);
+}
+
 function startChatProgress(reply, initialStage) {
   activeChatProgress?.stop();
   const time = document.createElement('small');
@@ -317,12 +342,9 @@ function startChatProgress(reply, initialStage) {
   reply.before(time);
   reply.after(stage);
   reply.hidden = true;
-  const startedAt = performance.now();
-  const updateTime = () => {
-    time.textContent = Math.floor((performance.now() - startedAt) / 1000) + '초째 생각 중';
-  };
-  updateTime();
-  const timer = setInterval(updateTime, 250);
+  const stopTimer = startElapsedTimer(seconds => {
+    time.textContent = seconds + '초째 생각 중';
+  });
   const controller = new AbortController();
   let pollTimer;
   const progress = {
@@ -344,7 +366,7 @@ function startChatProgress(reply, initialStage) {
     stop() {
       if (controller.signal.aborted) return;
       controller.abort();
-      clearInterval(timer);
+      stopTimer();
       clearTimeout(pollTimer);
       time.remove();
       stage.remove();
@@ -398,7 +420,7 @@ function confirmRecord(draft, approved, userReply) {
   addBubble('user', userReply);
   return withDemoRequest(async () => {
     if (approved) {
-      const reply = addBubble('bot', '기록을 요약하고 검색을 준비하는 중입니다…');
+      const reply = addBubble('bot', draft.restored ? '기존 기록을 확인하는 중…' : '');
       chatStatus.textContent = '기록 저장 중…';
       let alreadySaved = false;
       try {
@@ -407,7 +429,7 @@ function confirmRecord(draft, approved, userReply) {
           if (!latest) throw new Error('기존 기록을 확인하지 못했어요.');
           alreadySaved = Boolean(findSameRecord(latest, draft.record));
         }
-        if (!alreadySaved) await persistDemoRecord(draft.record);
+        if (!alreadySaved) await persistDemoRecord(draft.record, reply);
       } catch (error) {
         if (!reply.isConnected) return;
         reply.textContent = '저장 실패: ' + error.message + ' 기록하기를 눌러 다시 시도할 수 있어요.';
@@ -596,7 +618,7 @@ function offerEmotionSave(userMessage, record) {
         const restored = await restoreArchive();
         if (!restored) throw new Error('기존 기록을 확인하지 못했어요. 다시 시도해 주세요.');
         const existing = findSameRecord(restored, record);
-        if (!existing) await persistDemoRecord(record);
+        if (!existing) await persistDemoRecord(record, chatStatus);
         if (!userMessage.isConnected) return;
         actions.remove();
         const notice = existing ? '이미 저장된 기록이에요.' : '일기로 저장했어요.';
