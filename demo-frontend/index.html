@@ -256,17 +256,6 @@ main {
 
 .ghost:hover { background: #edf2ea; }
 
-#homeSaved {
-  width: min(420px, calc(100% - 32px));
-  padding: 26px;
-  border: 1px solid #dce7dc;
-  border-radius: 18px;
-  color: inherit;
-  text-align: center;
-}
-#homeSaved::backdrop { background: rgb(25 60 46 / 25%); }
-#homeSaved form { margin-top: 18px; }
-
 .chips {
   display: flex;
   gap: 9px;
@@ -733,6 +722,18 @@ summary { cursor: pointer; color: var(--green); }
 
 .chat-send-btn:hover { background: var(--green2); }
 
+.chat-record-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.chat-record-actions button {
+  padding: 6px 11px;
+  font-size: 12px;
+}
+
 .chat-disclaimer {
   margin: 10px 0 0;
   color: #a5afa6;
@@ -1036,7 +1037,6 @@ footer {
     <button class="active" data-layout-event="1">서재 홈</button>
     <button data-layout-event="2">사색 대화</button>
     <button data-layout-event="3">감정 갈무리</button>
-    <button data-layout-event="4">마음 성좌도</button>
     <button data-layout-event="5">서재 보관소</button>
     <button data-layout-event="6">서재 설정</button>
   </nav>
@@ -1051,7 +1051,6 @@ footer {
     <option value="home">서재 홈</option>
     <option value="chat">사색 대화</option>
     <option value="emotion">감정 갈무리</option>
-    <option value="map">마음 성좌도</option>
     <option value="archive">서재 보관소</option>
     <option value="settings">서재 설정</option>
     <option value="login">로그인</option>
@@ -1083,20 +1082,7 @@ footer {
       시작하기 ↗
     </button>
   </form>
-  <div class="chips" style="justify-content:center;align-items:center">
-    <label>입력 방식 <select id="homeMode">
-      <option value="auto">자동 판단 · 로컬 AI</option>
-      <option value="diary">일기로 저장</option>
-      <option value="schedule">일정으로 저장</option>
-      <option value="question">기억에 질문</option>
-    </select></label>
-    <label>기록 날짜(선택) <input id="homeDate" type="date"></label>
-  </div>
   <p class="notice" id="homeStatus" role="status">모델을 확인하고 있습니다…</p>
-  <dialog id="homeSaved" aria-labelledby="homeSavedMessage">
-    <p id="homeSavedMessage"></p>
-    <form method="dialog"><button class="primary" autofocus>확인</button></form>
-  </dialog>
 
   <div class="chips" style="justify-content:center">
     <button class="chip" data-layout-event="10">✎ 오늘 기록하기</button>
@@ -1279,7 +1265,8 @@ footer {
 
         <input
           id="chatInput"
-          placeholder="궁금한 기억을 물어보세요..."
+          aria-label="일기, 일정 또는 기억 질문"
+          placeholder="일기나 일정을 남기거나 기억을 물어보세요."
           autocomplete="off"
         >
 
@@ -1384,7 +1371,7 @@ footer {
 
 <!-- ========== CONSTELLATION ========== -->
 
-<section id="map" class="page">
+<section id="map" class="page" hidden>
 
 <div class="eyebrow">MIND CONSTELLATION</div>
 <h1>마음 성좌도</h1>
@@ -1753,7 +1740,6 @@ footer {
 
 <script src="/diary-dates.js"></script>
 <script src="/layout.js"></script>
-<script src="/constellation.js"></script>
 <script src="/demo.js"></script>
 </body>
 </html>

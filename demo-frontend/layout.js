@@ -3,7 +3,7 @@
 /* ========== COMMON ========== */
 
 const pages = [
-  'home','chat','emotion','map','archive','settings'
+  'home','chat','emotion','archive','settings'
 ];
 
 const pad = n => String(n).padStart(2,'0');
@@ -49,7 +49,6 @@ function go(id) {
 
   if(id==='home') renderRecent();
 
-  if(id==='map') renderConstellation();
 
   if(id==='chat') {
     requestAnimationFrame(scrollChatToBottom);
@@ -271,6 +270,7 @@ function scrollChatToBottom() {
 
 /* 시나리오 변경 */
 function scenario(n) {
+  document.dispatchEvent(new Event('pma-chat-reset'));
 
   document.querySelectorAll('#scenarioTabs button')
     .forEach((b,i)=>{
@@ -303,12 +303,13 @@ function scenario(n) {
 
 /* 새 대화 화면 */
 function newChat() {
+  document.dispatchEvent(new Event('pma-chat-reset'));
   document.querySelectorAll('#scenarioTabs button')
     .forEach(b=>b.classList.remove('active'));
 
   document.getElementById('conversation').innerHTML=`
     <div class="bubble bot">
-      안녕하세요. 지난 기록에 대해 무엇이 궁금하신가요?
+      안녕하세요. 오늘의 일기나 일정을 남기거나 지난 기억을 물어보세요.
     </div>
   `;
 
@@ -467,7 +468,6 @@ document.querySelector('[data-layout-event="0"]').addEventListener('click', func
 document.querySelector('[data-layout-event="1"]').addEventListener('click', function(event) { go('home') });
 document.querySelector('[data-layout-event="2"]').addEventListener('click', function(event) { go('chat') });
 document.querySelector('[data-layout-event="3"]').addEventListener('click', function(event) { go('emotion') });
-document.querySelector('[data-layout-event="4"]').addEventListener('click', function(event) { go('map') });
 document.querySelector('[data-layout-event="5"]').addEventListener('click', function(event) { go('archive') });
 document.querySelector('[data-layout-event="6"]').addEventListener('click', function(event) { go('settings') });
 document.querySelector('[data-layout-event="7"]').addEventListener('click', function(event) { go('login') });
