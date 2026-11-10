@@ -10,7 +10,8 @@ class Runtime{
  async embed(text,query,signal){signal?.throwIfAborted();if(this.failEmbed)throw Error('embedding failed');this.calls.push({kind:'embed',text,query});return [1,text.length/100+1,2];}
  async chat(messages,schema,config,signal){signal?.throwIfAborted();this.calls.push({kind:'chat',messages});const payload=JSON.parse(messages[1].content);let parsed;
   if(schema.properties.summary){if(this.failSummary)throw Error('summary failed');if(this.invalid)parsed={summary:' '};else parsed={summary:this.summary||SUMMARY,...(schema.properties.mood?{mood:this.mood||'단서 없음'}:{})};}
-  else if(schema.properties.intent){parsed={intent:this.intent||'unclear',title:this.title||''};}
+  else if(schema.properties.intent){parsed={intent:this.intent||'unclear',title:this.title||'',clarification:this.clarification||''};}
+  else if(schema.properties.tone){parsed={tone:'overwhelmed',next_step:'walk',anchor:'산책',reference:this.useEmotionMemory&&payload.memories.length?payload.memories[0].sentences[0].sentence_id:'NONE'};}
   else{const e=payload.evidence[0];parsed=this.abstain?{action:'abstain',answer:'확인 불가',citations:[]}:{action:e?'answer':'abstain',answer:e?e.text:'요약에 정보가 없습니다.',citations:e?[{evidence_id:e.evidence_id,quote:e.text,occurrence:1}]:[]};}
   return {parsed,raw:JSON.stringify(parsed),usage:{prompt_tokens:10,completion_tokens:10},elapsed_ms:1};
  }
@@ -33,6 +34,23 @@ test('originals are archived separately; only summaries reach lexical, vector an
 });
 test('persisted summaries survive restart and search does not summarize again',async()=>{
  const f=fixture();try{await save(f);const count=f.runtime.calls.filter(c=>c.kind==='chat').length;await f.api.post('/summary-memory/search',{query:'회의',answer:false});assert.equal(f.runtime.calls.filter(c=>c.kind==='chat').length,count);f.store.db.close();f.store=new Store(f.dir);f.engine=new Engine(f.dir,f.store,f.runtime);f.api=createSummaryApi(f.engine,f.runtime);assert.equal((await get(f)).memories.length,1);await f.api.post('/summary-memory/search',{query:'회의'});assert.equal(f.runtime.calls.filter(c=>c.kind==='chat').length,count);}finally{f.store.db.close();}
+});
+test('search progress is scoped to the request and cleared when the answer finishes',async()=>{
+ const f=fixture();try{
+  await save(f);
+  const id=require('node:crypto').randomUUID(),route='/summary-memory/progress?id='+id;
+  let release;
+  const wait=new Promise(resolve=>{release=resolve;});
+  const original=f.engine.retrieve.bind(f.engine);
+  f.engine.retrieve=async(...args)=>{await wait;return original(...args);};
+  const search=f.api.post('/summary-memory/search',{query:'회의 일정',answer:true,progress_id:id});
+  try{
+   await new Promise(resolve=>setImmediate(resolve));
+   assert.deepEqual(await get(f,route),{stage:'retrieving'});
+   assert.deepEqual(await get(f,'/summary-memory/progress?id='+require('node:crypto').randomUUID()),{stage:null});
+  }finally{release();await search;}
+  assert.deepEqual(await get(f,route),{stage:null});
+ }finally{f.store.db.close();}
 });
 test('demo dates scope searches to the recorded Korean calendar day, including older diary rows',async t=>{
  const now=new Date('2026-11-09T15:00:00Z');t.mock.timers.enable({apis:['Date'],now});
@@ -126,6 +144,57 @@ test('a scheduled memory keeps its calendar date and exact start time in storage
   await assert.rejects(()=>save(f,text.replace('15:30','25:30')),/시각/);
  }finally{f.store.db.close();}
 });
+test('emotion support uses only earlier dates and quotes past actions without inventing facts',async t=>{
+ t.mock.timers.enable({apis:['Date'],now:new Date('2026-11-09T15:00:00Z')});
+ const f=fixture();try{
+  const ask=exclude_memory_key=>f.api.post('/summary-memory/search',{query:'오늘은 과제가 많아서 힘들었다',answer:true,use_diary_dates:true,emotion_support:true,exclude_memory_key});
+  const empty=await ask();
+  assert.equal(empty.answer.answer.split('\n').length,2);
+  assert.deepEqual(empty.answer.citations,[]);
+  assert.equal(f.runtime.calls.some(c=>c.role==='embedding'),false);
+
+  f.runtime.useEmotionMemory=true;
+  f.runtime.summary='과제가 많아서 힘들었다.';
+  const todayText='제목: 일기\n기록일: 2026-11-10\n감정: 미지정\n\n오늘은 과제가 많아서 힘들었다';
+  await save(f,todayText);
+  const {memory:newest}=await save(f,todayText);
+  await save(f,todayText.replace('2026-11-10','2026-11-11'));
+  const todayOnly=await ask(newest.memory_key);
+  assert.equal(todayOnly.retrieval,null);
+  assert.deepEqual(todayOnly.answer.citations,[]);
+  assert.doesNotMatch(todayOnly.answer.answer,/과거|이전 기록|가졌어요/);
+  assert.match(todayOnly.answer.answer,/걸어보는 건 어때요/);
+  assert.deepEqual(JSON.parse(f.runtime.calls.at(-1).messages[1].content).memories,[]);
+
+  f.runtime.summary='마음이 무거웠지만 운동장을 산책하니 기분이 나아졌다.';
+  const {memory}=await save(f,'제목: 산책\n기록일: 2026-11-08\n감정: 슬픔\n\n'+SENTINEL+' 운동장을 산책했다.');
+  const related=await ask();
+  assert.equal(related.diary_date,undefined);
+  assert.equal(related.answer.citations[0].basis,'original');
+  assert.equal(related.answer.citations[0].original_artifact_id,memory.original_artifact_id);
+  assert.equal(related.answer.citations[0].diary_date,'2026-11-08');
+  assert.match(related.answer.citations[0].quote,/산책/);
+  assert.equal(related.answer.answer.split('\n')[1],'이전 기록에는 “'+related.answer.citations[0].quote+'”라고 적혀 있어요.');
+  assert.deepEqual(related.retrieval.source_refs.map(ref=>ref.source_id),[memory.source_id]);
+  assert.ok(!f.runtime.calls.at(-1).messages[1].content.includes(SENTINEL));
+
+  const justSaved=await ask(memory.memory_key);
+  assert.deepEqual(justSaved.answer.citations,[]);
+  assert.equal(justSaved.retrieval,null);
+
+  f.runtime.useEmotionMemory=false;
+  const unrelated=await ask();
+  assert.deepEqual(unrelated.answer.citations,[]);
+  assert.doesNotMatch(unrelated.answer.answer,/이전 기록|과거에도/);
+
+  f.runtime.useEmotionMemory=true;
+  await save(f,'제목: 과제\n기록일: 2026-11-07\n감정: 슬픔\n\n과제가 많아서 힘들었다.');
+  const unsupported=await ask(memory.memory_key);
+  assert.ok(unsupported.retrieval.evidence[0].text.includes('산책'));
+  assert.deepEqual(unsupported.answer.citations,[]);
+  assert.doesNotMatch(unsupported.answer.answer,/이전 기록|과거에도/);
+ }finally{f.store.db.close();}
+});
 test('failed generation, empty output, embedding failure and cancellation keep the old active summary',async()=>{
  const f=fixture();try{const {memory:m}=await save(f);
   for(const mode of ['failSummary','invalid','failEmbed']){f.runtime[mode]=true;f.runtime.summary='변경된 요약 '+mode;await assert.rejects(()=>f.api.post('/summary-memory/resummarize',{key:m.memory_key,expected:m.summary_artifact_id}));assert.equal((await get(f)).memories[0].summary_artifact_id,m.summary_artifact_id);f.runtime[mode]=false;}
@@ -205,6 +274,9 @@ test('demo intent is proxied with same-origin authentication and does not store 
   assert.equal(scheduled.title,'캡스톤 회의');
   assert.equal((await(await fetch(base+'/summary-memory')).json()).memories.length,0);
   assert.ok(f.runtime.calls.filter(c=>c.kind==='ensure').every(c=>c.role==='generation'));
+  const progress=await fetch(base+'/summary-memory/progress?id='+require('node:crypto').randomUUID());
+  assert.equal(progress.status,200);
+  assert.deepEqual(await progress.json(),{stage:null});
   for(const asset of ['/diary-dates.js','/constellation.js'])assert.equal((await fetch(origin+asset)).status,200);
  }finally{await new Promise(r=>demo.close(r));await new Promise(r=>backend.close(r));await api.close();}
 });

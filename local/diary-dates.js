@@ -107,10 +107,14 @@ function timeForSchedule(text) {
   return [hours, minutes].map(value => String(value).padStart(2, '0')).join(':');
 }
 
-function scheduleForText(text, chosenDate, now = new Date()) {
+function dateForSchedule(text, chosenDate, now = new Date()) {
   const date = chosenDate || singleCalendarDay(text, now, true);
   if (!isDiaryDate(date)) throw new Error('일정 날짜를 하루로 적거나 날짜를 직접 선택해 주세요.');
-  return { date, time: timeForSchedule(text) };
+  return date;
+}
+
+function scheduleForText(text, chosenDate, now = new Date()) {
+  return { date: dateForSchedule(text, chosenDate, now), time: timeForSchedule(text) };
 }
 
 function storedDiaryDate(text) {
@@ -135,5 +139,5 @@ function dateForStoredMemory(text, savedAt) {
 }
 
 if (typeof module === 'object' && module.exports) {
-  module.exports = { DIARY_TIME_ZONE, seoulDate, isDiaryDate, dateForDiary, dateForDiaryQuestion, scheduleForText, storedDiaryDate, storedSchedule, dateForStoredMemory };
+  module.exports = { DIARY_TIME_ZONE, seoulDate, isDiaryDate, dateForDiary, dateForDiaryQuestion, dateForSchedule, timeForSchedule, scheduleForText, storedDiaryDate, storedSchedule, dateForStoredMemory };
 }

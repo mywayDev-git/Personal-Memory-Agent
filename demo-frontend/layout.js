@@ -184,9 +184,9 @@ function writeSelected() {
 
 function chooseMood(el) {
   document.querySelectorAll('.mood').forEach(b=>{
-    b.classList.remove('on');
+    b.classList.toggle('on', b===el);
+    b.setAttribute('aria-pressed', String(b===el));
   });
-  el.classList.add('on');
 }
 
 
@@ -296,6 +296,7 @@ function scenario(n) {
     `).join('');
 
   const details=document.getElementById('evidenceDetails');
+  details.hidden=false;
   details.open=false;
 
   requestAnimationFrame(scrollChatToBottom);
@@ -314,6 +315,7 @@ function newChat() {
   `;
 
   document.getElementById('evidences').innerHTML='';
+  document.getElementById('evidenceDetails').hidden=true;
   document.getElementById('evidenceDetails').open=false;
   document.getElementById('chatInput').value='';
 

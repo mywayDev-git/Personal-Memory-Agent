@@ -640,7 +640,28 @@ summary { cursor: pointer; color: var(--green); }
   border-top-left-radius: 4px;
 }
 
-.bubble p { margin: 12px 0 0; }
+.bubble p { margin: 12px 0 0; white-space: pre-line; }
+
+.chat-progress-time,
+.chat-progress-stage {
+  display: block;
+  color: #536359;
+  font-size: 12px;
+}
+
+.chat-progress-stage {
+  margin-top: 8px;
+}
+
+.chat-source {
+  display: block;
+  margin-top: 10px;
+  padding-top: 7px;
+  border-top: 1px solid var(--line);
+  color: #536359;
+  font-size: 11px;
+  line-height: 1.5;
+}
 
 @keyframes messageAppear {
   from { opacity: 0; transform: translateY(7px); }
@@ -1241,7 +1262,7 @@ footer {
 
       <div id="conversation"></div>
 
-      <details class="chat-evidence-details" id="evidenceDetails">
+      <details class="chat-evidence-details" id="evidenceDetails" hidden>
         <summary>
           ▤ 최근 답변의 요약 근거 보기
         </summary>
@@ -1266,7 +1287,7 @@ footer {
         <input
           id="chatInput"
           aria-label="일기, 일정 또는 기억 질문"
-          placeholder="일기나 일정을 남기거나 기억을 물어보세요."
+          placeholder="기억을 물어보거나 지금 기분을 이야기해 보세요."
           autocomplete="off"
         >
 
@@ -1313,19 +1334,19 @@ footer {
   <h3>지금의 마음</h3>
 
   <div class="moods" id="moods">
-    <button class="mood on" data-layout-event="29">
+    <button class="mood on" data-layout-event="29" data-mood="평온함" aria-pressed="true">
       <span>☘</span>평온함
     </button>
-    <button class="mood" data-layout-event="30">
+    <button class="mood" data-layout-event="30" data-mood="기쁨" aria-pressed="false">
       <span>☀</span>기쁨
     </button>
-    <button class="mood" data-layout-event="31">
+    <button class="mood" data-layout-event="31" data-mood="슬픔" aria-pressed="false">
       <span>☁</span>슬픔
     </button>
-    <button class="mood" data-layout-event="32">
+    <button class="mood" data-layout-event="32" data-mood="화남" aria-pressed="false">
       <span>♨</span>화남
     </button>
-    <button class="mood" data-layout-event="33">
+    <button class="mood" data-layout-event="33" data-mood="불안함" aria-pressed="false">
       <span>☂</span>불안함
     </button>
   </div>
@@ -1365,6 +1386,7 @@ footer {
   <p class="notice" id="demoSaveStatus" role="status">
     모델이 요약한 기록을 저장하면 사색 대화에서 질문할 수 있습니다.
   </p>
+  <button class="ghost" id="emotionCalendar" type="button" hidden>달력에서 보기</button>
 
 </div>
 </section>

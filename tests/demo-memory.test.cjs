@@ -4,7 +4,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const vm = require('node:vm');
-const { seoulDate, dateForDiary, dateForDiaryQuestion, dateForStoredMemory, scheduleForText } = require('../local/diary-dates.js');
+const { seoulDate, dateForDiary, dateForDiaryQuestion, dateForStoredMemory, dateForSchedule, timeForSchedule, scheduleForText } = require('../local/diary-dates.js');
 const { buildConstellation } = require('../demo-frontend/constellation.js');
 
 test('the diary date changes at midnight in Seoul, including year rollover', () => {
@@ -58,45 +58,177 @@ test('calendar scheduling resolves one day and a supplied time without defaultin
   assert.throws(() => scheduleForText('내일 18:60 회의', '', now), /시각/);
 });
 
-test('saving from home opens a dated confirmation and keeps the current page', async () => {
+async function demoFixture(handler, { status = () => ({ stage: null }), timing = {} } = {}) {
   const elements = new Map();
-  let modalShown = 0;
+  function element() {
+    return {
+      value: '', isConnected: true, children: [], dataset: {},
+      addEventListener() {}, focus() {}, remove() {}, setAttribute() {},
+      append(...children) { this.children.push(...children); },
+      before(node) { this.previous = node; node.remove = () => { if (this.previous === node) delete this.previous; }; },
+      after(node) { this.next = node; node.remove = () => { if (this.next === node) delete this.next; }; },
+    };
+  }
   const get = id => {
-    if (!elements.has(id)) elements.set(id, { value: '', addEventListener() {} });
+    if (!elements.has(id)) elements.set(id, element());
     return elements.get(id);
   };
   get('demoModel').add = () => { get('demoModel').value = 'qwen35-4b-q4'; };
-  get('homeSaved').showModal = () => { modalShown++; };
   const saved = [];
   const navigation = [];
   const context = {
-    document: { getElementById: get, querySelector: get },
+    document: { getElementById: get, querySelector: get, createElement: element, addEventListener() {} },
     Option: class {},
+    crypto: require('node:crypto').webcrypto,
+    AbortController, performance, setInterval, clearInterval, setTimeout, clearTimeout, ...timing,
     go: page => navigation.push(page),
-    dateForDiary, scheduleForText, records: [],
-    renderCalendar() {}, renderRecent() {}, runSearch() {}, renderConstellation() {},
+    dateForDiary, dateForSchedule, timeForSchedule, records: [], year: 2026, month: 10, selected: '2026-11-10',
+    renderCalendar() {}, renderRecent() {}, runSearch() {}, scrollChatToBottom() {},
     fetch: async (url, options) => ({ ok: true, json: async () => {
       if (url.endsWith('/bootstrap')) return {
         token: 'test-token', runtime: { models: [{ role: 'generation', present: true, id: 'qwen35-4b-q4' }], states: { generation: {} } },
       };
       if (url.endsWith('/save')) {
         saved.push(JSON.parse(options.body).text);
-        return { memory: { memory_key: 'memory-' + saved.length, mood: '기쁨' } };
+        return { memory: { memory_key: 'memory-' + saved.length } };
       }
+      if (url.includes('/summary-memory/progress?id=')) return status(url);
+      if (options) return handler(url, JSON.parse(options.body));
       return { memories: [] };
     } }),
   };
   vm.runInNewContext(fs.readFileSync(require.resolve('../demo-frontend/demo.js'), 'utf8'), context);
   await new Promise(resolve => setImmediate(resolve));
-  get('homeMode').value = 'diary';
-  get('homeDate').value = '2026-11-08';
-  get('homeSearch').value = '도서관에서 책을 읽었다.';
+  return { context, get, saved, navigation, last: () => get('conversation').children.at(-1).children[0] };
+}
+
+test('home records go through chat confirmation before saving', async () => {
+  const { context, get, saved, navigation, last } = await demoFixture(() => ({ intent: 'diary' }));
+  get('homeSearch').value = '2026-11-08 도서관에서 책을 읽었다.';
   await context.submitHome({ preventDefault() {} });
-  assert.equal(get('homeSavedMessage').textContent, '11월 8일 일기가 저장되었습니다.');
-  assert.equal(modalShown, 1);
-  assert.deepEqual(navigation, []);
+  assert.deepEqual(navigation, ['chat']);
+  assert.match(last().textContent, /일기로 기록할까요/);
+  assert.equal(saved.length, 0);
+  await context.handleChatInput('네');
   assert.match(saved[0], /기록일: 2026-11-08/);
-  assert.equal(context.records[0].mood, '기쁨');
+});
+
+for (const choice of ['네', '기록 없이 답변']) {
+  test('emotion support waits for the record choice: ' + choice, async () => {
+    const body = '오늘은 과제가 많아서 힘들었다';
+    let answers = 0;
+    const { context, saved, last } = await demoFixture((url, data) => {
+      if (url.endsWith('/intent')) return { intent: 'emotion' };
+      answers++;
+      assert.equal(data.query, body);
+      assert.equal(data.emotion_support, true);
+      assert.equal(saved.length, choice === '네' ? 1 : 0);
+      assert.equal(data.exclude_memory_key, choice === '네' ? 'memory-1' : undefined);
+      return { answer: { answer: '과제가 많아서 힘들었겠어요.\n잠깐 쉬어가는 건 어때요?', citations: [] } };
+    });
+    await context.handleChatInput(body);
+    assert.match(last().textContent, /일기로 기록할까요/);
+    assert.deepEqual(last().next.children.map(button => button.textContent), ['기록하기', '기록 없이 답변']);
+    assert.equal(answers, 0);
+    assert.equal(saved.length, 0);
+    await context.handleChatInput(choice);
+    assert.equal(answers, 1);
+    assert.match(last().textContent, /힘들었겠어요/);
+    assert.equal(last().next.textContent, '현재 이야기 바탕 · 참고 기록 없음');
+  });
+}
+
+test('a clarification retains the original question and shows only its answer citation', async () => {
+  const { context, last } = await demoFixture((url, data) => {
+    if (url.endsWith('/intent')) return { intent: 'question' };
+    if (data.query === '그거 언제였지?') return { answer: { action: 'clarify', answer: '어떤 일정을 말씀하시나요?' } };
+    assert.equal(data.query, '그거 언제였지?\n추가 설명: 팀 회의');
+    return { answer: { answer: '11월 12일이에요.', citations: [{ diary_date: '2026-11-12', quote: '팀 회의는 11월 12일이다.' }] } };
+  });
+  await context.handleChatInput('그거 언제였지?');
+  const clarification = last();
+  assert.equal(clarification.textContent, '어떤 일정을 말씀하시나요?');
+  await context.handleChatInput('팀 회의');
+  assert.equal(clarification.next, undefined);
+  assert.equal(last().next.textContent, '참고한 기록 · 2026-11-12 “팀 회의는 11월 12일이다.”');
+});
+
+test('chat progress shows elapsed seconds and the live phase until the answer replaces it', async () => {
+  let elapsed = 0, tick, poll, timerStopped = false, requestedId;
+  let resolveAnswer;
+  const waiting = new Promise(resolve => { resolveAnswer = resolve; });
+  const { context, last } = await demoFixture((url, data) => {
+    assert.ok(url.endsWith('/search'));
+    requestedId = data.progress_id;
+    return waiting;
+  }, {
+    status: url => ({ stage: url.endsWith(requestedId) ? 'retrieving' : null }),
+    timing: {
+      performance: { now: () => elapsed },
+      setInterval(callback) { tick = callback; return 1; },
+      clearInterval() { timerStopped = true; },
+      setTimeout(callback) { poll = callback; return 2; },
+      clearTimeout() {},
+    },
+  });
+  const response = context.handleChatInput('어제 뭐 했어?', 'question');
+  await new Promise(resolve => setImmediate(resolve));
+  await poll();
+  const reply = last();
+  assert.equal(reply.hidden, true);
+  assert.equal(reply.next.textContent, '과거 기억을 탐색하는 중…');
+  elapsed = 2300;
+  tick();
+  assert.equal(reply.previous.textContent, '2초째 생각 중');
+  resolveAnswer({ answer: { answer: '산책했어요.', citations: [{ quote: '운동장을 산책했다.' }] } });
+  await response;
+  assert.equal(reply.hidden, false);
+  assert.equal(reply.previous, undefined);
+  assert.equal(reply.next.textContent, '참고한 기록 · “운동장을 산책했다.”');
+  assert.equal(timerStopped, true);
+});
+
+test('an ambiguous record waits for the user to explain what to save', async () => {
+  const { context, last, saved } = await demoFixture((url, data) => {
+    if (!data.follow_up) return { intent: 'unclear', clarification: '민수에 대한 기억을 찾을까요, 기록을 남길까요?' };
+    assert.equal(data.text, '민수');
+    assert.equal(data.follow_up, '민수와 점심을 먹었다는 일기를 남겨 줘');
+    return { intent: 'diary' };
+  });
+  await context.handleChatInput('민수');
+  assert.match(last().textContent, /기억을 찾을까요/);
+  await context.handleChatInput('민수와 점심을 먹었다는 일기를 남겨 줘');
+  assert.match(last().textContent, /일기로 기록할까요/);
+  assert.equal(saved.length, 0);
+});
+
+test('a schedule asks for missing date and ambiguous time before confirmation', async () => {
+  const { context, saved, last } = await demoFixture(() => ({ intent: 'schedule', title: '팀 회의' }));
+  await context.handleChatInput('3시에 팀 회의 일정 잡아줘');
+  assert.match(last().textContent, /어느 날짜/);
+  await context.handleChatInput('2026-11-12');
+  assert.match(last().textContent, /몇 시에/);
+  await context.handleChatInput('오후 3시');
+  assert.match(last().textContent, /2026-11-12 15:00/);
+  assert.equal(saved.length, 0);
+  await context.handleChatInput('네');
+  assert.match(saved[0], /일정 시각: 15:00/);
+});
+
+test('emotion harvest saves the selected date and mood and opens that calendar day', async () => {
+  const { context, get, saved, navigation } = await demoFixture();
+  get('recordBody').value = '운동장을 산책하니 마음이 편해졌다.';
+  get('recordTitle').value = '운동장 산책';
+  get('recordTags').value = '산책';
+  get('recordDate').value = '2026-11-08';
+  get('.mood.on').dataset.mood = '슬픔';
+  await context.addRecord();
+  assert.match(saved[0], /기록일: 2026-11-08\n감정: 슬픔\n태그: 산책/);
+  assert.equal(context.records[0].type, '감정');
+  assert.equal(get('emotionCalendar').hidden, false);
+  get('emotionCalendar').onclick();
+  assert.equal(context.selected, '2026-11-08');
+  assert.deepEqual(navigation, ['archive']);
 });
 
 test('constellation links stored records and only source-grounded labels', () => {

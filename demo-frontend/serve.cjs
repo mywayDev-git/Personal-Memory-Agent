@@ -17,6 +17,7 @@ const api = new Map([
   ['/api/baseline/summary-memory/search', 'POST'],
 ]);
 const originalRecord = /^\/api\/baseline\/summary-memory\/original\?key=[a-f0-9]{64}$/;
+const searchProgress = /^\/api\/baseline\/summary-memory\/progress\?id=[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/;
 
 function errorResponse(response, status, message) {
   if (response.headersSent) {
@@ -48,7 +49,7 @@ function createDemoServer(backendPort = 4319) {
       stream.pipe(response);
       return;
     }
-    const allowedMethod = api.get(request.url) || (originalRecord.test(request.url) ? 'GET' : null);
+    const allowedMethod = api.get(request.url) || (originalRecord.test(request.url) || searchProgress.test(request.url) ? 'GET' : null);
     if (allowedMethod !== request.method) {
       errorResponse(response, 404, '시연에서 사용할 수 없는 경로입니다.');
       return;
