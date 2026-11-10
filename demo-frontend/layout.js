@@ -218,74 +218,7 @@ function chooseMood(el) {
 
 
 
-/* ========== CHAT SCENARIOS ========== */
-
-const scenarios = [
-
-  [
-    '민수와 부산에 간 적 있어?',
-    '예시 기록에서는 2025년 7월에 민수와 부산에 다녀온 내용이 확인됩니다.',
-    [
-      '2025.07.20 · 민수와 부산으로 여행을 다녀왔다.',
-      '2025.07.21 · 부산에서 민수와 함께 식사했다.'
-    ]
-  ],
-
-  [
-    '그때 무슨 일이 있었지?',
-    '어느 시점인지 명확하지 않습니다. 부산 여행이나 팀 회의 중 무엇을 말씀하시나요?',
-    [
-      '후보 A · 부산 여행',
-      '후보 B · 팀 프로젝트 회의'
-    ]
-  ],
-
-  [
-    '민수와 부산도 가고 제주에도 갔어?',
-    '부산 여행 기록은 있지만 제주에도 함께 갔다는 정보는 확인되지 않습니다.',
-    [
-      '확인된 기록 · 부산 여행',
-      '미확인 정보 · 제주 동행'
-    ]
-  ],
-
-  [
-    '회의는 금요일이었어?',
-    '회의 날짜에 관한 기록이 충돌하여 확정하기 어렵습니다.',
-    [
-      '기록 A · 금요일에 회의하기로 계획했다.',
-      '기록 B · 토요일로 일정이 변경되었다.'
-    ]
-  ],
-
-  [
-    '부산 여행을 다녀왔어?',
-    '여러 기록에서 같은 내용이 확인됩니다. 다만 반복 기록과 독립적인 사실 검증은 구분합니다.',
-    [
-      '여행 일기 · 민수와 부산에 다녀왔다.',
-      '여행 회고 · 민수와 부산을 여행했다.'
-    ]
-  ],
-
-  [
-    '민수를 만났던 날은?',
-    '민수와 만난 날짜가 여러 번 기록되어 있습니다.',
-    [
-      '2025.05.14 · 카페에서 만남',
-      '2025.07.20 · 부산 여행',
-      '2025.09.03 · 학교에서 대화'
-    ]
-  ],
-
-  [
-    '기분이 안 좋았던 날을 찾아줘.',
-    '화가 났거나 속상했던 날이 의미상 관련된 기록 후보로 표시됩니다.',
-    [
-      '팀원과 말다툼이 생겨 화가 났다.',
-      '기대했던 일이 취소되어 속상했다.'
-    ]
-  ]
-];
+/* ========== CHAT ========== */
 
 /* 채팅 내부 자동 스크롤 */
 function scrollChatToBottom() {
@@ -294,55 +227,6 @@ function scrollChatToBottom() {
 
   chat.scrollTop=chat.scrollHeight;
 }
-
-/* 시나리오 변경 */
-function scenario(n) {
-  document.dispatchEvent(new Event('pma-chat-reset'));
-
-  const s=scenarios[n];
-
-  document.getElementById('conversation').innerHTML=`
-    <div class="bubble user">
-      ${safe(s[0])}
-    </div>
-
-    <div class="bubble bot">
-      <span class="tag">AI 답변 예시</span>
-      <p>${safe(s[1])}</p>
-    </div>
-  `;
-
-  document.getElementById('evidences').innerHTML=
-    s[2].map(t=>`
-      <div class="evidence">${safe(t)}</div>
-    `).join('');
-
-  const details=document.getElementById('evidenceDetails');
-  details.hidden=false;
-  details.open=false;
-
-  requestAnimationFrame(scrollChatToBottom);
-}
-
-/* 새 대화 화면 */
-function newChat() {
-  document.dispatchEvent(new Event('pma-chat-reset'));
-  document.getElementById('conversation').innerHTML=`
-    <div class="bubble bot">
-      안녕하세요. 오늘의 일기나 일정을 남기거나 지난 기억을 물어보세요.
-    </div>
-  `;
-
-  document.getElementById('evidences').innerHTML='';
-  document.getElementById('evidenceDetails').hidden=true;
-  document.getElementById('evidenceDetails').open=false;
-  document.getElementById('chatInput').value='';
-
-  requestAnimationFrame(scrollChatToBottom);
-}
-
-/* 메시지 보내기 */
-
 
 /* 새 메시지나 근거 변경 시 스크롤 */
 const chatObserver=new MutationObserver(()=>{
@@ -355,12 +239,6 @@ chatObserver.observe(
     childList:true
   }
 );
-
-/* 근거 패널을 열었을 때 */
-document.getElementById('evidenceDetails')
-  .addEventListener('toggle',()=>{
-    requestAnimationFrame(scrollChatToBottom);
-  });
 
 /* ========== SEARCH ========== */
 
@@ -483,7 +361,6 @@ document.getElementById('chatInput')
 
 /* ========== INITIALIZE ========== */
 
-newChat();
 renderCalendar();
 renderRecent();
 runSearch();
@@ -503,14 +380,6 @@ document.querySelector('[data-layout-event="12"]').addEventListener('click', fun
 document.querySelector('[data-layout-event="13"]').addEventListener('click', function(event) { go('emotion') });
 document.querySelector('[data-layout-event="14"]').addEventListener('click', function(event) { go('archive') });
 document.querySelector('[data-layout-event="15"]').addEventListener('click', function(event) { go('chat') });
-document.querySelector('[data-layout-event="16"]').addEventListener('click', function(event) { newChat() });
-document.querySelector('[data-layout-event="17"]').addEventListener('click', function(event) { scenario(0) });
-document.querySelector('[data-layout-event="18"]').addEventListener('click', function(event) { scenario(6) });
-document.querySelector('[data-layout-event="19"]').addEventListener('click', function(event) { scenario(4) });
-document.querySelector('[data-layout-event="21"]').addEventListener('click', function(event) { scenario(1) });
-document.querySelector('[data-layout-event="22"]').addEventListener('click', function(event) { scenario(2) });
-document.querySelector('[data-layout-event="23"]').addEventListener('click', function(event) { scenario(3) });
-document.querySelector('[data-layout-event="25"]').addEventListener('click', function(event) { scenario(5) });
 document.querySelector('[data-layout-event="27"]').addEventListener('click', function(event) { alert('파일 첨부는 현재 UI 시연용입니다.') });
 document.querySelector('[data-layout-event="28"]').addEventListener('click', function(event) { sendChat() });
 document.querySelector('[data-layout-event="29"]').addEventListener('click', function(event) { chooseMood(this) });

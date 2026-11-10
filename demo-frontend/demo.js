@@ -11,6 +11,11 @@ const homeSubmit = document.getElementById('homeSubmit');
 const homeStatus = document.getElementById('homeStatus');
 const archiveStatus = document.getElementById('archiveStatus');
 const chatInput = document.getElementById('chatInput');
+const conversation = document.getElementById('conversation');
+const historyList = document.getElementById('chatHistory');
+const newChatButton = document.getElementById('newChat');
+const messageActions = new WeakMap();
+const chatHistoryState = { threads: [], activeId: null };
 let demoBusy = false;
 let pendingRecord = null;
 let pendingClarification = null;
@@ -29,6 +34,8 @@ function updateDemoControls() {
   saveButton.disabled = disabled;
   sendButton.disabled = disabled;
   homeSubmit.disabled = disabled;
+  newChatButton.disabled = demoBusy;
+  for (const button of historyList.querySelectorAll('button')) button.disabled = demoBusy;
   for (const button of pendingRecord?.actions.children || []) button.disabled = disabled;
   for (const button of document.querySelectorAll('.chat-save-memory')) button.disabled = disabled;
 }
@@ -73,7 +80,7 @@ async function loadDemoModels() {
     } else if (models.some(model => model.id === 'qwen35-2b-q4')) {
       modelPicker.value = 'qwen35-2b-q4';
     }
-    chatStatus.textContent = '일기나 일정을 남기거나, 기억과 지금 기분을 이야기해 보세요.';
+    showChatPrompt();
     homeStatus.textContent = '시작하기를 누르면 사색 대화에서 이어집니다. 새 일기나 일정은 확인한 뒤 저장합니다.';
   } catch (error) {
     chatStatus.textContent = error.message;
@@ -204,13 +211,97 @@ async function addRecord() {
   });
 }
 
+function renderChatHistory() {
+  historyList.replaceChildren();
+  if (!chatHistoryState.threads.length) {
+    const empty = document.createElement('p');
+    empty.className = 'sidebar-label';
+    empty.textContent = '아직 나눈 대화가 없어요.';
+    historyList.append(empty);
+    return;
+  }
+  for (const thread of chatHistoryState.threads) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.textContent = thread.title;
+    button.title = thread.title;
+    button.disabled = demoBusy;
+    if (thread.id === chatHistoryState.activeId) button.setAttribute('aria-current', 'true');
+    button.addEventListener('click', () => {
+      if (!demoBusy && thread.id !== chatHistoryState.activeId) {
+        rememberChat();
+        openChat(thread);
+        chatInput.focus();
+      }
+    });
+    historyList.append(button);
+  }
+}
+
+function rememberChat() {
+  const thread = chatHistoryState.threads.find(item => item.id === chatHistoryState.activeId);
+  if (thread) {
+    thread.messages = [...conversation.children].flatMap(bubble => {
+      const paragraph = bubble.firstElementChild;
+      if (!paragraph.textContent) return [];
+      return [{
+        kind: bubble.classList.contains('user') ? 'user' : 'bot',
+        text: paragraph.textContent,
+        notes: [...bubble.querySelectorAll('.chat-source')].map(note => note.textContent),
+        action: messageActions.get(paragraph),
+      }];
+    });
+    thread.clarification = pendingClarification;
+    thread.input = chatInput.value;
+  }
+}
+
+function openChat(thread) {
+  chatHistoryState.activeId = thread?.id ?? null;
+  pendingRecord = null;
+  pendingClarification = thread?.clarification ?? null;
+  conversation.replaceChildren();
+  for (const message of thread?.messages ?? []) {
+    const paragraph = renderChatBubble(message.kind === 'user' ? 'user' : 'bot', message.text);
+    renderChatSources(paragraph, message.notes ?? []);
+    const action = message.action;
+    if (action?.type === 'confirm') addRecordConfirmation(paragraph, action.record, true);
+    if (action?.type === 'emotion') offerEmotionSave(paragraph, action.record);
+    if (action?.type === 'calendar') offerCalendarLink(paragraph, action.date, action.notice);
+  }
+  chatInput.value = thread?.input ?? '';
+  showChatPrompt();
+  renderChatHistory();
+  updateDemoControls();
+  requestAnimationFrame(scrollChatToBottom);
+}
+
+function showChatPrompt() {
+  chatStatus.textContent = pendingRecord ? '저장 여부를 확인해 주세요.'
+    : pendingClarification ? '추가 답변을 기다리고 있어요.'
+    : '일기나 일정을 남기거나, 기억과 지금 기분을 이야기해 보세요.';
+}
+
 function addBubble(kind, text) {
+  if (kind === 'user') {
+    const index = chatHistoryState.threads.findIndex(thread => thread.id === chatHistoryState.activeId);
+    const thread = index === -1
+      ? { id: crypto.randomUUID(), title: text.replace(/\s+/g, ' ').trim(), messages: [] }
+      : chatHistoryState.threads.splice(index, 1)[0];
+    chatHistoryState.threads.unshift(thread);
+    chatHistoryState.activeId = thread.id;
+    renderChatHistory();
+  }
+  return renderChatBubble(kind, text);
+}
+
+function renderChatBubble(kind, text) {
   const bubble = document.createElement('div');
   bubble.className = 'bubble ' + kind;
   const paragraph = document.createElement('p');
   paragraph.textContent = text;
   bubble.append(paragraph);
-  document.getElementById('conversation').append(bubble);
+  conversation.append(bubble);
   return paragraph;
 }
 
@@ -284,10 +375,16 @@ function showRecordInCalendar(date) {
   go('archive');
 }
 
-function offerCalendarLink(reply, date) {
+function offerCalendarLink(reply, date, notice) {
   const actions = document.createElement('div');
   actions.className = 'chat-record-actions';
+  if (notice) {
+    const status = document.createElement('small');
+    status.textContent = notice;
+    actions.append(status);
+  }
   reply.after(actions);
+  messageActions.set(reply, { type: 'calendar', date, notice });
   addChatAction(actions, '달력에서 보기', 'ghost', () => showRecordInCalendar(date));
 }
 
@@ -303,8 +400,14 @@ function confirmRecord(draft, approved, userReply) {
     if (approved) {
       const reply = addBubble('bot', '기록을 요약하고 검색을 준비하는 중입니다…');
       chatStatus.textContent = '기록 저장 중…';
+      let alreadySaved = false;
       try {
-        await persistDemoRecord(draft.record);
+        if (draft.restored) {
+          const latest = await restoreArchive();
+          if (!latest) throw new Error('기존 기록을 확인하지 못했어요.');
+          alreadySaved = Boolean(findSameRecord(latest, draft.record));
+        }
+        if (!alreadySaved) await persistDemoRecord(draft.record);
       } catch (error) {
         if (!reply.isConnected) return;
         reply.textContent = '저장 실패: ' + error.message + ' 기록하기를 눌러 다시 시도할 수 있어요.';
@@ -312,7 +415,9 @@ function confirmRecord(draft, approved, userReply) {
         return;
       }
       if (!reply.isConnected) return;
-      reply.textContent = '저장했어요. ' + recordDescription(draft.record) + ' 기록은 달력에서 볼 수 있어요.';
+      reply.textContent = alreadySaved
+        ? '같은 내용이 이미 저장돼 있어요. 달력에서 볼 수 있어요.'
+        : '저장했어요. ' + recordDescription(draft.record) + ' 기록은 달력에서 볼 수 있어요.';
       offerCalendarLink(reply, draft.record.date);
       chatStatus.textContent = '저장 완료';
     } else {
@@ -321,6 +426,7 @@ function confirmRecord(draft, approved, userReply) {
     }
     if (pendingRecord === draft) pendingRecord = null;
     draft.actions.remove();
+    messageActions.delete(draft.reply);
     chatInput.focus();
     scrollChatToBottom();
   });
@@ -356,15 +462,20 @@ async function offerRecord(reply, record) {
     ? dateLabel + ' 기록에 같은 내용은 없어요.'
     : dateLabel + '에 저장된 기록을 찾지 못했어요.';
   reply.textContent = previous + ' 이 내용을 ' + recordAs + ' 기록할까요?' + (record.schedule ? ' (' + description + ')' : '');
+  addRecordConfirmation(reply, record);
+  chatStatus.textContent = '저장 여부를 확인해 주세요.';
+}
+
+function addRecordConfirmation(reply, record, restored = false) {
   const actions = document.createElement('div');
   actions.className = 'chat-record-actions';
   reply.after(actions);
-  const draft = { record, actions };
+  messageActions.set(reply, { type: 'confirm', record });
+  const draft = { record, actions, reply, restored };
   pendingRecord = draft;
   addChatAction(actions, '기록하기', 'primary', () => confirmRecord(draft, true, '네, 기록해 주세요.'));
   addChatAction(actions, '취소', 'ghost', () => confirmRecord(draft, false, '아니요, 기록하지 않을게요.'));
   updateDemoControls();
-  chatStatus.textContent = '저장 여부를 확인해 주세요.';
 }
 
 function askForClarification(reply, question, state) {
@@ -410,10 +521,10 @@ function handleChatInput(body, knownIntent) {
   }
 
   const clarification = pendingClarification;
-  pendingClarification = null;
   const submittedAt = new Date();
   return withDemoRequest(async () => {
     const userMessage = addBubble('user', body);
+    pendingClarification = null;
     const reply = addBubble('bot', '');
     const progress = startChatProgress(reply, '입력 내용을 확인하는 중…');
     chatStatus.textContent = '입력 목적을 확인하고 있어요.';
@@ -442,6 +553,7 @@ function handleChatInput(body, knownIntent) {
         await offerRecord(reply, { date, title: '일기', body: text, mood: '미지정', type: '일기' });
       } else if (classified.intent === 'emotion') {
         await replyToEmotion(text, submittedAt, userMessage, reply, progress);
+
       } else {
         const kind = classified.clarification_kind === 'question' ? 'question' : 'intent';
         if (!classified.clarification) throw new Error('로컬 모델의 확인 질문을 받지 못했어요.');
@@ -472,6 +584,7 @@ function offerEmotionSave(userMessage, record) {
   const actions = document.createElement('div');
   actions.className = 'chat-record-actions';
   userMessage.after(actions);
+  messageActions.set(userMessage, { type: 'emotion', record });
   const save = addChatAction(actions, '이 내용 저장', 'ghost chat-save-memory', () => {
     if (!save.isConnected || demoBusy || !modelPicker.value) return;
     return withDemoRequest(async () => {
@@ -482,12 +595,10 @@ function offerEmotionSave(userMessage, record) {
         const existing = findSameRecord(restored, record);
         if (!existing) await persistDemoRecord(record);
         if (!userMessage.isConnected) return;
-        actions.replaceChildren();
-        const status = document.createElement('small');
-        status.textContent = existing ? '이미 저장된 기록이에요.' : '일기로 저장했어요.';
-        actions.append(status);
-        addChatAction(actions, '달력에서 보기', 'ghost', () => showRecordInCalendar(record.date));
-        chatStatus.textContent = status.textContent;
+        actions.remove();
+        const notice = existing ? '이미 저장된 기록이에요.' : '일기로 저장했어요.';
+        offerCalendarLink(userMessage, record.date, notice);
+        chatStatus.textContent = notice;
       } catch (error) {
         if (userMessage.isConnected) chatStatus.textContent = '저장 실패: ' + error.message;
       }
@@ -517,7 +628,6 @@ async function answerInChat(query, reply, progress, emotion = false, excludeMemo
   const progressId = crypto.randomUUID();
   progress.setStage('기억 검색을 요청하는 중…');
   progress.watch(progressId);
-  document.getElementById('evidenceDetails').hidden = true;
   const { answer, diary_date } = await demoRequest('search', {
     query, answer: true, use_diary_dates: true, emotion_support: emotion, exclude_memory_key: excludeMemoryKey, progress_id: progressId,
   }).finally(() => progress.stop());
@@ -543,25 +653,36 @@ async function answerInChat(query, reply, progress, emotion = false, excludeMemo
   if (answer?.examined_record) {
     notes.push('함께 검토한 기록 · ' + snippet(answer.examined_record));
   }
-  reply.after(...notes.map(text => {
-    const note = document.createElement('small');
-    note.className = 'chat-source';
-    note.textContent = text;
-    return note;
-  }));
+  renderChatSources(reply, notes);
   chatStatus.textContent = citationErrors.length
     ? '인용 검사를 통과하지 못했습니다. 요약 근거를 확인해 주세요.'
     : diary_date ? diary_date + ' 기록 기준 · 답변 완료' : '답변 완료';
   return answer;
 }
 
-const homeForm = document.getElementById('homeMemoryForm');
-document.addEventListener('pma-chat-reset', () => {
-  activeChatProgress?.stop();
-  pendingRecord = null;
-  pendingClarification = null;
-  chatStatus.textContent = '일기나 일정을 남기거나, 기억과 지금 기분을 이야기해 보세요.';
+function renderChatSources(reply, notes) {
+  reply.after(...notes.map(text => {
+    const note = document.createElement('small');
+    note.className = 'chat-source';
+    note.textContent = text;
+    return note;
+  }));
+}
+
+newChatButton.addEventListener('click', () => {
+  if (demoBusy) return;
+  rememberChat();
+  openChat();
+  chatInput.focus();
 });
+try {
+  localStorage.removeItem('pma-demo-chat-history-v1');
+} catch {
+  // The conversation still starts empty when browser storage is unavailable.
+}
+openChat();
+
+const homeForm = document.getElementById('homeMemoryForm');
 homeForm.addEventListener('submit', submitHome);
 homeInput.addEventListener('keydown', event => {
   if (event.key !== 'Enter' || event.shiftKey || event.isComposing) return;

@@ -379,10 +379,15 @@ summary{cursor:pointer;color:var(--green)}
   color:#9ba99d;
   font-size:11px;
 }
-.chat-sidebar>button{
-  display:flex;
-  align-items:center;
-  gap:10px;
+.chat-history{
+  overflow:auto;
+  max-height:480px;
+}
+.chat-history button{
+  display:block;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
   width:100%;
   text-align:left;
   border:0;
@@ -392,14 +397,14 @@ summary{cursor:pointer;color:var(--green)}
   color:#718174;
   font-size:12px;
 }
-.chat-sidebar>button:hover{
+.chat-history button:hover,
+.chat-history button[aria-current="true"]{
   background:white;
   color:var(--green);
 }
-.sidebar-icon{
-  font-size:17px;
-  color:#75927b;
-}
+.chat-history button:disabled,
+.new-chat-btn:disabled{cursor:wait;opacity:.65}
+.chat-history .sidebar-label{margin-top:6px}
 .sidebar-bottom{
   margin-top:auto;
   padding:20px 9px 4px;
@@ -511,23 +516,6 @@ summary{cursor:pointer;color:var(--green)}
   border-top-left-radius:4px;
 }
 .bubble p{margin:12px 0 0;white-space:pre-line}
-.chat-evidence-details{
-  background:#fafbf8;
-  border:1px solid var(--line);
-  border-radius:12px;
-  padding:15px 17px;
-  margin-top:25px;
-}
-.chat-evidence-details summary{font-size:12px}
-.evidence{
-  border-left:3px solid #94b29a;
-  background:#f1f5ef;
-  padding:15px;
-  margin:12px 0;
-  border-radius:0 9px 9px 0;
-  font-size:12px;
-  line-height:1.8;
-}
 .chat-input-area{
   flex:0 0 auto;
   background:white;
@@ -775,7 +763,12 @@ footer{
     transform:none;
   }
   .chat-layout{grid-template-columns:1fr}
-  .chat-sidebar{display:none}
+  .chat-sidebar{padding:8px 13px}
+  .sidebar-heading{padding:4px 0 8px}
+  .sidebar-heading .eyebrow,.sidebar-bottom{display:none}
+  .new-chat-btn{margin-top:0}
+  .sidebar-label{margin:8px 10px}
+  .chat-history{max-height:118px}
   .chat-main{
     height:min(760px,80dvh);
     min-height:390px;
@@ -833,17 +826,6 @@ footer{
   border:1px solid var(--line);
   border-radius:6px;
   padding:2px 5px;
-  background:white;
-  color:var(--green);
-}
-.sidebar-examples{margin:5px 0 12px}
-.sidebar-examples summary{font-size:12px}
-.sidebar-examples button{
-  display:block;
-  margin-top:6px;
-  padding:5px 9px;
-  border:1px solid var(--line);
-  border-radius:8px;
   background:white;
   color:var(--green);
 }
@@ -1072,32 +1054,13 @@ footer{
     <aside class="chat-sidebar">
       <div class="sidebar-heading">
         <span class="eyebrow">MY CONVERSATIONS</span>
-        <button class="new-chat-btn" data-layout-event="16">
+        <button class="new-chat-btn" id="newChat" type="button">
           + 새 대화
         </button>
       </div>
 
-      <p class="sidebar-label">대화 예시</p>
-      <button data-layout-event="17">
-        <span class="sidebar-icon">✧</span>
-        부산 여행 기록 확인
-      </button>
-      <button data-layout-event="18">
-        <span class="sidebar-icon">☘</span>
-        지난 감정 돌아보기
-      </button>
-      <button data-layout-event="19">
-        <span class="sidebar-icon">▤</span>
-        기록 교차 확인
-      </button>
-
-      <details class="sidebar-examples">
-        <summary>다른 예시 보기</summary>
-        <button data-layout-event="21">모호한 질문</button>
-        <button data-layout-event="22">일부 근거</button>
-        <button data-layout-event="23">근거 충돌</button>
-        <button data-layout-event="25">서로 다른 사건</button>
-      </details>
+      <p class="sidebar-label" id="chatHistoryLabel">대화 기록</p>
+      <div id="chatHistory" class="chat-history" role="group" aria-labelledby="chatHistoryLabel"></div>
 
       <div class="sidebar-bottom">
         <span>Plant Thought</span>
@@ -1124,15 +1087,10 @@ footer{
           <span>기억을 바탕으로 나누는 대화</span>
         </div>
 
+        <div class="bubble bot">
+          안녕하세요. 오늘의 일기나 일정을 남기거나 지난 기억을 물어보세요.
+        </div>
         <div id="conversation"></div>
-
-        <details class="chat-evidence-details"
-          id="evidenceDetails" hidden>
-          <summary>
-            ▤ 예시 답변의 근거 보기
-          </summary>
-          <div id="evidences"></div>
-        </details>
       </div>
 
       <div class="chat-input-area">
