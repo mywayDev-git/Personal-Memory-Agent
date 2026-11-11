@@ -59,6 +59,7 @@ async function demoRequest(path, payload) {
       'X-Memory-Lab-Token': boot.token,
     },
     body: JSON.stringify({
+      ...(['intent', 'search'].includes(path) ? { conversation: currentConversation() } : {}),
       ...payload,
       config: { model: modelPicker.value, route: 'M1', top_k: 3 },
     }),
@@ -140,6 +141,7 @@ async function persistDemoRecord({ date, title, body, mood, tags, type, schedule
     if (!memory?.memory_key) throw new Error('저장한 기록을 확인하지 못했습니다.');
     addArchiveRecord({ date, title, body, mood, tags, type }, memory);
     refreshRecords();
+    return memory;
   } finally {
     stopTimer();
     elapsed.remove();
@@ -267,6 +269,28 @@ function rememberChat() {
   }
 }
 
+function currentConversation() {
+  const thread = chatHistoryState.threads.find(item => item.id === chatHistoryState.activeId);
+  const messages = (thread?.context || []).map(message => ({ ...message }));
+  if (thread?.unansweredQuestion) messages.push({ role: 'user', text: thread.unansweredQuestion });
+  return messages.slice(-6);
+}
+
+function rememberCompletedTurn(question, answer) {
+  const thread = chatHistoryState.threads.find(item => item.id === chatHistoryState.activeId);
+  if (!thread || !question?.trim() || !answer?.trim()) return;
+  delete thread.unansweredQuestion;
+  // Keep only completed turns in the active, in-memory chat. Refresh clears them.
+  // Omit a long turn rather than silently changing its meaning by truncation.
+  if (question.length > 1200 || answer.length > 1200) {
+    thread.context = [];
+    return;
+  }
+  thread.context = [...(thread.context || []),
+    { role: 'user', text: question }, { role: 'assistant', text: answer },
+  ].slice(-6);
+}
+
 function openChat(thread) {
   chatHistoryState.activeId = thread?.id ?? null;
   pendingRecord = null;
@@ -297,7 +321,7 @@ function addBubble(kind, text) {
   if (kind === 'user') {
     const index = chatHistoryState.threads.findIndex(thread => thread.id === chatHistoryState.activeId);
     const thread = index === -1
-      ? { id: crypto.randomUUID(), title: text.replace(/\s+/g, ' ').trim(), messages: [] }
+      ? { id: crypto.randomUUID(), title: text.replace(/\s+/g, ' ').trim(), messages: [], context: [] }
       : chatHistoryState.threads.splice(index, 1)[0];
     chatHistoryState.threads.unshift(thread);
     chatHistoryState.activeId = thread.id;
@@ -423,13 +447,14 @@ function confirmRecord(draft, approved, userReply) {
       const reply = addBubble('bot', draft.restored ? '기존 기록을 확인하는 중…' : '');
       chatStatus.textContent = '기록 저장 중…';
       let alreadySaved = false;
+      let savedMemory;
       try {
         if (draft.restored) {
           const latest = await restoreArchive();
           if (!latest) throw new Error('기존 기록을 확인하지 못했어요.');
           alreadySaved = Boolean(findSameRecord(latest, draft.record));
         }
-        if (!alreadySaved) await persistDemoRecord(draft.record, reply);
+        if (!alreadySaved) savedMemory = await persistDemoRecord(draft.record, reply);
       } catch (error) {
         if (!reply.isConnected) return;
         reply.textContent = '저장 실패: ' + error.message + ' 기록하기를 눌러 다시 시도할 수 있어요.';
@@ -441,9 +466,14 @@ function confirmRecord(draft, approved, userReply) {
         ? '같은 내용이 이미 저장돼 있어요. 달력에서 볼 수 있어요.'
         : '저장했어요. ' + recordDescription(draft.record) + ' 기록은 달력에서 볼 수 있어요.';
       offerCalendarLink(reply, draft.record.date);
+      if (savedMemory?.summary_review?.status === 'SOURCE_PRESERVED') {
+        renderChatSources(reply, ['내용이 바뀌지 않도록 일부 구간은 원문 그대로 보관했어요.']);
+      }
+      rememberCompletedTurn(userReply, reply.textContent);
       chatStatus.textContent = '저장 완료';
     } else {
       addBubble('bot', '기록을 취소했어요.');
+      rememberCompletedTurn(userReply, '기록을 취소했어요.');
       chatStatus.textContent = '저장 취소';
     }
     if (pendingRecord === draft) pendingRecord = null;
@@ -527,6 +557,13 @@ async function offerSchedule(reply, draft, followUp, answer) {
   await offerRecord(reply, { date: draft.date, title: draft.title, body, mood: '미지정', type: '일정', schedule: { date: draft.date, time } });
 }
 
+function scheduleDetailOnly(body) {
+  const remainder = body.trim().replace(/\d{4}[-./]\d{1,2}[-./]\d{1,2}|(?:\d{4}\s*년\s*)?(?:\d{1,2}\s*월\s*)?\d{1,2}\s*일(?:에는|은|에)?|(?:지난|이번|다음)\s*(?:주|달)|[월화수목금토일]요일|내일모레|내일|모레|오늘/gu, '')
+    .replace(/(?:오전|오후|아침|저녁|밤|새벽)?\s*(?:\d{1,2}:\d{2}|(?:\d{1,2}|열한|열두|열|한|두|세|네|다섯|여섯|일곱|여덟|아홉)\s*시(?:\s*\d{1,2}\s*분|\s*반)?)/gu, '')
+    .replace(/[\s,.!。！]/gu, '');
+  return /^(?:이야|야|요|입니다|이에요|예요|에요|로|에|쯤|정도|미정|시간미정|시각미정)*$/u.test(remainder);
+}
+
 function handleChatInput(body, knownIntent) {
   if (demoBusy || !modelPicker.value) return;
   if (pendingRecord) {
@@ -542,13 +579,14 @@ function handleChatInput(body, knownIntent) {
     return;
   }
 
-  const clarification = pendingClarification;
+  let clarification = pendingClarification;
   const submittedAt = new Date();
   return withDemoRequest(async () => {
     const userMessage = addBubble('user', body);
     pendingClarification = null;
     const reply = addBubble('bot', '');
     const progress = startChatProgress(reply, '입력 내용을 확인하는 중…');
+    let failed = false;
     chatStatus.textContent = '입력 목적을 확인하고 있어요.';
     try {
       if (clarification && /^취소[.!]?$/u.test(body)) {
@@ -556,11 +594,13 @@ function handleChatInput(body, knownIntent) {
         chatStatus.textContent = '입력 취소';
         return;
       }
-      if (clarification?.draft) {
+      if (clarification?.draft && scheduleDetailOnly(body)) {
         if (clarification.kind === 'date') clarification.draft.dateReply = body;
         await offerSchedule(reply, clarification.draft, clarification.kind, body);
         return;
       }
+      // A full new statement is a new request, not the missing date of an old draft.
+      if (clarification?.draft) clarification = null;
       const text = clarification ? clarification.text + '\n추가 설명: ' + body : body;
       const classified = knownIntent && !clarification ? { intent: knownIntent } : await demoRequest('intent', clarification
         ? { text: clarification.text, follow_up: body, clarification_kind: clarification.kind }
@@ -585,13 +625,18 @@ function handleChatInput(body, knownIntent) {
         askForClarification(reply, classified.clarification, { kind, text });
       }
     } catch (error) {
+      failed = true;
       if (!reply.isConnected) return;
+      const thread = chatHistoryState.threads.find(item => item.id === chatHistoryState.activeId);
+      // A failed answer is not evidence. Keep only the user's question as a topic.
+      if (thread && body.length <= 1200) thread.unansweredQuestion = body;
       pendingClarification ||= clarification;
       reply.textContent = '처리 실패: ' + error.message;
       chatStatus.textContent = '입력을 확인해 주세요.';
       if (!chatInput.value) chatInput.value = body;
     } finally {
       progress.stop();
+      if (!failed && reply.isConnected) rememberCompletedTurn(body, reply.textContent);
       if (reply.isConnected) chatInput.focus();
       scrollChatToBottom();
     }

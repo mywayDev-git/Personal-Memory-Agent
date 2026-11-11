@@ -2,6 +2,7 @@ const {hash,schemaIssues}=require('./core.cjs');
 const extractive=require('./extractive.cjs');
 const usage=require('./token-usage.cjs');
 const diagnostics=require('./request-diagnostics.cjs'),path=require('node:path');
+const fidelity=require('./summary-fidelity.cjs');
 const VERSION='summary-only-v1';
 const INSTRUCTION = [
  '원문과 같은 판단을 내리는 데 필요한 최소 사실 묶음을 자연어 문단으로 요약한다. 묶음은 같은 사건이나 상태를 설명하는 사실과 그 판단에 필요한 조건을 함께 뜻한다.',
@@ -55,13 +56,14 @@ class SummaryMemory{
  get(key){const row=this.db.prepare('SELECT payload FROM summary_memories WHERE memory_key=?').get(key);return row?JSON.parse(row.payload):null;}
  list(namespace,owner){return this.db.prepare('SELECT payload FROM summary_memories WHERE namespace=? AND owner=? AND deleted_at IS NULL ORDER BY rowid DESC').all(namespace,owner).map(r=>JSON.parse(r.payload));}
  write(row){this.db.prepare('INSERT INTO summary_memories VALUES(?,?,?,?,?,?) ON CONFLICT(memory_key) DO UPDATE SET deleted_at=excluded.deleted_at,payload=excluded.payload').run(row.memory_key,row.namespace,row.owner,row.source_id,row.deleted_at||null,JSON.stringify(row));}
- view(row){const a=this.store.readArtifact(row.summary_artifact_id);return {...row,summary:a.text,metrics:a.metrics,parts:a.parts,...(a.excerpt_selection?{excerpt_selection:a.excerpt_selection}:{})};}
+ view(row){const a=this.store.readArtifact(row.summary_artifact_id);return {...row,summary:a.text,metrics:a.metrics,parts:a.parts,...(a.summary_review?{summary_review:a.summary_review}:{}),...(a.excerpt_selection?{excerpt_selection:a.excerpt_selection}:{})};}
  async save(namespace,source,config,signal,options={}){return diagnostics.withContext({source_id:source.id,source_revision:source.revision,purpose:'summary_memory'},()=>usage.withStage('summary',()=>this.saveScoped(namespace,source,config,signal,options),{source_id:source.id,question_id:null}));}
- async saveScoped(namespace,source,config,signal,{force=false,expected,beforePublish,inferMood=false}={}){
+ async saveScoped(namespace,source,config,signal,{force=false,expected,beforePublish,inferMood=false,verifySummary=false}={}){
   const owner=source.metadata?.owner_id;if(typeof owner!=='string'||!owner)throw Error('요약 소유자 누락');
   if(typeof source.text!=='string'||!source.text.trim())throw Error('요약할 원본을 입력하세요.');
   const schema=inferMood&&config.summary_mode!==extractive.MODE?DIARY_SCHEMA:SCHEMA;
   const opts=settings(config);
+   if(verifySummary&&config.summary_mode!==extractive.MODE)opts.fidelity_version=fidelity.VERSION;
   if(schema===DIARY_SCHEMA){opts.schema_hash=hash(DIARY_SCHEMA);opts.mood_instruction_hash=hash(MOOD_INSTRUCTION);}
   const key=memoryKey(namespace,owner,source.id),previous=this.get(key),fingerprint=originalKey(source),cacheKey=hash({fingerprint,opts,model_hash:require('./model-registry.cjs').find(m=>m.id===config.model)?.sha256});
   if(expected!==undefined&&previous?.summary_artifact_id!==expected)throw Error('기억이 변경됐습니다. 새로 불러오세요.');
@@ -90,9 +92,10 @@ class SummaryMemory{
     const response=await this.engine.runtime.chat(messages,schema,{...config,output_tokens:opts.output_tokens},signal);
     if(schemaIssues(response.parsed,schema).length||!response.parsed.summary.trim())throw Error('빈 요약 또는 요약 출력 형식 오류');
     if(schema===DIARY_SCHEMA&&response.parsed.mood!==NO_MOOD)moods.add(response.parsed.mood);
-    const text=response.parsed.summary.trim(),summaryStart=summaries.reduce((n,p)=>n+p.text.length+2,0);
+    const checked=verifySummary?await fidelity.verifySummary(this.engine.runtime,part.text,response.parsed.summary.trim(),config,signal,source.metadata):null;
+    const text=checked?.text??response.parsed.summary.trim(),summaryStart=summaries.reduce((n,p)=>n+p.text.length+2,0);
     inputTokens+=await this.engine.runtime.tokenize(part.text,signal);outputTokens+=await this.engine.runtime.tokenize(text,signal);
-    summaries.push({start:summaryStart,end:summaryStart+text.length,text,original_start:part.start,original_end:part.end,usage:response.usage||null,elapsed_ms:response.elapsed_ms||0});
+    summaries.push({start:summaryStart,end:summaryStart+text.length,text,original_start:part.start,original_end:part.end,usage:response.usage||null,elapsed_ms:response.elapsed_ms||0,...(checked?{fidelity:checked.review}:{})});
    }
    const text=summaries.map(p=>p.text).join('\n\n');
    // M1 excerpt embeddings are prepared together with the keyword index.
@@ -101,7 +104,8 @@ class SummaryMemory{
    if(this.get(key)?.summary_artifact_id!==previous?.summary_artifact_id)throw Error('재요약 중 기억이 변경됐습니다.');
    const originalTokens=await this.engine.runtime.tokenize(source.text,signal),summaryTokens=await this.engine.runtime.tokenize(text,signal);
    signal?.throwIfAborted();
-   const summary_artifact_id=this.store.artifact('summary-memory',{version:VERSION,source_id:source.id,revision:source.revision,owner_id:owner,original_fingerprint:fingerprint,text,parts:summaries,...(excerptSelection?{excerpt_selection:excerptSelection}:{}),settings:opts,settings_hash:hash(opts),summary_key:cacheKey,metrics:{original_tokens:originalTokens,summary_tokens:summaryTokens,token_ratio:originalTokens?summaryTokens/originalTokens:null,processed_input_tokens:inputTokens,processed_summary_tokens:outputTokens,elapsed_ms:performance.now()-started}});
+   const summary_review=verifySummary&&!excerptSelection?{version:fidelity.VERSION,status:source.metadata.schedule?'SCHEDULE_FIELDS':summaries.some(p=>p.fidelity?.status==='SOURCE_PRESERVED')?'SOURCE_PRESERVED':'CHECKED',parts:summaries.flatMap(p=>p.fidelity?[p.fidelity]:[])}:null;
+   const summary_artifact_id=this.store.artifact('summary-memory',{version:VERSION,source_id:source.id,revision:source.revision,owner_id:owner,original_fingerprint:fingerprint,text,parts:summaries,...(summary_review?{summary_review}:{}),...(excerptSelection?{excerpt_selection:excerptSelection}:{}),settings:opts,settings_hash:hash(opts),summary_key:cacheKey,metrics:{original_tokens:originalTokens,summary_tokens:summaryTokens,token_ratio:originalTokens?summaryTokens/originalTokens:null,processed_input_tokens:inputTokens,processed_summary_tokens:outputTokens,elapsed_ms:performance.now()-started}});
    const row={memory_key:key,namespace,owner,source_id:source.id,revision:source.revision,original_fingerprint:fingerprint,original_artifact_id,summary_artifact_id,summary_key:cacheKey,...(excerptSelection?{summary_mode:extractive.MODE}:{}),...(source.metadata.diary_date?{diary_date:source.metadata.diary_date}:{}),created_at:previous?.created_at||new Date().toISOString(),updated_at:new Date().toISOString(),deleted_at:null,source_timestamp:source.metadata.created_at||null};
    if(source.metadata.schedule)row.schedule=source.metadata.schedule;
    if(schema===DIARY_SCHEMA)row.mood=moods.size>1?'복합 감정':moods.values().next().value||NO_MOOD;
