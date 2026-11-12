@@ -15,7 +15,7 @@ function temporalEligibility(unit,query,day,plan){
 }
 async function retrieve(engine,run,ds,q,context,sources,extraction,signal){
  const queryUsed=contextualQuery(q.text,context),started=performance.now(),c=run.config;
- const vectorOnly=c.excerpt_only===true;
+ const vectorOnly=c.excerpt_only===true,graphOnly=c.route==='G1';
  const canonical=engine.summary.units(extraction,sources);
  if(vectorOnly&&extraction.records.some(record=>!record.excerpt_selection))throw Error('발췌문 산출물을 선택하세요.');
  const indexes=vectorOnly?[]:engine.structured.indexes(extraction,sources);
@@ -32,10 +32,10 @@ async function retrieve(engine,run,ds,q,context,sources,extraction,signal){
  });
  const units=vectorOnly?canonical:metadataUnits;
  engine.update(run,q.id+(vectorOnly?' 발췌문 의미 검색':' 요약 검색어·개체·관계·유효기간 검색'),{stage:vectorOnly?'query_embedding':'lexical',unit_total:units.length});
- const lexical=vectorOnly?[]:engine.structured.lexical(units,indexes,queryUsed,c.candidate_k);
+ const lexical=vectorOnly||graphOnly?[]:engine.structured.lexical(units,indexes,queryUsed,c.candidate_k);
  const vectors=[],query=normalized(queryUsed),entities=[],relations=[],documentVectors=[];
  const bySimilarity=(a,b)=>b.cosine-a.cosine||a.id.localeCompare(b.id);
- if(units.length){
+ if(units.length&&!graphOnly){
   const qv=await engine.vector(queryUsed,true,signal);
   for(const u of units){
    signal.throwIfAborted();
@@ -52,7 +52,8 @@ async function retrieve(engine,run,ds,q,context,sources,extraction,signal){
  for(const u of metadataUnits){const edges=u.relations.filter(r=>anchors.has(r.subject_id)||anchors.has(r.object_id));if(edges.length)graph.push({id:u.id,relation_ids:edges.map(r=>r.relation_id)});}
  // Every eligible summary unit already has a vector score.
  const vectorCandidates=c.all_candidates?vectors:vectors.slice(0,c.candidate_k);
- const channels=vectorOnly?[vectorCandidates]:[lexical,vectorCandidates,entities.slice(0,c.candidate_k),relations.slice(0,c.candidate_k),graph.slice(0,c.candidate_k)];
+ const graphCandidates=graph.slice(0,c.candidate_k);
+ const channels=graphOnly?[graphCandidates]:vectorOnly?[vectorCandidates]:[lexical,vectorCandidates,entities.slice(0,c.candidate_k),relations.slice(0,c.candidate_k),graphCandidates];
  const branchRankings=[];
  if(documentVectors.length)for(const searchText of plan.queries.slice(1)){
   const {vector}=await engine.vector(searchText,true,signal);
@@ -83,7 +84,7 @@ async function retrieve(engine,run,ds,q,context,sources,extraction,signal){
   }
  }
  const metrics=engine.retrievalMetrics(ds.d,q,ranked,evidence);metrics.span_groups_fully_covered=null;metrics.scope='요약 출처만 측정. 메타정보 의미 정확도는 사람 검토 필요.';
- const data={kind:require('./summary.cjs').VERSION,...(vectorOnly?{}:{structured_version:VERSION,structured_indexes:extraction.structured_indexes}),context_id:context.id,question_id:q.id,dataset_fingerprint:ds.fingerprint,config:c,source_refs:sources.map(s=>({source_id:s.id,revision:s.revision})),source_snapshots:[],summary_records:extraction.records,extraction_artifact_id:extraction.artifact_id||null,query_original:q.text,query_used:queryUsed,index_units:canonical,lexical_candidates:lexical,vector_candidates:vectorCandidates,fused_candidates:fused,ranked_sources:ranked,selected_sources:selected,evidence,cache_hits:0,elapsed_ms:performance.now()-started,metrics,token_usage:usage.report({stage:'retrieval',question_id:q.id}),structured_trace:{ranking_mode:vectorOnly?'excerpt-embedding-only':'structured-hybrid',entity_candidates:entities.slice(0,c.candidate_k),relation_candidates:relations.slice(0,c.candidate_k),graph_candidates:graph.slice(0,c.candidate_k),time_filter:{day,excluded:exclusions,rule:vectorOnly?'발췌문 의미 유사도만 사용':'명시된 단일 날짜와 담당·소속 등 상태 관계에만 유효기간 적용. 알 수 없는 기간은 유지.'},scoped_index_ids:indexes.map(a=>a.index_id)},warning:vectorOnly?'발췌문 의미 유사도로 검색했습니다.':'동명 개체는 출처별로 구분합니다. 관계 근거는 요약문에서 확인합니다.'};
+ const data={kind:require('./summary.cjs').VERSION,...(vectorOnly?{}:{structured_version:VERSION,structured_indexes:extraction.structured_indexes}),context_id:context.id,question_id:q.id,dataset_fingerprint:ds.fingerprint,config:c,source_refs:sources.map(s=>({source_id:s.id,revision:s.revision})),source_snapshots:[],summary_records:extraction.records,extraction_artifact_id:extraction.artifact_id||null,query_original:q.text,query_used:queryUsed,index_units:canonical,lexical_candidates:lexical,vector_candidates:vectorCandidates,fused_candidates:fused,ranked_sources:ranked,selected_sources:selected,evidence,cache_hits:0,elapsed_ms:performance.now()-started,metrics,token_usage:usage.report({stage:'retrieval',question_id:q.id}),structured_trace:{ranking_mode:graphOnly?'event-graph':vectorOnly?'excerpt-embedding-only':'structured-hybrid',entity_candidates:entities.slice(0,c.candidate_k),relation_candidates:relations.slice(0,c.candidate_k),graph_candidates:graphCandidates,time_filter:{day,excluded:exclusions,rule:vectorOnly?'발췌문 의미 유사도만 사용':'명시된 단일 날짜와 담당·소속 등 상태 관계에만 유효기간 적용. 알 수 없는 기간은 유지.'},scoped_index_ids:indexes.map(a=>a.index_id)},warning:graphOnly?(graphCandidates.length?'질문에서 찾은 개체와 연결된 사건 관계만 그래프 경로로 검색했습니다.':'질문에 연결할 개체·관계를 찾지 못해 사건 그래프 검색 결과가 없습니다.'):vectorOnly?'발췌문 의미 유사도로 검색했습니다.':'동명 개체는 출처별로 구분합니다. 관계 근거는 요약문에서 확인합니다.'};
  if(plan){
   data.scoped_query=plan;
   data.scoped_search={eligible_units:units.length,original_ranked_ids:baseRanking.map(hit=>hit.id),

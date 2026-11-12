@@ -43,6 +43,15 @@ test('calendar questions recognize an exact numeric day without using the closes
   assert.throws(() => dateForDiaryQuestion('11월 31일에 뭐 했어?', now), /날짜/);
 });
 
+test('two-digit Korean years preserve the explicit year for diaries, schedules and questions', () => {
+  const now = new Date('2026-11-12T03:00:00Z');
+  assert.equal(dateForSchedule('27년 1월 17일에는 입대하는 친구와 만날 예정이다', '', now), '2027-01-17');
+  assert.equal(dateForDiary('27년 1월 17일 친구를 만났다', '', now), '2027-01-17');
+  assert.equal(dateForDiaryQuestion('27년 1월 17일 일정 알려줘', now), '2027-01-17');
+  assert.equal(dateForSchedule('2027년 1월 17일 친구와 만난다', '', now), '2027-01-17');
+  assert.throws(() => dateForSchedule('27년 2월 29일 회의', '', now), /날짜/);
+});
+
 test('calendar scheduling resolves one day and a supplied time without defaulting to today', () => {
   const now = new Date('2026-11-09T15:00:00Z');
   assert.deepEqual(scheduleForText('내일 모레에 일정이 있어서 내일 모레에 일정 기록해 줘', '', now),

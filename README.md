@@ -13,20 +13,26 @@ git clone --single-branch --branch twins1909/event-graph-model-comparison-202611
 Set-Location .\Personal-Memory-Agent-demo
 ```
 
+기본 생성 모델은 **Qwen3.5 4B · Q4_K_M**입니다. 모델 파일은 약 2.74GB이며, 처음 준비할 때 저장소 루트에서 다음 명령을 실행하면 생성 모델과 임베딩 모델을 다운로드하고 SHA-256을 검증합니다.
+
+```powershell
+node .\setup-models.cjs
+```
+
 1. 저장소 루트에서 **백엔드**를 켭니다.
 
    ```powershell
    node server.cjs
    ```
 
-2. [모델 준비 화면](http://127.0.0.1:4319/baseline)에서 생성 모델을 선택합니다. 처음이라면 **Qwen3.5 2B → 선택 모델 준비**를 눌러 생성 모델과 **Qwen3 Embedding 0.6B**의 다운로드 및 검증을 마칩니다. 기존 `.models` 폴더를 옮겼다면 모델을 다시 받을 필요는 없습니다. **모델 서버 켜기**로 미리 로드할 수 있습니다.
+2. [모델 준비 화면](http://127.0.0.1:4319/baseline)에서 **Qwen3.5 4B · Q4_K_M**을 선택합니다. 위 명령으로 모델을 준비했다면 **모델 서버 켜기**를 누릅니다. 브라우저에서도 **선택 모델 준비**로 생성 모델과 **Qwen3 Embedding 0.6B**를 다운로드할 수 있습니다.
 3. 새 PowerShell 창을 열고 같은 저장소 루트에서 **시연 프론트**를 켭니다.
 
    ```powershell
    node .\demo-frontend\serve.cjs
    ```
 
-4. 두 창을 열어 둔 채 [시연 화면](http://127.0.0.1:4320/)에 접속합니다. 별도의 `npm install`이나 Python 환경이 필요하지 않습니다. 모델 평가를 실행 중이라면 평가가 끝난 뒤 시연하세요.
+4. 두 창을 열어 둔 채 [시연 화면](http://127.0.0.1:4320/)에 접속합니다. 시연 화면의 모델 선택 창은 영상 촬영을 위해 숨겼으며, 설치된 기본 생성 모델인 **Qwen3.5 4B · Q4_K_M**을 자동 선택합니다. 별도의 `npm install`이나 Python 환경이 필요하지 않습니다. 모델 평가를 실행 중이라면 평가가 끝난 뒤 시연하세요.
 
 ## 사색 대화와 감정 갈무리 확인
 
@@ -49,6 +55,25 @@ Set-Location .\Personal-Memory-Agent-demo
 새 일기의 감정은 로컬 모델이 요약할 때 함께 판단해 **서재 보관소**에 표시합니다. 감정 단서가 없는 일기는 **단서 없음**으로 표시합니다. 기존 일기는 [요약 기억 관리](http://127.0.0.1:4319/summary)에서 **원본으로 다시 만들기**를 누르면 감정을 판단할 수 있습니다.
 
 모델 파일은 로컬 `.models`에, 일기와 평가 기록은 로컬 `.local/baseline`에 저장합니다. 다른 PC에서 새 기록으로 시연하려면 모델 파일만 옮기거나 다시 준비하세요. 평가 워크벤치와 저장 방식에 대한 자세한 설명은 [BASELINE.md](BASELINE.md)를 참고하세요.
+
+## 2026-11-12 시연 변경과 인수인계
+
+- 기본 생성 모델은 **Qwen3.5 4B Q4_K_M**이며 임베딩은 기존 **Qwen3 Embedding 0.6B Q8_0**입니다. 9B Q8_0도 모델 목록에 등록되어 있지만 기본값은 아닙니다. `setup-models.cjs`는 기본 생성·임베딩 모델을 준비합니다.
+- 시연 화면의 모델 선택 창과 라벨을 숨겼습니다. 내부 선택 요소는 유지하며, `loadDemoModels()`가 등록된 기본 모델을 선택하고 요청에 그 ID를 전달합니다. 기본 모델 변경은 `local/model-registry.cjs`의 `default`로 관리합니다.
+- 질문 검색의 `graph_candidates is not defined` 오류를 수정했습니다. 검색 결과의 `structured_trace.graph_candidates`에 실제 `graphCandidates` 배열을 연결합니다. Node 서버는 모듈을 메모리에 유지하므로 업데이트 후 백엔드를 재시작해야 합니다.
+- `27년 1월 17일` 같은 한국어 두 자리 연도는 2000년대의 연도로 처리합니다. 일기·일정 저장과 날짜별 질문에 같은 규칙을 적용하며, 이 예시는 `2027-01-17`입니다. 이미 잘못 저장된 기록의 날짜는 자동 변경하지 않습니다.
+- 백엔드 워크벤치 `/baseline`의 검색 구성에 **G1 · 사건 그래프 검색**을 추가했습니다. 조사 당시 원격 브랜치에서 별도의 G1 선택 구현은 찾지 못했고, `feature/event-graph-search`와 현재 작업본의 M1 내부 그래프 후보 로직을 활용해 현재 브랜치에 새 경로를 연결했습니다. 팀원 브랜치의 G1 커밋을 그대로 가져온 변경은 아닙니다.
+- G1은 질문에 명시된 개체와 연결된 관계의 요약 단위를 후보로 사용합니다. 검색 순위에는 키워드·벡터 채널을 결합하지 않고, 연결 개체가 없으면 결과가 비어 있습니다. 개체 ID는 소유자·출처별로 구분되며 전역 개체 병합이나 여러 출처를 잇는 다단계 추론은 구현하지 않았습니다. M1은 기존 혼합 검색을 유지하고, **시연 채팅 요청도 M1·Top-K 3**을 계속 사용합니다. 워크벤치에서 G1을 골라도 시연 채팅의 경로는 바뀌지 않습니다.
+
+이번 변경의 오프라인 확인은 실제 모델 호출 없이 수행했습니다. 아래 명령의 검색 결과 변수·G1 후보 제한·기본 모델 선택·날짜·성좌도 검사 9개는 통과했습니다.
+
+```powershell
+node --test --test-name-pattern='M1 returns graph|G1 retrieves|backend and demo|diary date changes|single-day relative|exact numeric day|two-digit Korean|calendar scheduling|constellation links' tests/graph-route.test.cjs tests/demo-memory.test.cjs
+```
+
+전체 테스트 통과나 실제 모델 정확도 검증을 의미하지 않습니다. `structured-search.test.cjs`의 기존 5개 실패(인용 문장 ID 형식·메타정보 모의 응답 등)와 `demo-memory.test.cjs`의 기존 9개 실패(모의 DOM에 `historyList.querySelectorAll` 누락)는 변경 전 HEAD 코드로도 재현했습니다. 실제 모델로 저장·일정 조회·대화 답변을 확인하는 작업은 사용자 시연 시험으로 남아 있습니다.
+
+다른 PC에서 확인할 때는 이 브랜치를 업데이트한 뒤 백엔드를 재시작하고 시연 페이지를 강력 새로고침합니다. 모델 준비 화면의 이전 선택이 남아 있으면 4B를 직접 선택해 모델 서버를 켭니다. 모델 파일과 개인 기록 DB는 Git에 포함하지 않습니다.
 
 ## 현재 보완한 동작
 

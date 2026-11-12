@@ -129,7 +129,7 @@ class SummaryMemory{
  }
  units(extraction,sources){if(extraction?.kind!==VERSION||extraction.extraction_state!=='COMPLETED')throw Error('완료된 요약 산출물을 선택하세요.');this.validate(extraction.records,sources);return extraction.records.flatMap(r=>extractive.memoryUnits(r).map(u=>({...u,id:r.summary_id+':'+u.id,origin:'summary',summary_id:r.summary_id,original_fingerprint:r.original_fingerprint})));}
  assertRetrieval(retrieval,sources){
-  if(retrieval.kind!==VERSION||!['M0','M1'].includes(retrieval.config.route)||retrieval.source_snapshots?.length)throw Error('요약 전용 검색 결과만 답변에 사용할 수 있습니다.');
+  if(retrieval.kind!==VERSION||!['M0','M1','G1'].includes(retrieval.config.route)||retrieval.source_snapshots?.length)throw Error('요약 전용 검색 결과만 답변에 사용할 수 있습니다.');
   const records=retrieval.summary_records||[];this.validate(records,sources);
   const canonical=new Map(this.units({kind:VERSION,extraction_state:'COMPLETED',records},sources).map(u=>[u.id,u]));
   for(const u of retrieval.index_units||[]){const match=canonical.get(u.id);if(!match||JSON.stringify(match)!==JSON.stringify(u))throw Error('요약 색인 불일치');}

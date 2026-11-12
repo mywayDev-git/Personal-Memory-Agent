@@ -31,8 +31,8 @@ async function prepareSummaryBatch(engine,run,ds,signal){
   signal.throwIfAborted();batch.active_source_id=null;batch.active_source_revision=null;
   const manifest={version:BATCH_VERSION,phase:'all_source_summaries_saved',run_id:run.id,dataset_fingerprint:ds.fingerprint,source_count:unique.size,records:[...records.values()],question_ids:run.question_ids};
   batch.artifact_id=engine.store.artifact('summary-batch',manifest);
-  const useMetadata=run.config.route==='M1'&&!run.config.excerpt_only;
- let indexRefs=[];if(run.config.route==='M1'){
+  const useMetadata=['M1','G1'].includes(run.config.route)&&!run.config.excerpt_only;
+ let indexRefs=[];if(['M1','G1'].includes(run.config.route)){
    batch.indexing={status:'RUNNING',completed:0,total:records.size,started_at:new Date().toISOString(),...(run.config.excerpt_only?{kind:'excerpt_vectors'}:{})};
    if(useMetadata)indexRefs=await engine.structured.prepare([...records.values()],run.config,signal,(done,total,source,attempt)=>{batch.indexing.active_attempt=attempt||null;batch.indexing.completed=done;batch.indexing.total=total;batch.indexing.active_source_id=source;engine.update(run,`2단계 · 전체 메타정보 색인 ${done}/${total}${attempt?.attempt>1?' · 검증 보완 '+attempt.attempt+'/'+attempt.max_attempts:''} · 질문 처리 대기`,{stage:'index_prepare',unit_done:done,unit_total:total,unit_label:'요약',source_id:source});});
    else await prepareExcerptVectors(engine,[...records.values()],signal,(done,total,source)=>{

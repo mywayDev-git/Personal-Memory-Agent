@@ -37,10 +37,11 @@ function dateForDiary(text, chosenDate, now = new Date()) {
   }
   const leading = text.trimStart().replace(/^일기\s*[:：]\s*/, '').replace(/^(?:나는|난|저는|전)\s+/, '');
   const full = leading.match(/^(\d{4})[-./](\d{1,2})[-./](\d{1,2})(?!\d)/)
-    || leading.match(/^(\d{4})\s*년\s*(\d{1,2})\s*월\s*(\d{1,2})\s*일/);
+    || leading.match(/^(\d{4}|\d{2})\s*년\s*(\d{1,2})\s*월\s*(\d{1,2})\s*일/);
   const short = leading.match(/^(\d{1,2})\s*월\s*(\d{1,2})\s*일/);
   if (full || short) {
     const parts = full ? full.slice(1).map(Number) : [Number(seoulDate(now).slice(0, 4)), ...short.slice(1).map(Number)];
+    if (full && full[1].length === 2) parts[0] += 2000;
     const date = calendarDate(...parts);
     if (date) return date;
     throw new Error('기록 날짜를 확인해 주세요.');
@@ -59,10 +60,11 @@ function singleCalendarDay(text, now, forSchedule = false) {
   const today = seoulDate(now);
   const [year, month] = today.split('-').map(Number);
   const dates = new Set();
-  const days = /(?<![\d./-])(?:(\d{4})[-./](\d{1,2})[-./](\d{1,2})(?![\d./-])|(?:(?:(\d{4})\s*년\s*)?(\d{1,2})\s*월\s*|(지난|이번|다음)\s*달\s*)?(\d{1,2})\s*일(?!\s*(?:전|후|간|동안|째)))/gu;
+  const days = /(?<![\d./-])(?:(\d{4})[-./](\d{1,2})[-./](\d{1,2})(?![\d./-])|(?:(?:(\d{4}|\d{2})\s*년\s*)?(\d{1,2})\s*월\s*|(지난|이번|다음)\s*달\s*)?(\d{1,2})\s*일(?!\s*(?:전|후|간|동안|째)))/gu;
   for (const [, isoYear, isoMonth, isoDay, namedYear, namedMonth, relativeMonth, namedDay] of text.matchAll(days)) {
     const reference = new Date(Date.UTC(year, month - 1 + ({ 지난: -1, 다음: 1 }[relativeMonth] || 0), 1));
-    const date = calendarDate(Number(isoYear || namedYear || reference.getUTCFullYear()),
+    const explicitYear = namedYear?.length === 2 ? 2000 + Number(namedYear) : namedYear;
+    const date = calendarDate(Number(isoYear || explicitYear || reference.getUTCFullYear()),
       Number(isoMonth || namedMonth || reference.getUTCMonth() + 1), Number(isoDay || namedDay));
     if (!date) throw new Error('입력한 날짜가 달력에 없습니다. 날짜를 확인해 주세요.');
     dates.add(date);

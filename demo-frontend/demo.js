@@ -76,10 +76,11 @@ async function loadDemoModels() {
     }
     for (const model of models) modelPicker.add(new Option(model.name, model.id));
     const activeId = runtime.states.generation.model_id;
-    if (runtime.states.generation.status === 'ready' && models.some(model => model.id === activeId)) {
+    const preferred = models.find(model => model.default);
+    if (preferred) {
+      modelPicker.value = preferred.id;
+    } else if (runtime.states.generation.status === 'ready' && models.some(model => model.id === activeId)) {
       modelPicker.value = activeId;
-    } else if (models.some(model => model.id === 'qwen35-2b-q4')) {
-      modelPicker.value = 'qwen35-2b-q4';
     }
     showChatPrompt();
     homeStatus.textContent = '시작하기를 누르면 사색 대화에서 이어집니다. 새 일기나 일정은 확인한 뒤 저장합니다.';
