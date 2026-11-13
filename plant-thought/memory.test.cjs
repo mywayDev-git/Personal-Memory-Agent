@@ -108,6 +108,33 @@ test('delete button requires confirmation, cancel makes no request, and success 
  assert.ok(!button('기억 삭제'));
 });
 
+
+test('UX planning and retrieval carry current chat context and source counts survive reopening',async()=>{
+ const f=await fixture((url,payload)=>{
+  if(url.endsWith('/ux/access'))return {records:[]};
+  if(url.endsWith('/ux/plan'))return {intent:'question',query:payload.text};
+  return {answer:{answer:'도서관에서 책을 읽었어요.',citations:[{source_id:'same-source',quote:'도서관에 갔다.'},{source_id:'same-source',quote:'책을 읽었다.'}]}};
+ },{ux:true});
+ await f.context.handleChatInput('어디 갔어?');await f.context.handleChatInput('그때 뭐 했어?');
+ assert.equal(f.calls.filter(c=>c.url.endsWith('/ux/plan'))[1].payload.conversation.length,2);
+ assert.equal(f.calls.filter(c=>c.url.endsWith('/ux/search'))[1].payload.conversation.length,2);
+ let details=f.get('conversation').querySelectorAll('.message-sources');
+ assert.ok(details.every(d=>d.querySelector('summary').textContent==='참고한 기록 1개'));assert.equal(details[0].querySelectorAll('.evidence').length,2);
+ f.value('rememberChat()');await f.value('openChat(chatHistoryState.threads[0])');
+ details=f.get('conversation').querySelectorAll('.message-sources');assert.ok(details.every(d=>d.querySelector('summary').textContent==='참고한 기록 1개'));
+});
+test('an emotion note without a source never claims one memory was cited',async()=>{
+ const f=await fixture();
+ f.value("renderChatSources(addBubble('bot','지금 이야기를 들었어요.'),['현재 이야기 바탕 · 참고 기록 없음'],0)");
+ const details=f.get('conversation').querySelector('.message-sources');
+ assert.equal(details.querySelector('summary').textContent,'현재 이야기 바탕 · 참고 기록 없음');
+});
+test('successful retry clears only the submitted input while a newer draft is preserved',async()=>{
+ const f=await fixture(()=>({intent:'assistant',reply:'답변을 마쳤어요.'}),{ux:true});
+ f.get('chatInput').value='원래 입력';await f.context.handleChatInput('원래 입력',undefined,true);assert.equal(f.get('chatInput').value,'');
+ f.get('chatInput').value='새로 작성한 문장';await f.context.handleChatInput('이전 입력',undefined,true);assert.equal(f.get('chatInput').value,'새로 작성한 문장');
+});
+
 test('all original CSS is preserved and inline code remains valid',()=>{
   const before=fs.readFileSync(path.join(__dirname,'fixtures/original-style.css'),'utf8');
   const after=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');

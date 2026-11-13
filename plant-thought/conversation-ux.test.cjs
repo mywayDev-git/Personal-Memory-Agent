@@ -11,6 +11,7 @@ function fixture(t,{plans=[],rows=[],onSave,onSearch,onDelete}={}){
  t.after(()=>db.close());
  for(const [i,r] of rows.entries()){
   const row={memory_key:r.key||'k'+i,summary_artifact_id:r.version||'v'+i,namespace:r.namespace||NAMESPACE,owner:r.owner||OWNER,source_id:r.source_id||'s'+i,deleted_at:r.deleted_at||null};
+  if(r.names)row.structured_index_id='index-'+i;
   data.set(row.memory_key,row);sources.set(row.memory_key,r.text||'제목: 여행\n기록일: 2026-11-08\n감정: 미지정\n\n학교 민수와 부산에 갔다.');
  }
  const memory={
@@ -19,6 +20,7 @@ function fixture(t,{plans=[],rows=[],onSave,onSearch,onDelete}={}){
   view:row=>({...row,summary:parseRecord(sources.get(row.memory_key)).body}),
  };
  const engine={store:{db},summary:memory,busy:null,config:c=>({model:'model',route:'M1',top_k:3,...c})};
+ engine.structured={load:id=>({units:[{entities:(rows[Number(id.slice(6))]?.names||[]).map(name=>({name,type:'person'}))}]})};
  const runtime={allowStart(){},ensure:async()=>{},tokenize:async text=>Math.ceil(text.length/4),chat:async(messages,schema)=>{
   const next=plans.shift();if(!next)throw Error('Unexpected model request');
   const response=typeof next==='function'?next(JSON.parse(messages.at(-1).content),schema):next;
@@ -50,6 +52,52 @@ function fixture(t,{plans=[],rows=[],onSave,onSearch,onDelete}={}){
  const request=(action,input={})=>ux.post('/summary-memory/ux/'+action,{session_id:'session-A',config:{model:'model',route:'M1',top_k:3},...input});
  return {db,data,sources,calls,engine,runtime,base,ux,request,plans,memory};
 }
+
+test('described names create source-backed choices before generation and selection scopes only its records',async t=>{
+ const f=fixture(t,{rows:[
+  {names:['서연'],text:'제목: 학교 여행\n기록일: 2026-11-01\n감정: 미지정\n\n학교에서 알게 된 서연과 강릉에 갔다.'},
+  {names:['서연'],text:'제목: 회사 회의\n기록일: 2026-11-02\n감정: 미지정\n\n회사에서 일하는 서연과 서울 회의에 참석했다.'},
+ ]});
+ const p=await f.request('plan',{text:'서연이랑 어디 갔었지?'});
+ assert.equal(p.intent,'unclear');assert.equal(p.choices.length,2);assert.ok(p.choices.every(c=>!('refs'in c)));
+ assert.equal(f.plans.length,0);assert.equal(f.calls.length,0);
+ const selected=await f.request('plan',{text:p.choices[1].label,decision_id:p.decision_id,choice_id:p.choices[1].id});
+ await f.request('search',{query:selected.query,scope_id:selected.scope_id});assert.deepEqual(f.calls[0].input.ux_source_keys,['k1']);
+});
+test('explicit user context selects one described record and fresh sessions still ask',async t=>{
+ const f=fixture(t,{rows:[
+  {names:['서연'],text:'학교에서 알게 된 서연과 강릉에 갔다.'},
+  {names:['서연'],text:'회사 동료 서연과 서울에 갔다.'},
+ ]});
+ const p=await f.request('plan',{text:'서연이랑 어디 갔었지?',conversation:[{role:'user',text:'학교에서 알게 된 서연 이야기야.'}]});
+ assert.equal(p.intent,'question');assert.ok(p.scope_id);
+ assert.equal((await f.request('plan',{text:'서연이랑 어디 갔었지?',session_id:'fresh'})).intent,'unclear');
+});
+test('identity without an explicit connecting source remains unknown rather than inferring from affiliation',async t=>{
+ const f=fixture(t,{rows:[{names:['서연'],text:'학교에서 알게 된 서연과 강릉에 갔다.'},{names:['서연'],text:'회사 동료 서연과 서울에 갔다.'}]});
+ const p=await f.request('plan',{text:'학교 서연과 회사 서연은 같은 사람이야?'});
+ assert.equal(p.intent,'assistant');assert.match(p.reply,/명시적인 근거가 없어/);assert.equal(f.calls.length,0);
+});
+test('a new past experience is classified without supplying stored records and cannot become an invented query',async t=>{
+ const f=fixture(t,{rows:[{}],plans:[payload=>{assert.deepEqual(payload.records,[]);return {intent:'question',query:'지난달 다른 사람의 여행'};}]});
+ const p=await f.request('plan',{text:'서연이랑 인천 갔어.'});
+ assert.equal(p.intent,'diary');assert.equal(p.explicit_save,false);assert.equal(f.calls.length,0);
+});
+test('a date-specific question is not forced through the person-context picker',async t=>{
+ const f=fixture(t,{rows:[{names:['서연'],text:'학교 친구 서연과 강릉에 갔다.'},{names:['서연'],text:'회사 동료 서연과 서울에 갔다.'}],plans:[{intent:'question',query:'R1의 다른 날짜 질문'}]});
+ const text='11월 1일에 서연과 어디 갔어?';const p=await f.request('plan',{text});
+ assert.equal(p.intent,'question');assert.equal(p.query,text);assert.equal(p.choices,undefined);
+});
+test('unbacked planner IDs are removed from answers but literal source identifiers stay',()=>{
+ const {cleanUnbackedIds}=require('./conversation-policy.cjs');
+ assert.equal(cleanUnbackedIds('친구인 R1의 서연이에요.','누구야?'), '친구인 서연이에요.');
+ assert.equal(cleanUnbackedIds('R1 회로예요.','어떤 회로야?',[{quote:'R1 회로를 확인했다.'}]),'R1 회로예요.');
+});
+
+test('an explicit identity statement is left to grounded retrieval instead of forced to unknown',async t=>{
+ const f=fixture(t,{rows:[{names:['서연'],text:'학교 친구 서연과 강릉에 갔다.'},{names:['서연'],text:'회사 동료 서연과 서울에 갔다.'},{text:'학교 친구 서연과 회사 동료 서연은 서로 다른 사람이다.'}],plans:[{intent:'question'}]});
+ assert.equal((await f.request('plan',{text:'학교 서연과 회사 서연은 같은 사람이야?'})).intent,'question');
+});
 test('record headers and untouched body are separated without changing original content',()=>{
  const text='제목: 여행\n기록일: 2026-11-08\n감정: 미지정\n\n민수와 부산에 갔다.\n사진을 찍었다.';
  const p=parseRecord(text);assert.equal(p.header+p.body,text);assert.equal(p.title,'여행');assert.equal(p.date,'2026-11-08');

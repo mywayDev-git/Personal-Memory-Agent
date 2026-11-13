@@ -34,7 +34,7 @@ async function uxPlan(body,clarification,knownIntent){
  uxTurnScope=null;uxTurnRefs=[];
  const choice=uxChoice;uxChoice=null;
  const result=await uxRequest('plan',{
-  text:body,decision_id:choice?.decision_id||clarification?.decision_id,choice_id:choice?.choice_id,
+  text:body,conversation:currentConversation(),decision_id:choice?.decision_id||clarification?.decision_id,choice_id:choice?.choice_id,
   pending_operation_id:uxPending?.session_id===uxSession()?uxPending.id:undefined,
   target_key:uxTarget||clarification?.edit_target_key||undefined,edit_request:clarification?.edit_request,intent_hint:knownIntent,
  });
@@ -44,6 +44,13 @@ async function uxPlan(body,clarification,knownIntent){
  }
  uxTarget=null;
  if(result.scope_id)uxTurnScope=result.scope_id;
+ if(clarification?.decision_id&&result.intent!=='unclear'){
+  for(const content of conversation.querySelectorAll('.bot-content')){
+   if(messageActions.get(content)?.state?.decision_id!==clarification.decision_id)continue;
+   for(const actions of content.parentElement?.querySelectorAll('.chat-followups')||[])actions.remove();
+   messageActions.delete(content);
+  }
+ }
  return result;
 }
 function uxShowChoices(reply,plan){
@@ -148,7 +155,7 @@ async function uxSaveExplicit(record,reply){
 }
 async function uxSearch(payload){
  const next=uxNextSearch;uxNextSearch=null;
- const result=await uxRequest('search',{...payload,scope_id:next?.scope_id||uxTurnScope,expand:next?.expand===true});
+ const result=await uxRequest('search',{conversation:currentConversation(),...payload,scope_id:next?.scope_id||uxTurnScope,expand:next?.expand===true});
  uxTurnRefs=result.refs||[];
  return result;
 }
@@ -215,7 +222,7 @@ function uxDetailEdit(key,version,origin='archive'){
  addChatAction(actions,'기억 삭제','',()=>{
   if(demoBusy||viewToken!==uxDetailViewToken)return;
   const notice=document.createElement('p');notice.className='muted small ux-detail-status';
-  notice.textContent='이 기억을 삭제할까요? 삭제하면 보관소와 기억 조회에서 제외됩니다.';card.append(notice);
+  notice.textContent='이 기억을 삭제할까요? 보관소와 기억 조회에서 제외되며, 복구용 원문과 백업은 남습니다.';card.append(notice);
   actions.replaceChildren();
   const request={request_id:crypto.randomUUID(),key,expected:version,session_id:uxSession()};
   const current=()=>viewToken===uxDetailViewToken;
@@ -235,12 +242,13 @@ function uxDetailEdit(key,version,origin='archive'){
      catch{throw error;}
     }
     if(result.state==='committed'&&result.deleted_key===key){
+     chatStatus.textContent='기억 삭제 완료';
      for(let i=records.length-1;i>=0;i--)if(records[i].memoryKey===key)records.splice(i,1);
      uxScrubHistory();refreshRecords();
      if(current()){
       document.getElementById('detailTitle').textContent='기억을 삭제했어요.';
       document.getElementById('detailDate').textContent='';document.getElementById('detailBody').textContent='';
-      notice.textContent='이 기억은 보관소와 기억 조회에서 제외됐어요.';
+      notice.textContent='보관소와 기억 조회에서 제외했어요. 복구용 원문과 백업은 남아 있어요.';
      }
      await restoreArchive();
     }else if(result.state==='conflict'){
@@ -272,7 +280,7 @@ function uxRetry(reply,body,error){
     else await uxFinishOperation(op.id,op.session_id,reply,null);
    }).catch(e=>{reply.textContent=e.message;uxRetry(reply,body,error);});
   }
-  return handleChatInput(body);
+  return handleChatInput(body,undefined,true);
  });
  messageActions.set(reply,{type:'ux-retry',body,operation:error.uxOperation||null});
 }

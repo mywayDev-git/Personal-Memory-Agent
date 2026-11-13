@@ -256,6 +256,7 @@ function rememberChat() {
         kind: bubble.classList.contains('user') ? 'user' : 'bot',
         text: paragraph.dataset.messageText??paragraph.textContent,
         notes: [...bubble.querySelectorAll('.evidence')].map(note => note.textContent),
+        sourceCount:Number(bubble.querySelector('.message-sources')?.dataset.sourceCount||0),
         action: messageActions.get(paragraph),
         refs:JSON.parse(paragraph.dataset.uxRefs||'[]'),
       }];
@@ -295,7 +296,7 @@ function openChat(thread) {
   for (const message of thread?.messages ?? []) {
     const paragraph = renderChatBubble(message.kind === 'user' ? 'user' : 'bot', message.text);
     if(message.refs?.length)paragraph.dataset.uxRefs=JSON.stringify(message.refs);
-    renderChatSources(paragraph, message.notes ?? []);
+    renderChatSources(paragraph, message.notes ?? [],message.sourceCount??message.refs?.length??0);
     const action = message.action;
     if (action?.type === 'confirm') addRecordConfirmation(paragraph, action.record, true);
     if (action?.type === 'emotion') offerEmotionSave(paragraph, action.record);
@@ -547,10 +548,10 @@ function scheduleDetailOnly(body) {
   return /^(?:이야|야|요|입니다|이에요|예요|에요|로|에|쯤|정도|미정|시간미정|시각미정)*$/u.test(remainder);
 }
 
-function handleChatInput(body, knownIntent) {
+function handleChatInput(body, knownIntent, fromRetry=false) {
   if(demoBusy)return;
   if(!modelPicker.value)return loadDemoModels().then(ready=>{
-    if(ready)return handleChatInput(body,knownIntent);
+    if(ready)return handleChatInput(body,knownIntent,fromRetry);
     addBubble('user',body);addBubble('bot',connectionError);formatReplies();chatInput.value=body;updateChatInput();
   });
   if (pendingRecord) {
@@ -628,6 +629,7 @@ function handleChatInput(body, knownIntent) {
     } finally {
       progress.stop();
       if (!failed && reply.isConnected) rememberCompletedTurn(body, reply.textContent);
+      if(!failed&&fromRetry&&chatInput.value===body){chatInput.value='';updateChatInput();}
       formatReplies();
       if (reply.isConnected) chatInput.focus();
       scrollChatToBottom();
@@ -717,7 +719,8 @@ async function answerInChat(query, reply, progress, emotion = false, excludeMemo
   if (answer?.examined_record) {
     notes.push('함께 검토한 기록 · ' + snippet(answer.examined_record));
   }
-  renderChatSources(reply, notes);
+  const sourceIds=new Set([...citations,answer?.examined_record].filter(Boolean).map(c=>c.memory_key||c.source_id).filter(Boolean));
+  renderChatSources(reply, notes,sourceIds.size);
   if(typeof uxAfterAnswer==='function')uxAfterAnswer(query,reply,result);
   chatStatus.textContent = citationErrors.length
     ? '인용 검사를 통과하지 못했습니다. 요약 근거를 확인해 주세요.'
@@ -725,11 +728,12 @@ async function answerInChat(query, reply, progress, emotion = false, excludeMemo
   return answer;
 }
 
-function renderChatSources(reply,notes){
+function renderChatSources(reply,notes,sourceCount=0){
   if(!notes.length)return;
   const details=document.createElement('details');details.className='message-sources';
   details.open=!preferences.collapseDetails;details.hidden=!preferences.showSources;
-  const summary=document.createElement('summary');summary.textContent='참고한 기록 '+notes.length+'개';details.append(summary);
+  details.dataset.sourceCount=String(sourceCount);
+  const summary=document.createElement('summary');summary.textContent=sourceCount?'참고한 기록 '+sourceCount+'개':notes.some(n=>n.includes('참고 기록 없음'))?'현재 이야기 바탕 · 참고 기록 없음':'처리 안내';details.append(summary);
   for(const text of notes){const item=document.createElement('div');item.className='evidence';item.textContent=text;details.append(item);}
   reply.after(details);
 }
