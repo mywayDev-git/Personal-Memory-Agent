@@ -15,7 +15,7 @@ const routes=new Map([
   ['/api/baseline/summary-memory/intent','POST'],
   ['/api/baseline/summary-memory/save','POST'],
   ['/api/baseline/summary-memory/search','POST'],
-  ...['plan','save','commit','search','status','cancel','access'].map(action=>['/api/baseline/summary-memory/ux/'+action,'POST']),
+  ...['plan','save','delete','commit','search','status','cancel','access'].map(action=>['/api/baseline/summary-memory/ux/'+action,'POST']),
   ['/api/baseline/summary-memory/ux/info','GET'],
 ]);
 const readOnly=/^\/api\/baseline\/summary-memory\/(?:original\?key=[a-f0-9]{64}|progress\?id=[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12})$/;

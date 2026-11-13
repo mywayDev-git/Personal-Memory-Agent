@@ -58,6 +58,7 @@ function createConversationUx(engine,runtime,base){
  }
  function stateView(op){
   const result={operation_id:op.id,state:op.state,kind:op.kind,error:op.error||null};
+  if(op.kind==='delete'&&op.state==='committed')return {...result,deleted_key:op.key};
   if(op.state==='committed'&&op.result_key){const row=selected(op.result_key);return {...result,memory:memory.view(row)};}
   return result;
  }
@@ -216,6 +217,11 @@ function createConversationUx(engine,runtime,base){
  }
  function reconciled(op){
   try{
+   if(op.kind==='delete'){
+    const row=memory.get(op.key);
+    if(row?.deleted_at&&row.owner===OWNER&&row.namespace===NAMESPACE&&row.summary_artifact_id===op.expected){op.state='committed';delete op.error;write(op);return true;}
+    return false;
+   }
    const key=op.kind==='edit'?op.key:memoryKey(NAMESPACE,OWNER,'UX-'+op.id);
    const row=selected(key);
    if(memory.original(row).text===op.text&&(op.kind!=='edit'||row.summary_artifact_id!==op.expected)){
@@ -226,19 +232,24 @@ function createConversationUx(engine,runtime,base){
  }
  async function commit(data){
   const op=operation(data);
-  if(op.kind!=='save'&&op.kind!=='edit')throw Error('저장할 작업이 아닙니다.');
+  if(!['save','edit','delete'].includes(op.kind))throw Error('처리할 작업이 아닙니다.');
   if(op.state==='cancelled')throw Error('취소된 작업입니다.');
    if(op.state==='committed'||reconciled(op))return stateView(op);
   if(inFlight.has(op.id))return inFlight.get(op.id);
   if(engine.busy)throw Error('진행 중인 처리가 끝난 뒤 다시 시도해 주세요.');
-  if(op.kind==='edit'&&selected(op.key).summary_artifact_id!==op.expected){op.state='conflict';op.error='확인한 뒤 기록이 변경됐어요. 최신 내용을 다시 확인해 주세요.';write(op);return stateView(op);}
+  if(['edit','delete'].includes(op.kind)&&selected(op.key).summary_artifact_id!==op.expected){op.state='conflict';op.error='확인한 뒤 기록이 변경됐어요. 최신 내용을 다시 확인해 주세요.';write(op);return stateView(op);}
   const promise=(async()=>{
    op.state='running';delete op.error;write(op);
    try{
+    if(op.kind==='delete'){
+     const result=await base.post('/summary-memory/delete',{key:op.key,expected:op.expected});
+     if(!result.ok)throw Error('삭제 결과를 확인하지 못했어요.');
+     op.state='committed';write(op);return stateView(op);
+    }
     const result=await base.post('/summary-memory/save',{text:op.text,config:op.config,...(op.kind==='edit'?{key:op.key,expected:op.expected}:{})},{sourceId:'UX-'+op.id});
     op.result_key=result.memory.memory_key;op.state='committed';write(op);return stateView(op);
    }catch(error){
-    if(!reconciled(op)){let conflict=false;if(op.kind==='edit')try{conflict=selected(op.key).summary_artifact_id!==op.expected;}catch{conflict=true;}op.state=conflict?'conflict':'failed';op.error=error.message;write(op);}
+    if(!reconciled(op)){let conflict=false;if(['edit','delete'].includes(op.kind))try{conflict=selected(op.key).summary_artifact_id!==op.expected;}catch{conflict=true;}op.state=conflict?'conflict':'failed';op.error=error.message;write(op);}
     return stateView(op);
    }finally{inFlight.delete(op.id);}
   })();
@@ -252,6 +263,19 @@ function createConversationUx(engine,runtime,base){
   const fingerprint=hash({text:data.text,key:data.key||null,expected:data.expected||null});
   if(op){if(op.session_id!==data.session_id||op.fingerprint!==fingerprint)throw Error('같은 요청 식별자로 다른 내용을 저장할 수 없어요.');}
   else op=write({id:data.request_id,kind:data.key?'edit':'save',state:'prepared',session_id:data.session_id,fingerprint,text:data.text,key:data.key,expected:data.expected,config:data.config,created_at:new Date().toISOString()});
+  return commit({...data,operation_id:op.id});
+ }
+ async function remove(data){
+  session(data);
+  if(!UUID.test(data.request_id||'')||typeof data.key!=='string'||typeof data.expected!=='string')throw Error('삭제할 기억과 요청 식별자를 확인해 주세요.');
+  let op=read(data.request_id);
+  const fingerprint=hash({key:data.key,expected:data.expected,kind:'delete'});
+  if(op){if(op.kind!=='delete'||op.session_id!==data.session_id||op.fingerprint!==fingerprint)throw Error('같은 요청 식별자로 다른 기억을 삭제할 수 없어요.');}
+  else{
+   const row=selected(data.key);
+   if(row.summary_artifact_id!==data.expected)throw Error('기억이 변경됐어요. 최신 내용을 다시 확인한 뒤 삭제해 주세요.');
+   op=write({id:data.request_id,kind:'delete',state:'prepared',session_id:data.session_id,key:data.key,expected:data.expected,fingerprint,created_at:new Date().toISOString()});
+  }
   return commit({...data,operation_id:op.id});
  }
  async function search(data){
@@ -284,6 +308,7 @@ function createConversationUx(engine,runtime,base){
    const action=route.slice('/summary-memory/ux/'.length);
    if(action==='plan')return plan(data);
    if(action==='save')return save(data);
+   if(action==='delete')return remove(data);
    if(action==='commit')return commit(data);
    if(action==='search')return search(data);
    if(action==='status'){const op=operation(data);if(op.state==='running'&&!inFlight.has(op.id)&&!reconciled(op)){op.state='failed';op.error='이전 처리가 중단됐어요. 같은 요청으로 다시 시도할 수 있어요.';write(op);}return stateView(op);}

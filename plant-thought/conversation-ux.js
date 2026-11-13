@@ -3,6 +3,7 @@
 const uxTabId=crypto.randomUUID();
 const uxWriteIds=new Map();
 let uxPending=null,uxChoice=null,uxTurnScope=null,uxNextSearch=null,uxTurnRefs=[],uxTarget=null;
+let uxDetailViewToken=0;
 const uxSession=()=>uxTabId+':'+(chatHistoryState.activeId||'writer');
 function uxRequest(action,payload={}){
  return demoRequest('ux/'+action,{...payload,session_id:payload.session_id||uxSession()});
@@ -186,7 +187,7 @@ function uxAddRecordLinks(reply,refs){
   addChatAction(actions,refs.length===1?'기록 열기':(record?.title||'참고 기록')+' 열기','',()=>uxOpenKey(r.key,r.version));
  }
 }
-async function uxOpenKey(key,version){
+async function uxOpenKey(key,version,origin='chat'){
  if(!key)return;
  try{
   const {source,summary_id}=await demoJson('/summary-memory/original?key='+encodeURIComponent(key));
@@ -194,18 +195,65 @@ async function uxOpenKey(key,version){
   const r=uxRecordFields(source.text);
   document.getElementById('detailTitle').textContent=r.title;
   document.getElementById('detailDate').textContent=r.date+' · 기록';
-  document.getElementById('detailBody').textContent=r.body;go('recordDetail');uxDetailEdit(key);
+  document.getElementById('detailBody').textContent=r.body;go('recordDetail');uxDetailEdit(key,summary_id,origin);
  }catch(error){await restoreArchive();chatStatus.textContent='기록을 열지 못했어요. '+error.message;}
 }
-function uxDetailEdit(key){
+function uxDetailEdit(key,version,origin='archive'){
+ const viewToken=++uxDetailViewToken;
+ const back=document.querySelector('#recordDetail .record-detail > button');
+ back.textContent=origin==='chat'?'← 사색 대화로 돌아가기':'← 서재 보관소로 돌아가기';
+ back.onclick=()=>{go(origin==='chat'?'chat':'archive');if(origin==='chat')chatInput.focus();};
  const card=document.querySelector('#recordDetail .card');
- for(const old of card.querySelectorAll('.chat-followups'))old.remove();
+ for(const old of card.querySelectorAll('.chat-followups,.ux-detail-status'))old.remove();
  const actions=document.createElement('div');actions.className='chat-followups';card.append(actions);
  addChatAction(actions,'수정하기','',()=>{
   if(demoBusy)return;
   uxTarget=key;go('chat');
   addBubble('bot','이 기록에서 어느 부분을 어떻게 바꿀까요? 바꿀 내용을 입력하면 변경 전·후를 보여드릴게요.');
   chatInput.focus();
+ });
+ addChatAction(actions,'기억 삭제','',()=>{
+  if(demoBusy||viewToken!==uxDetailViewToken)return;
+  const notice=document.createElement('p');notice.className='muted small ux-detail-status';
+  notice.textContent='이 기억을 삭제할까요? 삭제하면 보관소와 기억 조회에서 제외됩니다.';card.append(notice);
+  actions.replaceChildren();
+  const request={request_id:crypto.randomUUID(),key,expected:version,session_id:uxSession()};
+  const current=()=>viewToken===uxDetailViewToken;
+  const retry=message=>{
+   if(!current())return;
+   notice.textContent=message;actions.replaceChildren();
+   addChatAction(actions,'다시 시도','',submit);
+  };
+  const submit=async()=>{
+   if(demoBusy||!current())return;
+   demoBusy=true;updateDemoControls();notice.textContent='기억을 삭제하고 있어요…';actions.replaceChildren();
+   try{
+    let result;
+    try{result=await uxRequest('delete',request);}
+    catch(error){
+     try{result=await uxRequest('status',{operation_id:request.request_id,session_id:request.session_id});}
+     catch{throw error;}
+    }
+    if(result.state==='committed'&&result.deleted_key===key){
+     for(let i=records.length-1;i>=0;i--)if(records[i].memoryKey===key)records.splice(i,1);
+     uxScrubHistory();refreshRecords();
+     if(current()){
+      document.getElementById('detailTitle').textContent='기억을 삭제했어요.';
+      document.getElementById('detailDate').textContent='';document.getElementById('detailBody').textContent='';
+      notice.textContent='이 기억은 보관소와 기억 조회에서 제외됐어요.';
+     }
+     await restoreArchive();
+    }else if(result.state==='conflict'){
+     if(current()){
+      notice.textContent=result.error||'기억이 변경됐어요. 최신 내용을 다시 확인해 주세요.';
+      addChatAction(actions,'최신 기록 열기','',()=>uxOpenKey(key,undefined,origin));
+     }
+    }else retry(result.error||(result.state==='running'?'아직 처리 중이에요. 다시 시도하면 같은 삭제 작업의 상태를 확인해요.':'삭제 결과를 확인하지 못했어요.'));
+   }catch(error){retry('삭제 결과를 확인하지 못했어요. '+error.message);}
+   finally{demoBusy=false;updateDemoControls();}
+  };
+  addChatAction(actions,'삭제하기','',submit);
+  addChatAction(actions,'취소','',()=>{if(!demoBusy&&current())uxDetailEdit(key,version,origin);});
  });
 }
 function uxRetry(reply,body,error){
@@ -281,4 +329,4 @@ openChat=function(thread){
  }).catch(error=>{chatStatus.textContent='대화의 근거 상태를 확인하지 못했어요. '+error.message;});
 };
 const uxOriginalOpenRecord=openRecord;
-openRecord=function(index){uxOriginalOpenRecord(index);const key=records[index]?.memoryKey;if(key)uxDetailEdit(key);};
+openRecord=function(index){uxOriginalOpenRecord(index);const record=records[index];if(record?.memoryKey)uxDetailEdit(record.memoryKey,record.version,'archive');};

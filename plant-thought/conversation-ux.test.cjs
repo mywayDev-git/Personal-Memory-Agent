@@ -6,7 +6,7 @@ const {createConversationUx,parseRecord}=require('./conversation-ux.cjs');
 const {memoryKey}=require('../local/summary.cjs');
 const {NAMESPACE,OWNER}=require('../local/summary-api-structured.cjs');
 const blank={intent:'question',explicit_save:false,query:'어디 갔어?',reply:'',clarification:'',title:'',targets:[],choices:[],correction_before:'',correction_after:'',choice_id:''};
-function fixture(t,{plans=[],rows=[],onSave,onSearch}={}){
+function fixture(t,{plans=[],rows=[],onSave,onSearch,onDelete}={}){
  const db=new DatabaseSync(':memory:'),data=new Map(),sources=new Map(),calls=[];
  t.after(()=>db.close());
  for(const [i,r] of rows.entries()){
@@ -38,6 +38,11 @@ function fixture(t,{plans=[],rows=[],onSave,onSearch}={}){
     data.set(key,row);sources.set(key,input.text);return {memory:memory.view(row)};
    }
    if(route.endsWith('/search'))return onSearch?onSearch(input):{answer:{action:'abstain',answer:'찾은 기록에서는 확인하지 못했어요.',citations:[]}};
+   if(route.endsWith('/delete')){
+    if(onDelete)await onDelete(input);
+    const row=data.get(input.key);if(!row||row.summary_artifact_id!==input.expected)throw Error('version conflict');
+    row.deleted_at=new Date().toISOString();return {ok:true};
+   }
    return {base:true};
   },
  };
@@ -48,6 +53,40 @@ function fixture(t,{plans=[],rows=[],onSave,onSearch}={}){
 test('record headers and untouched body are separated without changing original content',()=>{
  const text='제목: 여행\n기록일: 2026-11-08\n감정: 미지정\n\n민수와 부산에 갔다.\n사진을 찍었다.';
  const p=parseRecord(text);assert.equal(p.header+p.body,text);assert.equal(p.title,'여행');assert.equal(p.date,'2026-11-08');
+});
+
+test('confirmed deletion removes only the selected memory and repeat requests remain idempotent',async t=>{
+ const f=fixture(t,{rows:[{},{}]}),request_id=crypto.randomUUID();
+ const result=await f.request('delete',{request_id,key:'k0',expected:'v0'});
+ assert.equal(result.state,'committed');assert.equal(result.deleted_key,'k0');assert.equal(result.memory,undefined);
+ assert.ok(f.data.get('k0').deleted_at);assert.equal(f.data.get('k1').deleted_at,null);
+ assert.equal((await f.request('delete',{request_id,key:'k0',expected:'v0'})).state,'committed');assert.equal(f.calls.length,1);
+ await assert.rejects(f.request('delete',{request_id,key:'k1',expected:'v1'}),/다른 기억/);
+ await assert.rejects(f.request('status',{operation_id:request_id,session_id:'session-B'}),/현재 대화/);
+});
+
+test('deletion checks ownership and the reviewed version before making a write',async t=>{
+ const f=fixture(t,{rows:[{}, {owner:'another-owner'}]});
+ await assert.rejects(f.request('delete',{request_id:crypto.randomUUID(),key:'k0',expected:'old-version'}),/변경/);
+ await assert.rejects(f.request('delete',{request_id:crypto.randomUUID(),key:'k1',expected:'v1'}),/사용할 수/);
+ assert.equal(f.calls.length,0);assert.equal(f.data.get('k0').deleted_at,null);
+});
+
+test('unknown deletion results reconcile after restart without returning deleted source content',async t=>{
+ const f=fixture(t,{rows:[{}]}),request_id=crypto.randomUUID();
+ await f.request('delete',{request_id,key:'k0',expected:'v0'});
+ const op=JSON.parse(f.db.prepare('SELECT payload FROM plant_ux_operations WHERE id=?').get(request_id).payload);
+ op.state='running';f.db.prepare('UPDATE plant_ux_operations SET state=?,payload=? WHERE id=?').run('running',JSON.stringify(op),request_id);
+ const restarted=createConversationUx(f.engine,f.runtime,f.base);
+ const status=await restarted.post('/summary-memory/ux/status',{session_id:'session-A',operation_id:request_id});
+ assert.equal(status.state,'committed');assert.equal(status.deleted_key,'k0');assert.equal(status.memory,undefined);assert.equal(f.calls.length,1);
+});
+
+test('a failed delete can retry the same operation but cannot delete a revised record',async t=>{
+ let fail=true;const f=fixture(t,{rows:[{}],onDelete:()=>{if(fail)throw Error('offline');}}),request_id=crypto.randomUUID();
+ assert.equal((await f.request('delete',{request_id,key:'k0',expected:'v0'})).state,'failed');assert.equal(f.data.get('k0').deleted_at,null);
+ f.data.get('k0').summary_artifact_id='new-version';fail=false;
+ assert.equal((await f.request('delete',{request_id,key:'k0',expected:'v0'})).state,'conflict');assert.equal(f.data.get('k0').deleted_at,null);assert.equal(f.calls.length,1);
 });
 test('duplicate save submissions and repeated status checks produce exactly one write',async t=>{
  const f=fixture(t);const request_id=crypto.randomUUID(),text='동일 작업의 본문';

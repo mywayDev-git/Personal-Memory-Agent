@@ -28,7 +28,7 @@ class Element{
   add(option){this.append(option);this.value||=option.value;}
   get classList(){return {contains:name=>(this.className||'').split(' ').includes(name)};}
   matches(selector){return selector.startsWith('.')?this.classList.contains(selector.slice(1)):this.tagName===selector;}
-  querySelectorAll(selector){const nodes=this.children.flatMap(node=>[node,...node.querySelectorAll('*')]);if(selector==='*')return nodes;return nodes.filter(node=>node.matches(selector));}
+  querySelectorAll(selector){const nodes=this.children.flatMap(node=>[node,...node.querySelectorAll('*')]);if(selector==='*')return nodes;return nodes.filter(node=>selector.split(',').some(part=>node.matches(part.trim())));}
   querySelector(selector){return this.querySelectorAll(selector)[0]||null;}
 }
 async function fixture(handler=()=>({intent:'diary'}),options={}){
@@ -49,13 +49,14 @@ async function fixture(handler=()=>({intent:'diary'}),options={}){
     ...dates,records:[],year:2026,month:10,selected:'2026-11-13',searchFilter:'all',archiveSearchActive:false,
     renderCalendar(){},renderTimeline(){},renderRecent(){},renderSelected(){},scrollChatToBottom(){},updateChatInput(){},closeChatSidebar(){},
     selectArchiveDate(date){context.selected=date;},go:page=>navigation.push(page),syncArchivePanel(){},scrollToSearchResults(){},
+    openRecord(index){const r=context.records[index];get('detailTitle').textContent=r.title;get('detailBody').textContent=r.body;context.go('recordDetail');},
     safe:value=>String(value).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;'),
     recordIndex:record=>context.records.indexOf(record),
     renderBotText(text){const result=create('div'),paragraph=create('p');paragraph.textContent=text;result.append(paragraph);return result;},
     fetch:async(url,init)=>{
       let value;
       if(url.endsWith('/bootstrap'))value={token:'test-only-token',runtime:{models:failModels?[]:[{role:'generation',present:true,id:'qwen35-4b-q4',default:true}],states:{generation:{}}}};
-      else if(url.includes('/original?key=')){const key=url.split('key=')[1];value={source:{text:saved.find(row=>row.memory_key===key).text}};}
+      else if(url.includes('/original?key=')){const key=url.split('key=')[1],row=saved.find(row=>row.memory_key===key);value={source:{text:row.text},summary_id:row.summary_artifact_id};}
       else if(url.includes('/progress?id='))value={stage:'answering'};
       else if(url.endsWith('/summary-memory')&&!init)value={memories:saved.map(({text,...row})=>row)};
       else{
@@ -74,9 +75,39 @@ async function fixture(handler=()=>({intent:'diary'}),options={}){
   };
   vm.createContext(context);vm.runInContext(fs.readFileSync(path.join(__dirname,'memory.js'),'utf8'),context);
   await vm.runInContext('memoryReady',context);
+  if(options.ux)vm.runInContext(fs.readFileSync(path.join(__dirname,'conversation-ux.js'),'utf8'),context);
   const value=code=>vm.runInContext(code,context);
   return {context,get,saved,calls,navigation,storage,value,failSave(){failSave=true;},failModels(){failModels=true;value("modelPicker.value=''");}};
 }
+
+test('opening a source from chat returns to the same chat, while archive sources return to archive',async()=>{
+ const row={memory_key:'key-1',summary_artifact_id:'version-1',source_id:'source-1',text:'제목: 시험 원문\n기록일: 2026-11-13\n감정: 미지정\n\n민수와 도서관에 갔다.'};
+ const f=await fixture(undefined,{ux:true,archive:[row]});
+ f.value("addBubble('user','내 기록을 보여줘.');addBubble('bot','도서관에 간 기록이 있어요.');chatHistoryState.activeId='same-chat';");
+ const before=f.get('conversation').textContent;
+ await f.value("uxOpenKey('key-1','version-1')");
+ const back=f.get('#recordDetail .record-detail > button');
+ assert.match(back.textContent,/사색 대화/);back.onclick();
+ assert.equal(f.navigation.at(-1),'chat');assert.equal(f.get('conversation').textContent,before);assert.equal(f.value('chatHistoryState.activeId'),'same-chat');
+ f.value('openRecord(0)');assert.match(back.textContent,/서재 보관소/);back.onclick();assert.equal(f.navigation.at(-1),'archive');
+});
+test('delete button requires confirmation, cancel makes no request, and success removes only its record',async()=>{
+ const record=(key,title)=>({memory_key:key,summary_artifact_id:'version-'+key,source_id:'source-'+key,text:'제목: '+title+'\n기록일: 2026-11-13\n감정: 미지정\n\n보존할 내용'});
+ let f;
+ f=await fixture(async(url,payload)=>{
+  if(url.endsWith('/ux/delete')){const i=f.saved.findIndex(r=>r.memory_key===payload.key);f.saved.splice(i,1);return {kind:'delete',state:'committed',deleted_key:payload.key};}
+  return {};
+ },{ux:true,archive:[record('one','삭제 대상'),record('two','남길 기억')]});
+ const button=label=>f.get('#recordDetail .card').querySelectorAll('button').find(b=>b.textContent===label);
+ f.value('openRecord(0)');button('기억 삭제').onclick();
+ assert.ok(button('삭제하기'));assert.ok(button('취소'));assert.equal(f.calls.filter(c=>c.url.endsWith('/ux/delete')).length,0);
+ button('취소').onclick();assert.equal(f.saved.length,2);assert.ok(button('기억 삭제'));
+ button('기억 삭제').onclick();await button('삭제하기').onclick();
+ assert.equal(f.saved.length,1);assert.equal(f.saved[0].memory_key,'two');assert.equal(f.context.records.length,1);
+ assert.equal(f.calls.filter(c=>c.url.endsWith('/ux/delete')).length,1);assert.equal(f.get('detailTitle').textContent,'기억을 삭제했어요.');
+ assert.ok(!button('기억 삭제'));
+});
+
 test('all original CSS is preserved and inline code remains valid',()=>{
   const before=fs.readFileSync(path.join(__dirname,'fixtures/original-style.css'),'utf8');
   const after=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
