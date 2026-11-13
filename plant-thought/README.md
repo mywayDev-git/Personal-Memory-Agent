@@ -45,6 +45,13 @@ Node.js의 node:sqlite 지원과 C:\llama.cpp\llama-server.exe가 필요합니�
 
 ## 검증과 남은 문제
 
+2026-11-13 실제 실행 화면의 스크린샷도 포함합니다. 가상 테스트 기록이 표시된 화면입니다.
+
+- [홈 화면](screenshots/01-home.jpg)
+- [보관소](screenshots/02-archive.jpg)
+- [기록 상세](screenshots/03-record-detail.jpg)
+- [대화와 참고 기록](screenshots/04-chat-with-sources.jpg)
+
     node --test plant-thought/memory.test.cjs plant-thought/conversation-ux.test.cjs
 
 자동 검사는 기존 기능·원래 CSS 보존·새 처리 로직 28개입니다. 실제 모델로 저장·수정·취소와 중복 저장 방지, 원문 적재를 별도 확인했습니다. 40개 실제 모델 시나리오 전체 통과를 의미하지 않습니다.
