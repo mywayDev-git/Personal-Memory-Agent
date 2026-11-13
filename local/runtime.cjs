@@ -9,8 +9,8 @@ const TOKEN_COUNT_ENDPOINTS=new Set(['/tokenize','/v1/chat/completions/input_tok
 const TOKEN_COUNT_RETRY_CODES=new Set(['ECONNRESET','ECONNREFUSED','EPIPE','UND_ERR_SOCKET','UND_ERR_CONNECT_TIMEOUT']);
 async function freePort(port){return new Promise((resolve,reject)=>{const s=net.createServer();s.once('error',()=>reject(Error(`전용 포트 ${port}가 이미 사용 중입니다. 기존 서버는 재사용하거나 종료하지 않습니다.`)));s.listen(port,'127.0.0.1',()=>s.close(resolve));});}
 class Runtime{
- constructor(root){this.root=root;this.shutdownEpoch=0;this.stopRequested=false;this.terminating=false;this.last_process_check=null;this.exe='C:\\llama.cpp\\llama-server.exe';this.states={generation:{status:'stopped'},embedding:{status:'stopped'}};this.children={};this.keys={};this.verified=new Map();this.pending={};this.logDir=path.join(root,'.local','baseline','runtime');fs.mkdirSync(this.logDir,{recursive:true});const version=fs.existsSync(this.exe)?spawnSync(this.exe,['--version'],{windowsHide:true,encoding:'utf8',timeout:10000}):null;this.version=version?((version.stdout||'')+(version.stderr||'')).trim():'llama-server 없음';this.hardware={node:process.version,platform:process.platform,arch:process.arch,cpu:os.cpus()[0]?.model,logical_cpus:os.cpus().length,ram_bytes:os.totalmem()};}
- catalog(){return models.map(m=>({...m,path:path.join(this.root,'.models',m.file),present:fs.existsSync(path.join(this.root,'.models',m.file))&&fs.statSync(path.join(this.root,'.models',m.file)).size===m.bytes}));}
+ constructor(root,options={}){this.root=root;this.modelDirectory=options.modelDirectory||path.join(root,'.models');this.ports=options.ports||{generation:18491,embedding:18492};this.shutdownEpoch=0;this.stopRequested=false;this.terminating=false;this.last_process_check=null;this.exe='C:\\llama.cpp\\llama-server.exe';this.states={generation:{status:'stopped'},embedding:{status:'stopped'}};this.children={};this.keys={};this.verified=new Map();this.pending={};this.logDir=path.join(root,'.local','baseline','runtime');fs.mkdirSync(this.logDir,{recursive:true});const version=fs.existsSync(this.exe)?spawnSync(this.exe,['--version'],{windowsHide:true,encoding:'utf8',timeout:10000}):null;this.version=version?((version.stdout||'')+(version.stderr||'')).trim():'llama-server 없음';this.hardware={node:process.version,platform:process.platform,arch:process.arch,cpu:os.cpus()[0]?.model,logical_cpus:os.cpus().length,ram_bytes:os.totalmem()};}
+ catalog(){return models.map(m=>({...m,path:path.join(this.modelDirectory,m.file),present:fs.existsSync(path.join(this.modelDirectory,m.file))&&fs.statSync(path.join(this.modelDirectory,m.file)).size===m.bytes}));}
  status(){return {executable:this.exe,version:this.version,hardware:this.hardware,states:this.states,models:this.catalog(),process_check:this.last_process_check,terminating:this.terminating};}
  allowStart(){if(this.terminating)throw Error('프로세스 종료 확인 중입니다.');this.stopRequested=false;}
  async inspectProcesses(){try{const report=await (this.processController||processControl)(this.root,this.exe,models,'inspect');this.last_process_check=report;return report;}catch(e){this.last_process_check={verified:false,checked_at:new Date().toISOString(),error:e.message};throw e;}}
@@ -29,12 +29,12 @@ class Runtime{
   const epoch=this.shutdownEpoch;const assertActive=()=>{if(this.stopRequested||this.terminating||epoch!==this.shutdownEpoch||signal?.aborted)throw Error('사용자 요청으로 모델 실행이 중단됐습니다.');};assertActive();
   if(!fs.existsSync(this.exe))throw Error('C:\\llama.cpp\\llama-server.exe를 찾을 수 없습니다.');
   if(signal?.aborted)throw Error('실행 취소');
-  await this.stop(role);const file=path.join(this.root,'.models',m.file);
+  await this.stop(role);const file=path.join(this.modelDirectory,m.file);
   if(!fs.existsSync(file))throw Error('먼저 모델을 다운로드하세요: '+m.name);
   this.states[role]={status:'verifying',model_id:m.id};
   const stat=fs.statSync(file),fingerprint=stat.size+':'+stat.mtimeMs;
   if(this.verified.get(file)!==fingerprint){if(stat.size!==m.bytes||await fileHash(file)!==m.sha256){this.states[role].status='error';throw Error('모델 파일 해시 검증 실패');}this.verified.set(file,fingerprint);}
-  assertActive();const port=role==='generation'?18491:18492;await freePort(port);assertActive();
+  assertActive();const port=this.ports[role];await freePort(port);assertActive();
   const logPath=path.join(this.logDir,role+'.log'),fd=fs.openSync(logPath,'a');
   this.keys[role]=crypto.randomBytes(32).toString('hex');const keyFile=path.join(this.logDir,role+'.key');fs.writeFileSync(keyFile,this.keys[role]);
   const args=['-m',file,'--host','127.0.0.1','--port',String(port),'-c','8192','-np','1','--no-warmup','--api-key-file',keyFile,'--cors-origins','http://127.0.0.1:'+(process.env.PORT||4319),'--no-cors-credentials'];

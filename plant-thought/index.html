@@ -1,0 +1,1767 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plant Thought — 디지털 서재</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Gowun+Dodum&family=Newsreader:wght@400;500;600&family=Noto+Sans+KR:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fbf9f6;
+  --paper:white;
+  --soft:#f4f5f0;
+  --line:#e5e9e2;
+  --green:#193c2e;
+  --green2:#426651;
+  --muted:#79877c;
+  --text:#27342c;
+  --brown:#9c715d;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font:14px "Gowun Dodum","Noto Sans KR",sans-serif;
+}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,
+textarea:focus-visible,select:focus-visible{
+  outline:2px solid #799c85;
+  outline-offset:2px;
+}
+h1,h2,h3{
+  font-family:"Gowun Dodum","Noto Sans KR",sans-serif;
+  font-weight:600;
+  color:var(--green);
+}
+h1{
+  font-size:46px;
+  margin:12px 0 17px;
+  letter-spacing:-1px;
+}
+h2{font-size:29px;margin:0 0 16px}
+h3{font-size:22px;margin:0 0 13px}
+p{line-height:1.85}
+.eyebrow{
+  font:600 11px "DM Sans",sans-serif;
+  letter-spacing:2px;
+  color:var(--brown);
+}
+.lead{font-size:16px;color:var(--muted)}
+.muted{color:var(--muted)}
+.small{font-size:12px}
+.line{
+  height:1px;
+  background:var(--line);
+  margin:25px 0;
+}
+
+/* HEADER — 기존 구조 및 스타일 유지 */
+header{
+  position:sticky;
+  top:0;
+  z-index:50;
+  background:rgba(251,249,246,.96);
+  border-bottom:1px solid var(--line);
+  backdrop-filter:blur(16px);
+}
+.head{
+  max-width:1240px;
+  margin:auto;
+  min-height:82px;
+  padding:0 30px;
+  display:flex;
+  align-items:center;
+  gap:24px;
+}
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-right:auto;
+  cursor:pointer;
+  white-space:nowrap;
+}
+.logo{
+  width:43px;
+  height:43px;
+  border-radius:13px;
+  background:#e6eee7;
+  color:var(--green);
+  display:grid;
+  place-items:center;
+  font-size:25px;
+}
+.brand b{
+  font:500 24px Newsreader,serif;
+  color:var(--green);
+}
+.brand small{
+  display:block;
+  font-size:10px;
+  color:var(--muted);
+  margin-top:3px;
+}
+nav{
+  display:flex;
+  align-items:stretch;
+  align-self:stretch;
+  gap:22px;
+}
+nav button{
+  position:relative;
+  display:flex;
+  align-items:center;
+  border:none;
+  border-radius:0;
+  background:transparent;
+  color:#87938a;
+  padding:0 2px;
+  font-size:12px;
+  font-weight:400;
+  white-space:nowrap;
+  transition:color .2s ease;
+}
+nav button:hover{
+  color:var(--green);
+  background:transparent;
+}
+nav button.active{
+  color:var(--green);
+  font-weight:600;
+  background:transparent;
+}
+nav button.active::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:-1px;
+  height:2px;
+  border-radius:2px 2px 0 0;
+  background:var(--green);
+}
+.account{
+  background:white;
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:10px 16px;
+  color:var(--green);
+  white-space:nowrap;
+  transition:background .2s;
+}
+.account:hover{background:#edf2ea}
+.mobile{display:none}
+
+/* COMMON */
+main{
+  max-width:1100px;
+  margin:auto;
+  padding:60px 25px 90px;
+  min-height:75vh;
+}
+.page{display:none}
+.page.active{display:block}
+.hero{
+  text-align:center;
+  max-width:780px;
+  margin:20px auto 55px;
+  padding:50px 0;
+}
+.hero h1{font-size:51px}
+.hero .lead{
+  font-family:"Gowun Dodum",sans-serif;
+  font-size:18px;
+}
+.inputbox{
+  display:flex;
+  gap:10px;
+  padding:10px;
+  background:white;
+  border:1px solid var(--line);
+  border-radius:16px;
+  box-shadow:0 9px 35px #1837270c;
+}
+.inputbox input{
+  flex:1;
+  min-width:0;
+  border:none;
+  outline:none;
+  padding:12px;
+}
+.primary{
+  border:none;
+  background:var(--green);
+  color:white;
+  border-radius:10px;
+  padding:12px 19px;
+  transition:background .2s;
+}
+.primary:hover{background:var(--green2)}
+.ghost{
+  border:1px solid var(--line);
+  background:white;
+  color:var(--green);
+  border-radius:9px;
+  padding:10px 14px;
+}
+.ghost:hover{background:#edf2ea}
+.chips{
+  display:flex;
+  gap:9px;
+  flex-wrap:wrap;
+  margin:18px 0;
+}
+.chip{
+  background:#f0f3ed;
+  border:1px solid #e1e9df;
+  color:#56745f;
+  border-radius:30px;
+  padding:9px 14px;
+  font-size:12px;
+}
+.chip:hover,.chip.on{
+  background:#dfeae0;
+  color:var(--green);
+}
+.card{
+  background:white;
+  border:1px solid var(--line);
+  border-radius:17px;
+  padding:25px;
+  box-shadow:0 5px 25px #17352707;
+}
+.grid3{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:17px;
+}
+.grid2{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:17px;
+}
+.iconbox{
+  width:43px;
+  height:43px;
+  display:grid;
+  place-items:center;
+  background:#e9f0e8;
+  color:var(--green);
+  border-radius:13px;
+  font-size:23px;
+}
+.tag{
+  display:inline-block;
+  background:#eaf0e8;
+  color:#4d6c57;
+  padding:5px 10px;
+  border-radius:7px;
+  font-size:11px;
+}
+.tag.brown{
+  background:#f5ebe5;
+  color:#946e5a;
+}
+.sectionhead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin:0 0 20px;
+}
+.home-recent{margin-top:44px}
+.home-recent .sectionhead{gap:16px;flex-wrap:wrap}
+.home-recent .sectionhead h2{margin-bottom:10px}
+.recent-list{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:white}
+.recent-list li+li{border-top:1px solid var(--line)}
+.recent-row{display:grid;grid-template-columns:140px minmax(0,1fr) auto;align-items:center;gap:22px;width:100%;padding:20px 24px;text-align:left;color:var(--text);border:0;background:transparent}
+.recent-row:hover{background:#f5f8f0}
+.recent-record-content{min-width:0}
+.recent-record-date{font-size:11px;color:var(--muted)}
+.recent-record-title{display:block;font:600 20px/1.5 "Gowun Dodum",sans-serif;color:var(--green);overflow-wrap:anywhere}
+.recent-record-preview{display:block;margin-top:5px;font-size:12px;line-height:1.85;color:#6c7b70;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}
+.recent-record-link{font-size:12px;color:#52715a;white-space:nowrap}
+@media(max-width:650px){
+  .recent-row{grid-template-columns:minmax(0,1fr) auto;padding:17px;gap:5px 14px}
+  .recent-record-date,.recent-record-content{grid-column:1}
+  .recent-record-link{grid-column:2;grid-row:1 / 3}
+  .recent-record-link-label{display:none}
+  .recent-record-title{font-size:18px}
+}
+.field{
+  width:100%;
+  background:white;
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:13px;
+  margin-top:8px;
+  color:var(--text);
+}
+label{
+  display:block;
+  font-size:12px;
+  color:#607267;
+}
+textarea{
+  width:100%;
+  min-height:240px;
+  resize:vertical;
+  padding:17px;
+  border:1px solid var(--line);
+  border-radius:13px;
+  line-height:1.85;
+}
+details{
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:17px;
+  background:white;
+  margin:16px 0;
+}
+summary{cursor:pointer;color:var(--green)}
+.record{
+  background:white;
+  border:1px solid var(--line);
+  border-radius:13px;
+  padding:19px;
+  margin-bottom:11px;
+}
+.record b{color:var(--green)}
+.record p{font-size:12px;color:#6c7b70}
+.record small{font-size:11px;color:#9aa59c}
+.banner{
+  background:#eaf0e7;
+  border-radius:16px;
+  padding:23px;
+  border:1px solid #e0e9dd;
+  margin:22px 0;
+}
+.banner p{color:#637568;font-size:12px}
+#emotion .record-note{padding:12px 16px;margin:16px 0;border-radius:12px}
+#emotion .record-note b{font-size:13px}
+#emotion .record-note p{font-size:11px;line-height:1.7;margin:6px 0 0}
+.emotion-back{display:inline-flex;align-items:center;min-height:32px;margin-bottom:24px;padding:0;border:0;background:transparent;color:#60775b;font-size:12px}
+.emotion-back:hover{background:transparent;color:var(--green);text-decoration:underline;text-underline-offset:4px}
+.notice{
+  color:#95a098;
+  font-size:11px;
+  line-height:1.7;
+  margin-top:15px;
+}
+
+/* CHAT — focused conversation workspace */
+body.chat-mode{overflow:hidden;background:var(--bg)}
+body.chat-mode main{max-width:none;margin:0;padding:0;min-height:0}
+body.chat-mode footer{display:none}
+#chat{--chat-surface:#fffdf9;--chat-sidebar:#f1efe9;--chat-user:#e7eddf;--chat-hover:#e9ecdf;--chat-border:#e1e1d6;--chat-muted:#85907d;--chat-ink:#304333;width:100%;position:relative;color:var(--chat-ink);font-family:"Noto Sans KR",sans-serif}
+.chat-layout{--chat-rail:clamp(180px,18vw,250px);display:grid;grid-template-columns:minmax(var(--chat-rail),1fr) minmax(0,1100px) minmax(var(--chat-rail),1fr);height:calc(100dvh - var(--header-height,83px));min-height:0;position:relative;isolation:isolate;background:var(--bg)}
+.chat-sidebar{display:flex;flex-direction:column;justify-self:end;width:var(--chat-rail);min-height:0;min-width:0;margin:18px 0;background:var(--chat-sidebar);padding:16px 12px;border:1px solid var(--chat-border);border-radius:18px;overflow:hidden}
+.sidebar-heading{padding:2px 8px 18px}
+.sidebar-brand{display:flex;align-items:center;gap:9px;font:500 20px Newsreader,serif;color:var(--green);margin:0 0 22px}
+.sidebar-brand span{font-size:26px}
+.new-chat-btn{display:flex;align-items:center;gap:11px;width:100%;padding:11px 10px;border:0;border-radius:9px;background:transparent;color:#303b32;text-align:left;font-size:13px}
+.new-chat-btn:hover,.chat-session:hover{background:var(--chat-hover)}
+.sidebar-label{margin:8px 18px 12px;font-size:11px;color:#899087}
+.chat-history{min-height:0}
+.chat-sidebar-scroll{min-height:0;overflow-y:auto;scrollbar-width:thin;padding-bottom:8px}
+.chat-session{display:block;width:100%;border:0;background:transparent;border-radius:9px;text-align:left;color:#444b44;padding:12px 14px;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chat-session.active{background:#e1e7d7;color:var(--green)}
+.chat-main{display:flex;flex-direction:column;grid-column:2;justify-self:center;width:100%;max-width:1100px;min-width:0;min-height:0;height:100%;background:var(--bg);position:relative}
+.chat-topbar{height:68px;flex:0 0 68px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;gap:12px;background:transparent}
+.chat-topbar-left,.chat-topbar-actions{display:flex;align-items:center;gap:12px;min-width:0}
+.chat-title{margin:0;font-size:22px;letter-spacing:-.5px;font-weight:600;color:var(--green);white-space:nowrap}
+.chat-topbar-label{font-size:11px;color:#7c8873;background:transparent;padding:5px 0;white-space:nowrap}
+.chat-icon-btn{display:grid;place-items:center;width:36px;height:36px;border:0;border-radius:9px;background:transparent;color:#667066;flex-shrink:0}
+.chat-icon-btn:hover{background:var(--chat-hover)}
+#chat svg,.chat-input-wrapper svg{width:20px;height:20px;stroke:currentColor;stroke-width:1.7;fill:none;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.chat-scroll{flex:1 1 0;min-height:0;overflow-y:auto;overflow-x:hidden;padding:24px max(24px,calc((100% - 760px)/2)) 32px;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#d8ded4 transparent}
+#conversation{display:flex;flex-direction:column;gap:28px}
+.bubble{line-height:1.95;font-size:14px;overflow-wrap:anywhere;white-space:pre-wrap}
+.bubble.user{align-self:flex-end;position:relative;max-width:85%;padding:11px 20px;margin-right:6px;background:var(--chat-user);border-radius:20px 20px 3px 20px;color:var(--chat-ink)}
+.bubble.user::after{content:'';position:absolute;right:-6px;bottom:0;width:10px;height:10px;background:var(--chat-user);clip-path:polygon(0 0,0 100%,100% 100%)}
+.bubble.bot{align-self:stretch;background:transparent;padding:0 0 0 36px;position:relative;color:var(--chat-ink)}
+.bubble.bot::before{content:'♧';position:absolute;left:0;top:0;color:#315c40;font-size:24px;line-height:1.6}
+.bubble.bot .bot-label{display:block;font-size:11px;color:var(--chat-muted);margin-bottom:7px;line-height:1.6}
+.bubble.bot{white-space:normal}
+.bubble.bot .bot-content p{margin:0 0 16px}
+.bubble.bot .bot-content p:last-child{margin-bottom:0}
+.bot-content ul{padding-left:21px;margin:0 0 16px;line-height:2}
+.bot-content li{padding-left:3px}
+.bot-content strong{font-weight:600;color:#263d2c}
+.message-sources{margin:18px 0 0;padding:12px 0 0;border:0;border-top:1px solid var(--chat-border);background:transparent;border-radius:0}
+.message-sources summary{display:flex;align-items:center;justify-content:space-between;gap:12px;list-style:none;padding:4px 0;font-size:12px;color:#718262}
+.message-sources summary::-webkit-details-marker{display:none}
+.message-sources summary::after{content:'';width:7px;height:7px;margin-right:3px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg);flex-shrink:0}
+.message-sources[open] summary::after{transform:rotate(225deg)}
+.chat-followups{display:flex;flex-wrap:wrap;gap:8px;margin-top:19px}
+.chat-followups button{border:1px solid var(--chat-border);border-radius:20px;padding:8px 12px;background:var(--chat-surface);color:#607456;font-size:11px;text-align:left}
+.chat-followups button:hover{background:var(--chat-hover);border-color:#bbc8ad}
+.bubble p{margin:0;white-space:pre-wrap;line-height:1.95}
+.chat-evidence-details{padding:12px 16px;margin:26px 0 0 36px;border:1px solid #e5e9e1;border-radius:14px;background:#fcfdfb}
+.chat-evidence-details[hidden]{display:none}
+.chat-evidence-details summary{font-size:11px;color:#778273}
+.evidence{border-left:2px solid #9eaf8e;background:#f0f2e7;padding:12px;margin:12px 0 0;border-radius:0 8px 8px 0;font-size:12px;line-height:1.8}
+.chat-input-area{flex:0 0 auto;width:100%;max-width:808px;margin:0 auto;padding:12px 24px 14px;background:var(--bg)}
+.chat-input-wrapper{display:flex;align-items:flex-end;gap:8px;border:1px solid #e2e6dd;border-radius:26px;background:#f6f7f4;padding:12px 14px;box-shadow:0 3px 12px #193c2e04}
+.chat-input-wrapper.memory-composer{max-width:780px;margin:0 auto;border-radius:16px;background:#fff;padding:10px;box-shadow:0 9px 35px #1837270c}
+.chat-input-wrapper input{flex:1;min-width:0;height:40px;border:0;outline:0;background:transparent;padding:8px;font-size:14px;line-height:1.7;color:#303b32}
+.chat-input-wrapper input::placeholder{color:#99a093}
+.chat-input-wrapper:focus-within{border-color:#adbca7}
+#chat .chat-input-wrapper{background:var(--chat-surface);border-color:var(--chat-border);box-shadow:0 4px 18px #283c2405}
+#chat .chat-input-wrapper:focus-within{border-color:#9cae8d}
+.chat-input-wrapper textarea{display:block;flex:1;min-width:0;width:100%;min-height:40px;height:40px;max-height:180px;resize:none;border:0;outline:0;box-shadow:none;background:transparent;padding:8px;border-radius:0;font-size:14px;line-height:1.7;color:#303b32;scrollbar-width:thin}
+.chat-input-wrapper textarea::placeholder{color:#99a093}
+#chat .chat-input-wrapper textarea{color:var(--chat-ink)}
+#chat .chat-input-wrapper textarea::placeholder{color:var(--chat-muted)}
+.chat-input-wrapper textarea:focus-visible{outline:0}
+.chat-send-btn{display:grid;place-items:center;flex:0 0 34px;width:34px;height:34px;margin:0 0 3px auto;background:#263b2b;color:#fff;border:0;border-radius:50%}
+.chat-send-btn:hover{background:#436249}
+.chat-send-btn:disabled{background:#dce2d6;color:#fff;cursor:default}
+#chat .chat-send-btn{background:var(--green)}
+#chat .chat-send-btn:hover{background:var(--green2)}
+#chat .chat-send-btn:disabled{background:#d8dece;cursor:default}
+.chat-disclaimer{margin:10px 0 0;color:#99a092;font-size:10px;text-align:center;line-height:1.6}
+.chat-sidebar-backdrop{display:none}
+.chat-layout.sidebar-collapsed{grid-template-columns:minmax(0,1fr)}
+.chat-layout.sidebar-collapsed .chat-sidebar{display:none}
+.chat-layout.sidebar-collapsed .chat-main{grid-column:1}
+@media(max-width:1000px){
+  #chat .chat-layout{grid-template-columns:minmax(0,1fr)}
+  #chat .chat-sidebar{display:none;position:absolute;inset:0 auto 0 0;width:min(280px,85vw);z-index:3;box-shadow:12px 0 30px #193c2e15}
+  #chat .chat-layout.sidebar-open .chat-sidebar{display:flex}
+  #chat .sidebar-open .chat-sidebar-backdrop{display:block;position:absolute;inset:0;background:#17281c40;z-index:2;border:0;cursor:default}
+  #chat .chat-topbar{padding:0 14px;height:62px;flex-basis:62px}
+  #chat .chat-title{font-size:20px}
+  #chat .chat-topbar-label{display:none}
+  #chat .chat-scroll{padding:18px 18px 28px}
+  #chat .chat-main{grid-column:1;height:100%;min-height:0}
+  #chat .chat-input-area{padding:10px 14px 12px}
+  #chat .bubble.user{max-width:90%}
+  #chat .bubble.bot{padding-left:30px}
+  #chat .chat-evidence-details{margin-left:30px}
+}
+
+
+
+/* CALENDAR AND ARCHIVE */
+.archive-search-btn{display:grid;place-items:center;flex:0 0 44px;width:44px;height:44px;padding:0;border-radius:12px}
+.archive-search-btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.archive-workspace{width:100%}
+#calendarZoomButton{border:0;background:transparent;padding:10px 0;border-radius:0}
+#calendarZoomButton:hover{background:transparent;color:var(--green);text-decoration:underline;text-underline-offset:4px}
+.archive-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0 16px;position:sticky;top:var(--header-height,83px);z-index:5;background:var(--bg)}
+.archive-view-switch{display:flex;gap:4px;padding:4px;border:1px solid var(--line);border-radius:12px;background:white}
+.archive-view-switch button{border:0;border-radius:8px;padding:9px 16px;background:transparent;color:var(--muted)}
+.archive-view-switch button[aria-pressed="true"]{background:#e7eddf;color:var(--green);font-weight:600}
+.archive-sort{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px}
+.archive-sort select{border:1px solid var(--line);border-radius:9px;background:white;color:var(--green);padding:9px 12px}
+.archive-toolbar [hidden],#archiveTimeline[hidden],#archiveCalendar[hidden]{display:none}
+.archive-timeline{padding:25px;background:white;border:1px solid var(--line);border-radius:17px;min-width:0}
+.timeline-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:24px}
+.timeline-heading h2{margin:0;font-size:25px}
+.timeline-group{padding:0 0 24px 18px;border-left:1px solid #dce5d6;position:relative}
+.timeline-group:last-child{padding-bottom:0}
+.timeline-group::before{content:'';width:9px;height:9px;border-radius:50%;background:#a5b99c;position:absolute;left:-5px;top:13px}
+.timeline-date{display:block;border:0;background:transparent;padding:6px 0 12px;text-align:left;color:#6b8060;font-weight:600;font-size:13px}
+.timeline-date[aria-pressed="true"]{color:var(--green)}
+.timeline-group.is-selected::before{background:var(--green);box-shadow:0 0 0 4px #e6edde}
+.timeline-record-list{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+.timeline-entry{display:flex;border:1px solid var(--line);border-radius:11px;overflow:hidden;background:#fffdf9}
+.timeline-group.is-selected .timeline-entry{border-color:#b4c6a8;background:#f3f7ee}
+.timeline-record{flex:1;min-width:0;border:0;background:transparent;padding:14px;text-align:left;color:var(--text)}
+.timeline-record strong{display:block;font-size:15px;font-weight:600}
+.timeline-record span{display:block;font-size:11px;line-height:1.8;color:var(--muted);margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.timeline-open{width:40px;flex-shrink:0;border:0;background:transparent;color:#718765}
+.timeline-record:hover,.timeline-open:hover{background:#eaf1e3}
+.archive-workspace.calendar-expanded{width:min(1440px,calc(100vw - 48px));margin-left:50%;transform:translateX(-50%)}
+.calendar-expanded .archive-layout{grid-template-columns:minmax(0,1.75fr) minmax(340px,1fr)}
+.calendar-expanded .calendar{padding:30px}
+.calendar-expanded .day{height:200px;font-size:16px;border-color:transparent;background:transparent;gap:8px;padding:8px}
+.calendar-expanded .day:not(.selected):hover{background:transparent}
+.calendar-expanded .count{font-size:11px}
+.calendar-grid-scroll{width:100%;min-width:0;max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin}
+.calendar-expanded .calendar-grid{min-width:700px}
+.day-date-control{display:flex;flex-direction:column;align-items:flex-start;gap:7px;width:100%;height:100%;border:0;border-radius:4px;background:transparent;color:inherit;padding:0;text-align:left;font:inherit;min-width:0}
+.calendar-expanded .day-date-control{flex-direction:row;align-items:center;justify-content:space-between;gap:4px;height:26px;flex-shrink:0}
+.calendar-expanded .day-date-control .dot{display:none}
+.calendar-expanded .day-date-control .count{font-size:9px;white-space:nowrap}
+.day-record-previews{display:none}
+.calendar-expanded .day-record-previews{display:flex;flex-direction:column;gap:5px;width:100%;min-height:0}
+.calendar-record{display:block;width:100%;padding:5px;border:0;border-radius:6px;background:#edf2e5;color:#3b553b;text-align:left;min-width:0}
+.calendar-record:hover{background:#e0e9d4}
+.calendar-record-title{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;white-space:normal;font-size:11px;font-weight:600;line-height:1.5}
+.calendar-record-preview{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;color:#7c8972;line-height:1.6;margin-top:2px}
+.calendar-more-records{padding:0;border:0;background:transparent;color:#607a52;text-align:left;font-size:10px;line-height:1.4}
+#calendarDetailsHint{font-size:11px;color:var(--muted);line-height:1.7;margin:13px 0 0}
+.day-panel{position:sticky;top:calc(var(--header-height,83px) + 88px);align-self:start;min-width:0;scroll-margin-top:calc(var(--header-height,83px) + 90px)}
+@media(max-width:900px){
+  .archive-layout,.calendar-expanded .archive-layout{grid-template-columns:1fr!important}
+  .archive-toolbar{flex-wrap:wrap}
+  .archive-workspace.calendar-expanded{width:100%;margin-left:0;transform:none}
+  .calendar-expanded .calendar{padding:18px}
+  .calendar-expanded .day{height:200px}
+  .day-panel{position:static}
+  .calhead{flex-wrap:wrap}
+  .archive-timeline{padding:18px}
+}
+.archive-layout{
+  display:grid;
+  grid-template-columns:1.4fr 1fr;
+  gap:21px;
+}
+.calendar,.day-panel{
+  min-width:0;
+  background:white;
+  border:1px solid var(--line);
+  border-radius:17px;
+  padding:25px;
+}
+.calhead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+.calhead h2{margin:0}
+.calactions{display:flex;gap:5px}
+.calactions button{
+  background:white;
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:9px 12px;
+  color:var(--green);
+}
+.week,.days{
+  display:grid;
+  grid-template-columns:repeat(7,minmax(0,1fr));
+  gap:5px;
+}
+.week{margin-top:20px}
+.week div{
+  text-align:center;
+  color:#9aa69c;
+  font-size:11px;
+  padding:9px 0;
+}
+.day{
+  height:72px;
+  border:1px solid transparent;
+  background:white;
+  border-radius:10px;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  padding:9px;
+  gap:7px;
+  color:#4b6251;
+}
+.day:hover{background:#f4f7f2}
+.day.selected{
+  border-color:#aac6ad;
+  background:#eaf2e8;
+}
+.day.today .number{
+  background:var(--green);
+  color:white;
+  border-radius:50%;
+  padding:3px 7px;
+}
+.day.empty{pointer-events:none}
+.dot{
+  width:6px;
+  height:6px;
+  background:#799e81;
+  border-radius:50%;
+}
+.count{font-size:9px;color:#8b9e8f}
+#selectedList{
+  max-height:390px;
+  overflow-y:auto;
+  padding-right:5px;
+  scrollbar-width:thin;
+}
+#searchResults{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:12px;
+  max-height:390px;
+  overflow-y:auto;
+  padding:2px 5px 5px 0;
+  scrollbar-width:thin;
+}
+#searchResults .card{cursor:pointer}
+#searchResults .card{padding:18px}
+#searchResults .card .line{margin:16px 0}
+#searchResults .card.date-preview{border-color:#8ca88c;background:#f1f6ed;box-shadow:0 0 0 1px #8ca88c}
+#archiveSearchView .sectionhead{margin:12px 0}
+#archiveSearchView .sectionhead h2{margin:0}
+#searchResults .card:hover{
+  border-color:#a5bea9;
+  background:#fcfefa;
+}
+
+/* 검색 결과 자동 스크롤 위치 */
+#searchResultsHeading{
+  scroll-margin-top:calc(var(--header-height,83px) + 100px);
+}
+
+/* RECORD DETAIL */
+.record-detail{
+  max-width:800px;
+  margin:auto;
+}
+.record-content{
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  font-size:15px;
+  line-height:2.1;
+}
+
+/* OTHER PAGES */
+.setting{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:20px 0;
+  border-bottom:1px solid var(--line);
+  gap:15px;
+}
+.setting input{
+  accent-color:var(--green);
+  width:17px;
+  height:17px;
+}
+.auth{
+  max-width:460px;
+  margin:25px auto 60px;
+}
+.authcard{
+  background:white;
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:38px;
+  box-shadow:0 16px 45px #193c2e0a;
+}
+.authcard label{margin-top:19px}
+.authcard .primary{
+  width:100%;
+  margin-top:25px;
+}
+.authlink{
+  background:none;
+  border:none;
+  color:var(--green);
+  font-weight:600;
+}
+
+/* FOOTER — 기존 구조 및 스타일 유지 */
+footer{
+  background:#f3f3ee;
+  border-top:1px solid var(--line);
+  padding:40px 25px 25px;
+}
+.foot{
+  max-width:1100px;
+  margin:auto;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+}
+.foot b{
+  font:500 23px Newsreader,serif;
+  color:var(--green);
+}
+.foot small{
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+  margin-top:7px;
+}
+.foot button{
+  background:none;
+  border:none;
+  font-size:12px;
+  color:#738177;
+  margin-left:15px;
+}
+
+@media(max-width:1000px){
+  nav{display:none}
+  .mobile{
+    display:block;
+    padding:0 16px 12px;
+  }
+  .mobile select{
+    width:100%;
+    border:1px solid var(--line);
+    background:white;
+    padding:12px;
+    border-radius:9px;
+  }
+}
+@media(max-width:650px){
+  main{padding:35px 16px 65px}
+  .head{padding:12px 16px}
+  .grid3,.grid2,.archive-layout{
+    grid-template-columns:1fr;
+  }
+  h1,.hero h1{font-size:35px}
+  .hero{padding:30px 0}
+  .calendar,.day-panel{padding:16px}
+  .day{height:61px;padding:5px}
+  .day .count{font-size:8px}
+  .foot{
+    flex-direction:column;
+    text-align:center;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms!important;
+    scroll-behavior:auto!important;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+<div class="head">
+  <div class="brand" onclick="go('home')">
+    <div class="logo">♧</div>
+    <div>
+      <b>Plant Thought</b>
+      <small>식물학자의 디지털 서재</small>
+    </div>
+  </div>
+  <nav id="nav">
+    <button class="active" onclick="go('home')">서재 홈</button>
+    <button onclick="go('chat')">사색 대화</button>
+    <button onclick="go('emotion')">감정 갈무리</button>
+    <button onclick="go('archive')">서재 보관소</button>
+    <button onclick="go('settings')">서재 설정</button>
+  </nav>
+  <button class="account" onclick="go('login')">로그인 ↗</button>
+</div>
+<div class="mobile">
+  <select id="mobileSelect" onchange="go(this.value)">
+    <option value="home">서재 홈</option>
+    <option value="chat">사색 대화</option>
+    <option value="emotion">감정 갈무리</option>
+    <option value="archive">서재 보관소</option>
+    <option value="settings">서재 설정</option>
+    <option value="login">로그인</option>
+    <option value="signup">회원가입</option>
+  </select>
+</div>
+</header>
+
+<main>
+
+<!-- HOME -->
+<section id="home" class="page active">
+  <div class="hero">
+    <div class="eyebrow">
+      YOUR PERSONAL MEMORY GARDEN
+    </div>
+    <h1>생각이 머무는 작은 서재</h1>
+    <p class="lead">
+      흩어지는 생각을 기록하고,<br>
+      잊고 있던 나의 이야기를 다시 발견하세요.
+    </p>
+    <div class="chat-input-wrapper memory-composer" style="margin-top:32px">
+      <input id="homeSearch" placeholder="떠오르는 생각이나 기억을 들려주세요" aria-label="새 대화 메시지" autocomplete="off">
+      <button class="chat-send-btn" onclick="startChatFromHome()" aria-label="대화 시작"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 18V6m-6 6 6-6 6 6"/></svg></button>
+    </div>
+    <div class="chips" style="justify-content:center">
+      <button class="chip" onclick="go('emotion')">
+        ✎ 오늘 기록하기
+      </button>
+      <button class="chip"
+        onclick="searchHome('기분이 안 좋았던 날')">
+        ⌕ 감정 기록 찾기
+      </button>
+      <button class="chip" onclick="go('chat')">
+        ✧ AI와 대화하기
+      </button>
+    </div>
+  </div>
+
+  <div class="sectionhead">
+    <div>
+      <h2>나의 작은 정원</h2>
+      <span class="muted small">
+        기록하고, 찾고, 다시 생각하는 공간
+      </span>
+    </div>
+  </div>
+
+  <div class="grid3">
+    <div class="card"
+      onclick="go('emotion')" style="cursor:pointer">
+      <div class="iconbox">✎</div>
+      <h3 style="margin-top:20px">오늘의 기록</h3>
+      <p class="muted small">
+        일기부터 작은 생각까지 자유롭게 남겨보세요.
+      </p>
+      <div class="line"></div>
+      <span class="tag">기록 시작하기 ↗</span>
+    </div>
+
+    <div class="card"
+      onclick="go('archive')" style="cursor:pointer">
+      <div class="iconbox">▦</div>
+      <h3 style="margin-top:20px">기억의 달력</h3>
+      <p class="muted small">
+        어떤 날에 무엇을 기록했는지 날짜별로 확인하세요.
+      </p>
+      <div class="line"></div>
+      <span class="tag">보관소 살펴보기 ↗</span>
+    </div>
+
+    <div class="card"
+      onclick="go('chat')" style="cursor:pointer">
+      <div class="iconbox">✧</div>
+      <h3 style="margin-top:20px">사색 대화</h3>
+      <p class="muted small">
+        지난 기록을 근거로 자신만의 이야기를 이어가세요.
+      </p>
+      <div class="line"></div>
+      <span class="tag">대화 시작하기 ↗</span>
+    </div>
+  </div>
+
+  <section class="home-recent" aria-labelledby="homeRecentTitle">
+    <div class="sectionhead">
+      <div>
+        <h2 id="homeRecentTitle">최근 기록</h2>
+        <span class="muted small">마지막으로 남긴 이야기들을 다시 살펴보세요.</span>
+      </div>
+      <button class="ghost" onclick="go('archive')">전체 기록 보기 ↗</button>
+    </div>
+    <ul class="recent-list" id="homeRecent"></ul>
+  </section>
+</section>
+
+<!-- CHAT -->
+<section id="chat" class="page" aria-label="사색 대화">
+  <div class="chat-layout" id="chatLayout">
+    <button class="chat-sidebar-backdrop" onclick="closeChatSidebar()" aria-label="대화 목록 닫기" tabindex="-1"></button>
+    <aside class="chat-sidebar" id="chatSidebar" aria-label="대화 목록">
+      <div class="sidebar-heading">
+        <div class="sidebar-brand"><span>♧</span> Plant Thought</div>
+        <button class="new-chat-btn" onclick="newChat()"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4H6a3 3 0 0 0-3 3v11a3 3 0 0 0 3 3h11a3 3 0 0 0 3-3v-6M14 4l3-3 5 5-3 3-9 9-5 1 1-5zM14 4l5 5"/></svg> 새 대화</button>
+      </div>
+      <div class="chat-sidebar-scroll">
+        <p class="sidebar-label">대화 내역</p>
+        <div class="chat-history" id="chatHistory"></div>
+      </div>
+    </aside>
+    <div class="chat-main" id="chatMain">
+      <div class="chat-topbar">
+        <div class="chat-topbar-left">
+          <button class="chat-icon-btn" id="sidebarToggle" onclick="toggleChatSidebar()" aria-label="대화 목록 열기·닫기" aria-controls="chatSidebar" aria-expanded="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M9 4v16M5.8 8h.4M5.8 11h.4"/></svg></button>
+          <h1 class="chat-title">사색 대화</h1>
+        </div>
+        <div class="chat-topbar-actions">
+          <span class="chat-topbar-label">기억을 바탕으로 나누는 대화</span>
+          <button class="chat-icon-btn" onclick="newChat()" title="새 대화" aria-label="새 대화 시작"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4H6a3 3 0 0 0-3 3v11a3 3 0 0 0 3 3h11a3 3 0 0 0 3-3v-6M14 4l3-3 5 5-3 3-9 9-5 1 1-5zM14 4l5 5"/></svg></button>
+        </div>
+      </div>
+      <div class="chat-scroll" id="chatScroll">
+        <div id="conversation" role="log" aria-label="대화 내용" aria-live="polite"></div>
+      </div>
+      <div class="chat-input-area">
+        <div class="chat-input-wrapper">
+          <textarea id="chatInput" placeholder="떠오르는 생각이나 기억을 들려주세요" aria-label="대화 메시지" rows="1"></textarea>
+          <button class="chat-send-btn" id="chatSend" onclick="sendChat()" aria-label="메시지 보내기" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 18V6m-6 6 6-6 6 6"/></svg></button>
+        </div>
+        <p class="chat-disclaimer">저장된 기록을 바탕으로 대화합니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RECORD WRITING -->
+<section id="emotion" class="page">
+  <div style="max-width:800px;margin:auto">
+    <button class="emotion-back" onclick="go(emotionReturnPage)">← 되돌아가기</button>
+    <div class="eyebrow">EMOTION HARVEST</div>
+    <h1>감정 갈무리</h1>
+    <p class="lead">
+      작은 생각도 기록해 두면 다시 돌아볼 수 있는 기억이 됩니다.
+    </p>
+
+    <div class="banner record-note">
+      <b>오늘은 어떤 하루였나요?</b>
+      <p>
+        완벽한 문장으로 작성하지 않아도 괜찮아요.
+        자유롭게 기록한 내용을 나중에 다시 검색할 수 있도록 설계합니다.
+      </p>
+    </div>
+
+    <label style="margin-top:24px">
+      제목
+      <input id="recordTitle" class="field"
+        placeholder="기록 제목을 입력하세요">
+    </label>
+
+    <label style="margin-top:18px">
+      날짜
+      <input id="recordDate" class="field" type="date">
+    </label>
+
+    <label style="margin-top:18px">
+      기록 내용
+      <textarea id="recordBody"
+        style="margin-top:8px"
+        placeholder="오늘 마음에 남은 일이 있었나요?"></textarea>
+    </label>
+
+    <!-- 태그 및 감정 선택 완전 제거 -->
+
+    <div style="text-align:right;margin-top:20px">
+      <button class="primary" onclick="addRecord()">
+        기록 추가하기 ↗
+      </button>
+    </div>
+    <p class="notice">
+      추가한 기록은 이 컴퓨터에 저장되며, 다시 열어도 유지됩니다.
+    </p>
+  </div>
+</section>
+
+<!-- ARCHIVE -->
+<section id="archive" class="page">
+  <div class="eyebrow">MEMORY ARCHIVE</div>
+  <h1>서재 보관소</h1>
+  <p class="lead">
+    그날의 기억을 달력으로 살펴보고,
+    정확한 단어나 비슷한 의미로 찾아보세요.
+  </p>
+
+  <div class="inputbox" style="margin-top:30px">
+    <input id="archiveInput"
+      placeholder="예: 기분이 안 좋았던 날">
+    <button class="primary archive-search-btn" onclick="runSearch(true)" aria-label="기억 검색" title="기억 검색">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg>
+    </button>
+  </div>
+
+  <div class="chips" id="filters">
+    <button class="chip on"
+      onclick="setFilter(this,'all')">전체</button>
+    <button class="chip"
+      onclick="setFilter(this,'exact')">원문 일치</button>
+    <button class="chip"
+      onclick="setFilter(this,'semantic')">의미 유사</button>
+  </div>
+
+  <div class="archive-workspace" id="archiveWorkspace">
+    <div class="archive-toolbar">
+      <div class="archive-view-switch" role="group" aria-label="기록 보기 방식">
+        <button id="calendarViewButton" aria-pressed="true" onclick="setArchiveView('calendar')">달력</button>
+        <button id="timelineViewButton" aria-pressed="false" onclick="setArchiveView('timeline')">시간순</button>
+      </div>
+      <button class="ghost" id="calendarZoomButton" aria-pressed="false" onclick="toggleCalendarSize()">↗ 달력 확대</button>
+      <label class="archive-sort" id="timelineSortControl" hidden>정렬
+        <select id="timelineSort" aria-label="시간순 정렬" onchange="renderTimeline()">
+          <option value="newest">최신순</option>
+          <option value="oldest">오래된순</option>
+        </select>
+      </label>
+    </div>
+  <div class="archive-layout">
+    <div class="calendar" id="archiveCalendar">
+      <div class="calhead">
+        <h2 id="monthTitle"></h2>
+        <div class="calactions">
+          <button onclick="moveMonth(-1)"
+            aria-label="이전 달">‹</button>
+          <button onclick="todayMonth()">오늘</button>
+          <button onclick="moveMonth(1)"
+            aria-label="다음 달">›</button>
+        </div>
+      </div>
+
+      <div class="calendar-grid-scroll" id="calendarGridScroll" role="region" aria-label="월간 달력" tabindex="-1">
+      <div class="calendar-grid">
+      <div class="week">
+        <div>일</div><div>월</div><div>화</div>
+        <div>수</div><div>목</div><div>금</div><div>토</div>
+      </div>
+      <div class="days" id="calendarDays"></div>
+      </div>
+      </div>
+      <p id="calendarDetailsHint" hidden>기록 제목과 짧은 내용을 날짜 안에서 확인하세요. 기록을 더블클릭하면 상세가 열립니다. 작은 화면에서는 달력을 좌우로 넘길 수 있어요.</p>
+      <p class="notice">
+        ● 기록이 있는 날짜를 표시합니다.
+      </p>
+    </div>
+
+    <section class="archive-timeline" id="archiveTimeline" aria-label="시간순 기록" hidden>
+      <div class="timeline-heading"><h2>시간순 기록</h2><span class="muted small" id="timelineCount"></span></div>
+      <div id="timelineGroups"></div>
+    </section>
+
+    <aside class="day-panel" id="archiveSidePanel" aria-label="선택한 기록과 검색 결과">
+      <div id="dayRecordsView">
+      <div class="eyebrow">DAILY RECORDS</div>
+      <h2 style="margin-top:12px" id="selectedDate"></h2>
+      <p class="muted small" id="selectedCount"></p>
+      <div class="line"></div>
+      <div id="selectedList"></div>
+      <button class="ghost"
+        style="width:100%;margin-top:15px"
+        onclick="writeSelected()">
+        + 이 날짜에 기록하기
+      </button>
+      </div>
+      <section id="archiveSearchView" aria-label="검색 결과" hidden>
+        <div class="eyebrow">SEARCH RESULTS</div>
+        <div class="sectionhead" id="searchResultsHeading">
+          <h2>검색 결과</h2>
+          <span class="muted small" id="resultCount"></span>
+        </div>
+        <p class="muted small" id="searchQueryCaption"></p>
+        <div class="line"></div>
+        <div id="searchResults"></div>
+        <button class="ghost" style="width:100%;margin-top:15px" onclick="showDayRecords()">← 날짜 기록으로 돌아가기</button>
+      </section>
+    </aside>
+  </div>
+  </div>
+</section>
+
+<!-- RECORD DETAIL -->
+<section id="recordDetail" class="page">
+  <div class="record-detail">
+    <button class="ghost" onclick="go('archive')">
+      ← 서재 보관소로 돌아가기
+    </button>
+
+    <div class="card" style="margin-top:25px;padding:36px">
+      <div class="eyebrow">MEMORY RECORD</div>
+      <h1 id="detailTitle"
+        style="font-size:34px"></h1>
+      <p class="muted small" id="detailDate"></p>
+      <div class="line"></div>
+      <div class="record-content" id="detailBody"></div>
+    </div>
+  </div>
+</section>
+
+<!-- SETTINGS -->
+<section id="settings" class="page">
+  <div class="eyebrow">LIBRARY PREFERENCES</div>
+  <h1>서재 설정</h1>
+  <p class="lead">
+    기억과 대화가 보이는 방식을 조정하세요.
+  </p>
+
+  <div class="card"
+    style="margin-top:30px;max-width:760px">
+    <h3>기록과 검색</h3>
+
+    <div class="setting">
+      <div>
+        의미 유사 검색 활성화
+        <p class="muted small">
+          표현이 달라도 관련된 기록을 함께 표시
+        </p>
+      </div>
+      <input id="semanticSearch" type="checkbox" checked>
+    </div>
+
+    <div class="setting">
+      <div>
+        원문 근거 표시
+        <p class="muted small">
+          AI 응답에 사용한 기록 확인
+        </p>
+      </div>
+      <input id="showSources" type="checkbox" checked>
+    </div>
+
+    <div class="setting">
+      <div>
+        기억 달력 표시
+        <p class="muted small">
+          날짜별 기록 유무 표시
+        </p>
+      </div>
+      <input id="showCalendar" type="checkbox" checked>
+    </div>
+
+    <div class="setting">
+      <div>
+        상세 정보 기본 접기
+        <p class="muted small">
+          중요한 정보부터 표시
+        </p>
+      </div>
+      <input id="collapseDetails" type="checkbox" checked>
+    </div>
+
+    <p class="notice">
+      설정은 현재 브라우저에 저장됩니다.
+    </p>
+  </div>
+</section>
+
+<!-- LOGIN -->
+<section id="login" class="page">
+  <div class="auth">
+    <div style="text-align:center">
+      <div class="eyebrow">WELCOME BACK</div>
+      <h1 style="font-size:37px">
+        다시 만난 나의 서재
+      </h1>
+      <p class="lead">당신의 이야기가 기다리는 공간</p>
+    </div>
+
+    <div class="authcard" style="margin-top:30px">
+      <div class="iconbox" style="margin-bottom:22px">♧</div>
+      <h3>로그인</h3>
+      <p class="muted small">
+        Plant Thought에 오신 것을 환영합니다.
+      </p>
+
+      <form onsubmit="authDemo(event,'login')">
+        <label>
+          이메일
+          <input class="field" type="email"
+            placeholder="example@email.com"
+            autocomplete="email" required>
+        </label>
+        <label>
+          비밀번호
+          <input class="field" type="password"
+            placeholder="비밀번호 입력"
+            autocomplete="current-password" required>
+        </label>
+        <button class="primary" type="submit">
+          로그인
+        </button>
+      </form>
+
+      <p style="text-align:center;margin-top:23px"
+        class="muted small">
+        계정이 없으신가요?
+        <button class="authlink"
+          onclick="go('signup')">회원가입</button>
+      </p>
+      <p class="notice">
+        실제 로그인 인증은 진행되지 않습니다.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- SIGNUP -->
+<section id="signup" class="page">
+  <div class="auth">
+    <div style="text-align:center">
+      <div class="eyebrow">BEGIN YOUR GARDEN</div>
+      <h1 style="font-size:37px">
+        나만의 서재 만들기
+      </h1>
+      <p class="lead">
+        새로운 기록의 첫 페이지를 시작하세요.
+      </p>
+    </div>
+
+    <div class="authcard" style="margin-top:30px">
+      <h3>회원가입</h3>
+
+      <form onsubmit="authDemo(event,'signup')">
+        <label>
+          닉네임
+          <input class="field"
+            placeholder="이름 또는 닉네임"
+            autocomplete="nickname" required>
+        </label>
+        <label>
+          이메일
+          <input class="field" type="email"
+            placeholder="example@email.com"
+            autocomplete="email" required>
+        </label>
+        <label>
+          비밀번호
+          <input id="password1" class="field"
+            type="password" minlength="8"
+            placeholder="8자 이상"
+            autocomplete="new-password" required>
+        </label>
+        <label>
+          비밀번호 확인
+          <input id="password2" class="field"
+            type="password" minlength="8"
+            placeholder="비밀번호 확인"
+            autocomplete="new-password" required>
+        </label>
+        <label style="margin-top:20px;display:flex;
+          gap:10px;align-items:flex-start">
+          <input type="checkbox" required>
+          이용약관 및 개인정보 처리방침 동의 (UI 시연)
+        </label>
+        <button class="primary" type="submit">
+          나의 서재 시작하기
+        </button>
+      </form>
+
+      <p style="text-align:center;margin-top:23px"
+        class="muted small">
+        이미 계정이 있으신가요?
+        <button class="authlink"
+          onclick="go('login')">로그인</button>
+      </p>
+      <p class="notice">
+        계정이나 비밀번호는 저장되지 않습니다.
+      </p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+<div class="foot">
+  <div>
+    <b>♧ Plant Thought</b>
+    <small>
+      생각을 심고 기억을 발견하는 나만의 디지털 서재
+    </small>
+  </div>
+  <div>
+    <button onclick="alert('서비스 안내 UI 준비 중')">
+      서비스 안내
+    </button>
+    <button onclick="alert('개인정보 보호 UI 준비 중')">
+      개인정보 보호
+    </button>
+    <button onclick="alert('도움말 UI 준비 중')">
+      도움말
+    </button>
+  </div>
+</div>
+<div class="foot"
+  style="border-top:1px solid #e0e6df;
+  padding-top:20px;margin-top:30px">
+  <small>
+    © Plant Thought · Personal Memory Garden
+  </small>
+  <small>UI DESIGN PREVIEW</small>
+</div>
+</footer>
+
+<script src="diary-dates.js"></script>
+<script>
+const pages=[
+  'home','chat','emotion','archive','settings'
+];
+const today=seoulDate();
+const now=new Date(today+'T12:00:00+09:00');
+const pad=n=>String(n).padStart(2,'0');
+const key=(y,m,d)=>`${y}-${pad(m+1)}-${pad(d)}`;
+let [year,month]=today.split('-').slice(0,2).map(Number);
+month-=1;
+let selected=today;
+
+let searchFilter='all';
+let archiveSearchActive=false;
+let archiveView='calendar';
+let calendarExpanded=false;
+let emotionReturnPage='home';
+
+function safe(v){
+  return String(v??'').replace(/[&<>"']/g,c=>({
+    '&':'&amp;',
+    '<':'&lt;',
+    '>':'&gt;',
+    '"':'&quot;',
+    "'":'&#39;'
+  }[c]));
+}
+
+function go(id){
+  const target=document.getElementById(id);
+  if(!target)return;
+  if(id==='emotion'){
+    const previous=document.querySelector('.page.active');
+    if(previous&&previous.id!=='emotion')emotionReturnPage=previous.id;
+  }
+
+  document.querySelectorAll('.page')
+    .forEach(p=>p.classList.remove('active'));
+
+  target.classList.add('active');
+  document.body.classList.toggle('chat-mode',id==='chat');
+  closeChatSidebar();
+
+  document.querySelectorAll('#nav button')
+    .forEach((b,i)=>{
+      b.classList.toggle('active',pages[i]===id);
+    });
+
+  const select=document.getElementById('mobileSelect');
+  if([...select.options].some(o=>o.value===id)){
+    select.value=id;
+  }
+
+  window.scrollTo(0,0);
+
+  if(id==='archive'){
+    renderCalendar();
+    renderTimeline();
+    syncArchiveView();
+    runSearch();
+  }
+  if(id==='home')renderRecent();
+  if(id==='chat'){
+    requestAnimationFrame(scrollChatToBottom);
+  }
+}
+
+/* Saved records are restored from the existing local backend. */
+const records=[];
+
+function recordIndex(r){
+  return records.indexOf(r);
+}
+
+function openRecord(index){
+  const r=records[index];
+  if(!r)return;
+
+  document.getElementById('detailTitle')
+    .textContent=r.title;
+  document.getElementById('detailDate')
+    .textContent=r.date+' · '+r.type;
+  document.getElementById('detailBody')
+    .textContent=r.body;
+
+  go('recordDetail');
+}
+
+function previewRecordDate(index){
+  const record=records[index];
+  if(!record)return;
+  const [y,m]=record.date.split('-').map(Number);
+  year=y;
+  month=m-1;
+  selected=record.date;
+  renderCalendar();
+  document.querySelectorAll('#searchResults [data-record-index]').forEach(card=>{
+    const active=Number(card.dataset.recordIndex)===index;
+    card.classList.toggle('date-preview',active);
+    card.setAttribute('aria-pressed',String(active));
+  });
+}
+
+function renderRecent(){
+  document.getElementById('homeRecent').innerHTML=
+    [...records]
+      .sort((a,b)=>b.date.localeCompare(a.date))
+      .slice(0,3)
+      .map(r=>`
+        <li><button class="recent-row"
+          onclick="openRecord(${recordIndex(r)})">
+          <span class="recent-record-date">
+            ${safe(r.date)} · ${safe(r.type)}
+          </span>
+          <span class="recent-record-content">
+            <span class="recent-record-title">${safe(r.title)}</span>
+            <span class="recent-record-preview">${safe(r.body)}</span>
+          </span>
+          <span class="recent-record-link"><span class="recent-record-link-label">기록 읽기 </span>↗</span>
+        </button></li>
+      `).join('');
+}
+
+/* CALENDAR */
+function syncArchiveView(){
+  const timeline=archiveView==='timeline';
+  document.getElementById('archiveCalendar').hidden=timeline;
+  document.getElementById('archiveTimeline').hidden=!timeline;
+  document.getElementById('calendarViewButton').setAttribute('aria-pressed',String(!timeline));
+  document.getElementById('timelineViewButton').setAttribute('aria-pressed',String(timeline));
+  document.getElementById('calendarZoomButton').hidden=timeline;
+  document.getElementById('timelineSortControl').hidden=!timeline;
+  document.getElementById('archiveWorkspace').classList.toggle('calendar-expanded',!timeline&&calendarExpanded);
+  document.getElementById('calendarZoomButton').setAttribute('aria-pressed',String(calendarExpanded));
+  document.getElementById('calendarZoomButton').textContent=calendarExpanded?'↙ 기본 크기':'↗ 달력 확대';
+  document.getElementById('calendarDetailsHint').hidden=timeline||!calendarExpanded;
+  document.getElementById('calendarGridScroll').tabIndex=calendarExpanded?0:-1;
+}
+function setArchiveView(view){
+  archiveView=view==='timeline'?'timeline':'calendar';
+  if(archiveView==='timeline')renderTimeline();
+  syncArchiveView();
+  renderSelected();
+}
+function toggleCalendarSize(){
+  calendarExpanded=!calendarExpanded;
+  syncArchiveView();
+}
+function selectArchiveDate(date,revealPanel=true){
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(date))return;
+  const [y,m]=date.split('-').map(Number);
+  const sameMonth=year===y&&month===m-1;
+  selected=date;year=y;month=m-1;archiveSearchActive=false;
+  if(sameMonth){updateCalendarSelection();renderSelected();updateTimelineSelection();}
+  else renderCalendar();
+  if(revealPanel&&window.matchMedia('(max-width:900px)').matches){
+    requestAnimationFrame(()=>document.getElementById('archiveSidePanel').scrollIntoView({behavior:'smooth',block:'start'}));
+  }
+}
+function updateCalendarSelection(){
+  document.querySelectorAll('#calendarDays .day[data-date]').forEach(day=>{
+    const active=day.dataset.date===selected;
+    day.classList.toggle('selected',active);
+    day.querySelector('.day-date-control').setAttribute('aria-pressed',String(active));
+  });
+}
+function selectArchiveRecordDate(index){
+  const record=records[index];if(record)selectArchiveDate(record.date);
+}
+function updateTimelineSelection(){
+  document.querySelectorAll('.timeline-group').forEach(group=>{
+    const active=group.dataset.date===selected;
+    group.classList.toggle('is-selected',active);
+    group.querySelector('.timeline-date').setAttribute('aria-pressed',String(active));
+  });
+}
+function renderTimeline(){
+  const newest=document.getElementById('timelineSort').value==='newest';
+  const sorted=[...records].sort((a,b)=>(newest?-1:1)*(a.date.localeCompare(b.date)||recordIndex(a)-recordIndex(b)));
+  const groups=new Map();
+  sorted.forEach(record=>{if(!groups.has(record.date))groups.set(record.date,[]);groups.get(record.date).push(record);});
+  document.getElementById('timelineCount').textContent=`${groups.size}일 · ${records.length}개 기록`;
+  document.getElementById('timelineGroups').innerHTML=[...groups].map(([date,items])=>{
+    const [y,m,d]=date.split('-').map(Number);
+    return `<div class="timeline-group" data-date="${safe(date)}">
+      <button class="timeline-date" data-date="${safe(date)}" onclick="selectArchiveDate(this.dataset.date)">${y}년 ${m}월 ${d}일 · ${items.length}개 기록</button>
+      <ul class="timeline-record-list">${items.map(record=>`<li class="timeline-entry">
+        <button class="timeline-record" onclick="selectArchiveRecordDate(${recordIndex(record)})" ondblclick="openRecord(${recordIndex(record)})" onkeydown="if(event.key==='Enter'){event.preventDefault();openRecord(${recordIndex(record)})}" title="한 번 클릭하면 날짜 선택, 더블클릭하면 기록 열기">
+          <strong>${safe(record.title)}</strong><span>${safe(record.body)}</span>
+        </button>
+        <button class="timeline-open" onclick="openRecord(${recordIndex(record)})" aria-label="${safe(record.title)} 기록 열기">↗</button>
+      </li>`).join('')}</ul>
+    </div>`;
+  }).join('')||'<p class="muted small">아직 기록이 없습니다.</p>';
+  updateTimelineSelection();
+}
+function renderCalendar(){
+  const grid=document.getElementById('calendarDays');
+  grid.innerHTML='';
+
+  document.getElementById('monthTitle').textContent=
+    `${year}년 ${month+1}월`;
+
+  const offset=new Date(year,month,1).getDay();
+  const days=new Date(year,month+1,0).getDate();
+
+  for(let i=0;i<offset;i++){
+    const gap=document.createElement('div');
+    gap.className='day empty';
+    grid.appendChild(gap);
+  }
+
+  for(let d=1;d<=days;d++){
+    const date=key(year,month,d);
+    const dayRecords=records.filter(r=>r.date===date);
+    const count=dayRecords.length;
+
+    const cell=document.createElement('div');
+    cell.className='day'
+      +(selected===date?' selected':'')
+      +(date===today?' today':'');
+    cell.dataset.date=date;
+    const btn=document.createElement('button');
+    btn.className='day-date-control';
+
+    btn.innerHTML=
+      `<span class="number">${d}</span>`+
+      (count
+        ? `<span class="dot"></span>
+           <span class="count">${count}개 기록</span>`
+        : '');
+
+    btn.setAttribute(
+      'aria-label',
+      `${month+1}월 ${d}일, 기록 ${count}개`
+    );
+    btn.setAttribute('aria-pressed',String(selected===date));
+
+    btn.onclick=event=>{
+      event.stopPropagation();
+      selectArchiveDate(date);
+    };
+    cell.appendChild(btn);
+    cell.onclick=()=>selectArchiveDate(date);
+    if(count){
+      const previews=document.createElement('div');
+      previews.className='day-record-previews';
+      dayRecords.slice(0,2).forEach(record=>{
+        const preview=document.createElement('button');
+        preview.className='calendar-record';
+        preview.title=record.title+'\n'+record.body;
+        preview.setAttribute('aria-label',record.title+' · '+record.date+' · 날짜 확인, 더블클릭으로 기록 열기');
+        const title=document.createElement('span');title.className='calendar-record-title';title.textContent=record.title;
+        const excerpt=document.createElement('span');excerpt.className='calendar-record-preview';excerpt.textContent=record.body;
+        preview.append(title,excerpt);
+        preview.onclick=event=>{event.stopPropagation();selectArchiveDate(date,false);};
+        preview.ondblclick=event=>{event.stopPropagation();openRecord(recordIndex(record));};
+        preview.onkeydown=event=>{if(event.key==='Enter'){event.preventDefault();openRecord(recordIndex(record));}};
+        previews.appendChild(preview);
+      });
+      if(count>2){
+        const more=document.createElement('button');more.className='calendar-more-records';more.textContent='+'+(count-2)+'개 더 보기';
+        more.onclick=event=>{event.stopPropagation();selectArchiveDate(date);};previews.appendChild(more);
+      }
+      cell.appendChild(previews);
+    }
+    grid.appendChild(cell);
+  }
+
+  renderSelected();
+  updateTimelineSelection();
+}
+
+function renderSelected(){
+  syncArchivePanel();
+  const list=records.filter(r=>r.date===selected);
+  const parts=selected.split('-').map(Number);
+
+  document.getElementById('selectedDate').textContent=
+    archiveView==='timeline'?`${parts[0]}년 ${parts[1]}월 ${parts[2]}일`:`${parts[1]}월 ${parts[2]}일`;
+
+  document.getElementById('selectedCount').textContent=
+    list.length
+      ? `${list.length}개의 기록이 남아 있어요`
+      : '이날 기록이 없습니다.';
+
+  document.getElementById('selectedList').innerHTML=
+    list.length
+      ? list.map(r=>`
+          <div class="record"
+            style="cursor:pointer"
+            onclick="openRecord(${recordIndex(r)})">
+            <span class="tag">${safe(r.type)}</span>
+            <h3 style="font-size:17px;margin-top:12px">
+              ${safe(r.title)}
+            </h3>
+            <p>${safe(r.body)}</p>
+            <small>${safe(r.date)}</small>
+          </div>
+        `).join('')
+      : '<p class="muted small">그날의 이야기를 새로 남겨보세요.</p>';
+}
+
+function moveMonth(n){
+  archiveSearchActive=false;
+  const d=new Date(year,month+n,1);
+  year=d.getFullYear();
+  month=d.getMonth();
+  selected=key(year,month,1);
+  renderCalendar();
+}
+
+function todayMonth(){
+  archiveSearchActive=false;
+  year=now.getFullYear();
+  month=now.getMonth();
+  selected=today;
+  renderCalendar();
+}
+
+function writeSelected(){
+  go('emotion');
+  document.getElementById('recordDate').value=selected;
+}
+
+function appendInlineText(target,text){
+  text.split(/(\*\*[^*]+\*\*)/g).forEach(part=>{
+    if(part.startsWith('**')&&part.endsWith('**')){
+      const strong=document.createElement('strong');strong.textContent=part.slice(2,-2);target.appendChild(strong);
+    }else target.appendChild(document.createTextNode(part));
+  });
+}
+function renderBotText(text){
+  const content=document.createElement('div');content.className='bot-content';
+  text.split('\n\n').forEach(block=>{
+    const lines=block.split('\n');
+    if(lines.every(line=>line.startsWith('- '))){
+      const list=document.createElement('ul');
+      lines.forEach(line=>{const item=document.createElement('li');appendInlineText(item,line.slice(2));list.appendChild(item);});
+      content.appendChild(list);
+    }else{
+      const paragraph=document.createElement('p');
+      lines.forEach((line,i)=>{if(i)paragraph.appendChild(document.createElement('br'));appendInlineText(paragraph,line);});
+      content.appendChild(paragraph);
+    }
+  });
+  return content;
+}
+
+function scrollChatToBottom(){
+  const element=document.getElementById('chatScroll');
+  if(element)element.scrollTop=element.scrollHeight;
+}
+function updateChatInput(){
+  const input=document.getElementById('chatInput');
+  input.style.height='40px';
+  input.style.height=Math.min(Math.max(input.scrollHeight,40),180)+'px';
+  if(typeof updateDemoControls==='function')updateDemoControls();
+}
+
+function syncSidebarAccessibility(){
+  const layout=document.getElementById('chatLayout');
+  const mobile=window.matchMedia('(max-width:1000px)').matches;
+  document.getElementById('sidebarToggle').setAttribute('aria-expanded',String(mobile?layout.classList.contains('sidebar-open'):!layout.classList.contains('sidebar-collapsed')));
+}
+function toggleChatSidebar(){
+  const layout=document.getElementById('chatLayout');
+  layout.classList.toggle(window.matchMedia('(max-width:1000px)').matches?'sidebar-open':'sidebar-collapsed');
+  syncSidebarAccessibility();
+}
+function closeChatSidebar(){
+  document.getElementById('chatLayout').classList.remove('sidebar-open');
+  syncSidebarAccessibility();
+}
+document.getElementById('chatInput').addEventListener('input',updateChatInput);
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    const wasOpen=document.getElementById('chatLayout').classList.contains('sidebar-open');
+    closeChatSidebar();
+    if(wasOpen)document.getElementById('sidebarToggle').focus();
+  }
+});
+window.addEventListener('resize',closeChatSidebar);
+const headerObserver=new ResizeObserver(entries=>{
+  document.documentElement.style.setProperty('--header-height',entries[0].target.getBoundingClientRect().height+'px');
+});
+headerObserver.observe(document.querySelector('header'));
+
+
+const chatObserver=new MutationObserver(()=>{
+  requestAnimationFrame(scrollChatToBottom);
+});
+
+chatObserver.observe(
+  document.getElementById('conversation'),
+  {childList:true}
+);
+
+/* SEARCH */
+function syncArchivePanel(){
+  document.getElementById('dayRecordsView').hidden=archiveSearchActive;
+  document.getElementById('archiveSearchView').hidden=!archiveSearchActive;
+}
+function showDayRecords(){
+  archiveSearchActive=false;
+  syncArchivePanel();
+}
+function setFilter(el,type){
+  document.querySelectorAll('#filters .chip')
+    .forEach(b=>b.classList.remove('on'));
+
+  el.classList.add('on');
+  searchFilter=type;
+  runSearch(archiveSearchActive);
+}
+
+/* 검색 결과로 스크롤하는 함수 */
+function scrollToSearchResults(){
+  requestAnimationFrame(()=>{
+    const heading=document.getElementById(
+      'searchResultsHeading'
+    );
+    if(heading){
+      heading.scrollIntoView({
+        behavior:'smooth',
+        block:'start'
+      });
+    }
+  });
+}
+
+/* Actual archive search is supplied by memory.js. */
+
+function searchHome(value){
+  const q=value||
+    document.getElementById('homeSearch').value.trim();
+
+  document.getElementById('archiveInput').value=q;
+  archiveSearchActive=false;
+  go('archive');
+  runSearch(true);
+}
+
+/* AUTH */
+function authDemo(e,mode){
+  e.preventDefault();
+
+  if(mode==='signup'){
+    const p1=document.getElementById('password1').value;
+    const p2=document.getElementById('password2').value;
+
+    if(p1!==p2){
+      alert('비밀번호 확인이 일치하지 않습니다.');
+      return;
+    }
+  }
+
+  alert(
+    mode==='login'
+      ? '로그인 UI 시연용입니다.'
+      : '회원가입 UI 시연용입니다. 실제 계정은 생성되지 않습니다.'
+  );
+}
+
+/* KEYBOARD */
+document.getElementById('homeSearch')
+  .addEventListener('keydown',e=>{
+    if(e.key==='Enter'&&!e.isComposing){
+      e.preventDefault();
+      startChatFromHome();
+    }
+  });
+
+document.getElementById('archiveInput')
+  .addEventListener('keydown',e=>{
+    if(e.key==='Enter'){
+      runSearch(true);
+    }
+  });
+
+document.getElementById('chatInput')
+  .addEventListener('keydown',e=>{
+    if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){
+      e.preventDefault();
+      sendChat();
+    }
+  });
+
+/* INITIALIZE */
+document.getElementById('recordDate').value=today;
+
+renderCalendar();
+renderRecent();
+go('home');
+</script>
+
+<script src="memory.js"></script>
+<script src="conversation-ux.js"></script>
+</body>
+</html>

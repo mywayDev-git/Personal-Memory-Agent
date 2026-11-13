@@ -4,7 +4,8 @@ const {buildAnswerEvaluation,validateAnswerReview}=require('./answer-evaluation.
 const {buildReview,publicReview,validateReview,STAGES}=require('./review.cjs');
 function createApi(root,options={}){
  const store=options.store||new Store(root),runtime=options.runtime||new Runtime(root),engine=new Engine(root,store,runtime),token=crypto.randomBytes(32).toString('hex');let setup=null,terminating=false,setupAbort=null;
- const summaryApi=require('./summary-api.cjs').createSummaryApi(engine,runtime);
+ const baseSummaryApi=require('./summary-api.cjs').createSummaryApi(engine,runtime);
+ const summaryApi=options.wrapSummaryApi?options.wrapSummaryApi(engine,runtime,baseSummaryApi):baseSummaryApi;
  const json=(res,code,data)=>{res.writeHead(code,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});res.end(JSON.stringify(data));};
  const body=async req=>{let size=0,parts=[];for await(const part of req){size+=part.length;if(size>200000)throw Error('요청 크기 초과');parts.push(part);}return JSON.parse(Buffer.concat(parts).toString()||'{}');};
  async function handle(req,res,url){

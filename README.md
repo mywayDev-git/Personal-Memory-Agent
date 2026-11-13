@@ -1,5 +1,9 @@
 # Personal-Memory-Agent
 
+## Plant Thought 최신 작업 화면
+
+UI를 유지한 기억 조회·저장·수정 버튼과 40개 테스트 시나리오는 [plant-thought 안내](plant-thought/README.md)에 있습니다. 저장소 루트에서 node plant-thought/start.cjs를 실행하고 [화면](http://127.0.0.1:4180/)을 엽니다. 가상 원문은 스크립트로 제공하며 개인 DB·모델은 포함하지 않습니다.
+
 대학 캡스톤 I 프로젝트. 일기를 로컬에서 저장하고, 나중에 질문하면 관련 기억과 요약 근거를 보여줍니다.
 
 ## 시연 화면 실행

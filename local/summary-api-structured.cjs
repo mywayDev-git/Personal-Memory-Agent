@@ -275,7 +275,7 @@ function createSummaryApi(engine,runtime){
    if(route==='/summary-memory/original'){const row=selected(url.searchParams.get('key'));return {memory_key:row.memory_key,summary_id:row.summary_artifact_id,source:memory.original(row),usage:'검토·재요약 전용. 검색·답변에 사용하지 않습니다.'};}
    throw Error('지원하지 않는 요약 조회');
   },
-  async post(route,data){
+  async post(route,data,options={}){
    if(route==='/summary-memory/intent')return job(async signal=>{
     const followUp=data.follow_up??'';
     const history=conversationHistory(data.conversation);
@@ -324,7 +324,7 @@ function createSummaryApi(engine,runtime){
     const now=new Date().toISOString(),diaryDate=storedDiaryDate(data.text),schedule=storedSchedule(data.text);
     if(schedule&&!diaryDate)throw Error('일정 날짜를 확인해 주세요.');
     const previous=data.key?selected(data.key):null;if(previous&&data.expected!==previous.summary_artifact_id)throw Error('수정할 기억이 변경됐습니다. 새로 불러오세요.');const c=config(data,diaryDate);await prepare(c,signal);
-    const source={id:previous?.source_id||'MEM-'+crypto.randomUUID(),revision:previous?Number(previous.revision)+1:1,text:data.text,metadata:{owner_id:OWNER,created_at:previous?.source_timestamp||previous?.created_at||now,...(diaryDate?{diary_date:diaryDate,document_reference_time:now,timezone:DIARY_TIME_ZONE}:{}),...(schedule?{schedule}:{})}};
+    const source={id:previous?.source_id||options.sourceId||'MEM-'+crypto.randomUUID(),revision:previous?Number(previous.revision)+1:1,text:data.text,metadata:{owner_id:OWNER,created_at:previous?.source_timestamp||previous?.created_at||now,...(diaryDate?{diary_date:diaryDate,document_reference_time:now,timezone:DIARY_TIME_ZONE}:{}),...(schedule?{schedule}:{})}};
     const row=await memory.save(NAMESPACE,source,c,signal,{verifySummary:true,inferMood:isUnlabeledDiary(data.text,diaryDate),expected:previous?.summary_artifact_id,beforePublish:hook(c,signal)});return {memory:view(row)};
    });
    if(route==='/summary-memory/resummarize')return job(async signal=>{
@@ -348,16 +348,22 @@ function createSummaryApi(engine,runtime){
      if(resolved.intent!=='question')return {query,retrieval:null,answer:answer?{action:'clarify',answer:resolved.clarification,citations:[],citation_errors:[]}:null};
      query=resolved.query;
     }
-    const overview=personalChat&&!emotion?dateOverview(query,now):null;
+    const overview=personalChat&&!emotion&&!data.ux_event_dates?dateOverview(query,now):null;
     const diaryDate=personalChat&&!emotion?(overview?.date||dateForDiaryQuestion(query,now)):null;
     const today=emotion?seoulDate(now):null,dates=new Map();
     const rows=memory.list(NAMESPACE,OWNER).filter(row=>{
+     if(Array.isArray(data.ux_source_keys)&&!data.ux_source_keys.includes(row.memory_key))return false;
      if((row.summary_mode||'generated')!==(c.summary_mode||'generated'))return false;
      if(emotion&&(row.schedule||row.memory_key===data.exclude_memory_key))return false;
      if(overview?.schedulesOnly&&!row.schedule)return false;
      const date=row.diary_date||((diaryDate||emotion)?dateForStoredMemory(memory.original(row).text,row.source_timestamp||row.created_at):null);
      dates.set(row.source_id,date);
-     return (!emotion||(date&&date<today))&&(!diaryDate||date===diaryDate);
+     let matchesDay=!diaryDate||date===diaryDate;
+     if(!matchesDay&&data.ux_event_dates&&diaryDate){
+      const [,m,d]=diaryDate.split('-').map(Number),body=memory.original(row).text.split(/\r?\n\r?\n/).slice(1).join('\n\n');
+      matchesDay=body.includes(diaryDate)||new RegExp('(?:'+Number(diaryDate.slice(0,4))+'\\s*년\\s*)?'+m+'\\s*월\\s*'+d+'\\s*일').test(body);
+     }
+     return (!emotion||(date&&date<today))&&matchesDay;
     });
     if(personalChat&&!emotion&&!rows.length){
      let result=null;
@@ -423,7 +429,7 @@ function createSummaryApi(engine,runtime){
       if(examined)result.examined_record=examined;
      }
     }
-    return {query,retrieval,answer:result,...(diaryDate?{diary_date:diaryDate}:{}),policy:emotion?'요약문으로 후보를 찾고, 인용문은 저장된 원본에서 확인.':diaryDate?'기록 날짜로 범위를 제한하고 요약문만 검색·답변에 사용.':'전체 색인 준비 후 요약문만 검색·답변. 원본은 읽지 않음.'};
+    return {query,retrieval,answer:result,scope:{state:rows.length>(retrieval.selected_sources?.length||0)?'candidate_limited':'retrieved_candidates',available:rows.length,selected:retrieval.selected_sources?.length||0},...(diaryDate?{diary_date:diaryDate}:{}),policy:emotion?'요약문으로 후보를 찾고, 인용문은 저장된 원본에서 확인.':diaryDate?'기록 날짜로 범위를 제한하고 요약문만 검색·답변에 사용.':'전체 색인 준비 후 요약문만 검색·답변. 원본은 읽지 않음.'};
    },typeof data.progress_id==='string'&&PROGRESS_ID.test(data.progress_id)?data.progress_id:null);
    throw Error('지원하지 않는 요약 작업');
   }
