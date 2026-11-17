@@ -1,0 +1,843 @@
+[
+  {
+    "id": "NC-01",
+    "profile": "natural_single",
+    "family_id": "NC-01",
+    "case_kind": "natural_narrative",
+    "record_ids": [
+      "NC-01-R1"
+    ],
+    "question_ids": [
+      "NC-01-Q1",
+      "NC-01-Q2",
+      "NC-01-Q3",
+      "NC-01-Q4",
+      "NC-01-Q5",
+      "NC-01-Q6"
+    ],
+    "connection_ids": [
+      "NC-01-E1",
+      "NC-01-E2",
+      "NC-01-E3",
+      "NC-01-E4",
+      "NC-01-E5",
+      "NC-01-E6"
+    ],
+    "gold_status": "AUTHOR_DRAFT",
+    "authored_sentence_keys": [
+      "a",
+      "b",
+      "c",
+      "d",
+      "e",
+      "f",
+      "g",
+      "h",
+      "i",
+      "j",
+      "k",
+      "l",
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7",
+      "n8",
+      "n9",
+      "n10"
+    ],
+    "coverage": "sentence-meaning inventory draft; not independently certified complete"
+  },
+  {
+    "id": "NC-01-CONTROL",
+    "profile": "natural_control",
+    "family_id": "NC-01",
+    "case_kind": "paired_short_control",
+    "record_ids": [
+      "NC-01-CONTROL-R1"
+    ],
+    "question_ids": [
+      "NC-01-CONTROL-Q1"
+    ],
+    "paired_question_id": "NC-01-Q1",
+    "target_source_sentence_keys": [
+      "b",
+      "e",
+      "f"
+    ],
+    "gold_status": "AUTHOR_DRAFT",
+    "coverage": "paired question target meanings only"
+  },
+  {
+    "id": "NC-02",
+    "profile": "natural_single",
+    "family_id": "NC-02",
+    "case_kind": "natural_narrative",
+    "record_ids": [
+      "NC-02-R1"
+    ],
+    "question_ids": [
+      "NC-02-Q1",
+      "NC-02-Q2",
+      "NC-02-Q3",
+      "NC-02-Q4",
+      "NC-02-Q5",
+      "NC-02-Q6"
+    ],
+    "connection_ids": [
+      "NC-02-E1",
+      "NC-02-E2",
+      "NC-02-E3",
+      "NC-02-E4",
+      "NC-02-E5"
+    ],
+    "gold_status": "AUTHOR_DRAFT",
+    "authored_sentence_keys": [
+      "a",
+      "b",
+      "c",
+      "d",
+      "e",
+      "f",
+      "g",
+      "h",
+      "i",
+      "j",
+      "k",
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7",
+      "n8",
+      "n9",
+      "n10"
+    ],
+    "coverage": "sentence-meaning inventory draft; not independently certified complete"
+  },
+  {
+    "id": "NC-02-CONTROL",
+    "profile": "natural_control",
+    "family_id": "NC-02",
+    "case_kind": "paired_short_control",
+    "record_ids": [
+      "NC-02-CONTROL-R1"
+    ],
+    "question_ids": [
+      "NC-02-CONTROL-Q1"
+    ],
+    "paired_question_id": "NC-02-Q1",
+    "target_source_sentence_keys": [
+      "d",
+      "e"
+    ],
+    "gold_status": "AUTHOR_DRAFT",
+    "coverage": "paired question target meanings only"
+  },
+  {
+    "id": "NC-03",
+    "profile": "natural_single",
+    "family_id": "NC-03",
+    "case_kind": "natural_narrative",
+    "record_ids": [
+      "NC-03-R1"
+    ],
+    "question_ids": [
+      "NC-03-Q1",
+      "NC-03-Q2",
+      "NC-03-Q3",
+      "NC-03-Q4",
+      "NC-03-Q5",
+      "NC-03-Q6"
+    ],
+    "connection_ids": [
+      "NC-03-E1",
+      "NC-03-E2",
+      "NC-03-E3",
+      "NC-03-E4",
+      "NC-03-E5"
+    ],
+    "gold_status": "AUTHOR_DRAFT",
+    "authored_sentence_keys": [
+      "a",
+      "b",
+      "c",
+      "d",
+      "e",
+      "f",
+      "g",
+      "h",
+      "i",
+      "j",
+      "k",
+      "l",
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7",
+      "n8",
+      "n9",
+      "n10"
+    ],
+    "coverage": "sentence-meaning inventory draft; not independently certified complete"
+  },
+  {
+    "id": "NC-03-CONTROL",
+    "profile": "natural_control",
+    "family_id": "NC-03",
+    "case_kind": "paired_short_control",
+    "record_ids": [
+      "NC-03-CONTROL-R1"
+    ],
+    "question_ids": [
+      "NC-03-CONTROL-Q1"
+    ],
+    "paired_question_id": "NC-03-Q1",
+    "target_source_sentence_keys": [
+      "d",
+      "e",
+      "f"
+    ],
+    "gold_status": "AUTHOR_DRAFT",
+    "coverage": "paired question target meanings only"
+  },
+  {
+    "id": "NC-04",
+    "profile": "natural_single",
+    "family_id": "NC-04",
+    "case_kind": "natural_narrative",
+    "record_ids": [
+      "NC-04-R1"
+    ],
+    "question_ids": [
+      "NC-04-Q1",
+      "NC-04-Q2",
+      "NC-04-Q3",
+      "NC-04-Q4",
+      "NC-04-Q5",
+      "NC-04-Q6"
+    ],
+    "connection_ids": [
+      "NC-04-E1",
+      "NC-04-E2",
+      "NC-04-E3",
+      "NC-04-E4",
+      "NC-04-E5"
+    ],
+    "gold_status": "AUTHOR_DRAFT",
+    "authored_sentence_keys": [
+      "a",
+      "b",
+      "c",
+      "d",
+      "e",
+      "f",
+      "g",
+      "h",
+      "i",
+      "j",
+      "k",
+      "l",
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7",
+      "n8",
+      "n9",
+      "n10"
+    ],
+    "coverage": "sentence-meaning inventory draft; not independently certified complete"
+  },
+  {
+    "id": "NC-04-CONTROL",
+    "profile": "natural_control",
+    "family_id": "NC-04",
+    "case_kind": "paired_short_control",
+    "record_ids": [
+      "NC-04-CONTROL-R1"
+    ],
+    "question_ids": [
+      "NC-04-CONTROL-Q1"
+    ],
+    "paired_question_id": "NC-04-Q1",
+    "target_source_sentence_keys": [
+      "b",
+      "c",
+      "d"
+    ],
+    "gold_status": "AUTHOR_DRAFT",
+    "coverage": "paired question target meanings only"
+  },
+  {
+    "id": "NC-05",
+    "profile": "natural_single",
+    "family_id": "NC-05",
+    "case_kind": "natural_narrative",
+    "record_ids": [
+      "NC-05-R1"
+    ],
+    "question_ids": [
+      "NC-05-Q1",
+      "NC-05-Q2",
+      "NC-05-Q3",
+      "NC-05-Q4",
+      "NC-05-Q5",
+      "NC-05-Q6"
+    ],
+    "connection_ids": [
+      "NC-05-E1",
+      "NC-05-E2",
+      "NC-05-E3",
+      "NC-05-E4",
+      "NC-05-E5"
+    ],
+    "gold_status": "AUTHOR_DRAFT",
+    "authored_sentence_keys": [
+      "a",
+      "b",
+      "c",
+      "d",
+      "e",
+      "f",
+      "g",
+      "h",
+      "i",
+      "j",
+      "k",
+      "l",
+      "m",
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7",
+      "n8",
+      "n9",
+      "n10"
+    ],
+    "coverage": "sentence-meaning inventory draft; not independently certified complete"
+  },
+  {
+    "id": "NC-05-CONTROL",
+    "profile": "natural_control",
+    "family_id": "NC-05",
+    "case_kind": "paired_short_control",
+    "record_ids": [
+      "NC-05-CONTROL-R1"
+    ],
+    "question_ids": [
+      "NC-05-CONTROL-Q1"
+    ],
+    "paired_question_id": "NC-05-Q1",
+    "target_source_sentence_keys": [
+      "b",
+      "c"
+    ],
+    "gold_status": "AUTHOR_DRAFT",
+    "coverage": "paired question target meanings only"
+  },
+  {
+    "id": "NC-06",
+    "profile": "natural_single",
+    "family_id": "NC-06",
+    "case_kind": "natural_narrative",
+    "record_ids": [
+      "NC-06-R1"
+    ],
+    "question_ids": [
+      "NC-06-Q1",
+      "NC-06-Q2",
+      "NC-06-Q3",
+      "NC-06-Q4",
+      "NC-06-Q5",
+      "NC-06-Q6"
+    ],
+    "connection_ids": [
+      "NC-06-E1",
+      "NC-06-E2",
+      "NC-06-E3",
+      "NC-06-E4",
+      "NC-06-E5"
+    ],
+    "gold_status": "AUTHOR_DRAFT",
+    "authored_sentence_keys": [
+      "a",
+      "b",
+      "c",
+      "d",
+      "e",
+      "f",
+      "g",
+      "h",
+      "i",
+      "j",
+      "k",
+      "l",
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7",
+      "n8",
+      "n9",
+      "n10"
+    ],
+    "coverage": "sentence-meaning inventory draft; not independently certified complete"
+  },
+  {
+    "id": "NC-06-CONTROL",
+    "profile": "natural_control",
+    "family_id": "NC-06",
+    "case_kind": "paired_short_control",
+    "record_ids": [
+      "NC-06-CONTROL-R1"
+    ],
+    "question_ids": [
+      "NC-06-CONTROL-Q1"
+    ],
+    "paired_question_id": "NC-06-Q1",
+    "target_source_sentence_keys": [
+      "b",
+      "c",
+      "d"
+    ],
+    "gold_status": "AUTHOR_DRAFT",
+    "coverage": "paired question target meanings only"
+  },
+  {
+    "id": "NC-07",
+    "profile": "natural_single",
+    "family_id": "NC-07",
+    "case_kind": "natural_narrative",
+    "record_ids": [
+      "NC-07-R1"
+    ],
+    "question_ids": [
+      "NC-07-Q1",
+      "NC-07-Q2",
+      "NC-07-Q3",
+      "NC-07-Q4",
+      "NC-07-Q5",
+      "NC-07-Q6"
+    ],
+    "connection_ids": [
+      "NC-07-E1",
+      "NC-07-E2",
+      "NC-07-E3",
+      "NC-07-E4",
+      "NC-07-E5"
+    ],
+    "gold_status": "AUTHOR_DRAFT",
+    "authored_sentence_keys": [
+      "a",
+      "b",
+      "c",
+      "d",
+      "e",
+      "f",
+      "g",
+      "h",
+      "i",
+      "j",
+      "k",
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7",
+      "n8",
+      "n9",
+      "n10"
+    ],
+    "coverage": "sentence-meaning inventory draft; not independently certified complete"
+  },
+  {
+    "id": "NC-07-CONTROL",
+    "profile": "natural_control",
+    "family_id": "NC-07",
+    "case_kind": "paired_short_control",
+    "record_ids": [
+      "NC-07-CONTROL-R1"
+    ],
+    "question_ids": [
+      "NC-07-CONTROL-Q1"
+    ],
+    "paired_question_id": "NC-07-Q1",
+    "target_source_sentence_keys": [
+      "g",
+      "h"
+    ],
+    "gold_status": "AUTHOR_DRAFT",
+    "coverage": "paired question target meanings only"
+  },
+  {
+    "id": "NC-08",
+    "profile": "natural_single",
+    "family_id": "NC-08",
+    "case_kind": "natural_narrative",
+    "record_ids": [
+      "NC-08-R1"
+    ],
+    "question_ids": [
+      "NC-08-Q1",
+      "NC-08-Q2",
+      "NC-08-Q3",
+      "NC-08-Q4",
+      "NC-08-Q5",
+      "NC-08-Q6"
+    ],
+    "connection_ids": [
+      "NC-08-E1",
+      "NC-08-E2",
+      "NC-08-E3",
+      "NC-08-E4",
+      "NC-08-E5"
+    ],
+    "gold_status": "AUTHOR_DRAFT",
+    "authored_sentence_keys": [
+      "a",
+      "b",
+      "c",
+      "d",
+      "e",
+      "f",
+      "g",
+      "h",
+      "i",
+      "j",
+      "k",
+      "l",
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7",
+      "n8",
+      "n9",
+      "n10"
+    ],
+    "coverage": "sentence-meaning inventory draft; not independently certified complete"
+  },
+  {
+    "id": "NC-08-CONTROL",
+    "profile": "natural_control",
+    "family_id": "NC-08",
+    "case_kind": "paired_short_control",
+    "record_ids": [
+      "NC-08-CONTROL-R1"
+    ],
+    "question_ids": [
+      "NC-08-CONTROL-Q1"
+    ],
+    "paired_question_id": "NC-08-Q1",
+    "target_source_sentence_keys": [
+      "c",
+      "k"
+    ],
+    "gold_status": "AUTHOR_DRAFT",
+    "coverage": "paired question target meanings only"
+  },
+  {
+    "id": "NC-09",
+    "profile": "natural_multi",
+    "family_id": "NC-09",
+    "case_kind": "natural_narrative",
+    "record_ids": [
+      "NC-09-R1",
+      "NC-09-R2"
+    ],
+    "question_ids": [
+      "NC-09-Q1",
+      "NC-09-Q2",
+      "NC-09-Q3",
+      "NC-09-Q4",
+      "NC-09-Q5",
+      "NC-09-Q6"
+    ],
+    "connection_ids": [
+      "NC-09-E1",
+      "NC-09-E2",
+      "NC-09-E3",
+      "NC-09-E4",
+      "NC-09-E5"
+    ],
+    "gold_status": "AUTHOR_DRAFT",
+    "authored_sentence_keys": [
+      "a",
+      "b",
+      "c",
+      "d",
+      "e",
+      "f",
+      "g",
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "h",
+      "i",
+      "j",
+      "k",
+      "l",
+      "n6",
+      "n7",
+      "n8",
+      "n9",
+      "n10"
+    ],
+    "coverage": "sentence-meaning inventory draft; not independently certified complete"
+  },
+  {
+    "id": "NC-09-CONTROL",
+    "profile": "natural_control",
+    "family_id": "NC-09",
+    "case_kind": "paired_short_control",
+    "record_ids": [
+      "NC-09-CONTROL-R1"
+    ],
+    "question_ids": [
+      "NC-09-CONTROL-Q1"
+    ],
+    "paired_question_id": "NC-09-Q1",
+    "target_source_sentence_keys": [
+      "a",
+      "c",
+      "h"
+    ],
+    "gold_status": "AUTHOR_DRAFT",
+    "coverage": "paired question target meanings only"
+  },
+  {
+    "id": "NC-10",
+    "profile": "natural_multi",
+    "family_id": "NC-10",
+    "case_kind": "natural_narrative",
+    "record_ids": [
+      "NC-10-R1",
+      "NC-10-R2"
+    ],
+    "question_ids": [
+      "NC-10-Q1",
+      "NC-10-Q2",
+      "NC-10-Q3",
+      "NC-10-Q4",
+      "NC-10-Q5",
+      "NC-10-Q6"
+    ],
+    "connection_ids": [
+      "NC-10-E1",
+      "NC-10-E2",
+      "NC-10-E3",
+      "NC-10-E4"
+    ],
+    "gold_status": "AUTHOR_DRAFT",
+    "authored_sentence_keys": [
+      "a",
+      "b",
+      "c",
+      "d",
+      "e",
+      "f",
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "g",
+      "h",
+      "i",
+      "j",
+      "k",
+      "l",
+      "n6",
+      "n7",
+      "n8",
+      "n9",
+      "n10"
+    ],
+    "coverage": "sentence-meaning inventory draft; not independently certified complete"
+  },
+  {
+    "id": "NC-10-CONTROL",
+    "profile": "natural_control",
+    "family_id": "NC-10",
+    "case_kind": "paired_short_control",
+    "record_ids": [
+      "NC-10-CONTROL-R1"
+    ],
+    "question_ids": [
+      "NC-10-CONTROL-Q1"
+    ],
+    "paired_question_id": "NC-10-Q1",
+    "target_source_sentence_keys": [
+      "a",
+      "b",
+      "g",
+      "h"
+    ],
+    "gold_status": "AUTHOR_DRAFT",
+    "coverage": "paired question target meanings only"
+  },
+  {
+    "id": "NC-11",
+    "profile": "natural_multi",
+    "family_id": "NC-11",
+    "case_kind": "natural_narrative",
+    "record_ids": [
+      "NC-11-R1",
+      "NC-11-R2"
+    ],
+    "question_ids": [
+      "NC-11-Q1",
+      "NC-11-Q2",
+      "NC-11-Q3",
+      "NC-11-Q4",
+      "NC-11-Q5",
+      "NC-11-Q6"
+    ],
+    "connection_ids": [
+      "NC-11-E1",
+      "NC-11-E2",
+      "NC-11-E3",
+      "NC-11-E4"
+    ],
+    "gold_status": "AUTHOR_DRAFT",
+    "authored_sentence_keys": [
+      "a",
+      "b",
+      "c",
+      "d",
+      "e",
+      "f",
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "g",
+      "h",
+      "i",
+      "j",
+      "k",
+      "l",
+      "n6",
+      "n7",
+      "n8",
+      "n9",
+      "n10"
+    ],
+    "coverage": "sentence-meaning inventory draft; not independently certified complete"
+  },
+  {
+    "id": "NC-11-CONTROL",
+    "profile": "natural_control",
+    "family_id": "NC-11",
+    "case_kind": "paired_short_control",
+    "record_ids": [
+      "NC-11-CONTROL-R1"
+    ],
+    "question_ids": [
+      "NC-11-CONTROL-Q1"
+    ],
+    "paired_question_id": "NC-11-Q1",
+    "target_source_sentence_keys": [
+      "a",
+      "g",
+      "i",
+      "j"
+    ],
+    "gold_status": "AUTHOR_DRAFT",
+    "coverage": "paired question target meanings only"
+  },
+  {
+    "id": "NC-12",
+    "profile": "natural_multi",
+    "family_id": "NC-12",
+    "case_kind": "natural_narrative",
+    "record_ids": [
+      "NC-12-R1",
+      "NC-12-R2"
+    ],
+    "question_ids": [
+      "NC-12-Q1",
+      "NC-12-Q2",
+      "NC-12-Q3",
+      "NC-12-Q4",
+      "NC-12-Q5",
+      "NC-12-Q6"
+    ],
+    "connection_ids": [
+      "NC-12-E1",
+      "NC-12-E2",
+      "NC-12-E3",
+      "NC-12-E4",
+      "NC-12-E5"
+    ],
+    "gold_status": "AUTHOR_DRAFT",
+    "authored_sentence_keys": [
+      "a",
+      "b",
+      "c",
+      "d",
+      "e",
+      "f",
+      "g",
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "h",
+      "i",
+      "j",
+      "k",
+      "l",
+      "m",
+      "n6",
+      "n7",
+      "n8",
+      "n9",
+      "n10"
+    ],
+    "coverage": "sentence-meaning inventory draft; not independently certified complete"
+  },
+  {
+    "id": "NC-12-CONTROL",
+    "profile": "natural_control",
+    "family_id": "NC-12",
+    "case_kind": "paired_short_control",
+    "record_ids": [
+      "NC-12-CONTROL-R1"
+    ],
+    "question_ids": [
+      "NC-12-CONTROL-Q1"
+    ],
+    "paired_question_id": "NC-12-Q1",
+    "target_source_sentence_keys": [
+      "d",
+      "h",
+      "i"
+    ],
+    "gold_status": "AUTHOR_DRAFT",
+    "coverage": "paired question target meanings only"
+  }
+]

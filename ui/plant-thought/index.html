@@ -1,0 +1,616 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plant Thought — 디지털 서재 · UI 미리보기</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Gowun+Dodum&family=Newsreader:wght@400;500;600&family=Noto+Sans+KR:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/plant-thought/style.css">
+<link rel="stylesheet" href="/plant-thought/preview.css">
+<link rel="stylesheet" href="/plant-thought/archive-preview.css">
+<link rel="stylesheet" href="/plant-thought/archive-floating.css">
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+<div class="head">
+  <div class="brand" onclick="go('home')">
+    <div class="logo">♧</div>
+    <div>
+      <b>Plant Thought</b>
+      <small>식물학자의 디지털 서재</small>
+    </div>
+  </div>
+  <nav id="nav">
+    <button class="active" onclick="go('home')">서재 홈</button>
+    <button onclick="go('chat')">사색 대화</button>
+    <button onclick="go('emotion')">감정 갈무리</button>
+    <button onclick="go('archive')">서재 보관소</button>
+    <button onclick="location.assign('/baseline')">Memory Lab <span class="nav-lab-mark">↗</span></button>
+    <button onclick="go('settings')">서재 설정</button>
+  </nav>
+  <button class="account" onclick="go('login')">로그인 ↗</button>
+</div>
+<div class="mobile">
+  <select id="mobileSelect" onchange="this.value==='memorylab'?location.assign('/baseline'):go(this.value)">
+    <option value="home">서재 홈</option>
+    <option value="chat">사색 대화</option>
+    <option value="emotion">감정 갈무리</option>
+    <option value="archive">서재 보관소</option>
+    <option value="memorylab">Memory Lab</option>
+    <option value="settings">서재 설정</option>
+    <option value="login">로그인</option>
+    <option value="signup">회원가입</option>
+  </select>
+</div>
+</header>
+<div class="preview-strip" role="note"><div><span class="preview-dot"></span><strong>화면 미리보기</strong><span>AI 응답·기록 저장·검색은 아직 연결되지 않았어요.</span></div><button onclick="location.assign('/baseline')">Memory Lab 둘러보기 <span aria-hidden="true">↗</span></button></div>
+
+<main>
+
+<!-- HOME -->
+<section id="home" class="page active">
+  <div class="hero">
+    <div class="eyebrow">
+      YOUR PERSONAL MEMORY GARDEN
+    </div>
+    <h1>생각이 머무는 작은 서재</h1>
+    <p class="lead">
+      흩어지는 생각을 기록하고,<br>
+      잊고 있던 나의 이야기를 다시 발견하세요.
+    </p>
+    <div class="chat-input-wrapper memory-composer" style="margin-top:32px">
+      <input id="homeSearch" placeholder="떠오르는 생각이나 기억을 들려주세요" aria-label="새 대화 메시지" autocomplete="off">
+      <button class="chat-send-btn" onclick="startChatFromHome()" aria-label="대화 시작"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 18V6m-6 6 6-6 6 6"/></svg></button>
+    </div>
+    <div class="chips" style="justify-content:center">
+      <button class="chip" onclick="go('emotion')">
+        ✎ 오늘 기록하기
+      </button>
+      <button class="chip"
+        onclick="searchHome('기분이 안 좋았던 날')">
+        ⌕ 감정 기록 찾기
+      </button>
+      <button class="chip" onclick="go('chat')">
+        ✧ AI와 대화하기
+      </button>
+    </div>
+  </div>
+
+  <div class="sectionhead">
+    <div>
+      <h2>나의 작은 정원</h2>
+      <span class="muted small">
+        기록하고, 찾고, 다시 생각하는 공간
+      </span>
+    </div>
+  </div>
+
+  <div class="grid3">
+    <div class="card"
+      onclick="go('emotion')" style="cursor:pointer">
+      <div class="iconbox">✎</div>
+      <h3 style="margin-top:20px">오늘의 기록</h3>
+      <p class="muted small">
+        일기부터 작은 생각까지 자유롭게 남겨보세요.
+      </p>
+      <div class="line"></div>
+      <span class="tag">기록 시작하기 ↗</span>
+    </div>
+
+    <div class="card"
+      onclick="go('archive')" style="cursor:pointer">
+      <div class="iconbox">▦</div>
+      <h3 style="margin-top:20px">기억의 달력</h3>
+      <p class="muted small">
+        어떤 날에 무엇을 기록했는지 날짜별로 확인하세요.
+      </p>
+      <div class="line"></div>
+      <span class="tag">보관소 살펴보기 ↗</span>
+    </div>
+
+    <div class="card"
+      onclick="go('chat')" style="cursor:pointer">
+      <div class="iconbox">✧</div>
+      <h3 style="margin-top:20px">사색 대화</h3>
+      <p class="muted small">
+        지난 기록을 근거로 자신만의 이야기를 이어가세요.
+      </p>
+      <div class="line"></div>
+      <span class="tag">대화 시작하기 ↗</span>
+    </div>
+  </div>
+
+  <section class="home-recent" aria-labelledby="homeRecentTitle">
+    <div class="sectionhead">
+      <div>
+        <h2 id="homeRecentTitle">최근 기록</h2>
+        <span class="muted small">보관소의 가상 예시 기록을 먼저 살펴보세요.</span>
+      </div>
+      <button class="ghost" onclick="go('archive')">전체 기록 보기 ↗</button>
+    </div>
+    <ul class="recent-list" id="homeRecent"></ul>
+  </section>
+</section>
+
+<!-- CHAT -->
+<section id="chat" class="page" aria-label="사색 대화">
+  <div class="chat-layout" id="chatLayout">
+    <button class="chat-sidebar-backdrop" onclick="closeChatSidebar()" aria-label="대화 목록 닫기" tabindex="-1"></button>
+    <aside class="chat-sidebar" id="chatSidebar" aria-label="대화 목록">
+      <div class="sidebar-heading">
+        <div class="sidebar-brand"><span>♧</span> Plant Thought</div>
+        <button class="new-chat-btn" onclick="newChat()"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4H6a3 3 0 0 0-3 3v11a3 3 0 0 0 3 3h11a3 3 0 0 0 3-3v-6M14 4l3-3 5 5-3 3-9 9-5 1 1-5zM14 4l5 5"/></svg> 새 대화</button>
+      </div>
+      <div class="chat-sidebar-scroll">
+        <p class="sidebar-label">대화 내역</p>
+        <div class="chat-history" id="chatHistory"></div>
+      </div>
+    </aside>
+    <div class="chat-main" id="chatMain">
+      <div class="chat-topbar">
+        <div class="chat-topbar-left">
+          <button class="chat-icon-btn" id="sidebarToggle" onclick="toggleChatSidebar()" aria-label="대화 목록 열기·닫기" aria-controls="chatSidebar" aria-expanded="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M9 4v16M5.8 8h.4M5.8 11h.4"/></svg></button>
+          <h1 class="chat-title">사색 대화</h1>
+        </div>
+        <div class="chat-topbar-actions">
+          <span class="chat-topbar-label">기억을 바탕으로 나누는 대화</span>
+          <button class="chat-icon-btn" onclick="newChat()" title="새 대화" aria-label="새 대화 시작"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4H6a3 3 0 0 0-3 3v11a3 3 0 0 0 3 3h11a3 3 0 0 0 3-3v-6M14 4l3-3 5 5-3 3-9 9-5 1 1-5zM14 4l5 5"/></svg></button>
+        </div>
+      </div>
+      <div class="chat-scroll" id="chatScroll">
+        <div id="conversation" role="log" aria-label="대화 내용" aria-live="polite"></div>
+      </div>
+      <div class="chat-input-area">
+        <div class="chat-input-wrapper">
+          <textarea id="chatInput" placeholder="떠오르는 생각이나 기억을 들려주세요" aria-label="대화 메시지" rows="1"></textarea>
+          <button class="chat-send-btn" id="chatSend" onclick="sendChat()" aria-label="입력 미리보기" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 18V6m-6 6 6-6 6 6"/></svg></button>
+        </div>
+        <p class="chat-disclaimer">입력한 문장의 배치를 미리 볼 수 있어요. AI 답변은 생성하지 않습니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RECORD WRITING -->
+<section id="emotion" class="page">
+  <div style="max-width:800px;margin:auto">
+    <button class="emotion-back" onclick="go(emotionReturnPage)">← 되돌아가기</button>
+    <div class="eyebrow">EMOTION HARVEST</div>
+    <h1>감정 갈무리</h1>
+    <p class="lead">
+      작은 생각도 기록해 두면 다시 돌아볼 수 있는 기억이 됩니다.
+    </p>
+
+    <div class="banner record-note">
+      <b>오늘은 어떤 하루였나요?</b>
+      <p>
+        완벽한 문장으로 작성하지 않아도 괜찮아요.
+        자유롭게 기록한 내용을 나중에 다시 검색할 수 있도록 설계합니다.
+      </p>
+    </div>
+
+    <label style="margin-top:24px">
+      제목
+      <input id="recordTitle" class="field"
+        placeholder="기록 제목을 입력하세요">
+    </label>
+
+    <label style="margin-top:18px">
+      날짜
+      <input id="recordDate" class="field" type="date">
+    </label>
+
+    <label style="margin-top:18px">
+      기록 내용
+      <textarea id="recordBody"
+        style="margin-top:8px"
+        placeholder="오늘 마음에 남은 일이 있었나요?"></textarea>
+    </label>
+
+    <!-- 태그 및 감정 선택 완전 제거 -->
+
+    <div style="text-align:right;margin-top:20px">
+      <button class="primary" onclick="addRecord()">
+        작성 내용 미리보기 ↗
+      </button>
+    </div>
+    <p class="notice">
+      지금은 작성 화면 미리보기입니다. 입력은 같은 탭의 초안으로만 남고, 실제 기록은 저장되지 않습니다.
+    </p>
+  </div>
+</section>
+
+<!-- ARCHIVE -->
+<section id="archive" class="page">
+  <div class="eyebrow">MEMORY ARCHIVE</div>
+  <h1>서재 보관소</h1>
+  <p class="lead">
+    가상 기록을 달력으로 살펴보고,
+    질문과 참고 답변을 나란히 확인해 보세요.
+  </p>
+
+<div class="archive-dataset-bar" aria-label="보관소 예시 자료 선택">
+    <div class="archive-dataset-title"><span class="archive-dataset-icon" aria-hidden="true">▤</span><div><span class="archive-kicker">SAMPLE COLLECTION</span><strong>일반화 최소 기준점 <span class="archive-version">v1.0.0</span></strong></div></div>
+    <label class="archive-profile-label">예시 구분<select id="archiveProfile" aria-label="질문 예시 구분"><option value="development">개발용</option><option value="confirmation">확인용</option></select></label>
+    <div class="archive-collection-counts"><span><b id="archiveRecordTotal">199</b>개 원문</span><i></i><span><b id="archiveQuestionTotal">30</b>개 예시</span></div>
+    <span class="archive-sample-badge">가상 시험 자료</span>
+  </div>
+  <div class="archive-scope-note"><span>기록일 기준 · 한국 시간</span><button id="archiveJumpExamples" type="button">질문·답변 예시 보기 <span aria-hidden="true">↓</span></button></div>
+  <div class="inputbox archive-sample-search">
+    <input id="archiveInput"
+      placeholder="예시 자료에서 찾기 · 예: 보고서, 예약, 하린" aria-label="원문 전체 검색어">
+    <button class="primary archive-search-btn" onclick="runSearch(true)" aria-label="원문 전체 검색" title="원문 전체 검색">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg>
+    </button>
+  </div>
+
+  <div class="chips" id="filters">
+    <button class="chip on"
+      onclick="setFilter(this,'all')">제목·원문 전체</button>
+    <button class="chip"
+      onclick="setFilter(this,'exact')">원문 전체</button>
+    <button class="chip"
+      onclick="setFilter(this,'semantic')">제목만</button>
+  </div>
+
+  <div class="archive-workspace" id="archiveWorkspace">
+    <div class="archive-toolbar">
+      <div class="archive-view-switch" role="group" aria-label="기록 보기 방식">
+        <button id="calendarViewButton" aria-pressed="true" onclick="setArchiveView('calendar')">달력</button>
+        <button id="timelineViewButton" aria-pressed="false" onclick="setArchiveView('timeline')">시간순</button>
+      </div>
+      <button class="ghost" id="calendarZoomButton" aria-pressed="false" onclick="toggleCalendarSize()">↗ 달력 확대</button>
+      <label class="archive-sort" id="timelineSortControl" hidden>정렬
+        <select id="timelineSort" aria-label="시간순 정렬" onchange="renderTimeline()">
+          <option value="newest">최신순</option>
+          <option value="oldest">오래된순</option>
+        </select>
+      </label>
+    </div>
+  <div class="archive-layout">
+    <div class="calendar" id="archiveCalendar">
+      <div class="calhead">
+        <h2 id="monthTitle"></h2>
+        <div class="calactions">
+          <button onclick="moveMonth(-1)"
+            aria-label="이전 달">‹</button>
+          <button onclick="todayMonth()">오늘</button>
+          <button onclick="moveMonth(1)"
+            aria-label="다음 달">›</button>
+        </div>
+      </div>
+
+      <div class="calendar-grid-scroll" id="calendarGridScroll" role="region" aria-label="월간 달력" tabindex="-1">
+      <div class="calendar-grid">
+      <div class="week">
+        <div>일</div><div>월</div><div>화</div>
+        <div>수</div><div>목</div><div>금</div><div>토</div>
+      </div>
+      <div class="days" id="calendarDays"></div>
+      </div>
+      </div>
+      <p id="calendarDetailsHint" hidden>기록 제목과 짧은 내용을 날짜 안에서 확인하세요. 기록을 더블클릭하면 상세가 열립니다. 작은 화면에서는 달력을 좌우로 넘길 수 있어요.</p>
+      <p class="notice">
+        ● 가상 원문의 기록일을 표시합니다. 사건 날짜는 본문에서 확인하세요.
+      </p>
+    </div>
+
+    <section class="archive-timeline" id="archiveTimeline" aria-label="시간순 기록" hidden>
+      <div class="timeline-heading"><h2>시간순 기록</h2><span class="muted small" id="timelineCount"></span></div>
+      <div id="timelineGroups"></div>
+    </section>
+
+    <aside class="day-panel" id="archiveSidePanel" aria-label="선택한 기록과 검색 결과">
+      <div id="dayRecordsView">
+      <div class="eyebrow">DAILY RECORDS</div>
+      <h2 style="margin-top:12px" id="selectedDate"></h2>
+      <p class="muted small" id="selectedCount"></p>
+      <div class="line"></div>
+      <div id="selectedList"></div>
+      <button class="ghost"
+        style="width:100%;margin-top:15px"
+        onclick="writeSelected()">
+        + 이 날짜에 기록하기
+      </button>
+      </div>
+      <section id="archiveTimelinePreview" class="archive-timeline-preview" aria-label="선택한 원문 미리보기" hidden>
+        <div class="eyebrow">RECORD PREVIEW</div>
+        <h2 id="archiveTimelinePreviewTitle">원문을 선택해 주세요</h2>
+        <p id="archiveTimelinePreviewMeta" class="muted small"></p>
+        <div class="line"></div>
+        <div class="archive-timeline-preview-content"><p id="archiveTimelinePreviewBody" class="archive-timeline-preview-body"></p></div>
+        <p id="archiveTimelinePreviewNote" class="archive-timeline-preview-note"></p>
+        <button id="archiveTimelinePreviewOpen" class="ghost" type="button" aria-label="선택한 원문 전체 보기" disabled>원문 전체 보기 ↗</button>
+      </section>
+      <section id="archiveSearchView" aria-label="검색 결과" hidden>
+        <div class="eyebrow">SEARCH RESULTS</div>
+        <div class="sectionhead" id="searchResultsHeading">
+          <h2>검색 결과</h2>
+          <span class="muted small" id="resultCount"></span>
+        </div>
+        <p class="muted small" id="searchQueryCaption"></p>
+        <div class="line"></div>
+        <div id="searchResults"></div>
+        <button class="ghost" style="width:100%;margin-top:15px" onclick="showDayRecords()">← 날짜 기록으로 돌아가기</button>
+      </section>
+    </aside>
+
+    <section id="archiveFloatingDock" class="archive-floating-dock" role="dialog" aria-modal="false" aria-labelledby="archiveDockTitle" hidden>
+      <header class="archive-dock-header"><div><span class="archive-dock-eyebrow">SAMPLE LIBRARY</span><h2 id="archiveDockTitle">데이터 정보 · 질문과 답변</h2></div><button id="archiveDockClose" type="button" class="archive-dock-close" aria-label="데이터 정보 패널 접기" title="패널 접기"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 10h10"/></svg></button></header>
+      <div class="archive-dock-tabs" role="tablist" aria-label="가상 원문 패널 메뉴">
+        <button id="archiveDockTabInfo" type="button" role="tab" aria-controls="archiveDataInfo" aria-selected="true" tabindex="0" data-dock-tab="info">데이터 정보</button>
+        <button id="archiveDockTabExamples" type="button" role="tab" aria-controls="archiveExamples" aria-selected="false" tabindex="-1" data-dock-tab="examples">질문·답변 <span id="archiveDockExampleCount">30</span></button>
+      </div>
+    <div class="archive-floating-body" id="archiveFloatingBody">
+      <section id="archiveDataInfo" class="archive-info-section" aria-labelledby="archiveInfoTitle">
+        <div class="archive-panel-heading"><h3 id="archiveInfoTitle">데이터 정보</h3><span class="archive-muted-badge">읽기 전용 예시</span></div>
+        <dl id="archiveDataFacts" class="archive-data-facts"></dl><p id="archiveRecordIdentity" class="archive-record-identity"></p>
+      </section>
+      <section id="archiveExamples" class="archive-examples-section" aria-labelledby="archiveExamplesTitle">
+        <div class="archive-panel-heading"><h3 id="archiveExamplesTitle">질문·답변 예시</h3><span id="archiveExampleCount" class="archive-count-badge">30</span></div>
+        <p class="archive-answer-notice">질문과 참고 답변을 함께 보여줍니다.<br>참고 답변은 원래 사례 기준의 작성자 초안입니다. 전체 원문을 검색하는 AI 답변과 다를 수 있습니다.</p>
+        <div class="archive-example-tabs" role="group" aria-label="질문 예시 범위"><button id="archiveAllExamples" type="button" aria-pressed="true">전체 예시</button><button id="archiveRelatedExamples" type="button" aria-pressed="false">선택 기록 관련</button></div>
+        <label class="archive-qa-search"><span class="sr-only">질문과 답변에서 찾기</span><input id="archiveExampleQuery" type="search" placeholder="질문·답변에서 찾기" aria-label="질문과 답변에서 찾기"></label>
+        <p id="archiveExamplesScope" class="archive-example-scope"></p>
+        <div id="archiveExampleList" class="archive-example-list" role="list" aria-label="질문과 참고 답변 목록" tabindex="0"></div>
+      </section>
+        </div>
+    </section>
+    <button id="archiveDockToggle" class="archive-dock-launcher" type="button" aria-label="데이터 정보 패널 열기" aria-expanded="false" aria-controls="archiveFloatingDock">
+      <span class="archive-launcher-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4h12a2 2 0 0 1 2 2v14H7a3 3 0 0 1-3-3V5a1 1 0 0 1 1-1Z"/><path d="M7 4v16M10 9h6M10 13h6"/></svg></span>
+      <span class="archive-launcher-copy"><strong>데이터 정보 · 질문과 답변</strong><span id="archiveDockSummary">원문 94개 · 질문·답변 30개</span></span>
+      <svg class="archive-launcher-chevron" viewBox="0 0 20 20" aria-hidden="true"><path d="m5 12 5-5 5 5"/></svg>
+    </button>
+  </div>
+  </div>
+</section>
+
+<!-- RECORD DETAIL -->
+<section id="recordDetail" class="page">
+  <div class="record-detail">
+    <button class="ghost" onclick="go('archive')">
+      ← 서재 보관소로 돌아가기
+    </button>
+
+    <div class="card" style="margin-top:25px;padding:36px">
+      <div class="eyebrow">MEMORY RECORD</div>
+      <h1 id="detailTitle"
+        style="font-size:34px"></h1>
+      <p class="muted small" id="detailDate"></p>
+      <div class="line"></div>
+      <div class="record-content" id="detailBody"></div>
+    </div>
+  </div>
+</section>
+
+<!-- MEMORY LAB -->
+<section id="memorylab" class="page" aria-labelledby="memoryLabTitle">
+  <div class="eyebrow">A WORKSPACE FOR YOUR MEMORY</div>
+  <h1 id="memoryLabTitle">기억을 살펴보는 실험실</h1>
+  <p class="lead">일상에서 남긴 이야기와 실험의 결과를,<br>하나의 공간에서 차근차근 살펴보세요.</p>
+  <div class="lab-intro"><span class="lab-intro-icon" aria-hidden="true">◫</span><div><strong>Memory Lab</strong><p>기존 실험 화면을 이 서재에서 바로 열 수 있어요. 지금은 화면 구성과 이동 동선을 먼저 확인합니다.</p></div><span class="lab-stage">연결 준비 중</span></div>
+  <div class="grid3 lab-cards">
+    <a class="card lab-card" href="/baseline"><div class="lab-card-top"><span class="iconbox">▦</span><span class="lab-card-arrow" aria-hidden="true">↗</span></div><span class="lab-card-kicker">EXPERIMENTS</span><h2>실험 워크벤치</h2><p>데이터셋과 검색·답변 방식을 선택하고, 실행 과정을 확인하는 화면입니다.</p><div class="lab-card-tags"><span>모델·검색 설정</span><span>실행·비교</span></div><span class="lab-card-link">Memory Lab 열기 <span aria-hidden="true">→</span></span></a>
+    <a class="card lab-card" href="/summary"><div class="lab-card-top"><span class="iconbox">≋</span><span class="lab-card-arrow" aria-hidden="true">↗</span></div><span class="lab-card-kicker">MEMORY</span><h2>요약 기억</h2><p>원문과 요약을 나란히 살펴보고, 직접 입력한 기록을 다루는 화면입니다.</p><div class="lab-card-tags"><span>직접 입력</span><span>원문·요약</span></div><span class="lab-card-link">요약 기억 열기 <span aria-hidden="true">→</span></span></a>
+    <a class="card lab-card" href="/memorylab-preview"><div class="lab-card-top"><span class="iconbox">◧</span><span class="lab-card-arrow" aria-hidden="true">↗</span></div><span class="lab-card-kicker">REFERENCE</span><h2>기존 UI 예시</h2><p>가상 사례로 구성된 기존 화면에서 기억과 검색의 표현 방식을 살펴보세요.</p><div class="lab-card-tags"><span>가상 예시</span><span>화면 탐색</span></div><span class="lab-card-link">기존 예시 열기 <span aria-hidden="true">→</span></span></a>
+  </div>
+  <p class="lab-draft-note">↳ 작성 중인 대화와 기록 초안은 같은 탭에서 돌아오면 이어서 볼 수 있어요. 실제 기억으로 저장되지는 않습니다.</p>
+</section>
+
+<!-- SETTINGS -->
+<section id="settings" class="page">
+  <div class="eyebrow">LIBRARY PREFERENCES</div>
+  <h1>서재 설정</h1>
+  <p class="lead">
+    기억과 대화가 보이는 방식을 조정하세요.
+  </p>
+
+  <div class="card"
+    style="margin-top:30px;max-width:760px">
+    <h3>기록과 검색</h3>
+
+    <div class="setting">
+      <div>
+        의미 유사 검색 활성화
+        <p class="muted small">
+          표현이 달라도 관련된 기록을 함께 표시
+        </p>
+      </div>
+      <input id="semanticSearch" type="checkbox" checked>
+    </div>
+
+    <div class="setting">
+      <div>
+        원문 근거 표시
+        <p class="muted small">
+          AI 응답에 사용한 기록 확인
+        </p>
+      </div>
+      <input id="showSources" type="checkbox" checked>
+    </div>
+
+    <div class="setting">
+      <div>
+        기억 달력 표시
+        <p class="muted small">
+          날짜별 기록 유무 표시
+        </p>
+      </div>
+      <input id="showCalendar" type="checkbox" checked>
+    </div>
+
+    <div class="setting">
+      <div>
+        상세 정보 기본 접기
+        <p class="muted small">
+          중요한 정보부터 표시
+        </p>
+      </div>
+      <input id="collapseDetails" type="checkbox" checked>
+    </div>
+
+    <p class="notice">
+      화면 표시 설정만 이 탭에서 임시로 유지됩니다. 검색과 AI 응답에는 아직 적용되지 않습니다.
+    </p>
+  </div>
+</section>
+
+<!-- LOGIN -->
+<section id="login" class="page">
+  <div class="auth">
+    <div style="text-align:center">
+      <div class="eyebrow">WELCOME BACK</div>
+      <h1 style="font-size:37px">
+        다시 만난 나의 서재
+      </h1>
+      <p class="lead">당신의 이야기가 기다리는 공간</p>
+    </div>
+
+    <div class="authcard" style="margin-top:30px">
+      <div class="iconbox" style="margin-bottom:22px">♧</div>
+      <h3>로그인</h3>
+      <p class="muted small">
+        Plant Thought에 오신 것을 환영합니다.
+      </p>
+
+      <form onsubmit="authDemo(event,'login')">
+        <label>
+          이메일
+          <input class="field" type="email"
+            placeholder="example@email.com"
+            autocomplete="email" required>
+        </label>
+        <label>
+          비밀번호
+          <input class="field" type="password"
+            placeholder="비밀번호 입력"
+            autocomplete="current-password" required>
+        </label>
+        <button class="primary" type="submit">
+          로그인
+        </button>
+      </form>
+
+      <p style="text-align:center;margin-top:23px"
+        class="muted small">
+        계정이 없으신가요?
+        <button class="authlink"
+          onclick="go('signup')">회원가입</button>
+      </p>
+      <p class="notice">
+        실제 로그인 인증은 진행되지 않습니다.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- SIGNUP -->
+<section id="signup" class="page">
+  <div class="auth">
+    <div style="text-align:center">
+      <div class="eyebrow">BEGIN YOUR GARDEN</div>
+      <h1 style="font-size:37px">
+        나만의 서재 만들기
+      </h1>
+      <p class="lead">
+        새로운 기록의 첫 페이지를 시작하세요.
+      </p>
+    </div>
+
+    <div class="authcard" style="margin-top:30px">
+      <h3>회원가입</h3>
+
+      <form onsubmit="authDemo(event,'signup')">
+        <label>
+          닉네임
+          <input class="field"
+            placeholder="이름 또는 닉네임"
+            autocomplete="nickname" required>
+        </label>
+        <label>
+          이메일
+          <input class="field" type="email"
+            placeholder="example@email.com"
+            autocomplete="email" required>
+        </label>
+        <label>
+          비밀번호
+          <input id="password1" class="field"
+            type="password" minlength="8"
+            placeholder="8자 이상"
+            autocomplete="new-password" required>
+        </label>
+        <label>
+          비밀번호 확인
+          <input id="password2" class="field"
+            type="password" minlength="8"
+            placeholder="비밀번호 확인"
+            autocomplete="new-password" required>
+        </label>
+        <label style="margin-top:20px;display:flex;
+          gap:10px;align-items:flex-start">
+          <input type="checkbox" required>
+          이용약관 및 개인정보 처리방침 동의 (UI 시연)
+        </label>
+        <button class="primary" type="submit">
+          나의 서재 시작하기
+        </button>
+      </form>
+
+      <p style="text-align:center;margin-top:23px"
+        class="muted small">
+        이미 계정이 있으신가요?
+        <button class="authlink"
+          onclick="go('login')">로그인</button>
+      </p>
+      <p class="notice">
+        계정이나 비밀번호는 저장되지 않습니다.
+      </p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+<div class="foot">
+  <div>
+    <b>♧ Plant Thought</b>
+    <small>
+      생각을 심고 기억을 발견하는 나만의 디지털 서재
+    </small>
+  </div>
+  <div>
+    <button onclick="alert('서비스 안내 UI 준비 중')">
+      서비스 안내
+    </button>
+    <button onclick="alert('개인정보 보호 UI 준비 중')">
+      개인정보 보호
+    </button>
+    <button onclick="alert('도움말 UI 준비 중')">
+      도움말
+    </button>
+  </div>
+</div>
+<div class="foot"
+  style="border-top:1px solid #e0e6df;
+  padding-top:20px;margin-top:30px">
+  <small>
+    © Plant Thought · Personal Memory Garden
+  </small>
+  <small>UI DESIGN PREVIEW</small>
+</div>
+</footer>
+
+<script src="/plant-thought/diary-dates.js"></script>
+<script src="/plant-thought/layout.js"></script>
+<script src="/plant-thought/preview.js"></script>
+<script src="/plant-thought/archive-data.js"></script>
+<script src="/plant-thought/archive-preview.js"></script>
+<script src="/plant-thought/archive-floating.js"></script>
+</body>
+</html>

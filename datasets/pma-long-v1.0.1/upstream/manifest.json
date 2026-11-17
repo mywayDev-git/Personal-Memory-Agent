@@ -1,0 +1,20 @@
+{
+  "version": "local-long-input-v1",
+  "synthetic_only": true,
+  "case_count": 56,
+  "profiles": {
+    "smoke": 8,
+    "core": 24,
+    "sentence": 8,
+    "boundary": 6,
+    "dependency": 4,
+    "stress": 6
+  },
+  "model_execution": false,
+  "independent_gold": false,
+  "split_policy": "development only; position/length variants share pair_group, not independent samples",
+  "files": {
+    "inputs.json": "97c411207050c40bacf45ef099ea0726cbb98a45dd6bb8795f5d9ad28f40a948",
+    "annotations.json": "9725e1efa116135a8d1af5403be5943968c0045b11dc1961f8baee4230881ea3"
+  }
+}

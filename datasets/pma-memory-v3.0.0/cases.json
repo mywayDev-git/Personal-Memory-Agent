@@ -1,0 +1,4344 @@
+{
+  "schema_version": "pma-memory-cases-3",
+  "cases": [
+    {
+      "id": "배포 인계와 검증 범위",
+      "title": "배포 인계와 검증 범위",
+      "domain": "work",
+      "split": "development",
+      "profile": "development_a",
+      "record_ids": [
+        "MC-01-R1",
+        "MC-01-R2",
+        "MC-01-R3",
+        "MC-01-R4",
+        "MC-01-R5",
+        "MC-01-R6",
+        "MC-01-R7",
+        "MC-01-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-898d071559669740",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-0b124bf6c4f64d0d",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-039d7550bccdf6ae",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-a5063bbb8213d647",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-015533f55305fe2e",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-6dc69ddd8e91a614",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-3e562b7f44efaccd",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-9b27d546f6741381",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-0c19a381ce030fd0",
+      "question_ids": [
+        "MC-01-Q1",
+        "MC-01-Q2",
+        "MC-01-Q3",
+        "MC-01-Q4",
+        "MC-01-Q5",
+        "MC-01-Q6",
+        "MC-01-Q7",
+        "MC-01-Q8",
+        "GROW-development-600",
+        "CHAT-development-T1",
+        "CHAT-development-T2",
+        "CHAT-development-T3",
+        "CHAT-development-T4",
+        "CHAT-development-T5"
+      ],
+      "connection_ids": [
+        "MC-01-Q8-E1"
+      ],
+      "characters": 427,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": "NC-01",
+      "variables": [
+        "IN-42",
+        "EX-11",
+        "EX-17",
+        "AG-29",
+        "EV-07",
+        "EV-09"
+      ]
+    },
+    {
+      "id": "이사 상자와 신청 상태",
+      "title": "이사 상자와 신청 상태",
+      "domain": "life",
+      "split": "development",
+      "profile": "development_a",
+      "record_ids": [
+        "MC-02-R1",
+        "MC-02-R2",
+        "MC-02-R3",
+        "MC-02-R4",
+        "MC-02-R5",
+        "MC-02-R6",
+        "MC-02-R7",
+        "MC-02-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-9bf14a31fdea2d3e",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-e50c3f00fa72eb6d",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-60541ae4df9fc718",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-f35a686311a5cbb7",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-6457dd81b98c734c",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-dfcccdba4acff5ab",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-450e413a4d3bf24d",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-df398af084b80f73",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-8ecdd1f4b059fe8c",
+      "question_ids": [
+        "MC-02-Q1",
+        "MC-02-Q2",
+        "MC-02-Q3",
+        "MC-02-Q4",
+        "MC-02-Q5",
+        "MC-02-Q6",
+        "MC-02-Q7",
+        "MC-02-Q8"
+      ],
+      "connection_ids": [],
+      "characters": 393,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": "NC-02",
+      "variables": [
+        "IN-33",
+        "EX-04",
+        "EX-19",
+        "AG-14",
+        "EV-05"
+      ]
+    },
+    {
+      "id": "장애 가설과 확인된 원인",
+      "title": "장애 가설과 확인된 원인",
+      "domain": "work",
+      "split": "development",
+      "profile": "development_a",
+      "record_ids": [
+        "MC-03-R1",
+        "MC-03-R2",
+        "MC-03-R3",
+        "MC-03-R4",
+        "MC-03-R5",
+        "MC-03-R6",
+        "MC-03-R7",
+        "MC-03-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-f9ca6732a4a30dad",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-0295e91ee0ef1e9c",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-dfb554a176d236ea",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-0f18623b1be8fa3d",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-8a071474b31c961b",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-58b8affe08a26943",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-e8ddfeea47e7c776",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-0bd2b844be50c821",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-eac2d8565d2ee2d4",
+      "question_ids": [
+        "MC-03-Q1",
+        "MC-03-Q2",
+        "MC-03-Q3",
+        "MC-03-Q4",
+        "MC-03-Q5",
+        "MC-03-Q6",
+        "MC-03-Q7",
+        "MC-03-Q8"
+      ],
+      "connection_ids": [
+        "MC-03-Q1-E1",
+        "MC-03-Q2-E1",
+        "DIST-MC-03-Q1-0-E1",
+        "DIST-MC-03-Q1-5-E1",
+        "DIST-MC-03-Q1-15-E1"
+      ],
+      "characters": 427,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": "NC-03",
+      "variables": [
+        "IN-35",
+        "IN-36",
+        "EX-14",
+        "RR-08",
+        "EV-08",
+        "EV-23"
+      ]
+    },
+    {
+      "id": "여행의 예약과 개인 선호",
+      "title": "여행의 예약과 개인 선호",
+      "domain": "life",
+      "split": "development",
+      "profile": "development_a",
+      "record_ids": [
+        "MC-04-R1",
+        "MC-04-R2",
+        "MC-04-R3",
+        "MC-04-R4",
+        "MC-04-R5",
+        "MC-04-R6",
+        "MC-04-R7",
+        "MC-04-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-00b01b10bb3f09ae",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-94db5d168fe01194",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-70e11f59b249ea5e",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-8b3e613b9572f007",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-c4d89d67d69d078b",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-f5019a039dfe1c79",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-0436a40d4f25e7d7",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-01cdcbb45504e21f",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-5b65a16951cae994",
+      "question_ids": [
+        "MC-04-Q1",
+        "MC-04-Q2",
+        "MC-04-Q3",
+        "MC-04-Q4",
+        "MC-04-Q5",
+        "MC-04-Q6",
+        "MC-04-Q7",
+        "MC-04-Q8",
+        "GROW-development-1800"
+      ],
+      "connection_ids": [],
+      "characters": 398,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": "NC-04",
+      "variables": [
+        "MW-05",
+        "EX-08",
+        "EX-11",
+        "AG-13",
+        "EV-07"
+      ]
+    },
+    {
+      "id": "성능 비교와 측정 근거",
+      "title": "성능 비교와 측정 근거",
+      "domain": "work",
+      "split": "development",
+      "profile": "development_a",
+      "record_ids": [
+        "MC-05-R1",
+        "MC-05-R2",
+        "MC-05-R3",
+        "MC-05-R4",
+        "MC-05-R5",
+        "MC-05-R6",
+        "MC-05-R7",
+        "MC-05-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-0c611cbd4271850a",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-76e33a1e96ad2ce0",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-bc9dfe18ec16e1db",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-4c5f3325118a4fc3",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-e952c5677cd07819",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-a5010366e112dc01",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-05fcb3fbddbc3c14",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-4cf12872607a0b7f",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-3540b5e1d64fd43d",
+      "question_ids": [
+        "MC-05-Q1",
+        "MC-05-Q2",
+        "MC-05-Q3",
+        "MC-05-Q4",
+        "MC-05-Q5",
+        "MC-05-Q6",
+        "MC-05-Q7",
+        "MC-05-Q8"
+      ],
+      "connection_ids": [],
+      "characters": 440,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": "NC-05",
+      "variables": [
+        "IN-34",
+        "EV-02",
+        "EV-24",
+        "RR-34",
+        "AG-34"
+      ]
+    },
+    {
+      "id": "가족의 선호와 준비 단계",
+      "title": "가족의 선호와 준비 단계",
+      "domain": "life",
+      "split": "development",
+      "profile": "development_a",
+      "record_ids": [
+        "MC-06-R1",
+        "MC-06-R2",
+        "MC-06-R3",
+        "MC-06-R4",
+        "MC-06-R5",
+        "MC-06-R6",
+        "MC-06-R7",
+        "MC-06-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-980069bfd98749c1",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-dbe5aeda25edfc64",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-76f5058db3a61bc2",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-98be8e1a08b3416c",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-38903f7975069fdb",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-87491a8e0de33f8e",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-6b1f4656d1af9f6d",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-8a6e29e12700fa07",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-eb83bc63ac307180",
+      "question_ids": [
+        "MC-06-Q1",
+        "MC-06-Q2",
+        "MC-06-Q3",
+        "MC-06-Q4",
+        "MC-06-Q5",
+        "MC-06-Q6",
+        "MC-06-Q7",
+        "MC-06-Q8"
+      ],
+      "connection_ids": [],
+      "characters": 405,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": "NC-06",
+      "variables": [
+        "EX-25",
+        "MW-05",
+        "EX-04",
+        "EV-04",
+        "AG-14"
+      ]
+    },
+    {
+      "id": "회의 제안과 실제 서비스",
+      "title": "회의 제안과 실제 서비스",
+      "domain": "work",
+      "split": "development",
+      "profile": "development_a",
+      "record_ids": [
+        "MC-07-R1",
+        "MC-07-R2",
+        "MC-07-R3",
+        "MC-07-R4",
+        "MC-07-R5",
+        "MC-07-R6",
+        "MC-07-R7",
+        "MC-07-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-8d3abd27c780eae8",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-f83d0f7c8833d7d2",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-15d75ed41edf78d9",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-649b88e17ca24195",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-23bd429afbc08d25",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-bd3dae2fb69e1451",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-861161cf448735d7",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-b79e3c0efd5f89ba",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-251bb47f3c5d8a60",
+      "question_ids": [
+        "MC-07-Q1",
+        "MC-07-Q2",
+        "MC-07-Q3",
+        "MC-07-Q4",
+        "MC-07-Q5",
+        "MC-07-Q6",
+        "MC-07-Q7",
+        "MC-07-Q8",
+        "GROW-development-3000"
+      ],
+      "connection_ids": [
+        "MC-07-Q4-E1",
+        "MC-07-Q5-E1"
+      ],
+      "characters": 457,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": "NC-07",
+      "variables": [
+        "EX-11",
+        "EX-16",
+        "EV-07",
+        "AG-13",
+        "AG-29"
+      ]
+    },
+    {
+      "id": "수리 비용과 다른 청소기",
+      "title": "수리 비용과 다른 청소기",
+      "domain": "life",
+      "split": "development",
+      "profile": "development_a",
+      "record_ids": [
+        "MC-08-R1",
+        "MC-08-R2",
+        "MC-08-R3",
+        "MC-08-R4",
+        "MC-08-R5",
+        "MC-08-R6",
+        "MC-08-R7",
+        "MC-08-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-501c314dd112b927",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-2bb9023af43e7f31",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-2861bdfdcc8268f7",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-487347f30584d30c",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-cb9a3b9885c92db7",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-e765193f4b47715f",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-026f2ef1fe70d887",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-ee7b58bc72b454a1",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-14a8ecbbcd8e1f42",
+      "question_ids": [
+        "MC-08-Q1",
+        "MC-08-Q2",
+        "MC-08-Q3",
+        "MC-08-Q4",
+        "MC-08-Q5",
+        "MC-08-Q6",
+        "MC-08-Q7",
+        "MC-08-Q8"
+      ],
+      "connection_ids": [
+        "MC-08-Q2-E1",
+        "DIST-MC-08-Q2-0-E1",
+        "DIST-MC-08-Q2-5-E1",
+        "DIST-MC-08-Q2-15-E1",
+        "DEP-development-8500-near-E1",
+        "DEP-development-8500-far-E1",
+        "DEP-development-12000-near-E1",
+        "DEP-development-12000-far-E1",
+        "DEP-development-24000-near-E1",
+        "DEP-development-24000-far-E1"
+      ],
+      "characters": 395,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": "NC-08",
+      "variables": [
+        "IN-33",
+        "EX-09",
+        "EV-02",
+        "EV-05",
+        "AG-15"
+      ]
+    },
+    {
+      "id": "동명이인과 네 가지 날짜",
+      "title": "동명이인과 네 가지 날짜",
+      "domain": "work",
+      "split": "development",
+      "profile": "development_a",
+      "record_ids": [
+        "MC-09-R1",
+        "MC-09-R2",
+        "MC-09-R3",
+        "MC-09-R4",
+        "MC-09-R5",
+        "MC-09-R6",
+        "MC-09-R7",
+        "MC-09-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-054c78ddde334ced",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-16b9fabddfd87b7b",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-5a95c7c385e6cb26",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-b68af7ce13b8399a",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-01a243c3637d6ba1",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-22ab08de7f2b39a7",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-3c06777e2a79cf83",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-13bcd14e82db2bfa",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-a9ceb73ed43f3df6",
+      "question_ids": [
+        "MC-09-Q1",
+        "MC-09-Q2",
+        "MC-09-Q3",
+        "MC-09-Q4",
+        "MC-09-Q5",
+        "MC-09-Q6",
+        "MC-09-Q7",
+        "MC-09-Q8",
+        "GROW-development-4000"
+      ],
+      "connection_ids": [
+        "MC-09-Q1-E1",
+        "MC-09-Q4-E1",
+        "MC-09-Q5-E1",
+        "MC-09-Q7-E1",
+        "MC-09-Q7-E2"
+      ],
+      "characters": 425,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": "NC-09",
+      "variables": [
+        "RR-23",
+        "RT-07",
+        "RT-08",
+        "EX-05",
+        "EX-06",
+        "CV-16"
+      ]
+    },
+    {
+      "id": "접수증 위치 정정과 문서 구분",
+      "title": "접수증 위치 정정과 문서 구분",
+      "domain": "life",
+      "split": "development",
+      "profile": "development_a",
+      "record_ids": [
+        "MC-10-R1",
+        "MC-10-R2",
+        "MC-10-R3",
+        "MC-10-R4",
+        "MC-10-R5",
+        "MC-10-R6",
+        "MC-10-R7",
+        "MC-10-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-52411abb4209a3f3",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-fbacca32077e7a02",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-c3b86766a3c938c3",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-db80627b03ecab2d",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-fd97bdc488d402c6",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-bc309ce4254050f6",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-1bbda87b16fb9719",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-44ce41ac00a6bcdf",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-1e211e0c40476d10",
+      "question_ids": [
+        "MC-10-Q1",
+        "MC-10-Q2",
+        "MC-10-Q3",
+        "MC-10-Q4",
+        "MC-10-Q5",
+        "MC-10-Q6",
+        "MC-10-Q7",
+        "MC-10-Q8"
+      ],
+      "connection_ids": [
+        "MC-10-Q1-E1",
+        "MC-10-Q3-E1",
+        "DIST-MC-10-Q1-0-E1",
+        "DIST-MC-10-Q1-5-E1",
+        "DIST-MC-10-Q1-15-E1"
+      ],
+      "characters": 400,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": "NC-10",
+      "variables": [
+        "ST-05",
+        "EX-17",
+        "EV-05",
+        "EV-09",
+        "QU-27"
+      ]
+    },
+    {
+      "id": "상반된 인수 보고와 증빙",
+      "title": "상반된 인수 보고와 증빙",
+      "domain": "work",
+      "split": "development",
+      "profile": "development_a",
+      "record_ids": [
+        "MC-11-R1",
+        "MC-11-R2",
+        "MC-11-R3",
+        "MC-11-R4",
+        "MC-11-R5",
+        "MC-11-R6",
+        "MC-11-R7",
+        "MC-11-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-c66d83a39617ff5d",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-31dbfe058bec2e60",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-82a484a1ce977ab1",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-28083ab563abd02a",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-b2a86cc7ad020454",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-a342c49b21051e5b",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-3c451355df2efff9",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-8b54b9adf6e7663f",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-077f71a347c9b392",
+      "question_ids": [
+        "MC-11-Q1",
+        "MC-11-Q2",
+        "MC-11-Q3",
+        "MC-11-Q4",
+        "MC-11-Q5",
+        "MC-11-Q6",
+        "MC-11-Q7",
+        "MC-11-Q8"
+      ],
+      "connection_ids": [
+        "MC-11-Q1-E1",
+        "MC-11-Q2-E1",
+        "DIST-MC-11-Q1-0-E1",
+        "DIST-MC-11-Q1-5-E1",
+        "DIST-MC-11-Q1-15-E1"
+      ],
+      "characters": 418,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": "NC-11",
+      "variables": [
+        "AG-12",
+        "EV-11",
+        "EV-22",
+        "RR-08"
+      ]
+    },
+    {
+      "id": "모임의 부분 취소와 구매 인계",
+      "title": "모임의 부분 취소와 구매 인계",
+      "domain": "life",
+      "split": "development",
+      "profile": "development_a",
+      "record_ids": [
+        "MC-12-R1",
+        "MC-12-R2",
+        "MC-12-R3",
+        "MC-12-R4",
+        "MC-12-R5",
+        "MC-12-R6",
+        "MC-12-R7",
+        "MC-12-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-559611ef294dce49",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-e4ac769fee137b74",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-db3443a2c4ec1f69",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-6ca55dfe97ef7778",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-bd24b466bef3dfcf",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-ab7619120dba4255",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-9a62be8ad251f775",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-14d88cce2d662ed4",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-44ea39be43fe6fed",
+      "question_ids": [
+        "MC-12-Q1",
+        "MC-12-Q2",
+        "MC-12-Q3",
+        "MC-12-Q4",
+        "MC-12-Q5",
+        "MC-12-Q6",
+        "MC-12-Q7",
+        "MC-12-Q8"
+      ],
+      "connection_ids": [
+        "MC-12-Q5-E1"
+      ],
+      "characters": 403,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": "NC-12",
+      "variables": [
+        "EX-11",
+        "MW-07",
+        "AG-15",
+        "EV-23",
+        "EV-25"
+      ]
+    },
+    {
+      "id": "기간 안 전체 작업과 중복 집계",
+      "title": "기간 안 전체 작업과 중복 집계",
+      "domain": "work",
+      "split": "development",
+      "profile": "development_b",
+      "record_ids": [
+        "MC-13-R1",
+        "MC-13-R2",
+        "MC-13-R3",
+        "MC-13-R4",
+        "MC-13-R5",
+        "MC-13-R6",
+        "MC-13-R7",
+        "MC-13-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-5702eabb23388aec",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-a8b6a36484fef77e",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-baf96fea6e4c7cdf",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-0c9ede1406487d92",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-48feb1df04497f75",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-6d0de41cb9b2a9ac",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-87b227ee834244d3",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-1202259a6680a667",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-544da5c9ccff9f2a",
+      "question_ids": [
+        "MC-13-Q1",
+        "MC-13-Q2",
+        "MC-13-Q3",
+        "MC-13-Q4",
+        "MC-13-Q5",
+        "MC-13-Q6",
+        "MC-13-Q7",
+        "MC-13-Q8"
+      ],
+      "connection_ids": [
+        "MC-13-Q2-E1",
+        "MC-13-Q3-E1"
+      ],
+      "characters": 410,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "QI-13",
+        "QI-14",
+        "RT-03",
+        "RT-25",
+        "RT-30",
+        "EV-25"
+      ]
+    },
+    {
+      "id": "같은 제목의 프로젝트와 식별자",
+      "title": "같은 제목의 프로젝트와 식별자",
+      "domain": "work",
+      "split": "development",
+      "profile": "development_b",
+      "record_ids": [
+        "MC-14-R1",
+        "MC-14-R2",
+        "MC-14-R3",
+        "MC-14-R4",
+        "MC-14-R5",
+        "MC-14-R6",
+        "MC-14-R7",
+        "MC-14-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-4eddbaefc5b6ea29",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-71eff0b7d9e0a1e4",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-5b55e30b25d6f584",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-18aa7da553f8afcb",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-18dbc6156d18772d",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-8794bd3ecc872f1f",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-939c97da9d6f531f",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-33c19cf378068bbe",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-c061fabdface0fae",
+      "question_ids": [
+        "MC-14-Q1",
+        "MC-14-Q2",
+        "MC-14-Q3",
+        "MC-14-Q4",
+        "MC-14-Q5",
+        "MC-14-Q6",
+        "MC-14-Q7",
+        "MC-14-Q8"
+      ],
+      "connection_ids": [
+        "MC-14-Q2-E1",
+        "MC-14-Q2-E2"
+      ],
+      "characters": 501,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "QU-23",
+        "QU-24",
+        "QU-25",
+        "RR-16",
+        "RR-23"
+      ]
+    },
+    {
+      "id": "정정의 정정과 과거 시점",
+      "title": "정정의 정정과 과거 시점",
+      "domain": "life",
+      "split": "development",
+      "profile": "development_b",
+      "record_ids": [
+        "MC-15-R1",
+        "MC-15-R2",
+        "MC-15-R3",
+        "MC-15-R4",
+        "MC-15-R5",
+        "MC-15-R6",
+        "MC-15-R7",
+        "MC-15-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-ff25ff925b0d7bc3",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-443b5457913f19e7",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-b816b342fda40633",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-054cc1d64f77d1df",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-8c7591ceb416ca6d",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-e7417e273ad621ec",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-b430f01ac317d38a",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-e80a3fc62962475d",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-aa3ec4004932db28",
+      "question_ids": [
+        "MC-15-Q1",
+        "MC-15-Q2",
+        "MC-15-Q3",
+        "MC-15-Q4",
+        "MC-15-Q5",
+        "MC-15-Q6",
+        "MC-15-Q7",
+        "MC-15-Q8"
+      ],
+      "connection_ids": [
+        "MC-15-Q3-E1",
+        "MC-15-Q3-E2",
+        "MC-15-Q3-E3",
+        "MC-15-Q4-E1",
+        "MC-15-Q4-E2"
+      ],
+      "characters": 416,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "ST-06",
+        "ST-07",
+        "QI-16",
+        "QI-17",
+        "RT-07",
+        "EV-09"
+      ]
+    },
+    {
+      "id": "과거 기록을 늦게 저장한 경우",
+      "title": "과거 기록을 늦게 저장한 경우",
+      "domain": "work",
+      "split": "development",
+      "profile": "development_b",
+      "record_ids": [
+        "MC-16-R1",
+        "MC-16-R2",
+        "MC-16-R3",
+        "MC-16-R4",
+        "MC-16-R5",
+        "MC-16-R6",
+        "MC-16-R7",
+        "MC-16-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-8758be7fbdc184a5",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-a85106ca0ccbc75e",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-e42706eb466b0195",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-477dbd5981d8e80c",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-d7fe7c8d6be35995",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-fc632121fc27c6f4",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-b7290146a5982a95",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-4d9ab837b903ec76",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-1b5845e77858fa10",
+      "question_ids": [
+        "MC-16-Q1",
+        "MC-16-Q2",
+        "MC-16-Q3",
+        "MC-16-Q4",
+        "MC-16-Q5",
+        "MC-16-Q6",
+        "MC-16-Q7",
+        "MC-16-Q8"
+      ],
+      "connection_ids": [
+        "MC-16-Q2-E1",
+        "MC-16-Q2-E2",
+        "MC-16-Q2-E3",
+        "MC-16-Q3-E1",
+        "MC-16-Q6-E1",
+        "MC-16-Q8-E1"
+      ],
+      "characters": 433,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "RT-07",
+        "RT-08",
+        "RT-09",
+        "RR-06",
+        "RR-07"
+      ]
+    },
+    {
+      "id": "단위와 환불을 반영한 지출",
+      "title": "단위와 환불을 반영한 지출",
+      "domain": "life",
+      "split": "development",
+      "profile": "development_b",
+      "record_ids": [
+        "MC-17-R1",
+        "MC-17-R2",
+        "MC-17-R3",
+        "MC-17-R4",
+        "MC-17-R5",
+        "MC-17-R6",
+        "MC-17-R7",
+        "MC-17-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-6ccf96c9acfb6d65",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-c6964a500a61eddc",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-32ff49564e4064e3",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-2d2580015edda924",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-cd1380b08cc3a4d8",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-f58ee70eff2c04b2",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-77695071ad3ded5c",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-1e8df47ee4e4b764",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-9e9c55ead1ee0d2f",
+      "question_ids": [
+        "MC-17-Q1",
+        "MC-17-Q2",
+        "MC-17-Q3",
+        "MC-17-Q4",
+        "MC-17-Q5",
+        "MC-17-Q6",
+        "MC-17-Q7",
+        "MC-17-Q8"
+      ],
+      "connection_ids": [
+        "MC-17-Q2-E1",
+        "MC-17-Q3-E1",
+        "MC-17-Q5-E1",
+        "MC-17-Q5-E2",
+        "MC-17-Q5-E3"
+      ],
+      "characters": 385,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "QI-14",
+        "RR-34",
+        "RT-25",
+        "EV-02",
+        "EV-26"
+      ]
+    },
+    {
+      "id": "별칭과 혼합 언어의 작업 메모",
+      "title": "별칭과 혼합 언어의 작업 메모",
+      "domain": "work",
+      "split": "development",
+      "profile": "development_b",
+      "record_ids": [
+        "MC-18-R1",
+        "MC-18-R2",
+        "MC-18-R3",
+        "MC-18-R4",
+        "MC-18-R5",
+        "MC-18-R6",
+        "MC-18-R7",
+        "MC-18-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-147d412474198f51",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-3a4e2b06f9aaf337",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-24bf1188187f0ea6",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-eed557eb8642ac23",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-90e8de0344d596c5",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-4a30a0aa17926e05",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-238200b292bccd67",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-0bb53fb4f3191e45",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-29a0658577c3bfaf",
+      "question_ids": [
+        "MC-18-Q1",
+        "MC-18-Q2",
+        "MC-18-Q3",
+        "MC-18-Q4",
+        "MC-18-Q5",
+        "MC-18-Q6",
+        "MC-18-Q7",
+        "MC-18-Q8"
+      ],
+      "connection_ids": [
+        "MC-18-Q3-E1"
+      ],
+      "characters": 449,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "QU-08",
+        "QU-09",
+        "QU-10",
+        "QU-11",
+        "QU-12",
+        "RR-18"
+      ]
+    },
+    {
+      "id": "월 경계의 사건일과 등록일",
+      "title": "월 경계의 사건일과 등록일",
+      "domain": "life",
+      "split": "development",
+      "profile": "development_b",
+      "record_ids": [
+        "MC-19-R1",
+        "MC-19-R2",
+        "MC-19-R3",
+        "MC-19-R4",
+        "MC-19-R5",
+        "MC-19-R6",
+        "MC-19-R7",
+        "MC-19-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-8b419f5451ec92a3",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-13765508ec01181c",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-983ffbf95d235aa4",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-285062670c983ffa",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-b73f28fc5afdafb1",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-355f1ab1bb77a64a",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-51f1879791cd1af8",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-b6c4f67138025408",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-31dc840307135a0a",
+      "question_ids": [
+        "MC-19-Q1",
+        "MC-19-Q2",
+        "MC-19-Q3",
+        "MC-19-Q4",
+        "MC-19-Q5",
+        "MC-19-Q6",
+        "MC-19-Q7",
+        "MC-19-Q8"
+      ],
+      "connection_ids": [
+        "MC-19-Q2-E1"
+      ],
+      "characters": 415,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "RT-03",
+        "RT-04",
+        "EX-05",
+        "EX-06",
+        "EV-03"
+      ]
+    },
+    {
+      "id": "서로 다른 경로의 복수 근거",
+      "title": "서로 다른 경로의 복수 근거",
+      "domain": "work",
+      "split": "development",
+      "profile": "development_b",
+      "record_ids": [
+        "MC-20-R1",
+        "MC-20-R2",
+        "MC-20-R3",
+        "MC-20-R4",
+        "MC-20-R5",
+        "MC-20-R6",
+        "MC-20-R7",
+        "MC-20-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-0a3405671f7a0add",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-37f9f2fea06b8e9f",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-d9997ba5d527182e",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-b5c4da0f53322be5",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-5b50f7d0c706e62f",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-2de425cadcbc30d7",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-f1b7650c528317dd",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-3646d0b971998e6a",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-62cd215f6085c5c4",
+      "question_ids": [
+        "MC-20-Q1",
+        "MC-20-Q2",
+        "MC-20-Q3",
+        "MC-20-Q4",
+        "MC-20-Q5",
+        "MC-20-Q6",
+        "MC-20-Q7",
+        "MC-20-Q8",
+        "GROW-development-8000"
+      ],
+      "connection_ids": [
+        "MC-20-Q2-E1",
+        "MC-20-Q2-E2",
+        "MC-20-Q8-E1",
+        "MC-20-Q8-E2"
+      ],
+      "characters": 437,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "RR-32",
+        "AG-16",
+        "EV-14",
+        "QI-06"
+      ]
+    },
+    {
+      "id": "정보 부재와 부분 답변",
+      "title": "정보 부재와 부분 답변",
+      "domain": "life",
+      "split": "development",
+      "profile": "development_b",
+      "record_ids": [
+        "MC-21-R1",
+        "MC-21-R2",
+        "MC-21-R3",
+        "MC-21-R4",
+        "MC-21-R5",
+        "MC-21-R6",
+        "MC-21-R7",
+        "MC-21-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-ee77ddd2dea43257",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-1054f0c8e8d13526",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-f802d09c69060a75",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-a69b316e8a80431b",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-5a0f1d2289d14686",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-aeee49cc1b3e43e1",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-f586b44385513158",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-b61bdd4c449d9235",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-aac2ce8693af3cdd",
+      "question_ids": [
+        "MC-21-Q1",
+        "MC-21-Q2",
+        "MC-21-Q3",
+        "MC-21-Q4",
+        "MC-21-Q5",
+        "MC-21-Q6",
+        "MC-21-Q7",
+        "MC-21-Q8",
+        "GROW-development-8500"
+      ],
+      "connection_ids": [],
+      "characters": 379,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "AG-08",
+        "AG-09",
+        "AG-14",
+        "AG-15",
+        "EV-19"
+      ]
+    },
+    {
+      "id": "문서 속 명령과 이전 AI 오답",
+      "title": "문서 속 명령과 이전 AI 오답",
+      "domain": "work",
+      "split": "development",
+      "profile": "development_b",
+      "record_ids": [
+        "MC-22-R1",
+        "MC-22-R2",
+        "MC-22-R3",
+        "MC-22-R4",
+        "MC-22-R5",
+        "MC-22-R6",
+        "MC-22-R7",
+        "MC-22-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-b905aff162e530e0",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-f725a3d4714c6fd2",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-3509e0d4259e8bea",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-9352c56de7decbdb",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-cb56d2e5895c50ae",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-22ffb77c43e255d7",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-7302fd63e064c573",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-c9ac11a15efcc511",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-12b78addfac9d820",
+      "question_ids": [
+        "MC-22-Q1",
+        "MC-22-Q2",
+        "MC-22-Q3",
+        "MC-22-Q4",
+        "MC-22-Q5",
+        "MC-22-Q6",
+        "MC-22-Q7",
+        "MC-22-Q8"
+      ],
+      "connection_ids": [
+        "MC-22-Q1-E1",
+        "MC-22-Q2-E1",
+        "MC-22-Q3-E1",
+        "MC-22-Q4-E1",
+        "MC-22-Q7-E1"
+      ],
+      "characters": 438,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "SEC-08",
+        "SEC-09",
+        "EV-21",
+        "EV-27",
+        "MW-22"
+      ]
+    },
+    {
+      "id": "후속 질문의 조건과 주제 전환",
+      "title": "후속 질문의 조건과 주제 전환",
+      "domain": "work",
+      "split": "development",
+      "profile": "development_b",
+      "record_ids": [
+        "MC-23-R1",
+        "MC-23-R2",
+        "MC-23-R3",
+        "MC-23-R4",
+        "MC-23-R5",
+        "MC-23-R6",
+        "MC-23-R7",
+        "MC-23-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-322ba8cd85c7709a",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-0e048bba495ce6f0",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-8a7cedfd971f305a",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-3a6ed02b2cba5b9d",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-1ba79eac1835f14a",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-d4267540cce4f7ff",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-6222c8f18845122a",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-55d82e289a6a8938",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-b88e44054f5ecc5f",
+      "question_ids": [
+        "MC-23-Q1",
+        "MC-23-Q2",
+        "MC-23-Q3",
+        "MC-23-Q4",
+        "MC-23-Q5",
+        "MC-23-Q6",
+        "MC-23-Q7",
+        "MC-23-Q8"
+      ],
+      "connection_ids": [
+        "MC-23-Q4-E1",
+        "MC-23-Q8-E1"
+      ],
+      "characters": 400,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "CV-05",
+        "CV-06",
+        "CV-07",
+        "CV-08",
+        "CV-27",
+        "RT-23"
+      ]
+    },
+    {
+      "id": "짧은 메모·목록·표의 수치",
+      "title": "짧은 메모·목록·표의 수치",
+      "domain": "life",
+      "split": "development",
+      "profile": "development_b",
+      "record_ids": [
+        "MC-24-R1",
+        "MC-24-R2",
+        "MC-24-R3",
+        "MC-24-R4",
+        "MC-24-R5",
+        "MC-24-R6",
+        "MC-24-R7",
+        "MC-24-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-0bd6fe4d9b29ba66",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-1f73b9dbf24ff3af",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-fb51c03c9716c7dd",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-d6b5f13081ce0049",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-7c97a3143752eea4",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-60d7407110211704",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-047495c8373de780",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-22063ef2a9ebe42b",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-36cb2e65dfa6330f",
+      "question_ids": [
+        "MC-24-Q1",
+        "MC-24-Q2",
+        "MC-24-Q3",
+        "MC-24-Q4",
+        "MC-24-Q5",
+        "MC-24-Q6",
+        "MC-24-Q7",
+        "MC-24-Q8"
+      ],
+      "connection_ids": [
+        "MC-24-Q8-E1"
+      ],
+      "characters": 401,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "IN-02",
+        "IN-04",
+        "IN-54",
+        "IN-78",
+        "QU-12",
+        "EV-02"
+      ]
+    },
+    {
+      "id": "지역 전시의 담당과 실제 개막",
+      "title": "지역 전시의 담당과 실제 개막",
+      "domain": "life",
+      "split": "final",
+      "profile": "final",
+      "record_ids": [
+        "MC-25-R1",
+        "MC-25-R2",
+        "MC-25-R3",
+        "MC-25-R4",
+        "MC-25-R5",
+        "MC-25-R6",
+        "MC-25-R7",
+        "MC-25-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-5ea587726c74915a",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-a47e68871cefd1ea",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-becf85efac7c4dac",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-341b1f13439f59c8",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-c61395f557cccb39",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-3e3f9949c35ffc0d",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-a3559e1a0b19a06b",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-262df3fdb674a13f",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-de05328a3785323b",
+      "question_ids": [
+        "MC-25-Q1",
+        "MC-25-Q2",
+        "MC-25-Q3",
+        "MC-25-Q4",
+        "MC-25-Q5",
+        "MC-25-Q6",
+        "MC-25-Q7",
+        "MC-25-Q8",
+        "CHAT-final-T1",
+        "CHAT-final-T2",
+        "CHAT-final-T3",
+        "CHAT-final-T4",
+        "CHAT-final-T5"
+      ],
+      "connection_ids": [
+        "MC-25-Q3-E1",
+        "MC-25-Q8-E1",
+        "DIST-MC-25-Q8-0-E1",
+        "DIST-MC-25-Q8-5-E1",
+        "DIST-MC-25-Q8-15-E1",
+        "CHAT-final-T2-E1"
+      ],
+      "characters": 380,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "EX-11",
+        "EX-17",
+        "EV-07",
+        "EV-09"
+      ]
+    },
+    {
+      "id": "악기 수리와 조건부 비용",
+      "title": "악기 수리와 조건부 비용",
+      "domain": "life",
+      "split": "final",
+      "profile": "final",
+      "record_ids": [
+        "MC-26-R1",
+        "MC-26-R2",
+        "MC-26-R3",
+        "MC-26-R4",
+        "MC-26-R5",
+        "MC-26-R6",
+        "MC-26-R7",
+        "MC-26-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-9fa076aa26422bc1",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-8934d102447ae247",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-3d4c5ee642a1924c",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-ad043144b336d6e8",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-2aadbd22397ffa83",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-099ac92a328265ee",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-fdfdbc4e322dc67f",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-fa3a2888cf9456b2",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-fe7de296b6018fd3",
+      "question_ids": [
+        "MC-26-Q1",
+        "MC-26-Q2",
+        "MC-26-Q3",
+        "MC-26-Q4",
+        "MC-26-Q5",
+        "MC-26-Q6",
+        "MC-26-Q7",
+        "MC-26-Q8",
+        "GROW-final-600"
+      ],
+      "connection_ids": [
+        "MC-26-Q2-E1",
+        "MC-26-Q8-E1",
+        "DIST-MC-26-Q2-0-E1",
+        "DIST-MC-26-Q2-5-E1",
+        "DIST-MC-26-Q2-15-E1",
+        "DEP-final-8500-near-E1",
+        "DEP-final-8500-far-E1",
+        "DEP-final-12000-near-E1",
+        "DEP-final-12000-far-E1",
+        "DEP-final-24000-near-E1",
+        "DEP-final-24000-far-E1"
+      ],
+      "characters": 380,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "IN-33",
+        "EX-09",
+        "RR-34",
+        "EV-02"
+      ]
+    },
+    {
+      "id": "정원 공사의 시간순 변경",
+      "title": "정원 공사의 시간순 변경",
+      "domain": "life",
+      "split": "final",
+      "profile": "final",
+      "record_ids": [
+        "MC-27-R1",
+        "MC-27-R2",
+        "MC-27-R3",
+        "MC-27-R4",
+        "MC-27-R5",
+        "MC-27-R6",
+        "MC-27-R7",
+        "MC-27-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-f58cb73a866be203",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-00a07d84744ffc57",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-56af2e71b0280512",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-c1264f2025c156f2",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-3287145ae2fa0764",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-8f2de529162c9a6c",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-ed9b9fd81e4fd28a",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-66376a978e04d9e7",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-afb08a68e7ecd89c",
+      "question_ids": [
+        "MC-27-Q1",
+        "MC-27-Q2",
+        "MC-27-Q3",
+        "MC-27-Q4",
+        "MC-27-Q5",
+        "MC-27-Q6",
+        "MC-27-Q7",
+        "MC-27-Q8"
+      ],
+      "connection_ids": [
+        "MC-27-Q3-E1",
+        "MC-27-Q3-E2",
+        "MC-27-Q4-E1"
+      ],
+      "characters": 385,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "ST-06",
+        "RT-07",
+        "QI-11",
+        "QI-12"
+      ]
+    },
+    {
+      "id": "대회 지원금과 문서 재인용",
+      "title": "대회 지원금과 문서 재인용",
+      "domain": "work",
+      "split": "final",
+      "profile": "final",
+      "record_ids": [
+        "MC-28-R1",
+        "MC-28-R2",
+        "MC-28-R3",
+        "MC-28-R4",
+        "MC-28-R5",
+        "MC-28-R6",
+        "MC-28-R7",
+        "MC-28-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-27947162ae0e90a4",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-ef1abea389d60088",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-aeafcc7b79b12056",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-be6a16fd1ca202ee",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-630d9348655ebd63",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-ffed01212d6ecb68",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-c47ffca71339ac04",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-cd4560aff40af711",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-7a03a8d48a3261f3",
+      "question_ids": [
+        "MC-28-Q1",
+        "MC-28-Q2",
+        "MC-28-Q3",
+        "MC-28-Q4",
+        "MC-28-Q5",
+        "MC-28-Q6",
+        "MC-28-Q7",
+        "MC-28-Q8"
+      ],
+      "connection_ids": [
+        "MC-28-Q2-E1",
+        "MC-28-Q3-E1",
+        "MC-28-Q4-E1",
+        "MC-28-Q4-E2",
+        "MC-28-Q4-E3",
+        "MC-28-Q4-E4",
+        "MC-28-Q7-E1",
+        "MC-28-Q7-E2"
+      ],
+      "characters": 374,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "RT-30",
+        "QI-14",
+        "EV-26",
+        "RR-34"
+      ]
+    },
+    {
+      "id": "동명 인물과 이름 없는 인용",
+      "title": "동명 인물과 이름 없는 인용",
+      "domain": "work",
+      "split": "final",
+      "profile": "final",
+      "record_ids": [
+        "MC-29-R1",
+        "MC-29-R2",
+        "MC-29-R3",
+        "MC-29-R4",
+        "MC-29-R5",
+        "MC-29-R6",
+        "MC-29-R7",
+        "MC-29-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-ac3bace7a685ffe1",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-b2226fe155d713de",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-be2e39c133838c48",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-b8166336b32f6a58",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-396a72ada210c7cc",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-9cae1cd583564666",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-6f9cc4fcc7d00987",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-858b8f857ecce70b",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-0a72bf1b808ae866",
+      "question_ids": [
+        "MC-29-Q1",
+        "MC-29-Q2",
+        "MC-29-Q3",
+        "MC-29-Q4",
+        "MC-29-Q5",
+        "MC-29-Q6",
+        "MC-29-Q7",
+        "MC-29-Q8",
+        "GROW-final-1800"
+      ],
+      "connection_ids": [
+        "MC-29-Q2-E1",
+        "MC-29-Q4-E1",
+        "MC-29-Q8-E1",
+        "DIST-MC-29-Q2-0-E1",
+        "DIST-MC-29-Q2-5-E1",
+        "DIST-MC-29-Q2-15-E1"
+      ],
+      "characters": 372,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "RR-23",
+        "EX-16",
+        "EX-25",
+        "AG-08"
+      ]
+    },
+    {
+      "id": "행사 참가 기록의 전체 목록",
+      "title": "행사 참가 기록의 전체 목록",
+      "domain": "life",
+      "split": "final",
+      "profile": "final",
+      "record_ids": [
+        "MC-30-R1",
+        "MC-30-R2",
+        "MC-30-R3",
+        "MC-30-R4",
+        "MC-30-R5",
+        "MC-30-R6",
+        "MC-30-R7",
+        "MC-30-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-f08da2cea42819d1",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-afaac8a45ff12baf",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-b1a1d312efd61099",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-aec1729db7f75e14",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-ba61b8ec640bb08f",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-2110be0b6d073820",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-8ce310a1dd9125d6",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-c776748d6d6599f2",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-9f0edc300305254c",
+      "question_ids": [
+        "MC-30-Q1",
+        "MC-30-Q2",
+        "MC-30-Q3",
+        "MC-30-Q4",
+        "MC-30-Q5",
+        "MC-30-Q6",
+        "MC-30-Q7",
+        "MC-30-Q8"
+      ],
+      "connection_ids": [
+        "MC-30-Q1-E1",
+        "MC-30-Q2-E1",
+        "MC-30-Q4-E1"
+      ],
+      "characters": 351,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "QI-13",
+        "QI-14",
+        "RT-23",
+        "RT-25",
+        "EV-25"
+      ]
+    },
+    {
+      "id": "장비 설정의 단위와 비교 범위",
+      "title": "장비 설정의 단위와 비교 범위",
+      "domain": "work",
+      "split": "final",
+      "profile": "final",
+      "record_ids": [
+        "MC-31-R1",
+        "MC-31-R2",
+        "MC-31-R3",
+        "MC-31-R4",
+        "MC-31-R5",
+        "MC-31-R6",
+        "MC-31-R7",
+        "MC-31-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-4ed9988ab6226ab7",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-cf21b1234cee4221",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-5392cec90721172f",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-769fba44cc51e7b2",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-486b4e862ebb6d42",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-621e1129015f578a",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-844f89c755155632",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-dbefb4fe6a4b1ba5",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-99cb107b72a076c9",
+      "question_ids": [
+        "MC-31-Q1",
+        "MC-31-Q2",
+        "MC-31-Q3",
+        "MC-31-Q4",
+        "MC-31-Q5",
+        "MC-31-Q6",
+        "MC-31-Q7",
+        "MC-31-Q8"
+      ],
+      "connection_ids": [
+        "MC-31-Q1-E1",
+        "MC-31-Q3-E1",
+        "MC-31-Q6-E1"
+      ],
+      "characters": 405,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "RR-34",
+        "EV-24",
+        "QU-27",
+        "AG-34"
+      ]
+    },
+    {
+      "id": "평소 취향과 한정된 요청",
+      "title": "평소 취향과 한정된 요청",
+      "domain": "life",
+      "split": "final",
+      "profile": "final",
+      "record_ids": [
+        "MC-32-R1",
+        "MC-32-R2",
+        "MC-32-R3",
+        "MC-32-R4",
+        "MC-32-R5",
+        "MC-32-R6",
+        "MC-32-R7",
+        "MC-32-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-382b3f4398ea7478",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-e4edf6280a873ba5",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-9119e0672af75e04",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-bc1eb0c7d65e7764",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-e63537dd7e75b55a",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-5f5eae46d73887c2",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-bf6bb01ddd1712db",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-0a451c5b781f0f76",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-b57484e5df5d3c6b",
+      "question_ids": [
+        "MC-32-Q1",
+        "MC-32-Q2",
+        "MC-32-Q3",
+        "MC-32-Q4",
+        "MC-32-Q5",
+        "MC-32-Q6",
+        "MC-32-Q7",
+        "MC-32-Q8",
+        "GROW-final-3000"
+      ],
+      "connection_ids": [
+        "MC-32-Q3-E1"
+      ],
+      "characters": 392,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "MW-04",
+        "MW-05",
+        "MW-19",
+        "EX-25"
+      ]
+    },
+    {
+      "id": "지연 보고와 충돌하는 출고 상태",
+      "title": "지연 보고와 충돌하는 출고 상태",
+      "domain": "work",
+      "split": "final",
+      "profile": "final",
+      "record_ids": [
+        "MC-33-R1",
+        "MC-33-R2",
+        "MC-33-R3",
+        "MC-33-R4",
+        "MC-33-R5",
+        "MC-33-R6",
+        "MC-33-R7",
+        "MC-33-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-d2e3f7cc24be9717",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-65c6f79fb83c1714",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-be27d38e8afcb4c5",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-548de4189f859ce4",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-54c1d7d4550d4858",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-292add40418879cb",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-f3bf9d351bf72bd7",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-ea86cbbf7e6c1d6e",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-a5b576d8e1c382c4",
+      "question_ids": [
+        "MC-33-Q1",
+        "MC-33-Q2",
+        "MC-33-Q3",
+        "MC-33-Q4",
+        "MC-33-Q5",
+        "MC-33-Q6",
+        "MC-33-Q7",
+        "MC-33-Q8"
+      ],
+      "connection_ids": [
+        "MC-33-Q1-E1"
+      ],
+      "characters": 393,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "AG-12",
+        "EV-11",
+        "EV-22",
+        "RT-07",
+        "RT-08"
+      ]
+    },
+    {
+      "id": "강의 기록의 한영 별칭과 코드",
+      "title": "강의 기록의 한영 별칭과 코드",
+      "domain": "work",
+      "split": "final",
+      "profile": "final",
+      "record_ids": [
+        "MC-34-R1",
+        "MC-34-R2",
+        "MC-34-R3",
+        "MC-34-R4",
+        "MC-34-R5",
+        "MC-34-R6",
+        "MC-34-R7",
+        "MC-34-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-cd15017e2a3a3e5e",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-db6b9eca9ae310d8",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-88d3c02a19f794fb",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-13d01579505dce9f",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-b7775282176a06db",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-f9aa8dd13409ca63",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-12382b0db4997064",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-249a2b40f12101d6",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-88d7243e76610ab7",
+      "question_ids": [
+        "MC-34-Q1",
+        "MC-34-Q2",
+        "MC-34-Q3",
+        "MC-34-Q4",
+        "MC-34-Q5",
+        "MC-34-Q6",
+        "MC-34-Q7",
+        "MC-34-Q8"
+      ],
+      "connection_ids": [],
+      "characters": 434,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "QU-09",
+        "QU-24",
+        "QU-25",
+        "IN-78",
+        "RR-18"
+      ]
+    },
+    {
+      "id": "분산된 재료 기록과 누락 없는 요약",
+      "title": "분산된 재료 기록과 누락 없는 요약",
+      "domain": "life",
+      "split": "final",
+      "profile": "final",
+      "record_ids": [
+        "MC-35-R1",
+        "MC-35-R2",
+        "MC-35-R3",
+        "MC-35-R4",
+        "MC-35-R5",
+        "MC-35-R6",
+        "MC-35-R7",
+        "MC-35-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-00d9f9b4cca68cdf",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-170ec141c571a307",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-fad358ee7fd63387",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-f7e6c13168c10cdc",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-aebcc3d662e428a1",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-a8fb07663f2f746d",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-5147bfee7462f608",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-aa47fe1f0776a2c4",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-949128fef8c6ce63",
+      "question_ids": [
+        "MC-35-Q1",
+        "MC-35-Q2",
+        "MC-35-Q3",
+        "MC-35-Q4",
+        "MC-35-Q5",
+        "MC-35-Q6",
+        "MC-35-Q7",
+        "MC-35-Q8",
+        "GROW-final-4000"
+      ],
+      "connection_ids": [
+        "MC-35-Q1-E1",
+        "MC-35-Q5-E1",
+        "MC-35-Q5-E2",
+        "MC-35-Q5-E3",
+        "MC-35-Q5-E4",
+        "DIST-MC-35-Q1-0-E1",
+        "DIST-MC-35-Q1-5-E1",
+        "DIST-MC-35-Q1-15-E1"
+      ],
+      "characters": 359,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "AG-16",
+        "AG-17",
+        "QI-13",
+        "RT-25",
+        "EV-14"
+      ]
+    },
+    {
+      "id": "기억의 주장과 외부 사실 구분",
+      "title": "기억의 주장과 외부 사실 구분",
+      "domain": "work",
+      "split": "final",
+      "profile": "final",
+      "record_ids": [
+        "MC-36-R1",
+        "MC-36-R2",
+        "MC-36-R3",
+        "MC-36-R4",
+        "MC-36-R5",
+        "MC-36-R6",
+        "MC-36-R7",
+        "MC-36-R8"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-aebb20c52705f059",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-9014f95e3e9742f7",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-1499049f5794c8b2",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-83ed044226424cbd",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-09aabba2bdb32a55",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-3faa428c448dcd9e",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-509f43b0e9d99159",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-1ce37da6b22e2460",
+          "revision": 1
+        }
+      ],
+      "context_id": "MIC-408751ffb6851446",
+      "question_ids": [
+        "MC-36-Q1",
+        "MC-36-Q2",
+        "MC-36-Q3",
+        "MC-36-Q4",
+        "MC-36-Q5",
+        "MC-36-Q6",
+        "MC-36-Q7",
+        "MC-36-Q8"
+      ],
+      "connection_ids": [
+        "MC-36-Q5-E1"
+      ],
+      "characters": 418,
+      "review_status": "AUTHOR_DRAFT",
+      "adapted_from_case": null,
+      "variables": [
+        "EV-21",
+        "EV-22",
+        "EV-27",
+        "MW-16",
+        "AG-34"
+      ]
+    },
+    {
+      "id": "부품 보관대 재배치",
+      "title": "부품 보관대 재배치",
+      "domain": "work",
+      "split": "development",
+      "profile": "journal_development",
+      "record_ids": [
+        "J01-R1",
+        "J01-R2",
+        "J01-R3",
+        "J01-R4",
+        "J01-R5",
+        "J01-R6"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-157750a539b66d54",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-413220bc593ff6c3",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-509b731912b9c078",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-65dd6e1b960a1236",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-1666e9379acc86d1",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-30f28e000b6af442",
+          "revision": 1
+        }
+      ],
+      "question_ids": [
+        "J01-Q1",
+        "J01-Q2"
+      ],
+      "connection_ids": [
+        "J01-Q2-E1"
+      ],
+      "review_status": "AUTHOR_DRAFT",
+      "characters": 1830
+    },
+    {
+      "id": "발주 인쇄물 검수",
+      "title": "발주 인쇄물 검수",
+      "domain": "work",
+      "split": "development",
+      "profile": "journal_development",
+      "record_ids": [
+        "J02-R1",
+        "J02-R2",
+        "J02-R3",
+        "J02-R4",
+        "J02-R5",
+        "J02-R6"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-e393fd6cbdea0cde",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-0cc72d817434d608",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-3fc0fcc69c021da1",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-454a2a7de9380170",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-30cafe00fd644b3f",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-f6cc340953a55b66",
+          "revision": 1
+        }
+      ],
+      "question_ids": [
+        "J02-Q1",
+        "J02-Q2"
+      ],
+      "connection_ids": [
+        "J02-Q2-E1"
+      ],
+      "review_status": "AUTHOR_DRAFT",
+      "characters": 1790
+    },
+    {
+      "id": "실험 노트 백업 복원",
+      "title": "실험 노트 백업 복원",
+      "domain": "work",
+      "split": "development",
+      "profile": "journal_development",
+      "record_ids": [
+        "J03-R1",
+        "J03-R2",
+        "J03-R3",
+        "J03-R4",
+        "J03-R5",
+        "J03-R6"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-9cb6ddbb844ac900",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-dd7a06e29f815344",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-afa413441c216d51",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-b903ba74c12e3a9e",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-a971f739b241603b",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-b9961ff43e526733",
+          "revision": 1
+        }
+      ],
+      "question_ids": [
+        "J03-Q1",
+        "J03-Q2"
+      ],
+      "connection_ids": [],
+      "review_status": "AUTHOR_DRAFT",
+      "characters": 1746
+    },
+    {
+      "id": "텃밭 물주기 당번",
+      "title": "텃밭 물주기 당번",
+      "domain": "work",
+      "split": "development",
+      "profile": "journal_development",
+      "record_ids": [
+        "J04-R1",
+        "J04-R2",
+        "J04-R3",
+        "J04-R4",
+        "J04-R5",
+        "J04-R6"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-06f269713f7a7784",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-6ee47d593b1493f8",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-312e9656a48b6fa2",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-d78ce817d0521d46",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-bfc5b32a497bc42b",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-5fba29b244547b94",
+          "revision": 1
+        }
+      ],
+      "question_ids": [
+        "J04-Q1",
+        "J04-Q2"
+      ],
+      "connection_ids": [],
+      "review_status": "AUTHOR_DRAFT",
+      "characters": 1630
+    },
+    {
+      "id": "도서 구매와 공동 정산",
+      "title": "도서 구매와 공동 정산",
+      "domain": "work",
+      "split": "development",
+      "profile": "journal_development",
+      "record_ids": [
+        "J05-R1",
+        "J05-R2",
+        "J05-R3",
+        "J05-R4",
+        "J05-R5",
+        "J05-R6"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-0bd2c2282f5ccf6d",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-fa7ac1160db7bf1e",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-c6bfb80c15b1bc77",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-594e7ea8604175f2",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-ae481e4855d746cf",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-d6ed27df3b2d786d",
+          "revision": 1
+        }
+      ],
+      "question_ids": [
+        "J05-Q1",
+        "J05-Q2"
+      ],
+      "connection_ids": [
+        "J05-Q1-E1",
+        "J05-Q2-E1"
+      ],
+      "review_status": "AUTHOR_DRAFT",
+      "characters": 1589
+    },
+    {
+      "id": "회의 녹음의 전사 수정",
+      "title": "회의 녹음의 전사 수정",
+      "domain": "work",
+      "split": "development",
+      "profile": "journal_development",
+      "record_ids": [
+        "J06-R1",
+        "J06-R2",
+        "J06-R3",
+        "J06-R4",
+        "J06-R5",
+        "J06-R6"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-21fbec0ff8282b02",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-3d9a4fec8d066762",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-971994f1a0d02818",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-d8c491f6c50dacbc",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-a6c00079c9b6ef97",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-881cfd2dae5626e4",
+          "revision": 1
+        }
+      ],
+      "question_ids": [
+        "J06-Q1",
+        "J06-Q2"
+      ],
+      "connection_ids": [],
+      "review_status": "AUTHOR_DRAFT",
+      "characters": 1637
+    },
+    {
+      "id": "여행 짐과 대여 확인",
+      "title": "여행 짐과 대여 확인",
+      "domain": "work",
+      "split": "development",
+      "profile": "journal_development",
+      "record_ids": [
+        "J07-R1",
+        "J07-R2",
+        "J07-R3",
+        "J07-R4",
+        "J07-R5",
+        "J07-R6"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-9c4d1ebef0faf695",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-fbe690358c9d295c",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-9385c153dff82c33",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-5796838ad2a86db1",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-02e388ac9bff306f",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-694e088752d15d98",
+          "revision": 1
+        }
+      ],
+      "question_ids": [
+        "J07-Q1",
+        "J07-Q2",
+        "GROW-development-12000"
+      ],
+      "connection_ids": [
+        "J07-Q1-E1",
+        "J07-Q2-E1"
+      ],
+      "review_status": "AUTHOR_DRAFT",
+      "characters": 1578
+    },
+    {
+      "id": "앱 알림 실험과 사용자 의견",
+      "title": "앱 알림 실험과 사용자 의견",
+      "domain": "work",
+      "split": "development",
+      "profile": "journal_development",
+      "record_ids": [
+        "J08-R1",
+        "J08-R2",
+        "J08-R3",
+        "J08-R4",
+        "J08-R5",
+        "J08-R6"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-7a3b4a92e9da5082",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-6c89c8efb29842c6",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-39db9e599947fb41",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-06ad09d13a226965",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-7b594c17caa0ef02",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-4a9d0d9b5295c39b",
+          "revision": 1
+        }
+      ],
+      "question_ids": [
+        "J08-Q1",
+        "J08-Q2"
+      ],
+      "connection_ids": [],
+      "review_status": "AUTHOR_DRAFT",
+      "characters": 1614
+    },
+    {
+      "id": "박물관 음성 안내 제작",
+      "title": "박물관 음성 안내 제작",
+      "domain": "life",
+      "split": "final",
+      "profile": "journal_final",
+      "record_ids": [
+        "J09-R1",
+        "J09-R2",
+        "J09-R3",
+        "J09-R4",
+        "J09-R5",
+        "J09-R6"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-7bf8db3877d6dde3",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-3a181fd47573e54b",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-95008ad8d65ed836",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-f5623dfcbc64559f",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-1eb568576e731dc1",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-3b9bde8766656e87",
+          "revision": 1
+        }
+      ],
+      "question_ids": [
+        "J09-Q1",
+        "J09-Q2",
+        "GROW-final-8000"
+      ],
+      "connection_ids": [
+        "J09-Q1-E1"
+      ],
+      "review_status": "AUTHOR_DRAFT",
+      "characters": 1325
+    },
+    {
+      "id": "달리기 모임 기록 정리",
+      "title": "달리기 모임 기록 정리",
+      "domain": "life",
+      "split": "final",
+      "profile": "journal_final",
+      "record_ids": [
+        "J10-R1",
+        "J10-R2",
+        "J10-R3",
+        "J10-R4",
+        "J10-R5",
+        "J10-R6"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-5dad3b61909b808c",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-7959233254c4b48e",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-196c791a05df1acb",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-e9ff8d3190c5d83c",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-750a9dbbf313054b",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-54e3c03c1fcb57ff",
+          "revision": 1
+        }
+      ],
+      "question_ids": [
+        "J10-Q1",
+        "J10-Q2"
+      ],
+      "connection_ids": [],
+      "review_status": "AUTHOR_DRAFT",
+      "characters": 1275
+    },
+    {
+      "id": "봉사 물품 포장 인계",
+      "title": "봉사 물품 포장 인계",
+      "domain": "life",
+      "split": "final",
+      "profile": "journal_final",
+      "record_ids": [
+        "J11-R1",
+        "J11-R2",
+        "J11-R3",
+        "J11-R4",
+        "J11-R5",
+        "J11-R6"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-e5395e1203babae1",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-a50094d205a49769",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-5b78d17d2389bf16",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-fc91655498fc159a",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-c747fd73b7ce150e",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-235dcfd01b6ce25c",
+          "revision": 1
+        }
+      ],
+      "question_ids": [
+        "J11-Q1",
+        "J11-Q2",
+        "GROW-final-8500"
+      ],
+      "connection_ids": [
+        "J11-Q2-E1"
+      ],
+      "review_status": "AUTHOR_DRAFT",
+      "characters": 1261
+    },
+    {
+      "id": "발효 수업 재료와 관찰",
+      "title": "발효 수업 재료와 관찰",
+      "domain": "life",
+      "split": "final",
+      "profile": "journal_final",
+      "record_ids": [
+        "J12-R1",
+        "J12-R2",
+        "J12-R3",
+        "J12-R4",
+        "J12-R5",
+        "J12-R6"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-7ded5ef0dff2af3e",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-8057a79796f5a684",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-9b5958efd95927ac",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-2a640914f088444c",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-fabec26b622131ad",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-4e64dd0b25596089",
+          "revision": 1
+        }
+      ],
+      "question_ids": [
+        "J12-Q1",
+        "J12-Q2",
+        "FINAL-PARTIAL",
+        "GROW-final-12000"
+      ],
+      "connection_ids": [
+        "FINAL-PARTIAL-E1"
+      ],
+      "review_status": "AUTHOR_DRAFT",
+      "characters": 1245
+    },
+    {
+      "id": "도서 대여와 반환 변경",
+      "title": "도서 대여와 반환 변경",
+      "domain": "life",
+      "split": "final",
+      "profile": "journal_final",
+      "record_ids": [
+        "J13-R1",
+        "J13-R2",
+        "J13-R3",
+        "J13-R4",
+        "J13-R5",
+        "J13-R6"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-8638b316c70b2321",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-6ede95462d1c5706",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-66c6423db2163e82",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-307b01947f2c803f",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-5deeef6e08dd7ace",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-6bf5b1cb46bc7d3c",
+          "revision": 1
+        }
+      ],
+      "question_ids": [
+        "J13-Q1",
+        "J13-Q2"
+      ],
+      "connection_ids": [
+        "J13-Q1-E1"
+      ],
+      "review_status": "AUTHOR_DRAFT",
+      "characters": 1252
+    },
+    {
+      "id": "사진 모임의 파일 선택",
+      "title": "사진 모임의 파일 선택",
+      "domain": "life",
+      "split": "final",
+      "profile": "journal_final",
+      "record_ids": [
+        "J14-R1",
+        "J14-R2",
+        "J14-R3",
+        "J14-R4",
+        "J14-R5",
+        "J14-R6"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-c315cf726bdbc7fa",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-3f9bbb75d1ae78f0",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-6de29a3825dfb663",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-21b0177512291915",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-51c7c3128f7636d0",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-69bbec27db0fe5b6",
+          "revision": 1
+        }
+      ],
+      "question_ids": [
+        "J14-Q1",
+        "J14-Q2"
+      ],
+      "connection_ids": [
+        "J14-Q2-E1"
+      ],
+      "review_status": "AUTHOR_DRAFT",
+      "characters": 1244
+    },
+    {
+      "id": "하천 관찰의 측정 조건",
+      "title": "하천 관찰의 측정 조건",
+      "domain": "life",
+      "split": "final",
+      "profile": "journal_final",
+      "record_ids": [
+        "J15-R1",
+        "J15-R2",
+        "J15-R3",
+        "J15-R4",
+        "J15-R5",
+        "J15-R6"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-ee69b9fb7480655f",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-d12def5989e6ea16",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-98b1ae3cc8498178",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-120a6d903c0e2a62",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-41c7f4fbf3e6d2e9",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-dd90e21c03cccb0e",
+          "revision": 1
+        }
+      ],
+      "question_ids": [
+        "J15-Q1",
+        "J15-Q2"
+      ],
+      "connection_ids": [],
+      "review_status": "AUTHOR_DRAFT",
+      "characters": 1203
+    },
+    {
+      "id": "옷 수선의 접수와 수령",
+      "title": "옷 수선의 접수와 수령",
+      "domain": "life",
+      "split": "final",
+      "profile": "journal_final",
+      "record_ids": [
+        "J16-R1",
+        "J16-R2",
+        "J16-R3",
+        "J16-R4",
+        "J16-R5",
+        "J16-R6"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-d0561477d425477c",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-f87b3657ea49c851",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-0c450df83f63e80b",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-c3d9781809b43c75",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-4a03bf6dc2c4b059",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-915f5833af7c47f5",
+          "revision": 1
+        }
+      ],
+      "question_ids": [
+        "J16-Q1",
+        "J16-Q2"
+      ],
+      "connection_ids": [
+        "J16-Q1-E1",
+        "J16-Q1-E2",
+        "J16-Q2-E1"
+      ],
+      "review_status": "AUTHOR_DRAFT",
+      "characters": 1191
+    },
+    {
+      "id": "자전거 보관과 점검 기록",
+      "title": "자전거 보관과 점검 기록",
+      "domain": "life",
+      "split": "final",
+      "profile": "journal_final",
+      "record_ids": [
+        "J17-R1",
+        "J17-R2",
+        "J17-R3",
+        "J17-R4",
+        "J17-R5",
+        "J17-R6"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-be4a62d764226499",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-29a3462b1bc31994",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-4e1afccbda14b86d",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-203c136c928b6662",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-e31d27b37de0a583",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-ff47e590cf2e5988",
+          "revision": 1
+        }
+      ],
+      "question_ids": [
+        "J17-Q1",
+        "J17-Q2"
+      ],
+      "connection_ids": [
+        "J17-Q2-E1"
+      ],
+      "review_status": "AUTHOR_DRAFT",
+      "characters": 1234
+    },
+    {
+      "id": "언어 수업의 제출 수정",
+      "title": "언어 수업의 제출 수정",
+      "domain": "life",
+      "split": "final",
+      "profile": "journal_final",
+      "record_ids": [
+        "J18-R1",
+        "J18-R2",
+        "J18-R3",
+        "J18-R4",
+        "J18-R5",
+        "J18-R6"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-2a0dc6b81607b5f4",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-bc594d48e9966548",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-58c0cf0968a32af5",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-4260a272dadb8a40",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-7d09af5a09792407",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-666c7b136ca975dc",
+          "revision": 1
+        }
+      ],
+      "question_ids": [
+        "J18-Q1",
+        "J18-Q2"
+      ],
+      "connection_ids": [
+        "J18-Q1-E1"
+      ],
+      "review_status": "AUTHOR_DRAFT",
+      "characters": 1235
+    },
+    {
+      "id": "씨앗 교환의 수량과 인계",
+      "title": "씨앗 교환의 수량과 인계",
+      "domain": "life",
+      "split": "final",
+      "profile": "journal_final",
+      "record_ids": [
+        "J19-R1",
+        "J19-R2",
+        "J19-R3",
+        "J19-R4",
+        "J19-R5",
+        "J19-R6"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-fb4235a67c2dc0b4",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-e7688e15d0575a71",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-187ac2d04b69d2ef",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-e82da1fd29b60f65",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-b7b2ac8234b57b13",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-14267d4903984205",
+          "revision": 1
+        }
+      ],
+      "question_ids": [
+        "J19-Q1",
+        "J19-Q2"
+      ],
+      "connection_ids": [
+        "J19-Q2-E1"
+      ],
+      "review_status": "AUTHOR_DRAFT",
+      "characters": 1188
+    },
+    {
+      "id": "야영 장비의 예약과 반환",
+      "title": "야영 장비의 예약과 반환",
+      "domain": "life",
+      "split": "final",
+      "profile": "journal_final",
+      "record_ids": [
+        "J20-R1",
+        "J20-R2",
+        "J20-R3",
+        "J20-R4",
+        "J20-R5",
+        "J20-R6"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-2066220fa20d8ed1",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-5f7525ee8caaf397",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-568c6341dc480bfc",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-9224724c38803b3d",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-7e324ac0cfa6832e",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-9c228899923fde0e",
+          "revision": 1
+        }
+      ],
+      "question_ids": [
+        "J20-Q1",
+        "J20-Q2"
+      ],
+      "connection_ids": [
+        "J20-Q2-E1",
+        "J20-Q2-E2"
+      ],
+      "review_status": "AUTHOR_DRAFT",
+      "characters": 1176
+    },
+    {
+      "id": "마을 라디오 녹음 일정",
+      "title": "마을 라디오 녹음 일정",
+      "domain": "life",
+      "split": "final",
+      "profile": "journal_final",
+      "record_ids": [
+        "J21-R1",
+        "J21-R2",
+        "J21-R3",
+        "J21-R4",
+        "J21-R5",
+        "J21-R6"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-c13d1096fdfaf10c",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-68f0fc3878210372",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-43c5b5ff6d2f2ecf",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-c02f4e2734c7e425",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-715cbcee06905474",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-7b166ab34e2ec62f",
+          "revision": 1
+        }
+      ],
+      "question_ids": [
+        "J21-Q1",
+        "J21-Q2"
+      ],
+      "connection_ids": [
+        "J21-Q1-E1",
+        "J21-Q2-E1"
+      ],
+      "review_status": "AUTHOR_DRAFT",
+      "characters": 1209
+    },
+    {
+      "id": "편지 자료의 작성일과 수신일",
+      "title": "편지 자료의 작성일과 수신일",
+      "domain": "life",
+      "split": "final",
+      "profile": "journal_final",
+      "record_ids": [
+        "J22-R1",
+        "J22-R2",
+        "J22-R3",
+        "J22-R4",
+        "J22-R5",
+        "J22-R6"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-553762e320705cd1",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-7d6de0c1cd399f5a",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-49cd7ffb25cf9a1f",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-b79869d32d59a518",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-326843e241dd62b5",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-4c38d14b3d390965",
+          "revision": 1
+        }
+      ],
+      "question_ids": [
+        "J22-Q1",
+        "J22-Q2"
+      ],
+      "connection_ids": [
+        "J22-Q1-E1",
+        "J22-Q2-E1"
+      ],
+      "review_status": "AUTHOR_DRAFT",
+      "characters": 1232
+    },
+    {
+      "id": "도예 작품의 공정과 수령",
+      "title": "도예 작품의 공정과 수령",
+      "domain": "life",
+      "split": "final",
+      "profile": "journal_final",
+      "record_ids": [
+        "J23-R1",
+        "J23-R2",
+        "J23-R3",
+        "J23-R4",
+        "J23-R5",
+        "J23-R6"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-2c4592acd2f0ebaf",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-07512a880e436f2b",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-26a87d7c34450521",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-2797c2ddc2185d04",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-ae142f81ce024c16",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-d6f0b3643656a0be",
+          "revision": 1
+        }
+      ],
+      "question_ids": [
+        "J23-Q1",
+        "J23-Q2",
+        "GROW-final-24000"
+      ],
+      "connection_ids": [
+        "J23-Q1-E1",
+        "J23-Q1-E2",
+        "J23-Q1-E3"
+      ],
+      "review_status": "AUTHOR_DRAFT",
+      "characters": 1134
+    },
+    {
+      "id": "공동 현관 수리비 정산",
+      "title": "공동 현관 수리비 정산",
+      "domain": "life",
+      "split": "final",
+      "profile": "journal_final",
+      "record_ids": [
+        "J24-R1",
+        "J24-R2",
+        "J24-R3",
+        "J24-R4",
+        "J24-R5",
+        "J24-R6"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-fecc8c2e9f135312",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-f5e27e8590c68e18",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-d7a1ebc61a48bd13",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-7d1b9929029b1793",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-20206f08201aefa3",
+          "revision": 1
+        },
+        {
+          "source_id": "M3S-c22a4014436ea425",
+          "revision": 1
+        }
+      ],
+      "question_ids": [
+        "J24-Q1",
+        "J24-Q2"
+      ],
+      "connection_ids": [
+        "J24-Q1-E1",
+        "J24-Q2-E1",
+        "J24-Q2-E2"
+      ],
+      "review_status": "AUTHOR_DRAFT",
+      "characters": 1223
+    },
+    {
+      "id": "공동 연습실 열쇠",
+      "title": "공동 연습실 열쇠",
+      "split": "final",
+      "profile": "state_final",
+      "question_ids": [
+        "STATE-final-before",
+        "STATE-final-replace",
+        "STATE-final-delete",
+        "STATE-final-restore",
+        "STATE-final-shared",
+        "STATE-final-revoke",
+        "STATE-final-private",
+        "STATE-final-nonstore",
+        "STATE-final-store",
+        "STATE-final-empty"
+      ],
+      "source_refs": [],
+      "record_ids": [],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "월말 작업실 정리",
+      "title": "월말 작업실 정리",
+      "split": "development",
+      "profile": "state_development",
+      "question_ids": [
+        "GROW-development-24000"
+      ],
+      "source_refs": [],
+      "record_ids": [],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "작업실 출입 카드",
+      "title": "작업실 출입 카드",
+      "split": "development",
+      "profile": "state_development",
+      "question_ids": [
+        "STATE-development-before",
+        "STATE-development-replace",
+        "STATE-development-delete",
+        "STATE-development-restore",
+        "STATE-development-shared",
+        "STATE-development-revoke",
+        "STATE-development-private",
+        "STATE-development-nonstore",
+        "STATE-development-store",
+        "STATE-development-empty"
+      ],
+      "source_refs": [],
+      "record_ids": [],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "공방을 옮기던 주",
+      "title": "공방을 옮기던 주",
+      "split": "development",
+      "domain": "work",
+      "profile": "natural_reading_development",
+      "record_ids": [
+        "NR-D-01"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-b47c2d3a56ee4e07",
+          "revision": 1
+        }
+      ],
+      "context_id": "M3C-b47c2d3a56ee4e07",
+      "question_ids": [
+        "NR-D-01-Q1",
+        "NR-D-01-Q2",
+        "NR-D-01-Q3",
+        "NR-D-01-Q4",
+        "NR-D-01-Q5",
+        "NR-D-01-Q6"
+      ],
+      "connection_ids": [
+        "NR-D-01-Q1-E1",
+        "NR-D-01-Q2-E1",
+        "NR-D-01-Q3-E1"
+      ],
+      "characters": 1833,
+      "review_status": "AUTHOR_DRAFT",
+      "text_format": "narrative",
+      "natural_reading": true
+    },
+    {
+      "id": "도움말 화면을 논의한 오후",
+      "title": "도움말 화면을 논의한 오후",
+      "split": "development",
+      "domain": "work",
+      "profile": "natural_reading_development",
+      "record_ids": [
+        "NR-D-02"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-2658d82f51e331d9",
+          "revision": 1
+        }
+      ],
+      "context_id": "M3C-2658d82f51e331d9",
+      "question_ids": [
+        "NR-D-02-Q1",
+        "NR-D-02-Q2",
+        "NR-D-02-Q3",
+        "NR-D-02-Q4",
+        "NR-D-02-Q5",
+        "NR-D-02-Q6"
+      ],
+      "connection_ids": [
+        "NR-D-02-Q1-E1",
+        "NR-D-02-Q2-E1",
+        "NR-D-02-Q4-E1",
+        "NR-D-02-Q5-E1",
+        "NR-D-02-Q6-E1"
+      ],
+      "characters": 1778,
+      "review_status": "AUTHOR_DRAFT",
+      "text_format": "transcript",
+      "natural_reading": true
+    },
+    {
+      "id": "모임 장소를 정한 이메일",
+      "title": "모임 장소를 정한 이메일",
+      "split": "development",
+      "domain": "work",
+      "profile": "natural_reading_development",
+      "record_ids": [
+        "NR-D-03"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-3b6b666b224e5972",
+          "revision": 1
+        }
+      ],
+      "context_id": "M3C-3b6b666b224e5972",
+      "question_ids": [
+        "NR-D-03-Q1",
+        "NR-D-03-Q2",
+        "NR-D-03-Q3",
+        "NR-D-03-Q4",
+        "NR-D-03-Q5",
+        "NR-D-03-Q6"
+      ],
+      "connection_ids": [
+        "NR-D-03-Q1-E1",
+        "NR-D-03-Q2-E1",
+        "NR-D-03-Q3-E1",
+        "NR-D-03-Q5-E1"
+      ],
+      "characters": 1824,
+      "review_status": "AUTHOR_DRAFT",
+      "text_format": "email",
+      "natural_reading": true
+    },
+    {
+      "id": "금요일 약속과 택배 이야기",
+      "title": "금요일 약속과 택배 이야기",
+      "split": "development",
+      "domain": "work",
+      "profile": "natural_reading_development",
+      "record_ids": [
+        "NR-D-04"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-6b8edb4b6f7cd43c",
+          "revision": 1
+        }
+      ],
+      "context_id": "M3C-6b8edb4b6f7cd43c",
+      "question_ids": [
+        "NR-D-04-Q1",
+        "NR-D-04-Q2",
+        "NR-D-04-Q3",
+        "NR-D-04-Q4",
+        "NR-D-04-Q5",
+        "NR-D-04-Q6"
+      ],
+      "connection_ids": [
+        "NR-D-04-Q2-E1",
+        "NR-D-04-Q4-E1",
+        "NR-D-04-Q5-E1"
+      ],
+      "characters": 1730,
+      "review_status": "AUTHOR_DRAFT",
+      "text_format": "mixed",
+      "natural_reading": true
+    },
+    {
+      "id": "할머니의 사진 상자를 펼친 날",
+      "title": "할머니의 사진 상자를 펼친 날",
+      "split": "final",
+      "domain": "life",
+      "profile": "natural_reading_final",
+      "record_ids": [
+        "NR-F-01"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-64094579ac160a66",
+          "revision": 1
+        }
+      ],
+      "context_id": "M3C-64094579ac160a66",
+      "question_ids": [
+        "NR-F-01-Q1",
+        "NR-F-01-Q2",
+        "NR-F-01-Q3",
+        "NR-F-01-Q4",
+        "NR-F-01-Q5",
+        "NR-F-01-Q6"
+      ],
+      "connection_ids": [
+        "NR-F-01-Q1-E1",
+        "NR-F-01-Q2-E1",
+        "NR-F-01-Q6-E1"
+      ],
+      "characters": 1832,
+      "review_status": "AUTHOR_DRAFT",
+      "text_format": "narrative",
+      "natural_reading": true
+    },
+    {
+      "id": "작은 음악회의 준비 회의",
+      "title": "작은 음악회의 준비 회의",
+      "split": "final",
+      "domain": "life",
+      "profile": "natural_reading_final",
+      "record_ids": [
+        "NR-F-02"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-375dee224f18d7c3",
+          "revision": 1
+        }
+      ],
+      "context_id": "M3C-375dee224f18d7c3",
+      "question_ids": [
+        "NR-F-02-Q1",
+        "NR-F-02-Q2",
+        "NR-F-02-Q3",
+        "NR-F-02-Q4",
+        "NR-F-02-Q5",
+        "NR-F-02-Q6"
+      ],
+      "connection_ids": [
+        "NR-F-02-Q1-E1",
+        "NR-F-02-Q2-E1",
+        "NR-F-02-Q3-E1",
+        "NR-F-02-Q5-E1",
+        "NR-F-02-Q6-E1",
+        "NR-F-02-Q6-E2"
+      ],
+      "characters": 1756,
+      "review_status": "AUTHOR_DRAFT",
+      "text_format": "transcript",
+      "natural_reading": true
+    },
+    {
+      "id": "망원경을 빌리는 연락",
+      "title": "망원경을 빌리는 연락",
+      "split": "final",
+      "domain": "life",
+      "profile": "natural_reading_final",
+      "record_ids": [
+        "NR-F-03"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-170f7d0026c8ebf4",
+          "revision": 1
+        }
+      ],
+      "context_id": "M3C-170f7d0026c8ebf4",
+      "question_ids": [
+        "NR-F-03-Q1",
+        "NR-F-03-Q2",
+        "NR-F-03-Q3",
+        "NR-F-03-Q4",
+        "NR-F-03-Q5",
+        "NR-F-03-Q6"
+      ],
+      "connection_ids": [
+        "NR-F-03-Q1-E1",
+        "NR-F-03-Q2-E1",
+        "NR-F-03-Q2-E2",
+        "NR-F-03-Q2-E3",
+        "NR-F-03-Q3-E1",
+        "NR-F-03-Q3-E2"
+      ],
+      "characters": 1735,
+      "review_status": "AUTHOR_DRAFT",
+      "text_format": "email",
+      "natural_reading": true
+    },
+    {
+      "id": "장터에 다녀온 뒤 적은 이야기",
+      "title": "장터에 다녀온 뒤 적은 이야기",
+      "split": "final",
+      "domain": "life",
+      "profile": "natural_reading_final",
+      "record_ids": [
+        "NR-F-04"
+      ],
+      "source_refs": [
+        {
+          "source_id": "M3S-e085a89c895e0127",
+          "revision": 1
+        }
+      ],
+      "context_id": "M3C-e085a89c895e0127",
+      "question_ids": [
+        "NR-F-04-Q1",
+        "NR-F-04-Q2",
+        "NR-F-04-Q3",
+        "NR-F-04-Q4",
+        "NR-F-04-Q5",
+        "NR-F-04-Q6"
+      ],
+      "connection_ids": [
+        "NR-F-04-Q1-E1",
+        "NR-F-04-Q2-E1",
+        "NR-F-04-Q3-E1",
+        "NR-F-04-Q4-E1",
+        "NR-F-04-Q5-E1",
+        "NR-F-04-Q6-E1"
+      ],
+      "characters": 1860,
+      "review_status": "AUTHOR_DRAFT",
+      "text_format": "mixed",
+      "natural_reading": true
+    }
+  ]
+}

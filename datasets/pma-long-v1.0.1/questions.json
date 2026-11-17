@@ -1,0 +1,3036 @@
+{
+  "schema_version": "pma-question-1",
+  "dataset_version": "pma-long-v1.0.1",
+  "questions": [
+    {
+      "id": "LI-roles-short:Q1",
+      "revision": 1,
+      "display_case_id": "LI-roles-short",
+      "family_id": "roles",
+      "split": "development",
+      "context_id": "LIC-1537cefe96f4cf2f",
+      "text": "도윤에게 은색 계측기를 건넨 사람은?",
+      "question_type": "short_control",
+      "profile": "smoke",
+      "pair_group": "roles",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "서린"
+        ],
+        "forbidden_claims": [
+          "도윤을 전달 행위자로 바꿈"
+        ],
+        "structured_expectations": {
+          "actor": "서린",
+          "object": "은색 계측기",
+          "recipient": "도윤",
+          "polarity": "affirmed"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-roles-short:G1",
+            "any_of_fact_ids": [
+              "LIS-1537cefe96f4cf2f-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-roles-front:Q1",
+      "revision": 1,
+      "display_case_id": "LI-roles-front",
+      "family_id": "roles",
+      "split": "development",
+      "context_id": "LIC-a8b9d9a23ff9fb7c",
+      "text": "도윤에게 은색 계측기를 건넨 사람은?",
+      "question_type": "document_length_and_position",
+      "profile": "core",
+      "pair_group": "roles",
+      "position": "front",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "서린"
+        ],
+        "forbidden_claims": [
+          "도윤을 전달 행위자로 바꿈"
+        ],
+        "structured_expectations": {
+          "actor": "서린",
+          "object": "은색 계측기",
+          "recipient": "도윤",
+          "polarity": "affirmed"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-roles-front:G1",
+            "any_of_fact_ids": [
+              "LIS-a8b9d9a23ff9fb7c-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-roles-middle:Q1",
+      "revision": 1,
+      "display_case_id": "LI-roles-middle",
+      "family_id": "roles",
+      "split": "development",
+      "context_id": "LIC-f105a7f1d93c398c",
+      "text": "도윤에게 은색 계측기를 건넨 사람은?",
+      "question_type": "document_length_and_position",
+      "profile": "core",
+      "pair_group": "roles",
+      "position": "middle",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "서린"
+        ],
+        "forbidden_claims": [
+          "도윤을 전달 행위자로 바꿈"
+        ],
+        "structured_expectations": {
+          "actor": "서린",
+          "object": "은색 계측기",
+          "recipient": "도윤",
+          "polarity": "affirmed"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-roles-middle:G1",
+            "any_of_fact_ids": [
+              "LIS-f105a7f1d93c398c-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-roles-end:Q1",
+      "revision": 1,
+      "display_case_id": "LI-roles-end",
+      "family_id": "roles",
+      "split": "development",
+      "context_id": "LIC-6b7bd8d60536e7ff",
+      "text": "도윤에게 은색 계측기를 건넨 사람은?",
+      "question_type": "document_length_and_position",
+      "profile": "core",
+      "pair_group": "roles",
+      "position": "end",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "서린"
+        ],
+        "forbidden_claims": [
+          "도윤을 전달 행위자로 바꿈"
+        ],
+        "structured_expectations": {
+          "actor": "서린",
+          "object": "은색 계측기",
+          "recipient": "도윤",
+          "polarity": "affirmed"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-roles-end:G1",
+            "any_of_fact_ids": [
+              "LIS-6b7bd8d60536e7ff-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-negation-short:Q1",
+      "revision": 1,
+      "display_case_id": "LI-negation-short",
+      "family_id": "negation",
+      "split": "development",
+      "context_id": "LIC-1829fbf8717b1a48",
+      "text": "미나가 예비 열쇠를 관리인에게 전달했나?",
+      "question_type": "short_control",
+      "profile": "smoke",
+      "pair_group": "negation",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "전달하지 않았다"
+        ],
+        "forbidden_claims": [
+          "전달 완료로 답함"
+        ],
+        "structured_expectations": {
+          "actor": "미나",
+          "object": "예비 열쇠",
+          "polarity": "negated"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-negation-short:G1",
+            "any_of_fact_ids": [
+              "LIS-1829fbf8717b1a48-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-negation-front:Q1",
+      "revision": 1,
+      "display_case_id": "LI-negation-front",
+      "family_id": "negation",
+      "split": "development",
+      "context_id": "LIC-1461d8cbd12ed0c4",
+      "text": "미나가 예비 열쇠를 관리인에게 전달했나?",
+      "question_type": "document_length_and_position",
+      "profile": "core",
+      "pair_group": "negation",
+      "position": "front",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "전달하지 않았다"
+        ],
+        "forbidden_claims": [
+          "전달 완료로 답함"
+        ],
+        "structured_expectations": {
+          "actor": "미나",
+          "object": "예비 열쇠",
+          "polarity": "negated"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-negation-front:G1",
+            "any_of_fact_ids": [
+              "LIS-1461d8cbd12ed0c4-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-negation-middle:Q1",
+      "revision": 1,
+      "display_case_id": "LI-negation-middle",
+      "family_id": "negation",
+      "split": "development",
+      "context_id": "LIC-5d1f3fc0c00de480",
+      "text": "미나가 예비 열쇠를 관리인에게 전달했나?",
+      "question_type": "document_length_and_position",
+      "profile": "core",
+      "pair_group": "negation",
+      "position": "middle",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "전달하지 않았다"
+        ],
+        "forbidden_claims": [
+          "전달 완료로 답함"
+        ],
+        "structured_expectations": {
+          "actor": "미나",
+          "object": "예비 열쇠",
+          "polarity": "negated"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-negation-middle:G1",
+            "any_of_fact_ids": [
+              "LIS-5d1f3fc0c00de480-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-negation-end:Q1",
+      "revision": 1,
+      "display_case_id": "LI-negation-end",
+      "family_id": "negation",
+      "split": "development",
+      "context_id": "LIC-9652fa0d23fe0088",
+      "text": "미나가 예비 열쇠를 관리인에게 전달했나?",
+      "question_type": "document_length_and_position",
+      "profile": "core",
+      "pair_group": "negation",
+      "position": "end",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "전달하지 않았다"
+        ],
+        "forbidden_claims": [
+          "전달 완료로 답함"
+        ],
+        "structured_expectations": {
+          "actor": "미나",
+          "object": "예비 열쇠",
+          "polarity": "negated"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-negation-end:G1",
+            "any_of_fact_ids": [
+              "LIS-9652fa0d23fe0088-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-conditional_plan-short:Q1",
+      "revision": 1,
+      "display_case_id": "LI-conditional_plan-short",
+      "family_id": "conditional_plan",
+      "split": "development",
+      "context_id": "LIC-dfe425ca4efe640f",
+      "text": "준호가 관측기를 옮기려던 조건과 목적지, 현재 이동 여부는?",
+      "question_type": "short_control",
+      "profile": "smoke",
+      "pair_group": "conditional_plan",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "서면 허가",
+          "동쪽 실험실",
+          "옮기지 않았다"
+        ],
+        "forbidden_claims": [
+          "동쪽 실험실에 이미 있다고 확정",
+          "미실행을 실패 결과로 바꿈"
+        ],
+        "structured_expectations": {
+          "actor": "준호",
+          "object": "관측기",
+          "location_planned": "동쪽 실험실",
+          "condition": "서면 허가가 도착하면",
+          "execution_state": "not_started"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-conditional_plan-short:G1",
+            "any_of_fact_ids": [
+              "LIS-dfe425ca4efe640f-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-conditional_plan-front:Q1",
+      "revision": 1,
+      "display_case_id": "LI-conditional_plan-front",
+      "family_id": "conditional_plan",
+      "split": "development",
+      "context_id": "LIC-b5c4aa3505bebf10",
+      "text": "준호가 관측기를 옮기려던 조건과 목적지, 현재 이동 여부는?",
+      "question_type": "document_length_and_position",
+      "profile": "core",
+      "pair_group": "conditional_plan",
+      "position": "front",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "서면 허가",
+          "동쪽 실험실",
+          "옮기지 않았다"
+        ],
+        "forbidden_claims": [
+          "동쪽 실험실에 이미 있다고 확정",
+          "미실행을 실패 결과로 바꿈"
+        ],
+        "structured_expectations": {
+          "actor": "준호",
+          "object": "관측기",
+          "location_planned": "동쪽 실험실",
+          "condition": "서면 허가가 도착하면",
+          "execution_state": "not_started"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-conditional_plan-front:G1",
+            "any_of_fact_ids": [
+              "LIS-b5c4aa3505bebf10-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-conditional_plan-middle:Q1",
+      "revision": 1,
+      "display_case_id": "LI-conditional_plan-middle",
+      "family_id": "conditional_plan",
+      "split": "development",
+      "context_id": "LIC-1ccac9f2ebfe4474",
+      "text": "준호가 관측기를 옮기려던 조건과 목적지, 현재 이동 여부는?",
+      "question_type": "document_length_and_position",
+      "profile": "core",
+      "pair_group": "conditional_plan",
+      "position": "middle",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "서면 허가",
+          "동쪽 실험실",
+          "옮기지 않았다"
+        ],
+        "forbidden_claims": [
+          "동쪽 실험실에 이미 있다고 확정",
+          "미실행을 실패 결과로 바꿈"
+        ],
+        "structured_expectations": {
+          "actor": "준호",
+          "object": "관측기",
+          "location_planned": "동쪽 실험실",
+          "condition": "서면 허가가 도착하면",
+          "execution_state": "not_started"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-conditional_plan-middle:G1",
+            "any_of_fact_ids": [
+              "LIS-1ccac9f2ebfe4474-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-conditional_plan-end:Q1",
+      "revision": 1,
+      "display_case_id": "LI-conditional_plan-end",
+      "family_id": "conditional_plan",
+      "split": "development",
+      "context_id": "LIC-dc0e1cba13e9cfc0",
+      "text": "준호가 관측기를 옮기려던 조건과 목적지, 현재 이동 여부는?",
+      "question_type": "document_length_and_position",
+      "profile": "core",
+      "pair_group": "conditional_plan",
+      "position": "end",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "서면 허가",
+          "동쪽 실험실",
+          "옮기지 않았다"
+        ],
+        "forbidden_claims": [
+          "동쪽 실험실에 이미 있다고 확정",
+          "미실행을 실패 결과로 바꿈"
+        ],
+        "structured_expectations": {
+          "actor": "준호",
+          "object": "관측기",
+          "location_planned": "동쪽 실험실",
+          "condition": "서면 허가가 도착하면",
+          "execution_state": "not_started"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-conditional_plan-end:G1",
+            "any_of_fact_ids": [
+              "LIS-dc0e1cba13e9cfc0-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-correction-short:Q1",
+      "revision": 1,
+      "display_case_id": "LI-correction-short",
+      "family_id": "correction",
+      "split": "development",
+      "context_id": "LIC-0d0f0467e7468927",
+      "text": "정정된 기록에 따르면 접수증의 보관 장소는?",
+      "question_type": "short_control",
+      "profile": "smoke",
+      "pair_group": "correction",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "초록 보관함"
+        ],
+        "forbidden_claims": [
+          "노란 서랍을 최종 위치로 답함"
+        ],
+        "structured_expectations": {
+          "object": "접수증",
+          "location": "초록 보관함",
+          "superseded_location": "노란 서랍"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-correction-short:G1",
+            "any_of_fact_ids": [
+              "LIS-0d0f0467e7468927-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-correction-front:Q1",
+      "revision": 1,
+      "display_case_id": "LI-correction-front",
+      "family_id": "correction",
+      "split": "development",
+      "context_id": "LIC-c796ece425db6c7a",
+      "text": "정정된 기록에 따르면 접수증의 보관 장소는?",
+      "question_type": "document_length_and_position",
+      "profile": "core",
+      "pair_group": "correction",
+      "position": "front",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "초록 보관함"
+        ],
+        "forbidden_claims": [
+          "노란 서랍을 최종 위치로 답함"
+        ],
+        "structured_expectations": {
+          "object": "접수증",
+          "location": "초록 보관함",
+          "superseded_location": "노란 서랍"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-correction-front:G1",
+            "any_of_fact_ids": [
+              "LIS-c796ece425db6c7a-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-correction-middle:Q1",
+      "revision": 1,
+      "display_case_id": "LI-correction-middle",
+      "family_id": "correction",
+      "split": "development",
+      "context_id": "LIC-560a5bed33f2d9b4",
+      "text": "정정된 기록에 따르면 접수증의 보관 장소는?",
+      "question_type": "document_length_and_position",
+      "profile": "core",
+      "pair_group": "correction",
+      "position": "middle",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "초록 보관함"
+        ],
+        "forbidden_claims": [
+          "노란 서랍을 최종 위치로 답함"
+        ],
+        "structured_expectations": {
+          "object": "접수증",
+          "location": "초록 보관함",
+          "superseded_location": "노란 서랍"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-correction-middle:G1",
+            "any_of_fact_ids": [
+              "LIS-560a5bed33f2d9b4-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-correction-end:Q1",
+      "revision": 1,
+      "display_case_id": "LI-correction-end",
+      "family_id": "correction",
+      "split": "development",
+      "context_id": "LIC-c6638d32295c8bca",
+      "text": "정정된 기록에 따르면 접수증의 보관 장소는?",
+      "question_type": "document_length_and_position",
+      "profile": "core",
+      "pair_group": "correction",
+      "position": "end",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "초록 보관함"
+        ],
+        "forbidden_claims": [
+          "노란 서랍을 최종 위치로 답함"
+        ],
+        "structured_expectations": {
+          "object": "접수증",
+          "location": "초록 보관함",
+          "superseded_location": "노란 서랍"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-correction-end:G1",
+            "any_of_fact_ids": [
+              "LIS-c6638d32295c8bca-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-identity-short:Q1",
+      "revision": 1,
+      "display_case_id": "LI-identity-short",
+      "family_id": "identity",
+      "split": "development",
+      "context_id": "LIC-255883af3aa73e83",
+      "text": "사진 모임 하린의 직업은?",
+      "question_type": "short_control",
+      "profile": "smoke",
+      "pair_group": "identity",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "번역가"
+        ],
+        "forbidden_claims": [
+          "간호사를 사진 모임 하린의 직업으로 병합"
+        ],
+        "structured_expectations": {
+          "entity": "사진 모임의 하린",
+          "occupation": "번역가",
+          "distinct_entity": "등산 모임의 하린"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-identity-short:G1",
+            "any_of_fact_ids": [
+              "LIS-255883af3aa73e83-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-identity-front:Q1",
+      "revision": 1,
+      "display_case_id": "LI-identity-front",
+      "family_id": "identity",
+      "split": "development",
+      "context_id": "LIC-23a08c5f0f54f99c",
+      "text": "사진 모임 하린의 직업은?",
+      "question_type": "document_length_and_position",
+      "profile": "core",
+      "pair_group": "identity",
+      "position": "front",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "번역가"
+        ],
+        "forbidden_claims": [
+          "간호사를 사진 모임 하린의 직업으로 병합"
+        ],
+        "structured_expectations": {
+          "entity": "사진 모임의 하린",
+          "occupation": "번역가",
+          "distinct_entity": "등산 모임의 하린"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-identity-front:G1",
+            "any_of_fact_ids": [
+              "LIS-23a08c5f0f54f99c-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-identity-middle:Q1",
+      "revision": 1,
+      "display_case_id": "LI-identity-middle",
+      "family_id": "identity",
+      "split": "development",
+      "context_id": "LIC-1a1784142e13f9df",
+      "text": "사진 모임 하린의 직업은?",
+      "question_type": "document_length_and_position",
+      "profile": "core",
+      "pair_group": "identity",
+      "position": "middle",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "번역가"
+        ],
+        "forbidden_claims": [
+          "간호사를 사진 모임 하린의 직업으로 병합"
+        ],
+        "structured_expectations": {
+          "entity": "사진 모임의 하린",
+          "occupation": "번역가",
+          "distinct_entity": "등산 모임의 하린"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-identity-middle:G1",
+            "any_of_fact_ids": [
+              "LIS-1a1784142e13f9df-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-identity-end:Q1",
+      "revision": 1,
+      "display_case_id": "LI-identity-end",
+      "family_id": "identity",
+      "split": "development",
+      "context_id": "LIC-b228d312dc793467",
+      "text": "사진 모임 하린의 직업은?",
+      "question_type": "document_length_and_position",
+      "profile": "core",
+      "pair_group": "identity",
+      "position": "end",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "번역가"
+        ],
+        "forbidden_claims": [
+          "간호사를 사진 모임 하린의 직업으로 병합"
+        ],
+        "structured_expectations": {
+          "entity": "사진 모임의 하린",
+          "occupation": "번역가",
+          "distinct_entity": "등산 모임의 하린"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-identity-end:G1",
+            "any_of_fact_ids": [
+              "LIS-b228d312dc793467-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-quoted_time-short:Q1",
+      "revision": 1,
+      "display_case_id": "LI-quoted_time-short",
+      "family_id": "quoted_time",
+      "split": "development",
+      "context_id": "LIC-4c78671077ce33f3",
+      "text": "세아가 말한 방문 예정일과 장소는? 실제 방문도 확인되나?",
+      "question_type": "short_control",
+      "profile": "smoke",
+      "pair_group": "quoted_time",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "2026-10-29",
+          "남쪽 자료실",
+          "실제 방문 미확인"
+        ],
+        "forbidden_claims": [
+          "문서 기준일의 다음 날로 계산",
+          "방문 계획을 완료로 답함"
+        ],
+        "structured_expectations": {
+          "speaker": "세아",
+          "planned_date": "2026-10-29",
+          "location_planned": "남쪽 자료실",
+          "actual_visit": "unknown"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-quoted_time-short:G1",
+            "any_of_fact_ids": [
+              "LIS-4c78671077ce33f3-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-quoted_time-front:Q1",
+      "revision": 1,
+      "display_case_id": "LI-quoted_time-front",
+      "family_id": "quoted_time",
+      "split": "development",
+      "context_id": "LIC-257dd1c143212482",
+      "text": "세아가 말한 방문 예정일과 장소는? 실제 방문도 확인되나?",
+      "question_type": "document_length_and_position",
+      "profile": "core",
+      "pair_group": "quoted_time",
+      "position": "front",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "2026-10-29",
+          "남쪽 자료실",
+          "실제 방문 미확인"
+        ],
+        "forbidden_claims": [
+          "문서 기준일의 다음 날로 계산",
+          "방문 계획을 완료로 답함"
+        ],
+        "structured_expectations": {
+          "speaker": "세아",
+          "planned_date": "2026-10-29",
+          "location_planned": "남쪽 자료실",
+          "actual_visit": "unknown"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-quoted_time-front:G1",
+            "any_of_fact_ids": [
+              "LIS-257dd1c143212482-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-quoted_time-middle:Q1",
+      "revision": 1,
+      "display_case_id": "LI-quoted_time-middle",
+      "family_id": "quoted_time",
+      "split": "development",
+      "context_id": "LIC-44158c9b57305deb",
+      "text": "세아가 말한 방문 예정일과 장소는? 실제 방문도 확인되나?",
+      "question_type": "document_length_and_position",
+      "profile": "core",
+      "pair_group": "quoted_time",
+      "position": "middle",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "2026-10-29",
+          "남쪽 자료실",
+          "실제 방문 미확인"
+        ],
+        "forbidden_claims": [
+          "문서 기준일의 다음 날로 계산",
+          "방문 계획을 완료로 답함"
+        ],
+        "structured_expectations": {
+          "speaker": "세아",
+          "planned_date": "2026-10-29",
+          "location_planned": "남쪽 자료실",
+          "actual_visit": "unknown"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-quoted_time-middle:G1",
+            "any_of_fact_ids": [
+              "LIS-44158c9b57305deb-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-quoted_time-end:Q1",
+      "revision": 1,
+      "display_case_id": "LI-quoted_time-end",
+      "family_id": "quoted_time",
+      "split": "development",
+      "context_id": "LIC-9ec02cc5bceb60e5",
+      "text": "세아가 말한 방문 예정일과 장소는? 실제 방문도 확인되나?",
+      "question_type": "document_length_and_position",
+      "profile": "core",
+      "pair_group": "quoted_time",
+      "position": "end",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "2026-10-29",
+          "남쪽 자료실",
+          "실제 방문 미확인"
+        ],
+        "forbidden_claims": [
+          "문서 기준일의 다음 날로 계산",
+          "방문 계획을 완료로 답함"
+        ],
+        "structured_expectations": {
+          "speaker": "세아",
+          "planned_date": "2026-10-29",
+          "location_planned": "남쪽 자료실",
+          "actual_visit": "unknown"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-quoted_time-end:G1",
+            "any_of_fact_ids": [
+              "LIS-9ec02cc5bceb60e5-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-unknown_actor-short:Q1",
+      "revision": 1,
+      "display_case_id": "LI-unknown_actor-short",
+      "family_id": "unknown_actor",
+      "split": "development",
+      "context_id": "LIC-474263124e2da9e5",
+      "text": "청동 배지를 보낸 사람과 목적지는?",
+      "question_type": "short_control",
+      "profile": "smoke",
+      "pair_group": "unknown_actor",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "행위자 미상",
+          "북쪽 보관실"
+        ],
+        "forbidden_claims": [
+          "작성자를 보낸 사람으로 추정"
+        ],
+        "structured_expectations": {
+          "actor": null,
+          "object": "청동 배지",
+          "destination": "북쪽 보관실"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-unknown_actor-short:G1",
+            "any_of_fact_ids": [
+              "LIS-474263124e2da9e5-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-unknown_actor-front:Q1",
+      "revision": 1,
+      "display_case_id": "LI-unknown_actor-front",
+      "family_id": "unknown_actor",
+      "split": "development",
+      "context_id": "LIC-c61a925342453293",
+      "text": "청동 배지를 보낸 사람과 목적지는?",
+      "question_type": "document_length_and_position",
+      "profile": "core",
+      "pair_group": "unknown_actor",
+      "position": "front",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "행위자 미상",
+          "북쪽 보관실"
+        ],
+        "forbidden_claims": [
+          "작성자를 보낸 사람으로 추정"
+        ],
+        "structured_expectations": {
+          "actor": null,
+          "object": "청동 배지",
+          "destination": "북쪽 보관실"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-unknown_actor-front:G1",
+            "any_of_fact_ids": [
+              "LIS-c61a925342453293-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-unknown_actor-middle:Q1",
+      "revision": 1,
+      "display_case_id": "LI-unknown_actor-middle",
+      "family_id": "unknown_actor",
+      "split": "development",
+      "context_id": "LIC-f0772fcbcb93acb4",
+      "text": "청동 배지를 보낸 사람과 목적지는?",
+      "question_type": "document_length_and_position",
+      "profile": "core",
+      "pair_group": "unknown_actor",
+      "position": "middle",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "행위자 미상",
+          "북쪽 보관실"
+        ],
+        "forbidden_claims": [
+          "작성자를 보낸 사람으로 추정"
+        ],
+        "structured_expectations": {
+          "actor": null,
+          "object": "청동 배지",
+          "destination": "북쪽 보관실"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-unknown_actor-middle:G1",
+            "any_of_fact_ids": [
+              "LIS-f0772fcbcb93acb4-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-unknown_actor-end:Q1",
+      "revision": 1,
+      "display_case_id": "LI-unknown_actor-end",
+      "family_id": "unknown_actor",
+      "split": "development",
+      "context_id": "LIC-f4d786e9621d54bb",
+      "text": "청동 배지를 보낸 사람과 목적지는?",
+      "question_type": "document_length_and_position",
+      "profile": "core",
+      "pair_group": "unknown_actor",
+      "position": "end",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "행위자 미상",
+          "북쪽 보관실"
+        ],
+        "forbidden_claims": [
+          "작성자를 보낸 사람으로 추정"
+        ],
+        "structured_expectations": {
+          "actor": null,
+          "object": "청동 배지",
+          "destination": "북쪽 보관실"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-unknown_actor-end:G1",
+            "any_of_fact_ids": [
+              "LIS-f4d786e9621d54bb-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-cause_unknown-short:Q1",
+      "revision": 1,
+      "display_case_id": "LI-cause_unknown-short",
+      "family_id": "cause_unknown",
+      "split": "development",
+      "context_id": "LIC-980463ea525a3583",
+      "text": "유진이 보고서 제출을 취소한 이유는?",
+      "question_type": "short_control",
+      "profile": "smoke",
+      "pair_group": "cause_unknown",
+      "position": null,
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "취소 이유 미확인"
+        ],
+        "forbidden_claims": [
+          "스캐너 점검 때문에 취소했다고 추정"
+        ],
+        "structured_expectations": {
+          "actor": "유진",
+          "decision": "보고서 제출 취소",
+          "cause": null
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-cause_unknown-short:G1",
+            "any_of_fact_ids": [
+              "LIS-980463ea525a3583-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-cause_unknown-front:Q1",
+      "revision": 1,
+      "display_case_id": "LI-cause_unknown-front",
+      "family_id": "cause_unknown",
+      "split": "development",
+      "context_id": "LIC-7bd784c114d03d01",
+      "text": "유진이 보고서 제출을 취소한 이유는?",
+      "question_type": "document_length_and_position",
+      "profile": "core",
+      "pair_group": "cause_unknown",
+      "position": "front",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "취소 이유 미확인"
+        ],
+        "forbidden_claims": [
+          "스캐너 점검 때문에 취소했다고 추정"
+        ],
+        "structured_expectations": {
+          "actor": "유진",
+          "decision": "보고서 제출 취소",
+          "cause": null
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-cause_unknown-front:G1",
+            "any_of_fact_ids": [
+              "LIS-7bd784c114d03d01-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-cause_unknown-middle:Q1",
+      "revision": 1,
+      "display_case_id": "LI-cause_unknown-middle",
+      "family_id": "cause_unknown",
+      "split": "development",
+      "context_id": "LIC-d29cdbc5d7892c37",
+      "text": "유진이 보고서 제출을 취소한 이유는?",
+      "question_type": "document_length_and_position",
+      "profile": "core",
+      "pair_group": "cause_unknown",
+      "position": "middle",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "취소 이유 미확인"
+        ],
+        "forbidden_claims": [
+          "스캐너 점검 때문에 취소했다고 추정"
+        ],
+        "structured_expectations": {
+          "actor": "유진",
+          "decision": "보고서 제출 취소",
+          "cause": null
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-cause_unknown-middle:G1",
+            "any_of_fact_ids": [
+              "LIS-d29cdbc5d7892c37-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-cause_unknown-end:Q1",
+      "revision": 1,
+      "display_case_id": "LI-cause_unknown-end",
+      "family_id": "cause_unknown",
+      "split": "development",
+      "context_id": "LIC-9324c4fcc2d8d350",
+      "text": "유진이 보고서 제출을 취소한 이유는?",
+      "question_type": "document_length_and_position",
+      "profile": "core",
+      "pair_group": "cause_unknown",
+      "position": "end",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "취소 이유 미확인"
+        ],
+        "forbidden_claims": [
+          "스캐너 점검 때문에 취소했다고 추정"
+        ],
+        "structured_expectations": {
+          "actor": "유진",
+          "decision": "보고서 제출 취소",
+          "cause": null
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-cause_unknown-end:G1",
+            "any_of_fact_ids": [
+              "LIS-9324c4fcc2d8d350-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-roles-sentence-600:Q1",
+      "revision": 1,
+      "display_case_id": "LI-roles-sentence-600",
+      "family_id": "roles",
+      "split": "development",
+      "context_id": "LIC-c4c9f2554775dd9b",
+      "text": "도윤에게 은색 계측기를 건넨 사람은?",
+      "question_type": "single_sentence_clause_load",
+      "profile": "sentence",
+      "pair_group": "roles",
+      "position": "end",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "서린"
+        ],
+        "forbidden_claims": [
+          "도윤을 전달 행위자로 바꿈"
+        ],
+        "structured_expectations": {
+          "actor": "서린",
+          "object": "은색 계측기",
+          "recipient": "도윤",
+          "polarity": "affirmed"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-roles-sentence-600:G1",
+            "any_of_fact_ids": [
+              "LIS-c4c9f2554775dd9b-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-roles-sentence-1800:Q1",
+      "revision": 1,
+      "display_case_id": "LI-roles-sentence-1800",
+      "family_id": "roles",
+      "split": "development",
+      "context_id": "LIC-cae4d44521d7acdc",
+      "text": "도윤에게 은색 계측기를 건넨 사람은?",
+      "question_type": "single_sentence_clause_load",
+      "profile": "sentence",
+      "pair_group": "roles",
+      "position": "end",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "서린"
+        ],
+        "forbidden_claims": [
+          "도윤을 전달 행위자로 바꿈"
+        ],
+        "structured_expectations": {
+          "actor": "서린",
+          "object": "은색 계측기",
+          "recipient": "도윤",
+          "polarity": "affirmed"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-roles-sentence-1800:G1",
+            "any_of_fact_ids": [
+              "LIS-cae4d44521d7acdc-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-negation-sentence-600:Q1",
+      "revision": 1,
+      "display_case_id": "LI-negation-sentence-600",
+      "family_id": "negation",
+      "split": "development",
+      "context_id": "LIC-0e406241fbb01c27",
+      "text": "미나가 예비 열쇠를 관리인에게 전달했나?",
+      "question_type": "single_sentence_clause_load",
+      "profile": "sentence",
+      "pair_group": "negation",
+      "position": "end",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "전달하지 않았다"
+        ],
+        "forbidden_claims": [
+          "전달 완료로 답함"
+        ],
+        "structured_expectations": {
+          "actor": "미나",
+          "object": "예비 열쇠",
+          "polarity": "negated"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-negation-sentence-600:G1",
+            "any_of_fact_ids": [
+              "LIS-0e406241fbb01c27-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-negation-sentence-1800:Q1",
+      "revision": 1,
+      "display_case_id": "LI-negation-sentence-1800",
+      "family_id": "negation",
+      "split": "development",
+      "context_id": "LIC-7a16ca17ec90604a",
+      "text": "미나가 예비 열쇠를 관리인에게 전달했나?",
+      "question_type": "single_sentence_clause_load",
+      "profile": "sentence",
+      "pair_group": "negation",
+      "position": "end",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "전달하지 않았다"
+        ],
+        "forbidden_claims": [
+          "전달 완료로 답함"
+        ],
+        "structured_expectations": {
+          "actor": "미나",
+          "object": "예비 열쇠",
+          "polarity": "negated"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-negation-sentence-1800:G1",
+            "any_of_fact_ids": [
+              "LIS-7a16ca17ec90604a-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-conditional_plan-sentence-600:Q1",
+      "revision": 1,
+      "display_case_id": "LI-conditional_plan-sentence-600",
+      "family_id": "conditional_plan",
+      "split": "development",
+      "context_id": "LIC-f5ad715473d9fabd",
+      "text": "준호가 관측기를 옮기려던 조건과 목적지, 현재 이동 여부는?",
+      "question_type": "single_sentence_clause_load",
+      "profile": "sentence",
+      "pair_group": "conditional_plan",
+      "position": "end",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "서면 허가",
+          "동쪽 실험실",
+          "옮기지 않았다"
+        ],
+        "forbidden_claims": [
+          "동쪽 실험실에 이미 있다고 확정",
+          "미실행을 실패 결과로 바꿈"
+        ],
+        "structured_expectations": {
+          "actor": "준호",
+          "object": "관측기",
+          "location_planned": "동쪽 실험실",
+          "condition": "서면 허가가 도착하면",
+          "execution_state": "not_started"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-conditional_plan-sentence-600:G1",
+            "any_of_fact_ids": [
+              "LIS-f5ad715473d9fabd-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-conditional_plan-sentence-1800:Q1",
+      "revision": 1,
+      "display_case_id": "LI-conditional_plan-sentence-1800",
+      "family_id": "conditional_plan",
+      "split": "development",
+      "context_id": "LIC-f1b632c35108f7f0",
+      "text": "준호가 관측기를 옮기려던 조건과 목적지, 현재 이동 여부는?",
+      "question_type": "single_sentence_clause_load",
+      "profile": "sentence",
+      "pair_group": "conditional_plan",
+      "position": "end",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "서면 허가",
+          "동쪽 실험실",
+          "옮기지 않았다"
+        ],
+        "forbidden_claims": [
+          "동쪽 실험실에 이미 있다고 확정",
+          "미실행을 실패 결과로 바꿈"
+        ],
+        "structured_expectations": {
+          "actor": "준호",
+          "object": "관측기",
+          "location_planned": "동쪽 실험실",
+          "condition": "서면 허가가 도착하면",
+          "execution_state": "not_started"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-conditional_plan-sentence-1800:G1",
+            "any_of_fact_ids": [
+              "LIS-f1b632c35108f7f0-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-correction-sentence-600:Q1",
+      "revision": 1,
+      "display_case_id": "LI-correction-sentence-600",
+      "family_id": "correction",
+      "split": "development",
+      "context_id": "LIC-3e1984c72a9046fe",
+      "text": "정정된 기록에 따르면 접수증의 보관 장소는?",
+      "question_type": "single_sentence_clause_load",
+      "profile": "sentence",
+      "pair_group": "correction",
+      "position": "end",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "초록 보관함"
+        ],
+        "forbidden_claims": [
+          "노란 서랍을 최종 위치로 답함"
+        ],
+        "structured_expectations": {
+          "object": "접수증",
+          "location": "초록 보관함",
+          "superseded_location": "노란 서랍"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-correction-sentence-600:G1",
+            "any_of_fact_ids": [
+              "LIS-3e1984c72a9046fe-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-correction-sentence-1800:Q1",
+      "revision": 1,
+      "display_case_id": "LI-correction-sentence-1800",
+      "family_id": "correction",
+      "split": "development",
+      "context_id": "LIC-d266686fb0c3a85d",
+      "text": "정정된 기록에 따르면 접수증의 보관 장소는?",
+      "question_type": "single_sentence_clause_load",
+      "profile": "sentence",
+      "pair_group": "correction",
+      "position": "end",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "초록 보관함"
+        ],
+        "forbidden_claims": [
+          "노란 서랍을 최종 위치로 답함"
+        ],
+        "structured_expectations": {
+          "object": "접수증",
+          "location": "초록 보관함",
+          "superseded_location": "노란 서랍"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-correction-sentence-1800:G1",
+            "any_of_fact_ids": [
+              "LIS-d266686fb0c3a85d-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-import-3999:Q1",
+      "revision": 1,
+      "display_case_id": "LI-import-3999",
+      "family_id": "import_boundary",
+      "split": "development",
+      "context_id": "LIC-abf72737d55b153b",
+      "text": "소민이 투명 지갑을 넣은 장소는?",
+      "question_type": "record_import_limit",
+      "profile": "boundary",
+      "pair_group": "import_boundary",
+      "position": "end",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "다락의 자주색 수납함"
+        ],
+        "forbidden_claims": [
+          "다른 물건의 장소를 연결",
+          "분할된 문장을 원문에서 누락"
+        ],
+        "structured_expectations": {
+          "actor": "소민",
+          "object": "투명 지갑",
+          "location": "다락의 자주색 수납함"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-import-3999:G1",
+            "any_of_fact_ids": [
+              "LIS-abf72737d55b153b-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-import-4000:Q1",
+      "revision": 1,
+      "display_case_id": "LI-import-4000",
+      "family_id": "import_boundary",
+      "split": "development",
+      "context_id": "LIC-7dee86251c5363cd",
+      "text": "소민이 투명 지갑을 넣은 장소는?",
+      "question_type": "record_import_limit",
+      "profile": "boundary",
+      "pair_group": "import_boundary",
+      "position": "end",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "다락의 자주색 수납함"
+        ],
+        "forbidden_claims": [
+          "다른 물건의 장소를 연결",
+          "분할된 문장을 원문에서 누락"
+        ],
+        "structured_expectations": {
+          "actor": "소민",
+          "object": "투명 지갑",
+          "location": "다락의 자주색 수납함"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-import-4000:G1",
+            "any_of_fact_ids": [
+              "LIS-7dee86251c5363cd-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-import-4001:Q1",
+      "revision": 1,
+      "display_case_id": "LI-import-4001",
+      "family_id": "import_boundary",
+      "split": "development",
+      "context_id": "LIC-f55ac741e439e834",
+      "text": "소민이 투명 지갑을 넣은 장소는?",
+      "question_type": "record_import_limit",
+      "profile": "boundary",
+      "pair_group": "import_boundary",
+      "position": "boundary",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "다락의 자주색 수납함"
+        ],
+        "forbidden_claims": [
+          "다른 물건의 장소를 연결",
+          "분할된 문장을 원문에서 누락"
+        ],
+        "structured_expectations": {
+          "actor": "소민",
+          "object": "투명 지갑",
+          "location": "다락의 자주색 수납함"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-import-4001:G1",
+            "any_of_fact_ids": [
+              "LIS-f55ac741e439e834-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-import-7999:Q1",
+      "revision": 1,
+      "display_case_id": "LI-import-7999",
+      "family_id": "import_boundary",
+      "split": "development",
+      "context_id": "LIC-b214ec0bb6a49011",
+      "text": "소민이 투명 지갑을 넣은 장소는?",
+      "question_type": "record_import_limit",
+      "profile": "boundary",
+      "pair_group": "import_boundary",
+      "position": "boundary",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "다락의 자주색 수납함"
+        ],
+        "forbidden_claims": [
+          "다른 물건의 장소를 연결",
+          "분할된 문장을 원문에서 누락"
+        ],
+        "structured_expectations": {
+          "actor": "소민",
+          "object": "투명 지갑",
+          "location": "다락의 자주색 수납함"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-import-7999:G1",
+            "any_of_fact_ids": [
+              "LIS-b214ec0bb6a49011-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-import-8000:Q1",
+      "revision": 1,
+      "display_case_id": "LI-import-8000",
+      "family_id": "import_boundary",
+      "split": "development",
+      "context_id": "LIC-2ef6885a8d26ced5",
+      "text": "소민이 투명 지갑을 넣은 장소는?",
+      "question_type": "record_import_limit",
+      "profile": "boundary",
+      "pair_group": "import_boundary",
+      "position": "boundary",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "다락의 자주색 수납함"
+        ],
+        "forbidden_claims": [
+          "다른 물건의 장소를 연결",
+          "분할된 문장을 원문에서 누락"
+        ],
+        "structured_expectations": {
+          "actor": "소민",
+          "object": "투명 지갑",
+          "location": "다락의 자주색 수납함"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-import-8000:G1",
+            "any_of_fact_ids": [
+              "LIS-2ef6885a8d26ced5-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-import-8001:Q1",
+      "revision": 1,
+      "display_case_id": "LI-import-8001",
+      "family_id": "import_boundary",
+      "split": "development",
+      "context_id": "LIC-0ab5fced6b42d545",
+      "text": "소민이 투명 지갑을 넣은 장소는?",
+      "question_type": "record_import_limit",
+      "profile": "boundary",
+      "pair_group": "import_boundary",
+      "position": "boundary",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "다락의 자주색 수납함"
+        ],
+        "forbidden_claims": [
+          "다른 물건의 장소를 연결",
+          "분할된 문장을 원문에서 누락"
+        ],
+        "structured_expectations": {
+          "actor": "소민",
+          "object": "투명 지갑",
+          "location": "다락의 자주색 수납함"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-import-8001:G1",
+            "any_of_fact_ids": [
+              "LIS-0ab5fced6b42d545-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-stress-12000-front:Q1",
+      "revision": 1,
+      "display_case_id": "LI-stress-12000-front",
+      "family_id": "conditional_plan",
+      "split": "development",
+      "context_id": "LIC-ff0a2db6411b7960",
+      "text": "준호가 관측기를 옮기려던 조건과 목적지, 현재 이동 여부는?",
+      "question_type": "multi_chunk_document",
+      "profile": "stress",
+      "pair_group": "conditional_plan",
+      "position": "front",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "서면 허가",
+          "동쪽 실험실",
+          "옮기지 않았다"
+        ],
+        "forbidden_claims": [
+          "동쪽 실험실에 이미 있다고 확정",
+          "미실행을 실패 결과로 바꿈"
+        ],
+        "structured_expectations": {
+          "actor": "준호",
+          "object": "관측기",
+          "location_planned": "동쪽 실험실",
+          "condition": "서면 허가가 도착하면",
+          "execution_state": "not_started"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-stress-12000-front:G1",
+            "any_of_fact_ids": [
+              "LIS-ff0a2db6411b7960-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-stress-12000-middle:Q1",
+      "revision": 1,
+      "display_case_id": "LI-stress-12000-middle",
+      "family_id": "conditional_plan",
+      "split": "development",
+      "context_id": "LIC-e899b2c6bf23b736",
+      "text": "준호가 관측기를 옮기려던 조건과 목적지, 현재 이동 여부는?",
+      "question_type": "multi_chunk_document",
+      "profile": "stress",
+      "pair_group": "conditional_plan",
+      "position": "middle",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "서면 허가",
+          "동쪽 실험실",
+          "옮기지 않았다"
+        ],
+        "forbidden_claims": [
+          "동쪽 실험실에 이미 있다고 확정",
+          "미실행을 실패 결과로 바꿈"
+        ],
+        "structured_expectations": {
+          "actor": "준호",
+          "object": "관측기",
+          "location_planned": "동쪽 실험실",
+          "condition": "서면 허가가 도착하면",
+          "execution_state": "not_started"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-stress-12000-middle:G1",
+            "any_of_fact_ids": [
+              "LIS-e899b2c6bf23b736-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-stress-12000-end:Q1",
+      "revision": 1,
+      "display_case_id": "LI-stress-12000-end",
+      "family_id": "conditional_plan",
+      "split": "development",
+      "context_id": "LIC-a4bf63b6e14e5b92",
+      "text": "준호가 관측기를 옮기려던 조건과 목적지, 현재 이동 여부는?",
+      "question_type": "multi_chunk_document",
+      "profile": "stress",
+      "pair_group": "conditional_plan",
+      "position": "end",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "서면 허가",
+          "동쪽 실험실",
+          "옮기지 않았다"
+        ],
+        "forbidden_claims": [
+          "동쪽 실험실에 이미 있다고 확정",
+          "미실행을 실패 결과로 바꿈"
+        ],
+        "structured_expectations": {
+          "actor": "준호",
+          "object": "관측기",
+          "location_planned": "동쪽 실험실",
+          "condition": "서면 허가가 도착하면",
+          "execution_state": "not_started"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-stress-12000-end:G1",
+            "any_of_fact_ids": [
+              "LIS-a4bf63b6e14e5b92-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-stress-24000-front:Q1",
+      "revision": 1,
+      "display_case_id": "LI-stress-24000-front",
+      "family_id": "conditional_plan",
+      "split": "development",
+      "context_id": "LIC-b5e9429f21918e98",
+      "text": "준호가 관측기를 옮기려던 조건과 목적지, 현재 이동 여부는?",
+      "question_type": "multi_chunk_document",
+      "profile": "stress",
+      "pair_group": "conditional_plan",
+      "position": "front",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "서면 허가",
+          "동쪽 실험실",
+          "옮기지 않았다"
+        ],
+        "forbidden_claims": [
+          "동쪽 실험실에 이미 있다고 확정",
+          "미실행을 실패 결과로 바꿈"
+        ],
+        "structured_expectations": {
+          "actor": "준호",
+          "object": "관측기",
+          "location_planned": "동쪽 실험실",
+          "condition": "서면 허가가 도착하면",
+          "execution_state": "not_started"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-stress-24000-front:G1",
+            "any_of_fact_ids": [
+              "LIS-b5e9429f21918e98-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-stress-24000-middle:Q1",
+      "revision": 1,
+      "display_case_id": "LI-stress-24000-middle",
+      "family_id": "conditional_plan",
+      "split": "development",
+      "context_id": "LIC-88761acac72f6c40",
+      "text": "준호가 관측기를 옮기려던 조건과 목적지, 현재 이동 여부는?",
+      "question_type": "multi_chunk_document",
+      "profile": "stress",
+      "pair_group": "conditional_plan",
+      "position": "middle",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "서면 허가",
+          "동쪽 실험실",
+          "옮기지 않았다"
+        ],
+        "forbidden_claims": [
+          "동쪽 실험실에 이미 있다고 확정",
+          "미실행을 실패 결과로 바꿈"
+        ],
+        "structured_expectations": {
+          "actor": "준호",
+          "object": "관측기",
+          "location_planned": "동쪽 실험실",
+          "condition": "서면 허가가 도착하면",
+          "execution_state": "not_started"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-stress-24000-middle:G1",
+            "any_of_fact_ids": [
+              "LIS-88761acac72f6c40-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-stress-24000-end:Q1",
+      "revision": 1,
+      "display_case_id": "LI-stress-24000-end",
+      "family_id": "conditional_plan",
+      "split": "development",
+      "context_id": "LIC-505a789582af11b9",
+      "text": "준호가 관측기를 옮기려던 조건과 목적지, 현재 이동 여부는?",
+      "question_type": "multi_chunk_document",
+      "profile": "stress",
+      "pair_group": "conditional_plan",
+      "position": "end",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "서면 허가",
+          "동쪽 실험실",
+          "옮기지 않았다"
+        ],
+        "forbidden_claims": [
+          "동쪽 실험실에 이미 있다고 확정",
+          "미실행을 실패 결과로 바꿈"
+        ],
+        "structured_expectations": {
+          "actor": "준호",
+          "object": "관측기",
+          "location_planned": "동쪽 실험실",
+          "condition": "서면 허가가 도착하면",
+          "execution_state": "not_started"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-stress-24000-end:G1",
+            "any_of_fact_ids": [
+              "LIS-505a789582af11b9-E1"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-distant_correction:Q1",
+      "revision": 1,
+      "display_case_id": "LI-distant_correction",
+      "family_id": "distant_correction",
+      "split": "development",
+      "context_id": "LIC-ac350a95e0955082",
+      "text": "접수번호 R-721 접수증의 정정된 보관 장소는?",
+      "question_type": "cross_chunk_evidence",
+      "profile": "dependency",
+      "pair_group": "distant_correction",
+      "position": "front_and_end",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "초록 보관함"
+        ],
+        "forbidden_claims": [
+          "이전 위치를 최종 위치로 답함"
+        ],
+        "structured_expectations": {
+          "record_key": "R-721",
+          "location": "초록 보관함",
+          "superseded_location": "노란 서랍"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-distant_correction:G1",
+            "any_of_fact_ids": [
+              "LIS-ac350a95e0955082-E1"
+            ]
+          },
+          {
+            "id": "LI-distant_correction:G2",
+            "any_of_fact_ids": [
+              "LIS-ac350a95e0955082-E2"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-distant_actor:Q1",
+      "revision": 1,
+      "display_case_id": "LI-distant_actor",
+      "family_id": "distant_actor",
+      "split": "development",
+      "context_id": "LIC-9654cba75c142afa",
+      "text": "보라색 측정판을 동쪽 보관실에 넣은 사람의 이름은?",
+      "question_type": "cross_chunk_evidence",
+      "profile": "dependency",
+      "pair_group": "distant_actor",
+      "position": "front_and_end",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "조향"
+        ],
+        "forbidden_claims": [
+          "작성자로 주체를 바꿈"
+        ],
+        "structured_expectations": {
+          "actor": "조향",
+          "object": "보라색 측정판",
+          "location": "동쪽 보관실"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-distant_actor:G1",
+            "any_of_fact_ids": [
+              "LIS-9654cba75c142afa-E1"
+            ]
+          },
+          {
+            "id": "LI-distant_actor:G2",
+            "any_of_fact_ids": [
+              "LIS-9654cba75c142afa-E2"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-distant_cause:Q1",
+      "revision": 1,
+      "display_case_id": "LI-distant_cause",
+      "family_id": "distant_cause",
+      "split": "development",
+      "context_id": "LIC-f88bf5ea7ca856f3",
+      "text": "재윤이 수요일 전시용 받침대 운반을 취소한 이유는?",
+      "question_type": "cross_chunk_evidence",
+      "profile": "dependency",
+      "pair_group": "distant_cause",
+      "position": "front_and_end",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "승강기 고장"
+        ],
+        "forbidden_claims": [
+          "안내 책자 인쇄를 취소 이유로 답함"
+        ],
+        "structured_expectations": {
+          "actor": "재윤",
+          "decision": "전시용 받침대 운반 취소",
+          "cause": "승강기 고장"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-distant_cause:G1",
+            "any_of_fact_ids": [
+              "LIS-f88bf5ea7ca856f3-E1"
+            ]
+          },
+          {
+            "id": "LI-distant_cause:G2",
+            "any_of_fact_ids": [
+              "LIS-f88bf5ea7ca856f3-E2"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    },
+    {
+      "id": "LI-distant_conflict:Q1",
+      "revision": 1,
+      "display_case_id": "LI-distant_conflict",
+      "family_id": "distant_conflict",
+      "split": "development",
+      "context_id": "LIC-5331eb29f4705140",
+      "text": "관측 K-84가 실제로 완료됐는지 이 자료로 확정할 수 있나?",
+      "question_type": "cross_chunk_evidence",
+      "profile": "dependency",
+      "pair_group": "distant_conflict",
+      "position": "front_and_end",
+      "variables": [],
+      "variant": null,
+      "gold": {
+        "review_status": "AUTHOR_DRAFT",
+        "label_status": "author_draft_requires_independent_review",
+        "expected_action": null,
+        "reference_answer": null,
+        "annotation_status": {
+          "expected_action": "NOT_ANNOTATED",
+          "reference_answer": "NOT_ANNOTATED"
+        },
+        "required_claims": [
+          "상충하는 두 기록",
+          "완료 여부 확정 불가"
+        ],
+        "forbidden_claims": [
+          "뒤에 나온 기록을 정정으로 간주",
+          "완료 또는 미실행을 단정"
+        ],
+        "structured_expectations": {
+          "event": "K-84",
+          "conflict": true,
+          "actual_completion": "unknown"
+        },
+        "evidence_groups": [
+          {
+            "id": "LI-distant_conflict:G1",
+            "any_of_fact_ids": [
+              "LIS-5331eb29f4705140-E1"
+            ]
+          },
+          {
+            "id": "LI-distant_conflict:G2",
+            "any_of_fact_ids": [
+              "LIS-5331eb29f4705140-E2"
+            ]
+          }
+        ],
+        "answer_policy": "semantic review required; no automatic semantic PASS",
+        "citation_policy": "all annotated target evidence groups required",
+        "judging": "semantic review required; substring hits are diagnostics, not PASS",
+        "coverage": "annotated target claims only; distractor facts are not fully labeled"
+      },
+      "required_observations": [
+        "citation_spans",
+        "answer_claims"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "mode": "offline_input_preview",
+  "experiment_kind": "single_axis_comparison",
+  "local_model": {"id": "UNSELECTED", "file_sha256": null},
+  "representation": {"method": "UNSELECTED", "version": "UNSELECTED"},
+  "prompts": {
+    "extraction": {"id": "UNSELECTED", "version": null, "sha256": null},
+    "query": {"id": "UNSELECTED", "version": null, "sha256": null},
+    "answer": {"id": "UNSELECTED", "version": null, "sha256": null}
+  },
+  "retrieval": {"embedding_model_id": "UNSELECTED", "top_k": null, "chunking_version": null},
+  "repetitions": null,
+  "seed": null,
+  "note": "아직 모델·프롬프트·검색 설정을 선택하지 않은 입력 준비 예시다. 실제 평가 실행 설정으로 사용하지 않는다."
+}

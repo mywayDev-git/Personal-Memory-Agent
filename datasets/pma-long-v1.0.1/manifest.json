@@ -1,0 +1,265 @@
+{
+  "schema_version": "pma-long-dataset-1",
+  "dataset_version": "pma-long-v1.0.1",
+  "title": "장문 개발셋 v1.0.1",
+  "synthetic_only": true,
+  "model_execution": false,
+  "independent_gold": false,
+  "execution_input_path": "raw_original_v1",
+  "default_profile": "smoke",
+  "profiles": {
+    "smoke": 8,
+    "core": 24,
+    "sentence": 8,
+    "boundary": 6,
+    "dependency": 4,
+    "stress": 6
+  },
+  "counts": {
+    "families": 13,
+    "sources": 56,
+    "contexts": 56,
+    "questions": 56,
+    "source_facts": 60,
+    "target_evidence_regions": 60,
+    "source_relations": 0,
+    "upstream_variables": 0,
+    "draft_linked_variables": 0
+  },
+  "families": [
+    {
+      "id": "roles",
+      "title": "행위자·수신자 역할",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "variables": []
+    },
+    {
+      "id": "negation",
+      "title": "부정",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "variables": []
+    },
+    {
+      "id": "conditional_plan",
+      "title": "조건부 계획",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "variables": []
+    },
+    {
+      "id": "correction",
+      "title": "정정",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "variables": []
+    },
+    {
+      "id": "identity",
+      "title": "동명이인 분리",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "variables": []
+    },
+    {
+      "id": "quoted_time",
+      "title": "인용 속 상대 시간",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "variables": []
+    },
+    {
+      "id": "unknown_actor",
+      "title": "행위자 미상",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "variables": []
+    },
+    {
+      "id": "cause_unknown",
+      "title": "원인 미상",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "variables": []
+    },
+    {
+      "id": "import_boundary",
+      "title": "가져오기 경계",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "variables": []
+    },
+    {
+      "id": "distant_correction",
+      "title": "원거리 정정",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "variables": []
+    },
+    {
+      "id": "distant_actor",
+      "title": "원거리 역할 참조",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "variables": []
+    },
+    {
+      "id": "distant_cause",
+      "title": "원거리 원인",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "variables": []
+    },
+    {
+      "id": "distant_conflict",
+      "title": "원거리 충돌",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "variables": []
+    }
+  ],
+  "partition": {
+    "development": [
+      "LI-roles-short:Q1",
+      "LI-roles-front:Q1",
+      "LI-roles-middle:Q1",
+      "LI-roles-end:Q1",
+      "LI-negation-short:Q1",
+      "LI-negation-front:Q1",
+      "LI-negation-middle:Q1",
+      "LI-negation-end:Q1",
+      "LI-conditional_plan-short:Q1",
+      "LI-conditional_plan-front:Q1",
+      "LI-conditional_plan-middle:Q1",
+      "LI-conditional_plan-end:Q1",
+      "LI-correction-short:Q1",
+      "LI-correction-front:Q1",
+      "LI-correction-middle:Q1",
+      "LI-correction-end:Q1",
+      "LI-identity-short:Q1",
+      "LI-identity-front:Q1",
+      "LI-identity-middle:Q1",
+      "LI-identity-end:Q1",
+      "LI-quoted_time-short:Q1",
+      "LI-quoted_time-front:Q1",
+      "LI-quoted_time-middle:Q1",
+      "LI-quoted_time-end:Q1",
+      "LI-unknown_actor-short:Q1",
+      "LI-unknown_actor-front:Q1",
+      "LI-unknown_actor-middle:Q1",
+      "LI-unknown_actor-end:Q1",
+      "LI-cause_unknown-short:Q1",
+      "LI-cause_unknown-front:Q1",
+      "LI-cause_unknown-middle:Q1",
+      "LI-cause_unknown-end:Q1",
+      "LI-roles-sentence-600:Q1",
+      "LI-roles-sentence-1800:Q1",
+      "LI-negation-sentence-600:Q1",
+      "LI-negation-sentence-1800:Q1",
+      "LI-conditional_plan-sentence-600:Q1",
+      "LI-conditional_plan-sentence-1800:Q1",
+      "LI-correction-sentence-600:Q1",
+      "LI-correction-sentence-1800:Q1",
+      "LI-import-3999:Q1",
+      "LI-import-4000:Q1",
+      "LI-import-4001:Q1",
+      "LI-import-7999:Q1",
+      "LI-import-8000:Q1",
+      "LI-import-8001:Q1",
+      "LI-stress-12000-front:Q1",
+      "LI-stress-12000-middle:Q1",
+      "LI-stress-12000-end:Q1",
+      "LI-stress-24000-front:Q1",
+      "LI-stress-24000-middle:Q1",
+      "LI-stress-24000-end:Q1",
+      "LI-distant_correction:Q1",
+      "LI-distant_actor:Q1",
+      "LI-distant_cause:Q1",
+      "LI-distant_conflict:Q1"
+    ],
+    "final": []
+  },
+  "provenance": {
+    "zip_filename": "codex-local-testing-handoff-20261102.zip",
+    "zip_sha256": "8fea48fcf933f6d6ea7b2287ee749456ec6fb42d78f7d0ee11f1f17ebd8090a9",
+    "upstream_version": "local-long-input-v1",
+    "upstream_files": {
+      "inputs.json": "97c411207050c40bacf45ef099ea0726cbb98a45dd6bb8795f5d9ad28f40a948",
+      "annotations.json": "9725e1efa116135a8d1af5403be5943968c0045b11dc1961f8baee4230881ea3"
+    },
+    "builder_sha256": "346c9903873285465e74e6c67159aff56db749a73f213624ecec63f2b76a94a0",
+    "adapter_version": "pma-long-adapter-v1",
+    "corrections": [
+      {
+        "case_id": "LI-import-4001",
+        "old_characters": 4013,
+        "new_characters": 4001,
+        "reason": "negative suffix length in upstream generator; moved intact target to [3973,4001)",
+        "old_sha256": "2c1dfb8b983aeb19a56cb4bba66f55edef1361d0764bd2feb58c76e46f4e44ab",
+        "new_sha256": "fc9151833316911a4942f97613002df2779f4d3c3b07ce28f575e226cc6cae1d"
+      }
+    ]
+  },
+  "limits": [
+    "개발용 정답 초안이며 최종 평가셋이 아님",
+    "같은 pair_group의 길이·위치 변형은 독립 표본이 아님",
+    "목표 근거 구간 60개는 문서 전체 의미 사실 주석이 아님",
+    "사례당 원문 1개: 원문 순위 성능으로 해석하지 않음",
+    "reference_time은 문서 해석 기준이며 저장 시각·작성자 정보는 미제공",
+    "대표 답변 문장과 기대 행동은 미주석; 필수 의미·금지 주장·구조 기대값만 보존",
+    "실제 토큰수 미측정; 길이가 토큰 예산 이내임을 보장하지 않음",
+    "현재 앱 실행은 원문 전체 경로; 4000자 가져오기 분할은 계획이며 실행 아님",
+    "기존 추출 지침은 created_at 기준; 문서 기준시각 적용은 프롬프트 어댑터 검토 필요"
+  ],
+  "integrity": [
+    {
+      "file": "inputs.json",
+      "sha256": "911fc5829e4a6b72519a71b7618a2ec695f37c1bff70f78443238526de899f8c"
+    },
+    {
+      "file": "annotations.json",
+      "sha256": "5a1f37a2c754b8ee1c50f9537142f1aabcb16c12ec03f1be7ee5893e1600eb94"
+    },
+    {
+      "file": "sources.json",
+      "sha256": "7cd4cf62a06c89978c9752bf91117aab0f337c5f97447787591bd3631dc6563a"
+    },
+    {
+      "file": "contexts.json",
+      "sha256": "3958a94eb7dd5f8d3e76a5e2d39e566a3cabe98e80ecdc521d31aec3dc30246b"
+    },
+    {
+      "file": "questions.json",
+      "sha256": "ef4cfa858a1e9ab58ae4ce28d81ac28450e10fd80602ec5e7b2b1ec3f9888982"
+    },
+    {
+      "file": "coverage.json",
+      "sha256": "fb227686f87571dd47f3f94553a5b34f81ad0ff7da0668cb75a780c28a243e43"
+    },
+    {
+      "file": "import_plans.json",
+      "sha256": "de35115c02900ae75094533e00687a4f4f2968c68cd0a523e8175da777b5fbf5"
+    },
+    {
+      "file": "lib.mjs",
+      "sha256": "d6b8f48936c3d8a0f16421ee9b7242230b5a0cc20f75df7ae7956c4e1c4829ec"
+    },
+    {
+      "file": "README.md",
+      "sha256": "683f73f0a1f27f79354b0102c734dfbacaf7d809dd2cc3ed94be6403bfecb6d5"
+    },
+    {
+      "file": "upstream/inputs.json",
+      "sha256": "97c411207050c40bacf45ef099ea0726cbb98a45dd6bb8795f5d9ad28f40a948"
+    },
+    {
+      "file": "upstream/annotations.json",
+      "sha256": "9725e1efa116135a8d1af5403be5943968c0045b11dc1961f8baee4230881ea3"
+    },
+    {
+      "file": "upstream/manifest.json",
+      "sha256": "4724df07466f9ca787a9bc5237740519f260f25cb9e3fa9b75369d993982525e"
+    }
+  ]
+}

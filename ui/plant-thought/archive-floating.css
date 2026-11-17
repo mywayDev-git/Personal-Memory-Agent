@@ -1,0 +1,35 @@
+/* Only the virtual-source panel is relocated. Calendar styles are untouched. */
+/* Keep the viewport edge stable when chat hides the document scrollbar. */
+html{scrollbar-gutter:stable}
+.archive-inspector-host .archive-floating-dock{position:fixed;right:24px;bottom:98px;z-index:90;width:460px;max-width:calc(100vw - 40px);height:min(710px,calc(100dvh - var(--header-height,82px) - 120px));max-height:calc(100dvh - var(--header-height,82px) - 120px);display:flex;flex-direction:column;min-height:0;overflow:hidden;border:1px solid #dce5d5;border-radius:19px;background:#fffefa;box-shadow:0 16px 65px #213d2924,0 4px 14px #213d2910;text-align:left}
+.archive-inspector-host .archive-floating-dock[hidden]{display:none}
+.archive-inspector-host .archive-dock-header{position:static;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:16px;padding:20px 22px 16px;background:#f5f7ef;border:0;border-bottom:1px solid #e7eddf;backdrop-filter:none}
+.archive-dock-eyebrow{display:block;font:600 9px 'DM Sans',sans-serif;letter-spacing:1.7px;color:#91a17e;margin-bottom:7px}
+.archive-inspector-host .archive-dock-header h2{font-size:19px;margin:0;color:#365532;font-weight:600;letter-spacing:-.4px}
+.archive-dock-close{border:1px solid #dfe6d6;background:#fffefa;border-radius:9px;width:33px;height:33px;display:grid;place-items:center;color:#74866a;flex:none;padding:0}
+.archive-dock-close:hover{background:#eaf1e2;color:#375e2f}.archive-dock-close svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round}
+.archive-dock-tabs{display:flex;gap:5px;padding:10px 16px;border-bottom:1px solid #e8eddf;background:#fffefa;flex-shrink:0}
+.archive-dock-tabs button{flex:1;border:0;border-radius:8px;padding:10px 6px;background:transparent;color:#9ba58d;font-size:11px;white-space:nowrap}
+.archive-dock-tabs button[aria-selected=true]{background:#eaf1e2;color:#426137;font-weight:600}.archive-dock-tabs button:hover{color:#426137;background:#f1f5eb}
+.archive-dock-tabs button span{display:inline-block;margin-left:3px;font:500 10px 'DM Sans',sans-serif;color:#839a6d}
+.archive-inspector-host .archive-floating-body{position:static;top:auto;flex:1;min-height:0;width:100%;overflow-y:auto;overscroll-behavior-y:contain;scrollbar-width:thin;scroll-padding-top:16px;border:0;border-radius:0;padding:20px 22px 24px;background:#fffefa;align-self:stretch;scroll-margin-top:0}
+.archive-floating-body>[role=tabpanel][hidden]{display:none!important}
+.archive-inspector-host .archive-floating-body #archiveDataInfo,.archive-inspector-host .archive-floating-body #archiveExamples{margin:0;padding:0;border:0;scroll-margin-top:0}
+.archive-inspector-host .archive-floating-body .archive-example-list{max-height:none;overflow:visible;padding-right:0}
+.archive-inspector-host .archive-floating-body .archive-answer-notice{font-size:11px;line-height:1.9}
+.archive-dock-launcher{position:fixed;right:24px;bottom:22px;z-index:91;display:flex;align-items:center;gap:13px;width:330px;max-width:calc(100vw - 32px);min-height:62px;padding:12px 16px;border:1px solid #d9e3cf;border-radius:15px;background:#f4f7ed;color:#3d5b33;text-align:left;box-shadow:0 8px 32px #243d2414;transition:box-shadow .15s,background .15s}
+.archive-dock-launcher:hover{background:#eaf1e1;box-shadow:0 10px 36px #243d2420}
+.archive-launcher-icon{width:35px;height:35px;border-radius:10px;background:#e2ebd7;color:#6e8756;display:grid;place-items:center;flex:none}
+.archive-launcher-icon svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.archive-launcher-copy{display:block;min-width:0;flex:1}.archive-launcher-copy strong{font-size:12px;display:block;font-weight:600;line-height:1.6}.archive-launcher-copy>span{display:block;font-size:10px;line-height:1.7;color:#91a17d;margin-top:3px}
+.archive-launcher-chevron{width:19px;height:19px;flex:none;fill:none;stroke:#7b9168;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;transition:transform .15s}
+.archive-dock-launcher[aria-expanded=true] .archive-launcher-chevron{transform:rotate(180deg)}
+@media(max-width:600px){.archive-inspector-host .archive-floating-dock{right:12px;bottom:94px;width:calc(100% - 24px);max-width:none;height:min(660px,calc(100dvh - var(--header-height,132px) - 116px));max-height:calc(100dvh - var(--header-height,132px) - 116px);border-radius:16px}.archive-inspector-host .archive-dock-header{padding:17px 18px 14px}.archive-inspector-host .archive-floating-body{padding:18px}.archive-dock-tabs{padding:8px 12px;gap:3px}.archive-dock-tabs button{font-size:11px;padding:10px 5px}.archive-dock-launcher{right:12px;bottom:max(16px,env(safe-area-inset-bottom));width:310px;max-width:calc(100% - 24px);padding:11px 14px;min-height:62px}.archive-launcher-copy strong{font-size:12px}.archive-launcher-copy>span{font-size:9px}}
+@media(prefers-reduced-motion:reduce){.archive-dock-launcher,.archive-launcher-chevron{transition:none}}
+
+
+.archive-inspector-host[hidden]{display:none!important}
+/* Question text is the same accessible action as the explicit composer button. */
+.archive-inspector-host button.archive-question-text{display:block;width:100%;padding:0;border:0;border-radius:4px;background:transparent;text-align:left;font-family:inherit;cursor:pointer}
+.archive-inspector-host button.archive-question-text:hover{color:#294a20;text-decoration:underline;text-underline-offset:3px}
+.archive-inspector-host button.archive-question-text:focus-visible{outline:2px solid #88a676;outline-offset:4px}

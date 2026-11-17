@@ -1,0 +1,32 @@
+# Machine-local state, personal conversations, downloaded models, and test artifacts.
+.local/
+.models/
+.test-output/
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+
+# Local credentials and environment overrides.
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.pfx
+*.p12
+
+# Local databases and logs.
+*.sqlite
+*.sqlite-*
+*.sqlite3
+*.db
+*.db-*
+*.log
+.DS_Store
+Thumbs.db
+
+# Temporary roots created by offline regression tests.
+/.offline-*/
+/.test-*/

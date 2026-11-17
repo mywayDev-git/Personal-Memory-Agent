@@ -1,0 +1,420 @@
+{
+  "schema_version": "pma-natural-cases-1",
+  "cases": [
+    {
+      "id": "NC-01",
+      "title": "서버 배포의 담당자 인계와 완료 상태",
+      "domain": "work",
+      "profile": "natural_single",
+      "record_ids": [
+        "NC-01-R1"
+      ],
+      "source_refs": [
+        {
+          "source_id": "NIS-33e0edab01d1f2de",
+          "revision": 1
+        }
+      ],
+      "context_id": "NIC-c489c0151d900f6e",
+      "question_ids": [
+        "NC-01-Q1",
+        "NC-01-Q2",
+        "NC-01-Q3",
+        "NC-01-Q4",
+        "NC-01-Q5",
+        "NC-01-Q6"
+      ],
+      "connection_ids": [
+        "NC-01-E1",
+        "NC-01-E2",
+        "NC-01-E3",
+        "NC-01-E4",
+        "NC-01-E5",
+        "NC-01-E6"
+      ],
+      "characters": 1251,
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-02",
+      "title": "이사 준비의 물건·열쇠·예약 구분",
+      "domain": "life",
+      "profile": "natural_single",
+      "record_ids": [
+        "NC-02-R1"
+      ],
+      "source_refs": [
+        {
+          "source_id": "NIS-25365728d935c6bd",
+          "revision": 1
+        }
+      ],
+      "context_id": "NIC-cfeffd3344cc2948",
+      "question_ids": [
+        "NC-02-Q1",
+        "NC-02-Q2",
+        "NC-02-Q3",
+        "NC-02-Q4",
+        "NC-02-Q5",
+        "NC-02-Q6"
+      ],
+      "connection_ids": [
+        "NC-02-E1",
+        "NC-02-E2",
+        "NC-02-E3",
+        "NC-02-E4",
+        "NC-02-E5"
+      ],
+      "characters": 1233,
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-03",
+      "title": "장애의 추측·확인된 원인·복구 범위",
+      "domain": "work",
+      "profile": "natural_single",
+      "record_ids": [
+        "NC-03-R1"
+      ],
+      "source_refs": [
+        {
+          "source_id": "NIS-1f9ab15ec5b3ca82",
+          "revision": 1
+        }
+      ],
+      "context_id": "NIC-861e8303970a226b",
+      "question_ids": [
+        "NC-03-Q1",
+        "NC-03-Q2",
+        "NC-03-Q3",
+        "NC-03-Q4",
+        "NC-03-Q5",
+        "NC-03-Q6"
+      ],
+      "connection_ids": [
+        "NC-03-E1",
+        "NC-03-E2",
+        "NC-03-E3",
+        "NC-03-E4",
+        "NC-03-E5"
+      ],
+      "characters": 1353,
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-04",
+      "title": "여행 예약 변경과 환불 조건",
+      "domain": "life",
+      "profile": "natural_single",
+      "record_ids": [
+        "NC-04-R1"
+      ],
+      "source_refs": [
+        {
+          "source_id": "NIS-60230369d2545bdc",
+          "revision": 1
+        }
+      ],
+      "context_id": "NIC-f0a74074a4d71885",
+      "question_ids": [
+        "NC-04-Q1",
+        "NC-04-Q2",
+        "NC-04-Q3",
+        "NC-04-Q4",
+        "NC-04-Q5",
+        "NC-04-Q6"
+      ],
+      "connection_ids": [
+        "NC-04-E1",
+        "NC-04-E2",
+        "NC-04-E3",
+        "NC-04-E4",
+        "NC-04-E5"
+      ],
+      "characters": 1267,
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-05",
+      "title": "성능 수치의 비교 조건과 채택 결정",
+      "domain": "work",
+      "profile": "natural_single",
+      "record_ids": [
+        "NC-05-R1"
+      ],
+      "source_refs": [
+        {
+          "source_id": "NIS-a86dd1dd72c4d40b",
+          "revision": 1
+        }
+      ],
+      "context_id": "NIC-492171ad8d2a4849",
+      "question_ids": [
+        "NC-05-Q1",
+        "NC-05-Q2",
+        "NC-05-Q3",
+        "NC-05-Q4",
+        "NC-05-Q5",
+        "NC-05-Q6"
+      ],
+      "connection_ids": [
+        "NC-05-E1",
+        "NC-05-E2",
+        "NC-05-E3",
+        "NC-05-E4",
+        "NC-05-E5"
+      ],
+      "characters": 1334,
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-06",
+      "title": "사람별 취향과 일시적 요청",
+      "domain": "life",
+      "profile": "natural_single",
+      "record_ids": [
+        "NC-06-R1"
+      ],
+      "source_refs": [
+        {
+          "source_id": "NIS-344077fe09aaeb4b",
+          "revision": 1
+        }
+      ],
+      "context_id": "NIC-007e2a91dd7ded37",
+      "question_ids": [
+        "NC-06-Q1",
+        "NC-06-Q2",
+        "NC-06-Q3",
+        "NC-06-Q4",
+        "NC-06-Q5",
+        "NC-06-Q6"
+      ],
+      "connection_ids": [
+        "NC-06-E1",
+        "NC-06-E2",
+        "NC-06-E3",
+        "NC-06-E4",
+        "NC-06-E5"
+      ],
+      "characters": 1251,
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-07",
+      "title": "회의 발언·조건부 승인·작업 범위",
+      "domain": "work",
+      "profile": "natural_single",
+      "record_ids": [
+        "NC-07-R1"
+      ],
+      "source_refs": [
+        {
+          "source_id": "NIS-b085c49d32561eec",
+          "revision": 1
+        }
+      ],
+      "context_id": "NIC-117ac4bd8bfe68eb",
+      "question_ids": [
+        "NC-07-Q1",
+        "NC-07-Q2",
+        "NC-07-Q3",
+        "NC-07-Q4",
+        "NC-07-Q5",
+        "NC-07-Q6"
+      ],
+      "connection_ids": [
+        "NC-07-E1",
+        "NC-07-E2",
+        "NC-07-E3",
+        "NC-07-E4",
+        "NC-07-E5"
+      ],
+      "characters": 1271,
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-08",
+      "title": "수리 견적·실제 지출·다른 장소 물건",
+      "domain": "life",
+      "profile": "natural_single",
+      "record_ids": [
+        "NC-08-R1"
+      ],
+      "source_refs": [
+        {
+          "source_id": "NIS-2ab8b78d246330cc",
+          "revision": 1
+        }
+      ],
+      "context_id": "NIC-a56dc1ff6e57ada4",
+      "question_ids": [
+        "NC-08-Q1",
+        "NC-08-Q2",
+        "NC-08-Q3",
+        "NC-08-Q4",
+        "NC-08-Q5",
+        "NC-08-Q6"
+      ],
+      "connection_ids": [
+        "NC-08-E1",
+        "NC-08-E2",
+        "NC-08-E3",
+        "NC-08-E4",
+        "NC-08-E5"
+      ],
+      "characters": 1235,
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-09",
+      "title": "동명이인과 뒤늦게 읽은 상대 시간 메시지",
+      "domain": "work",
+      "profile": "natural_multi",
+      "record_ids": [
+        "NC-09-R1",
+        "NC-09-R2"
+      ],
+      "source_refs": [
+        {
+          "source_id": "NIS-0d7accce610aadc4",
+          "revision": 1
+        },
+        {
+          "source_id": "NIS-f58eb02c000bf3f7",
+          "revision": 1
+        }
+      ],
+      "context_id": "NIC-37c6512c5279b670",
+      "question_ids": [
+        "NC-09-Q1",
+        "NC-09-Q2",
+        "NC-09-Q3",
+        "NC-09-Q4",
+        "NC-09-Q5",
+        "NC-09-Q6"
+      ],
+      "connection_ids": [
+        "NC-09-E1",
+        "NC-09-E2",
+        "NC-09-E3",
+        "NC-09-E4",
+        "NC-09-E5"
+      ],
+      "characters": 1251,
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-10",
+      "title": "분리된 원문의 물건 위치 정정",
+      "domain": "life",
+      "profile": "natural_multi",
+      "record_ids": [
+        "NC-10-R1",
+        "NC-10-R2"
+      ],
+      "source_refs": [
+        {
+          "source_id": "NIS-7910877e2f2ee0d0",
+          "revision": 1
+        },
+        {
+          "source_id": "NIS-8e9f40b4b5225d2d",
+          "revision": 1
+        }
+      ],
+      "context_id": "NIC-67c11d5fa35ca902",
+      "question_ids": [
+        "NC-10-Q1",
+        "NC-10-Q2",
+        "NC-10-Q3",
+        "NC-10-Q4",
+        "NC-10-Q5",
+        "NC-10-Q6"
+      ],
+      "connection_ids": [
+        "NC-10-E1",
+        "NC-10-E2",
+        "NC-10-E3",
+        "NC-10-E4"
+      ],
+      "characters": 1249,
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-11",
+      "title": "서로 다른 작성자의 완료 충돌",
+      "domain": "work",
+      "profile": "natural_multi",
+      "record_ids": [
+        "NC-11-R1",
+        "NC-11-R2"
+      ],
+      "source_refs": [
+        {
+          "source_id": "NIS-05795f5238fbe34d",
+          "revision": 1
+        },
+        {
+          "source_id": "NIS-acc75eb821acaeed",
+          "revision": 1
+        }
+      ],
+      "context_id": "NIC-edcdf17ebdc24b07",
+      "question_ids": [
+        "NC-11-Q1",
+        "NC-11-Q2",
+        "NC-11-Q3",
+        "NC-11-Q4",
+        "NC-11-Q5",
+        "NC-11-Q6"
+      ],
+      "connection_ids": [
+        "NC-11-E1",
+        "NC-11-E2",
+        "NC-11-E3",
+        "NC-11-E4"
+      ],
+      "characters": 1269,
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-12",
+      "title": "모임 경로 변경·구매 담당·취소 이유",
+      "domain": "life",
+      "profile": "natural_multi",
+      "record_ids": [
+        "NC-12-R1",
+        "NC-12-R2"
+      ],
+      "source_refs": [
+        {
+          "source_id": "NIS-f12c8a1118e33983",
+          "revision": 1
+        },
+        {
+          "source_id": "NIS-733e268f0531b49c",
+          "revision": 1
+        }
+      ],
+      "context_id": "NIC-d0bb336833281e47",
+      "question_ids": [
+        "NC-12-Q1",
+        "NC-12-Q2",
+        "NC-12-Q3",
+        "NC-12-Q4",
+        "NC-12-Q5",
+        "NC-12-Q6"
+      ],
+      "connection_ids": [
+        "NC-12-E1",
+        "NC-12-E2",
+        "NC-12-E3",
+        "NC-12-E4",
+        "NC-12-E5"
+      ],
+      "characters": 1336,
+      "review_status": "AUTHOR_DRAFT"
+    }
+  ]
+}

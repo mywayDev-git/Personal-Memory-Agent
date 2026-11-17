@@ -1,0 +1,96 @@
+{
+  "cases": [
+    {
+      "id": "동명이인과 네 가지 날짜",
+      "split": "development",
+      "ability": "identity",
+      "upstream_question_id": "MC-09-Q1"
+    },
+    {
+      "id": "이사 상자와 신청 상태",
+      "split": "development",
+      "ability": "status",
+      "upstream_question_id": "MC-02-Q2"
+    },
+    {
+      "id": "수리 비용과 다른 청소기",
+      "split": "development",
+      "ability": "condition",
+      "upstream_question_id": "MC-08-Q2"
+    },
+    {
+      "id": "공방을 옮기던 주",
+      "split": "development",
+      "ability": "multievidence",
+      "upstream_question_id": "NR-D-01-Q2"
+    },
+    {
+      "id": "월 경계의 사건일과 등록일",
+      "split": "development",
+      "ability": "cumulative",
+      "upstream_question_id": "CUM-development-1800"
+    },
+    {
+      "id": "작업실 출입 카드",
+      "split": "development",
+      "ability": "access",
+      "upstream_question_id": "STATE-development-shared"
+    },
+    {
+      "id": "수리 봉사 접수와 안전 점검",
+      "split": "confirmation",
+      "ability": "identity",
+      "upstream_question_id": null
+    },
+    {
+      "id": "마을버스 우회 운행의 승인",
+      "split": "confirmation",
+      "ability": "status",
+      "upstream_question_id": null
+    },
+    {
+      "id": "공동구매 배송비 정산",
+      "split": "confirmation",
+      "ability": "condition",
+      "upstream_question_id": null
+    },
+    {
+      "id": "관측회 장소 선택과 장비 운반",
+      "split": "confirmation",
+      "ability": "multievidence",
+      "upstream_question_id": null
+    },
+    {
+      "id": "공동 텃밭의 분산 기록",
+      "split": "confirmation",
+      "ability": "cumulative",
+      "upstream_question_id": null
+    },
+    {
+      "id": "공유 장비함 접근",
+      "split": "confirmation",
+      "ability": "access",
+      "upstream_question_id": null
+    },
+    {
+      "id": "배포 인계와 검증 범위",
+      "split": "development",
+      "ability": "dialogue"
+    },
+    {
+      "id": "도서 반납 행사 인계",
+      "split": "confirmation",
+      "ability": "dialogue"
+    },
+    {
+      "id": "D-빈 기억과 비저장",
+      "split": "development",
+      "ability": "empty_memory"
+    },
+    {
+      "id": "C-빈 기억과 비저장",
+      "split": "confirmation",
+      "ability": "empty_memory"
+    }
+  ]
+}

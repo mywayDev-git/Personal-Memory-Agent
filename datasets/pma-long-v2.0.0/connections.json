@@ -1,0 +1,1540 @@
+{
+  "schema_version": "pma-case-connections-1",
+  "relations": [
+    {
+      "id": "NC-01-E1",
+      "case_id": "NC-01",
+      "context_id": "NIC-c489c0151d900f6e",
+      "type": "coreference",
+      "from_fact_id": "NC-01-F-b",
+      "to_fact_id": "NC-01-F-a",
+      "statement": "‘이 일’의 대상은 루멘 서버 배포다.",
+      "evidence": [
+        {
+          "source_id": "NIS-33e0edab01d1f2de",
+          "revision": 1,
+          "start": 43,
+          "end": 98,
+          "quote": "서버 배포는 회귀 테스트가 통과하면 11월 6일에 진행하기로 했고, 민수가 이 일을 맡겠다고 했다."
+        },
+        {
+          "source_id": "NIS-33e0edab01d1f2de",
+          "revision": 1,
+          "start": 0,
+          "end": 42,
+          "quote": "오늘 오전에는 루멘 서버의 새 검색 화면과 운영 배포 일정을 함께 검토했다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-01-E2",
+      "case_id": "NC-01",
+      "context_id": "NIC-c489c0151d900f6e",
+      "type": "handover",
+      "from_fact_id": "NC-01-F-e",
+      "to_fact_id": "NC-01-F-f",
+      "statement": "인계 요청 뒤 지연의 수락이 있어 담당 계획이 바뀐다.",
+      "evidence": [
+        {
+          "source_id": "NIS-33e0edab01d1f2de",
+          "revision": 1,
+          "start": 210,
+          "end": 256,
+          "quote": "점심 이후 민수는 고객사 일정과 겹친다며 서버 배포를 지연에게 넘겨달라고 요청했다."
+        },
+        {
+          "source_id": "NIS-33e0edab01d1f2de",
+          "revision": 1,
+          "start": 257,
+          "end": 300,
+          "quote": "지연은 자신이 맡겠다고 답한 뒤, 남은 테스트 결과를 먼저 확인하겠다고 했다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-01-E3",
+      "case_id": "NC-01",
+      "context_id": "NIC-c489c0151d900f6e",
+      "type": "condition",
+      "from_fact_id": "NC-01-F-b",
+      "to_fact_id": "NC-01-F-g",
+      "statement": "예정된 배포와 조건의 미충족을 함께 보존한다.",
+      "evidence": [
+        {
+          "source_id": "NIS-33e0edab01d1f2de",
+          "revision": 1,
+          "start": 43,
+          "end": 98,
+          "quote": "서버 배포는 회귀 테스트가 통과하면 11월 6일에 진행하기로 했고, 민수가 이 일을 맡겠다고 했다."
+        },
+        {
+          "source_id": "NIS-33e0edab01d1f2de",
+          "revision": 1,
+          "start": 301,
+          "end": 348,
+          "quote": "그때 회귀 테스트는 삭제한 기억이 다시 검색되는 문제 때문에 통과하지 못한 상태였다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-01-E4",
+      "case_id": "NC-01",
+      "context_id": "NIC-c489c0151d900f6e",
+      "type": "separate_event",
+      "from_fact_id": "NC-01-F-i",
+      "to_fact_id": "NC-01-F-l",
+      "statement": "알림 배포 완료와 루멘 서버의 미확인을 구분한다.",
+      "evidence": [
+        {
+          "source_id": "NIS-33e0edab01d1f2de",
+          "revision": 1,
+          "start": 413,
+          "end": 447,
+          "quote": "함께 논의했던 모바일 알림 기능은 도윤이 오늘 배포를 끝냈다."
+        },
+        {
+          "source_id": "NIS-33e0edab01d1f2de",
+          "revision": 1,
+          "start": 550,
+          "end": 586,
+          "quote": "루멘 서버 배포가 실제로 완료됐는지는 이 메모에 기록하지 않았다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-01-E5",
+      "case_id": "NC-01",
+      "context_id": "NIC-c489c0151d900f6e",
+      "type": "condition",
+      "from_fact_id": "NC-01-F-n7",
+      "to_fact_id": "NC-01-F-l",
+      "statement": "안내문 검토와 배포 미확인 상태를 함께 보존한다.",
+      "evidence": [
+        {
+          "source_id": "NIS-33e0edab01d1f2de",
+          "revision": 1,
+          "start": 1027,
+          "end": 1085,
+          "quote": "운영 반영 안내문 초안은 내가 작성하고, 배포 여부와 시각이 정해지면 지연이 그 부분을 검토하기로 했다."
+        },
+        {
+          "source_id": "NIS-33e0edab01d1f2de",
+          "revision": 1,
+          "start": 550,
+          "end": 586,
+          "quote": "루멘 서버 배포가 실제로 완료됐는지는 이 메모에 기록하지 않았다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-01-E6",
+      "case_id": "NC-01",
+      "context_id": "NIC-c489c0151d900f6e",
+      "type": "not_fix",
+      "from_fact_id": "NC-01-F-n5",
+      "to_fact_id": "NC-01-F-n3",
+      "statement": "카드 표기 수정은 검색 오류 수정과 별개다.",
+      "evidence": [
+        {
+          "source_id": "NIS-33e0edab01d1f2de",
+          "revision": 1,
+          "start": 883,
+          "end": 948,
+          "quote": "카드 이름을 나눈 것은 상태 표시를 명확하게 하려는 조치이며, 남아 있던 검색 문제를 수정한 것으로 기록하지 않았다."
+        },
+        {
+          "source_id": "NIS-33e0edab01d1f2de",
+          "revision": 1,
+          "start": 750,
+          "end": 811,
+          "quote": "문제가 생긴 질문은 삭제한 기억의 색상을 묻는 것이었고, 검색 결과에는 지운 원문의 예전 버전이 남아 있었다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-02-E1",
+      "case_id": "NC-02",
+      "context_id": "NIC-cfeffd3344cc2948",
+      "type": "corrects_label",
+      "from_fact_id": "NC-02-F-e",
+      "to_fact_id": "NC-02-F-d",
+      "statement": "상자 겉면 라벨과 확인된 실제 내용물을 구별한다.",
+      "evidence": [
+        {
+          "source_id": "NIS-25365728d935c6bd",
+          "revision": 1,
+          "start": 243,
+          "end": 309,
+          "quote": "그 갈색 상자의 글씨는 포장 초기에 잘못 적은 것이어서, 실제 내용물은 라벨보다 내가 방금 확인한 목록을 따라야 한다."
+        },
+        {
+          "source_id": "NIS-25365728d935c6bd",
+          "revision": 1,
+          "start": 175,
+          "end": 242,
+          "quote": "택배 상자 중 파란 테이프를 두른 것은 주방 물건이고, 종이에 ‘주방’이라고 써 붙인 갈색 상자는 현관 신발장 물건이다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-02-E2",
+      "case_id": "NC-02",
+      "context_id": "NIC-cfeffd3344cc2948",
+      "type": "condition",
+      "from_fact_id": "NC-02-F-b",
+      "to_fact_id": "NC-02-F-c",
+      "statement": "이용 가능 안내는 접수·확정과 다르다.",
+      "evidence": [
+        {
+          "source_id": "NIS-25365728d935c6bd",
+          "revision": 1,
+          "start": 50,
+          "end": 114,
+          "quote": "관리인은 8일 오전 10시에 엘리베이터를 쓸 수 있다고 했지만, 사용 신청서가 접수돼야 예약이 확정된다고 덧붙였다."
+        },
+        {
+          "source_id": "NIS-25365728d935c6bd",
+          "revision": 1,
+          "start": 115,
+          "end": 173,
+          "quote": "신청서는 작성만 해 두었고 접수하지 않았으므로, 엘리베이터 예약은 아직 확정된 것으로 적지 않기로 했다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-02-E3",
+      "case_id": "NC-02",
+      "context_id": "NIC-cfeffd3344cc2948",
+      "type": "proposal_decision",
+      "from_fact_id": "NC-02-F-h",
+      "to_fact_id": "NC-02-F-g",
+      "statement": "대리 수령 제안과 직접 수령 결정을 구분한다.",
+      "evidence": [
+        {
+          "source_id": "NIS-25365728d935c6bd",
+          "revision": 1,
+          "start": 432,
+          "end": 478,
+          "quote": "민지는 짐 옮기는 날 열쇠를 받아 오겠다고 제안했지만, 나는 직접 받겠다고 답했다."
+        },
+        {
+          "source_id": "NIS-25365728d935c6bd",
+          "revision": 1,
+          "start": 374,
+          "end": 431,
+          "quote": "새집 열쇠는 부동산에서 7일에 받기로 했고, 오늘 관리인에게 맡긴 것은 지금 집의 주차장 리모컨뿐이다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-02-E4",
+      "case_id": "NC-02",
+      "context_id": "NIC-cfeffd3344cc2948",
+      "type": "corrects_label",
+      "from_fact_id": "NC-02-F-n4",
+      "to_fact_id": "NC-02-F-e",
+      "statement": "잘못된 상자 라벨을 실제 내용물에 맞춰 고친다.",
+      "evidence": [
+        {
+          "source_id": "NIS-25365728d935c6bd",
+          "revision": 1,
+          "start": 816,
+          "end": 881,
+          "quote": "이사 상자 사진을 민지에게 보냈더니 갈색 상자의 라벨이 혼란스럽다고 해서 현관 물건이라고 다시 적은 스티커를 붙였다."
+        },
+        {
+          "source_id": "NIS-25365728d935c6bd",
+          "revision": 1,
+          "start": 243,
+          "end": 309,
+          "quote": "그 갈색 상자의 글씨는 포장 초기에 잘못 적은 것이어서, 실제 내용물은 라벨보다 내가 방금 확인한 목록을 따라야 한다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-02-E5",
+      "case_id": "NC-02",
+      "context_id": "NIC-cfeffd3344cc2948",
+      "type": "separate_process",
+      "from_fact_id": "NC-02-F-n6",
+      "to_fact_id": "NC-02-F-n7",
+      "statement": "철거와 연결의 접수 상태를 분리한다.",
+      "evidence": [
+        {
+          "source_id": "NIS-25365728d935c6bd",
+          "revision": 1,
+          "start": 941,
+          "end": 993,
+          "quote": "가스 철거 방문은 7일 오후로 신청했으며 업체가 정확한 방문 시간을 문자로 보내 주기로 했다."
+        },
+        {
+          "source_id": "NIS-25365728d935c6bd",
+          "revision": 1,
+          "start": 994,
+          "end": 1053,
+          "quote": "새집 가스 연결은 별도 신청이 필요하다고 해서 주소를 준비해 두었지만, 아직 그 신청까지 끝내지는 않았다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-03-E1",
+      "case_id": "NC-03",
+      "context_id": "NIC-861e8303970a226b",
+      "type": "hypothesis_vs_evidence",
+      "from_fact_id": "NC-03-F-b",
+      "to_fact_id": "NC-03-F-f",
+      "statement": "처음 추측과 근거를 확인한 결론을 별도로 보존한다.",
+      "evidence": [
+        {
+          "source_id": "NIS-1f9ab15ec5b3ca82",
+          "revision": 1,
+          "start": 55,
+          "end": 113,
+          "quote": "문의 직전 캐시 갱신 작업이 끝났기 때문에 처음에는 그 작업이 화면 누락을 일으켰을 수 있다고 생각했다."
+        },
+        {
+          "source_id": "NIS-1f9ab15ec5b3ca82",
+          "revision": 1,
+          "start": 316,
+          "end": 395,
+          "quote": "해당 테스트의 주문 누락은 조회 시각 기준 오류 때문에 생긴 것으로 결론냈으며, 다른 문의에도 같은 원인이 적용되는지는 아직 조사하지 않았다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-03-E2",
+      "case_id": "NC-03",
+      "context_id": "NIC-861e8303970a226b",
+      "type": "causal_test",
+      "from_fact_id": "NC-03-F-d",
+      "to_fact_id": "NC-03-F-e",
+      "statement": "같은 데이터에서 시각 기준 변경과 누락 해소를 연결한다.",
+      "evidence": [
+        {
+          "source_id": "NIS-1f9ab15ec5b3ca82",
+          "revision": 1,
+          "start": 185,
+          "end": 247,
+          "quote": "서윤이 찾은 요청 로그에서는 특정 시간대에 서버 시각이 아니라 브라우저 시각으로 조회 범위가 만들어지고 있었다."
+        },
+        {
+          "source_id": "NIS-1f9ab15ec5b3ca82",
+          "revision": 1,
+          "start": 248,
+          "end": 315,
+          "quote": "우리는 시각 기준을 서버로 고친 요청을 같은 테스트 데이터에 적용했고, 이전에 빠진 주문이 다시 나타나는 것을 확인했다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-03-E3",
+      "case_id": "NC-03",
+      "context_id": "NIC-861e8303970a226b",
+      "type": "scope_limit",
+      "from_fact_id": "NC-03-F-e",
+      "to_fact_id": "NC-03-F-l",
+      "statement": "테스트 성공을 전체 운영 복구로 확대하지 않는다.",
+      "evidence": [
+        {
+          "source_id": "NIS-1f9ab15ec5b3ca82",
+          "revision": 1,
+          "start": 248,
+          "end": 315,
+          "quote": "우리는 시각 기준을 서버로 고친 요청을 같은 테스트 데이터에 적용했고, 이전에 빠진 주문이 다시 나타나는 것을 확인했다."
+        },
+        {
+          "source_id": "NIS-1f9ab15ec5b3ca82",
+          "revision": 1,
+          "start": 641,
+          "end": 691,
+          "quote": "재검사 결과가 나오기 전에는 모든 사용자의 문제가 해결됐다는 안내를 내보내지 않기로 했다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-03-E4",
+      "case_id": "NC-03",
+      "context_id": "NIC-861e8303970a226b",
+      "type": "not_performance_measurement",
+      "from_fact_id": "NC-03-F-n4",
+      "to_fact_id": "NC-03-F-e",
+      "statement": "문제 해소 관측은 속도 개선 실측과 다르다.",
+      "evidence": [
+        {
+          "source_id": "NIS-1f9ab15ec5b3ca82",
+          "revision": 1,
+          "start": 906,
+          "end": 970,
+          "quote": "수정 전후 화면 사진은 남겼지만 지연 시간을 재지는 않았으므로 이번 조치가 속도도 개선했다고 설명하지 않기로 했다."
+        },
+        {
+          "source_id": "NIS-1f9ab15ec5b3ca82",
+          "revision": 1,
+          "start": 248,
+          "end": 315,
+          "quote": "우리는 시각 기준을 서버로 고친 요청을 같은 테스트 데이터에 적용했고, 이전에 빠진 주문이 다시 나타나는 것을 확인했다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-03-E5",
+      "case_id": "NC-03",
+      "context_id": "NIC-861e8303970a226b",
+      "type": "request_not_approval",
+      "from_fact_id": "NC-03-F-n8",
+      "to_fact_id": "NC-03-F-n9",
+      "statement": "자료 제출과 승인 완료를 분리한다.",
+      "evidence": [
+        {
+          "source_id": "NIS-1f9ab15ec5b3ca82",
+          "revision": 1,
+          "start": 1185,
+          "end": 1244,
+          "quote": "운영 반영 전에 승인 담당자가 재현 자료를 확인해야 하며 서윤이 작성한 자료를 오늘 내부 결재함에 올렸다."
+        },
+        {
+          "source_id": "NIS-1f9ab15ec5b3ca82",
+          "revision": 1,
+          "start": 1245,
+          "end": 1289,
+          "quote": "자료를 결재함에 올린 것은 승인 요청이고, 승인됐다는 회신은 아직 오지 않았다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-04-E1",
+      "case_id": "NC-04",
+      "context_id": "NIC-f0a74074a4d71885",
+      "type": "coreference",
+      "from_fact_id": "NC-04-F-c",
+      "to_fact_id": "NC-04-F-b",
+      "statement": "‘그곳’은 최종 선택한 누리호텔이다.",
+      "evidence": [
+        {
+          "source_id": "NIS-60230369d2545bdc",
+          "revision": 1,
+          "start": 117,
+          "end": 154,
+          "quote": "그곳에는 14일 체크인하는 방을 예약했고 결제 완료 메일도 받았다."
+        },
+        {
+          "source_id": "NIS-60230369d2545bdc",
+          "revision": 1,
+          "start": 49,
+          "end": 116,
+          "quote": "처음에는 바다 가까운 해온호텔을 예약하려 했지만, 동행하는 아버지가 계단이 적은 곳을 원해 역 근처 누리호텔로 결정했다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-04-E2",
+      "case_id": "NC-04",
+      "context_id": "NIC-f0a74074a4d71885",
+      "type": "condition_not_execution",
+      "from_fact_id": "NC-04-F-e",
+      "to_fact_id": "NC-04-F-g",
+      "statement": "환불 조건 안내와 실제 신청을 구분한다.",
+      "evidence": [
+        {
+          "source_id": "NIS-60230369d2545bdc",
+          "revision": 1,
+          "start": 190,
+          "end": 238,
+          "quote": "누리호텔의 안내에는 12일 오후 6시까지 취소하면 숙박 요금을 돌려준다고 적혀 있었다."
+        },
+        {
+          "source_id": "NIS-60230369d2545bdc",
+          "revision": 1,
+          "start": 300,
+          "end": 362,
+          "quote": "아버지 일정이 바뀔 가능성은 있어도 아직 취소 요청은 하지 않았고, 따라서 환불 신청을 했다고 기록하지 않았다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-04-E3",
+      "case_id": "NC-04",
+      "context_id": "NIC-f0a74074a4d71885",
+      "type": "intent_not_purchase",
+      "from_fact_id": "NC-04-F-k",
+      "to_fact_id": "NC-04-F-l",
+      "statement": "방문 희망을 입장권 구매로 바꾸지 않는다.",
+      "evidence": [
+        {
+          "source_id": "NIS-60230369d2545bdc",
+          "revision": 1,
+          "start": 537,
+          "end": 582,
+          "quote": "박물관은 15일 오후에 가고 싶지만 전시 예약이 필요한지는 내일 확인할 예정이다."
+        },
+        {
+          "source_id": "NIS-60230369d2545bdc",
+          "revision": 1,
+          "start": 583,
+          "end": 635,
+          "quote": "입장권을 샀다는 뜻으로 오해하지 않도록 일정표에는 ‘방문 희망, 예약 확인 전’이라고 적었다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-04-E4",
+      "case_id": "NC-04",
+      "context_id": "NIC-f0a74074a4d71885",
+      "type": "different_time_role",
+      "from_fact_id": "NC-04-F-n9",
+      "to_fact_id": "NC-04-F-e",
+      "statement": "확인 알림과 취소 기한의 역할을 구분한다.",
+      "evidence": [
+        {
+          "source_id": "NIS-60230369d2545bdc",
+          "revision": 1,
+          "start": 1141,
+          "end": 1197,
+          "quote": "취소 가능 시각을 놓치지 않으려고 12일 오후 3시에 예약을 유지할지 확인하는 개인 알림을 설정했다."
+        },
+        {
+          "source_id": "NIS-60230369d2545bdc",
+          "revision": 1,
+          "start": 190,
+          "end": 238,
+          "quote": "누리호텔의 안내에는 12일 오후 6시까지 취소하면 숙박 요금을 돌려준다고 적혀 있었다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-04-E5",
+      "case_id": "NC-04",
+      "context_id": "NIC-f0a74074a4d71885",
+      "type": "not_paid",
+      "from_fact_id": "NC-04-F-n8",
+      "to_fact_id": "NC-04-F-l",
+      "statement": "방문 희망의 입장권을 실제 지출로 계산하지 않는다.",
+      "evidence": [
+        {
+          "source_id": "NIS-60230369d2545bdc",
+          "revision": 1,
+          "start": 1071,
+          "end": 1140,
+          "quote": "여행 경비표에서 숙박 결제와 기차 결제를 따로 적었으며 아직 사지 않은 박물관 입장권 금액을 실제 지출 합계에 넣지 않았다."
+        },
+        {
+          "source_id": "NIS-60230369d2545bdc",
+          "revision": 1,
+          "start": 583,
+          "end": 635,
+          "quote": "입장권을 샀다는 뜻으로 오해하지 않도록 일정표에는 ‘방문 희망, 예약 확인 전’이라고 적었다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-05-E1",
+      "case_id": "NC-05",
+      "context_id": "NIC-492171ad8d2a4849",
+      "type": "incomparable",
+      "from_fact_id": "NC-05-F-b",
+      "to_fact_id": "NC-05-F-c",
+      "statement": "다른 조건의 지연 시간은 성능 우위 판정에 쓰지 않는다.",
+      "evidence": [
+        {
+          "source_id": "NIS-a86dd1dd72c4d40b",
+          "revision": 1,
+          "start": 59,
+          "end": 142,
+          "quote": "후보 A의 지연 시간 80ms는 개발 PC에서 질문 100개를 처리한 값이고, 후보 B의 65ms는 별도 서버에서 다른 질문 20개를 처리한 값이다."
+        },
+        {
+          "source_id": "NIS-a86dd1dd72c4d40b",
+          "revision": 1,
+          "start": 143,
+          "end": 201,
+          "quote": "두 숫자만으로 B가 더 빠르다고 발표하지 않기로 했으며, 장비와 질문을 맞춘 재측정은 아직 하지 않았다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-05-E2",
+      "case_id": "NC-05",
+      "context_id": "NIC-492171ad8d2a4849",
+      "type": "setting_binding",
+      "from_fact_id": "NC-05-F-e",
+      "to_fact_id": "NC-05-F-d",
+      "statement": "정확도 숫자를 설정 이름과 연결한다.",
+      "evidence": [
+        {
+          "source_id": "NIS-a86dd1dd72c4d40b",
+          "revision": 1,
+          "start": 262,
+          "end": 309,
+          "quote": "측정표에는 앞의 설정을 기존 설정, 뒤의 설정을 문장 경계 보존 설정이라고 표시했다."
+        },
+        {
+          "source_id": "NIS-a86dd1dd72c4d40b",
+          "revision": 1,
+          "start": 202,
+          "end": 261,
+          "quote": "A의 정확도 0.82와 0.86은 같은 검증 질문 50개와 같은 채점 기준에서 설정만 바꿔 비교한 값이다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-05-E3",
+      "case_id": "NC-05",
+      "context_id": "NIC-492171ad8d2a4849",
+      "type": "proposal_decision",
+      "from_fact_id": "NC-05-F-f",
+      "to_fact_id": "NC-05-F-i",
+      "statement": "B의 제안 보류와 A의 개발 환경 결정을 분리한다.",
+      "evidence": [
+        {
+          "source_id": "NIS-a86dd1dd72c4d40b",
+          "revision": 1,
+          "start": 311,
+          "end": 354,
+          "quote": "지연은 B를 운영에 넣자고 제안했지만 오늘 회의에서는 승인하지 않고 보류했다."
+        },
+        {
+          "source_id": "NIS-a86dd1dd72c4d40b",
+          "revision": 1,
+          "start": 465,
+          "end": 501,
+          "quote": "개발 환경 설정을 유지하기로 한 결정은 운영 배포 승인과 별개다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-05-E4",
+      "case_id": "NC-05",
+      "context_id": "NIC-492171ad8d2a4849",
+      "type": "same_test_limit",
+      "from_fact_id": "NC-05-F-n2",
+      "to_fact_id": "NC-05-F-n3",
+      "statement": "반복 사용한 검증 질문과 미공개 평가를 구분한다.",
+      "evidence": [
+        {
+          "source_id": "NIS-a86dd1dd72c4d40b",
+          "revision": 1,
+          "start": 765,
+          "end": 820,
+          "quote": "검증 질문 50개는 설정 비교에 계속 사용하지만 최종 평가에 쓸 질문 목록은 따로 확보하기로 했다."
+        },
+        {
+          "source_id": "NIS-a86dd1dd72c4d40b",
+          "revision": 1,
+          "start": 821,
+          "end": 888,
+          "quote": "같은 검증 질문을 여러 번 보며 설정을 바꿨으므로 그 결과를 미리 보지 않은 질문에 대한 성능이라고 부르지 않기로 했다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-05-E5",
+      "case_id": "NC-05",
+      "context_id": "NIC-492171ad8d2a4849",
+      "type": "workflow",
+      "from_fact_id": "NC-05-F-n8",
+      "to_fact_id": "NC-05-F-n9",
+      "statement": "작성과 후속 검토의 담당·상태를 보존한다.",
+      "evidence": [
+        {
+          "source_id": "NIS-a86dd1dd72c4d40b",
+          "revision": 1,
+          "start": 1169,
+          "end": 1221,
+          "quote": "재측정용 실행표 작성은 민수가 맡고, 그 표의 질문 구성 검토는 지연이 맡기로 역할을 나눴다."
+        },
+        {
+          "source_id": "NIS-a86dd1dd72c4d40b",
+          "revision": 1,
+          "start": 1222,
+          "end": 1278,
+          "quote": "두 사람은 표를 공유 문서에 올린 뒤 서로 확인하기로 했고, 지금은 민수가 첫 초안을 만드는 중이다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-06-E1",
+      "case_id": "NC-06",
+      "context_id": "NIC-007e2a91dd7ded37",
+      "type": "scope_limit",
+      "from_fact_id": "NC-06-F-c",
+      "to_fact_id": "NC-06-F-d",
+      "statement": "한 번의 요청을 평소 선호 변경으로 보지 않는다.",
+      "evidence": [
+        {
+          "source_id": "NIS-344077fe09aaeb4b",
+          "revision": 1,
+          "start": 88,
+          "end": 144,
+          "quote": "수아가 이번 모임에서는 따뜻한 물만 준비해 달라고 해서, 이번 주문 목록에는 복숭아차를 넣지 않았다."
+        },
+        {
+          "source_id": "NIS-344077fe09aaeb4b",
+          "revision": 1,
+          "start": 145,
+          "end": 191,
+          "quote": "그 요청은 이번 모임에 대한 것이고 수아가 평소 취향을 바꿨다는 말은 하지 않았다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-06-E2",
+      "case_id": "NC-06",
+      "context_id": "NIC-007e2a91dd7ded37",
+      "type": "joint_constraints",
+      "from_fact_id": "NC-06-F-e",
+      "to_fact_id": "NC-06-F-f",
+      "statement": "서로 다른 두 사람의 요구가 메뉴판 계획에 함께 반영된다.",
+      "evidence": [
+        {
+          "source_id": "NIS-344077fe09aaeb4b",
+          "revision": 1,
+          "start": 193,
+          "end": 248,
+          "quote": "아버지는 사진을 보며 글자가 큰 메뉴판이 편하다고 했고, 나는 설명이 짧은 메뉴판이 좋다고 말했다."
+        },
+        {
+          "source_id": "NIS-344077fe09aaeb4b",
+          "revision": 1,
+          "start": 249,
+          "end": 292,
+          "quote": "그래서 인쇄할 메뉴판은 큰 글씨로 만들되 음식 설명은 한 줄씩만 적기로 했다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-06-E3",
+      "case_id": "NC-06",
+      "context_id": "NIC-007e2a91dd7ded37",
+      "type": "not_evidence",
+      "from_fact_id": "NC-06-F-i",
+      "to_fact_id": "NC-06-F-j",
+      "statement": "사진 속 좌석 수를 실제 참석 인원으로 연결하지 않는다.",
+      "evidence": [
+        {
+          "source_id": "NIS-344077fe09aaeb4b",
+          "revision": 1,
+          "start": 396,
+          "end": 453,
+          "quote": "동생이 보낸 사진에는 여섯 명이 앉는 식탁이 있지만 이번 모임 인원을 여섯 명으로 확정한 것은 아니다."
+        },
+        {
+          "source_id": "NIS-344077fe09aaeb4b",
+          "revision": 1,
+          "start": 454,
+          "end": 506,
+          "quote": "참석자는 초대받은 사람들의 답장을 모은 뒤 정하기로 했고, 아직 두 명에게 답이 오지 않았다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-06-E4",
+      "case_id": "NC-06",
+      "context_id": "NIC-007e2a91dd7ded37",
+      "type": "preparation_not_execution",
+      "from_fact_id": "NC-06-F-n2",
+      "to_fact_id": "NC-06-F-f",
+      "statement": "제작 파일 준비와 실제 인쇄를 구분한다.",
+      "evidence": [
+        {
+          "source_id": "NIS-344077fe09aaeb4b",
+          "revision": 1,
+          "start": 680,
+          "end": 745,
+          "quote": "큰 글씨 파일을 하나 만들기는 했지만 인쇄하기 전 음식 목록을 어머니에게 다시 확인받기로 해서 아직 출력하지 않았다."
+        },
+        {
+          "source_id": "NIS-344077fe09aaeb4b",
+          "revision": 1,
+          "start": 249,
+          "end": 292,
+          "quote": "그래서 인쇄할 메뉴판은 큰 글씨로 만들되 음식 설명은 한 줄씩만 적기로 했다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-06-E5",
+      "case_id": "NC-06",
+      "context_id": "NIC-007e2a91dd7ded37",
+      "type": "image_not_commitment",
+      "from_fact_id": "NC-06-F-n9",
+      "to_fact_id": "NC-06-F-n8",
+      "statement": "사진과 약속된 메뉴를 분리한다.",
+      "evidence": [
+        {
+          "source_id": "NIS-344077fe09aaeb4b",
+          "revision": 1,
+          "start": 1133,
+          "end": 1191,
+          "quote": "사진에 케이크가 있었다는 이유로 형이 케이크를 확정했다고 적지 않고 ‘디저트 종류 확인 필요’로 남겼다."
+        },
+        {
+          "source_id": "NIS-344077fe09aaeb4b",
+          "revision": 1,
+          "start": 1066,
+          "end": 1132,
+          "quote": "형이 디저트를 가져오겠다고 해서 케이크를 바로 사지는 않았지만, 형이 어떤 디저트를 준비할지는 아직 답을 받지 못했다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-07-E1",
+      "case_id": "NC-07",
+      "context_id": "NIC-117ac4bd8bfe68eb",
+      "type": "refers_to",
+      "from_fact_id": "NC-07-F-h",
+      "to_fact_id": "NC-07-F-g",
+      "statement": "‘검색 완료’의 실제 대상은 아이콘 디자인이다.",
+      "evidence": [
+        {
+          "source_id": "NIS-b085c49d32561eec",
+          "revision": 1,
+          "start": 394,
+          "end": 448,
+          "quote": "현재 개편에서 말하는 문서 검색 기능의 구현 완료를 뜻하는 카드는 아니라는 점도 회의록에 적었다."
+        },
+        {
+          "source_id": "NIS-b085c49d32561eec",
+          "revision": 1,
+          "start": 327,
+          "end": 393,
+          "quote": "작업판에는 ‘검색 완료’라는 오래된 카드가 있었는데, 은서는 그 카드가 지난달 검색 아이콘 디자인을 뜻한다고 설명했다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-07-E2",
+      "case_id": "NC-07",
+      "context_id": "NIC-117ac4bd8bfe68eb",
+      "type": "condition",
+      "from_fact_id": "NC-07-F-d",
+      "to_fact_id": "NC-07-F-e",
+      "statement": "공유 허용의 조건인 문구 검토가 아직 미완료다.",
+      "evidence": [
+        {
+          "source_id": "NIS-b085c49d32561eec",
+          "revision": 1,
+          "start": 166,
+          "end": 215,
+          "quote": "팀장은 문구 검토가 끝나면 시안을 외부에 공유해도 된다고 했고, 검토자는 지수로 정했다."
+        },
+        {
+          "source_id": "NIS-b085c49d32561eec",
+          "revision": 1,
+          "start": 216,
+          "end": 266,
+          "quote": "지수는 개인 정보 예시가 남아 있어 오늘 검토를 끝내지 못했다고 회의가 끝난 뒤 알려왔다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-07-E3",
+      "case_id": "NC-07",
+      "context_id": "NIC-117ac4bd8bfe68eb",
+      "type": "scope_limit",
+      "from_fact_id": "NC-07-F-i",
+      "to_fact_id": "NC-07-F-j",
+      "statement": "파일 수정의 적용 범위를 시안으로 한정한다.",
+      "evidence": [
+        {
+          "source_id": "NIS-b085c49d32561eec",
+          "revision": 1,
+          "start": 449,
+          "end": 497,
+          "quote": "나는 새 시안의 제목 두 개를 수정했고 오늘 수정한 것은 문구 시안 파일에만 반영했다."
+        },
+        {
+          "source_id": "NIS-b085c49d32561eec",
+          "revision": 1,
+          "start": 498,
+          "end": 531,
+          "quote": "실제 서비스 파일을 바꾸거나 고객에게 공개한 작업은 아니다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-07-E4",
+      "case_id": "NC-07",
+      "context_id": "NIC-117ac4bd8bfe68eb",
+      "type": "request_not_completion",
+      "from_fact_id": "NC-07-F-n2",
+      "to_fact_id": "NC-07-F-e",
+      "statement": "수정 사항 전달과 문구 검토 완료를 분리한다.",
+      "evidence": [
+        {
+          "source_id": "NIS-b085c49d32561eec",
+          "revision": 1,
+          "start": 655,
+          "end": 725,
+          "quote": "나는 시안 파일의 이름 세 곳을 합성 이름으로 바꾸고 수정 목록을 지수에게 보냈지만, 지수가 모두 확인했다는 답은 아직 없다."
+        },
+        {
+          "source_id": "NIS-b085c49d32561eec",
+          "revision": 1,
+          "start": 216,
+          "end": 266,
+          "quote": "지수는 개인 정보 예시가 남아 있어 오늘 검토를 끝내지 못했다고 회의가 끝난 뒤 알려왔다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-07-E5",
+      "case_id": "NC-07",
+      "context_id": "NIC-117ac4bd8bfe68eb",
+      "type": "time_role",
+      "from_fact_id": "NC-07-F-n8",
+      "to_fact_id": "NC-07-F-n9",
+      "statement": "전송 시각과 승인·공유 가능 시각을 구분한다.",
+      "evidence": [
+        {
+          "source_id": "NIS-b085c49d32561eec",
+          "revision": 1,
+          "start": 1062,
+          "end": 1130,
+          "quote": "지수에게 보낸 수정 목록의 전달 시각은 오후 3시였고, 이것이 검토가 끝난 시각을 뜻하지 않도록 회의록에 전송으로 적었다."
+        },
+        {
+          "source_id": "NIS-b085c49d32561eec",
+          "revision": 1,
+          "start": 1131,
+          "end": 1191,
+          "quote": "검토 완료 시각을 묻는 윤호에게는 아직 회신 대기라고 답했으며 고객 공유 가능 시각을 새로 약속하지 않았다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-08-E1",
+      "case_id": "NC-08",
+      "context_id": "NIC-a56dc1ff6e57ada4",
+      "type": "conditional_cost",
+      "from_fact_id": "NC-08-F-c",
+      "to_fact_id": "NC-08-F-e",
+      "statement": "교체 견적과 교체 미승인을 함께 보존한다.",
+      "evidence": [
+        {
+          "source_id": "NIS-2ab8b78d246330cc",
+          "revision": 1,
+          "start": 91,
+          "end": 148,
+          "quote": "배터리를 교체한다면 부품과 공임을 합쳐 8만 원이라는 견적을 받았고, 점검비 1만 원만 먼저 결제했다."
+        },
+        {
+          "source_id": "NIS-2ab8b78d246330cc",
+          "revision": 1,
+          "start": 203,
+          "end": 255,
+          "quote": "나는 원인을 확인한 뒤 전화해 달라고 했으며 배터리 교체를 진행해 달라는 승인은 하지 않았다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-08-E2",
+      "case_id": "NC-08",
+      "context_id": "NIC-a56dc1ff6e57ada4",
+      "type": "coreference",
+      "from_fact_id": "NC-08-F-h",
+      "to_fact_id": "NC-08-F-g",
+      "statement": "완료 메시지는 장소와 색상이 다른 물건을 가리킨다.",
+      "evidence": [
+        {
+          "source_id": "NIS-2ab8b78d246330cc",
+          "revision": 1,
+          "start": 357,
+          "end": 395,
+          "quote": "민호가 말한 ‘고쳐졌다’는 메시지는 그 작업실 물건에 관한 것이었다."
+        },
+        {
+          "source_id": "NIS-2ab8b78d246330cc",
+          "revision": 1,
+          "start": 299,
+          "end": 356,
+          "quote": "작업실의 검은색 청소기는 어제 필터를 청소한 뒤 정상 작동했고, 오늘 수리점에 가져간 물건과는 다르다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-08-E3",
+      "case_id": "NC-08",
+      "context_id": "NIC-a56dc1ff6e57ada4",
+      "type": "not_cause",
+      "from_fact_id": "NC-08-F-i",
+      "to_fact_id": "NC-08-F-b",
+      "statement": "이동과 고장의 순서를 원인 확정으로 바꾸지 않는다.",
+      "evidence": [
+        {
+          "source_id": "NIS-2ab8b78d246330cc",
+          "revision": 1,
+          "start": 397,
+          "end": 459,
+          "quote": "집 청소기의 충전이 안 되기 전날 내가 충전대를 옮긴 것은 맞지만 그 이동이 고장의 원인인지는 확인하지 못했다."
+        },
+        {
+          "source_id": "NIS-2ab8b78d246330cc",
+          "revision": 1,
+          "start": 37,
+          "end": 90,
+          "quote": "기사님은 배터리 문제일 가능성을 말했지만 분해 검사 전이라 원인으로 확정한 것은 아니라고 했다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-08-E4",
+      "case_id": "NC-08",
+      "context_id": "NIC-a56dc1ff6e57ada4",
+      "type": "source_attribution",
+      "from_fact_id": "NC-08-F-n6",
+      "to_fact_id": "NC-08-F-g",
+      "statement": "직접 사용한 확인과 메시지로 받은 결과를 구분한다.",
+      "evidence": [
+        {
+          "source_id": "NIS-2ab8b78d246330cc",
+          "revision": 1,
+          "start": 925,
+          "end": 990,
+          "quote": "작업실 물건의 정상 작동을 확인한 사람은 민호이며, 나는 그 결과를 메시지로 전달받았고 직접 사용해 본 것은 아니다."
+        },
+        {
+          "source_id": "NIS-2ab8b78d246330cc",
+          "revision": 1,
+          "start": 299,
+          "end": 356,
+          "quote": "작업실의 검은색 청소기는 어제 필터를 청소한 뒤 정상 작동했고, 오늘 수리점에 가져간 물건과는 다르다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-08-E5",
+      "case_id": "NC-08",
+      "context_id": "NIC-a56dc1ff6e57ada4",
+      "type": "different_authority",
+      "from_fact_id": "NC-08-F-n8",
+      "to_fact_id": "NC-08-F-n7",
+      "statement": "전달 제안과 장비 소유 측 승인을 분리한다.",
+      "evidence": [
+        {
+          "source_id": "NIS-2ab8b78d246330cc",
+          "revision": 1,
+          "start": 1049,
+          "end": 1100,
+          "quote": "민호가 가져다주겠다고 한 말은 있었어도 관리자가 대여를 승인한 것으로 이해하지 않기로 했다."
+        },
+        {
+          "source_id": "NIS-2ab8b78d246330cc",
+          "revision": 1,
+          "start": 991,
+          "end": 1048,
+          "quote": "집 물건이 없는 동안 작업실 청소기를 빌릴 수 있는지 물었지만 장비 관리자의 허락은 아직 받지 못했다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-09-E1",
+      "case_id": "NC-09",
+      "context_id": "NIC-37c6512c5279b670",
+      "type": "separate_entity",
+      "from_fact_id": "NC-09-F-a",
+      "to_fact_id": "NC-09-F-c",
+      "statement": "같은 이름의 회사 동료와 모임 친구를 분리한다.",
+      "evidence": [
+        {
+          "source_id": "NIS-0d7accce610aadc4",
+          "revision": 1,
+          "start": 0,
+          "end": 38,
+          "quote": "회사 동료 하린에게 주간 보고서 표의 단위를 검토해 달라고 부탁했다."
+        },
+        {
+          "source_id": "NIS-0d7accce610aadc4",
+          "revision": 1,
+          "start": 101,
+          "end": 141,
+          "quote": "독서 모임에는 회사 동료와 동명이인인 하린도 있는데 이 친구는 간호사다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-09-E2",
+      "case_id": "NC-09",
+      "context_id": "NIC-37c6512c5279b670",
+      "type": "followup",
+      "from_fact_id": "NC-09-F-b",
+      "to_fact_id": "NC-09-F-h",
+      "statement": "다음 날 검토 계획과 후속 완료 연락을 연결한다.",
+      "evidence": [
+        {
+          "source_id": "NIS-0d7accce610aadc4",
+          "revision": 1,
+          "start": 39,
+          "end": 99,
+          "quote": "그는 오늘은 마감 작업이 있어 내일 보겠다고 했고, 나는 검토가 끝나기 전에는 보고서를 보내지 않기로 했다."
+        },
+        {
+          "source_id": "NIS-f58eb02c000bf3f7",
+          "revision": 1,
+          "start": 0,
+          "end": 42,
+          "quote": "회사 하린이 주간 보고서 표 두 개의 단위 검토를 끝냈다고 아침에 연락했다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-09-E3",
+      "case_id": "NC-09",
+      "context_id": "NIC-37c6512c5279b670",
+      "type": "time_anchor",
+      "from_fact_id": "NC-09-F-d",
+      "to_fact_id": "NC-09-F-e",
+      "statement": "인용문의 상대 시간은 보낸 날짜를 기준으로 한다.",
+      "evidence": [
+        {
+          "source_id": "NIS-0d7accce610aadc4",
+          "revision": 1,
+          "start": 142,
+          "end": 176,
+          "quote": "오늘 이 친구가 10월 28일에 보낸 메시지를 뒤늦게 읽었다."
+        },
+        {
+          "source_id": "NIS-0d7accce610aadc4",
+          "revision": 1,
+          "start": 177,
+          "end": 237,
+          "quote": "그 메시지에는 ‘내일 남쪽 자료실에 들를 계획이야’라고 적혀 있었고 도착했다는 사진이나 후속 연락은 없었다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-09-E4",
+      "case_id": "NC-09",
+      "context_id": "NIC-37c6512c5279b670",
+      "type": "unknown_after_followup",
+      "from_fact_id": "NC-09-F-e",
+      "to_fact_id": "NC-09-F-k",
+      "statement": "후속 확인 질문에도 답이 없어 방문 완료를 확정하지 않는다.",
+      "evidence": [
+        {
+          "source_id": "NIS-0d7accce610aadc4",
+          "revision": 1,
+          "start": 177,
+          "end": 237,
+          "quote": "그 메시지에는 ‘내일 남쪽 자료실에 들를 계획이야’라고 적혀 있었고 도착했다는 사진이나 후속 연락은 없었다."
+        },
+        {
+          "source_id": "NIS-f58eb02c000bf3f7",
+          "revision": 1,
+          "start": 131,
+          "end": 175,
+          "quote": "독서 모임 하린에게는 남쪽 자료실에 다녀왔는지 물었지만 아직 답을 받지 못했다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-09-E5",
+      "case_id": "NC-09",
+      "context_id": "NIC-37c6512c5279b670",
+      "type": "metadata_not_event",
+      "from_fact_id": "NC-09-F-n2",
+      "to_fact_id": "NC-09-F-e",
+      "statement": "캡처 시각을 인용문 발언·사건 시각으로 사용하지 않는다.",
+      "evidence": [
+        {
+          "source_id": "NIS-0d7accce610aadc4",
+          "revision": 1,
+          "start": 433,
+          "end": 494,
+          "quote": "자료실 메시지의 보낸 날짜는 메시지 앱에 표시된 10월 28일이었고, 오늘 캡처 파일을 만든 날짜와는 다르다."
+        },
+        {
+          "source_id": "NIS-0d7accce610aadc4",
+          "revision": 1,
+          "start": 177,
+          "end": 237,
+          "quote": "그 메시지에는 ‘내일 남쪽 자료실에 들를 계획이야’라고 적혀 있었고 도착했다는 사진이나 후속 연락은 없었다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-10-E1",
+      "case_id": "NC-10",
+      "context_id": "NIC-67c11d5fa35ca902",
+      "type": "corrects",
+      "from_fact_id": "NC-10-F-h",
+      "to_fact_id": "NC-10-F-b",
+      "statement": "새 기록은 이전 장소 표기의 오류를 정정한다.",
+      "evidence": [
+        {
+          "source_id": "NIS-8e9f40b4b5225d2d",
+          "revision": 1,
+          "start": 51,
+          "end": 106,
+          "quote": "작은 흰 봉투는 처음부터 현관 초록 보관함에 있었고, 거실 노란 서랍이라는 어제의 기록을 정정한다."
+        },
+        {
+          "source_id": "NIS-7910877e2f2ee0d0",
+          "revision": 1,
+          "start": 48,
+          "end": 97,
+          "quote": "그 봉투는 거실 노란 서랍에 넣었다고 오늘 메모에 적었으며, 접수증 원본은 한 장뿐이다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-10-E2",
+      "case_id": "NC-10",
+      "context_id": "NIC-67c11d5fa35ca902",
+      "type": "not_movement",
+      "from_fact_id": "NC-10-F-i",
+      "to_fact_id": "NC-10-F-h",
+      "statement": "기록 정정과 물건 이동을 구별한다.",
+      "evidence": [
+        {
+          "source_id": "NIS-8e9f40b4b5225d2d",
+          "revision": 1,
+          "start": 107,
+          "end": 151,
+          "quote": "오늘 그 봉투를 다른 곳으로 이동시킨 것은 아니며 보관 장소 기록만 바로잡았다."
+        },
+        {
+          "source_id": "NIS-8e9f40b4b5225d2d",
+          "revision": 1,
+          "start": 51,
+          "end": 106,
+          "quote": "작은 흰 봉투는 처음부터 현관 초록 보관함에 있었고, 거실 노란 서랍이라는 어제의 기록을 정정한다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-10-E3",
+      "case_id": "NC-10",
+      "context_id": "NIC-67c11d5fa35ca902",
+      "type": "separate_location",
+      "from_fact_id": "NC-10-F-j",
+      "to_fact_id": "NC-10-F-h",
+      "statement": "같은 색의 보관함도 방이 다르면 별개 장소다.",
+      "evidence": [
+        {
+          "source_id": "NIS-8e9f40b4b5225d2d",
+          "revision": 1,
+          "start": 153,
+          "end": 202,
+          "quote": "안방 초록 보관함의 파란 여권 케이스는 그대로 있고, 현관 보관함과는 다른 수납공간이다."
+        },
+        {
+          "source_id": "NIS-8e9f40b4b5225d2d",
+          "revision": 1,
+          "start": 51,
+          "end": 106,
+          "quote": "작은 흰 봉투는 처음부터 현관 초록 보관함에 있었고, 거실 노란 서랍이라는 어제의 기록을 정정한다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-10-E4",
+      "case_id": "NC-10",
+      "context_id": "NIC-67c11d5fa35ca902",
+      "type": "separate_copy",
+      "from_fact_id": "NC-10-F-n1",
+      "to_fact_id": "NC-10-F-d",
+      "statement": "문서 번호의 동일성과 종이 수를 분리한다.",
+      "evidence": [
+        {
+          "source_id": "NIS-7910877e2f2ee0d0",
+          "revision": 1,
+          "start": 302,
+          "end": 379,
+          "quote": "접수증 사본에는 원본과 같은 번호가 있지만 원본과 복사본이라는 표시는 따로 붙였고, 번호가 같다고 물리적 종이를 한 장으로 세지는 않는다."
+        },
+        {
+          "source_id": "NIS-7910877e2f2ee0d0",
+          "revision": 1,
+          "start": 165,
+          "end": 213,
+          "quote": "서류 복사본 두 장은 가방 안의 투명 파일에 있으며 원본 봉투를 옮겼다는 뜻은 아니다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-11-E1",
+      "case_id": "NC-11",
+      "context_id": "NIC-edcdf17ebdc24b07",
+      "type": "conflicts",
+      "from_fact_id": "NC-11-F-a",
+      "to_fact_id": "NC-11-F-g",
+      "statement": "같은 장비와 사건에 대한 완료 주장이 상충한다.",
+      "evidence": [
+        {
+          "source_id": "NIS-05795f5238fbe34d",
+          "revision": 1,
+          "start": 0,
+          "end": 50,
+          "quote": "현장팀 담당 서진이 오늘 관측 장비 K-84의 인수 확인이 완료됐다고 메신저로 알려 왔다."
+        },
+        {
+          "source_id": "NIS-acc75eb821acaeed",
+          "revision": 1,
+          "start": 0,
+          "end": 48,
+          "quote": "검수팀 담당 태오는 어제의 같은 K-84 인수 확인이 완료되지 않았다고 오늘 보고했다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-11-E2",
+      "case_id": "NC-11",
+      "context_id": "NIC-edcdf17ebdc24b07",
+      "type": "not_supersession",
+      "from_fact_id": "NC-11-F-i",
+      "to_fact_id": "NC-11-F-a",
+      "statement": "시간상 뒤의 보고만으로 공식 정정이라고 보지 않는다.",
+      "evidence": [
+        {
+          "source_id": "NIS-acc75eb821acaeed",
+          "revision": 1,
+          "start": 100,
+          "end": 162,
+          "quote": "이 보고가 서진의 메모를 공식 정정하는 것인지는 명시돼 있지 않으며, 두 사람이 가리킨 장비는 모두 K-84다."
+        },
+        {
+          "source_id": "NIS-05795f5238fbe34d",
+          "revision": 1,
+          "start": 0,
+          "end": 50,
+          "quote": "현장팀 담당 서진이 오늘 관측 장비 K-84의 인수 확인이 완료됐다고 메신저로 알려 왔다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-11-E3",
+      "case_id": "NC-11",
+      "context_id": "NIC-edcdf17ebdc24b07",
+      "type": "reported_not_verified",
+      "from_fact_id": "NC-11-F-b",
+      "to_fact_id": "NC-11-F-d",
+      "statement": "전달받은 설명과 직접 관측을 구분한다.",
+      "evidence": [
+        {
+          "source_id": "NIS-05795f5238fbe34d",
+          "revision": 1,
+          "start": 51,
+          "end": 112,
+          "quote": "서진은 ‘대여업체 기사와 수량을 맞췄고 확인서도 썼다’고 설명했지만 그 확인서 파일은 대화에 첨부하지 않았다."
+        },
+        {
+          "source_id": "NIS-05795f5238fbe34d",
+          "revision": 1,
+          "start": 174,
+          "end": 219,
+          "quote": "나는 서진의 설명을 전달받은 내용으로 기록했으며 직접 인수 과정을 보지는 않았다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-11-E4",
+      "case_id": "NC-11",
+      "context_id": "NIC-edcdf17ebdc24b07",
+      "type": "evidence_strength",
+      "from_fact_id": "NC-11-F-n1",
+      "to_fact_id": "NC-11-F-b",
+      "statement": "전달된 설명과 독립 확인 가능한 증빙을 구별한다.",
+      "evidence": [
+        {
+          "source_id": "NIS-05795f5238fbe34d",
+          "revision": 1,
+          "start": 324,
+          "end": 400,
+          "quote": "서진이 보낸 사진에서는 장비 상자의 일부만 보였고 번호가 온전히 읽히지 않아 사진만으로 K-84의 인수 완료를 독립 확인할 수는 없었다."
+        },
+        {
+          "source_id": "NIS-05795f5238fbe34d",
+          "revision": 1,
+          "start": 51,
+          "end": 112,
+          "quote": "서진은 ‘대여업체 기사와 수량을 맞췄고 확인서도 썼다’고 설명했지만 그 확인서 파일은 대화에 첨부하지 않았다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-12-E1",
+      "case_id": "NC-12",
+      "context_id": "NIC-d0bb336833281e47",
+      "type": "scope_change",
+      "from_fact_id": "NC-12-F-h",
+      "to_fact_id": "NC-12-F-d",
+      "statement": "원래 조건부 산책 계획을 후속 합의로 제외한다.",
+      "evidence": [
+        {
+          "source_id": "NIS-733e268f0531b49c",
+          "revision": 1,
+          "start": 0,
+          "end": 57,
+          "quote": "오늘 예보에서 토요일 비 소식을 확인해 강변 산책을 빼고 실내 모임만 하기로 단체 대화방에서 합의했다."
+        },
+        {
+          "source_id": "NIS-f12c8a1118e33983",
+          "revision": 1,
+          "start": 141,
+          "end": 196,
+          "quote": "산책은 비가 오지 않을 때만 진행하고, 비가 오면 모임 장소에서 이야기만 나누는 안을 함께 적었다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-12-E2",
+      "case_id": "NC-12",
+      "context_id": "NIC-d0bb336833281e47",
+      "type": "handover",
+      "from_fact_id": "NC-12-F-j",
+      "to_fact_id": "NC-12-F-b",
+      "statement": "간식 구매 담당이 나래에서 기록 작성자로 바뀐다.",
+      "evidence": [
+        {
+          "source_id": "NIS-733e268f0531b49c",
+          "revision": 1,
+          "start": 94,
+          "end": 151,
+          "quote": "나래는 업무 일정 때문에 간식 구매를 맡기 어렵다고 했고 내가 대신 사겠다고 답해 구매 담당을 바꿨다."
+        },
+        {
+          "source_id": "NIS-f12c8a1118e33983",
+          "revision": 1,
+          "start": 52,
+          "end": 89,
+          "quote": "나래가 간식을 맡겠다고 해서 물과 빵을 준비할 후보 목록을 보냈다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-12-E3",
+      "case_id": "NC-12",
+      "context_id": "NIC-d0bb336833281e47",
+      "type": "not_cause",
+      "from_fact_id": "NC-12-F-h",
+      "to_fact_id": "NC-12-F-l",
+      "statement": "우천에 따른 단체 계획 변경을 우진 개인의 불참 사유로 만들지 않는다.",
+      "evidence": [
+        {
+          "source_id": "NIS-733e268f0531b49c",
+          "revision": 1,
+          "start": 0,
+          "end": 57,
+          "quote": "오늘 예보에서 토요일 비 소식을 확인해 강변 산책을 빼고 실내 모임만 하기로 단체 대화방에서 합의했다."
+        },
+        {
+          "source_id": "NIS-733e268f0531b49c",
+          "revision": 1,
+          "start": 206,
+          "end": 263,
+          "quote": "우진은 오늘 산책 불참을 확정했지만 사유는 이번에도 적지 않았고 실내 모임 참석 여부도 답하지 않았다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-12-E4",
+      "case_id": "NC-12",
+      "context_id": "NIC-d0bb336833281e47",
+      "type": "not_final_count",
+      "from_fact_id": "NC-12-F-m",
+      "to_fact_id": "NC-12-F-f",
+      "statement": "회신 수와 최종 참석 인원을 분리한다.",
+      "evidence": [
+        {
+          "source_id": "NIS-733e268f0531b49c",
+          "revision": 1,
+          "start": 264,
+          "end": 327,
+          "quote": "어제 받은 네 명의 답장을 최종 참석 네 명으로 옮겨 적지 않고, 나머지 답장과 변경 의사를 다시 모으기로 했다."
+        },
+        {
+          "source_id": "NIS-f12c8a1118e33983",
+          "revision": 1,
+          "start": 260,
+          "end": 303,
+          "quote": "참석 의사를 물은 여섯 명 가운데 네 명은 답했고 두 명은 아직 회신이 없다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    },
+    {
+      "id": "NC-12-E5",
+      "case_id": "NC-12",
+      "context_id": "NIC-d0bb336833281e47",
+      "type": "scope_limit",
+      "from_fact_id": "NC-12-F-n1",
+      "to_fact_id": "NC-12-F-i",
+      "statement": "산책 제외가 실내 장소 예약의 취소를 뜻하지 않는다.",
+      "evidence": [
+        {
+          "source_id": "NIS-f12c8a1118e33983",
+          "revision": 1,
+          "start": 349,
+          "end": 429,
+          "quote": "장소 대관 안내에는 실내 테이블 사용이 포함돼 있었고 강변 시설 예약은 들어 있지 않아 산책을 빼더라도 같은 예약 전체를 취소할 필요는 없었다."
+        },
+        {
+          "source_id": "NIS-733e268f0531b49c",
+          "revision": 1,
+          "start": 58,
+          "end": 93,
+          "quote": "이 변경은 모임 전체 취소가 아니라 산책 일정만 제외한 것이다."
+        }
+      ],
+      "review_status": "AUTHOR_DRAFT"
+    }
+  ],
+  "review_status": "AUTHOR_DRAFT"
+}

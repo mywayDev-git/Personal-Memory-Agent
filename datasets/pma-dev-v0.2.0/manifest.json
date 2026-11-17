@@ -1,0 +1,673 @@
+{
+  "schema_version": "pma-dataset-1",
+  "id": "pma-dev-v0.2.0",
+  "version": "0.2.0",
+  "authored_on": "2026-11-02",
+  "synthetic_only": true,
+  "purpose": "Local development comparison of extraction representations, retrieval and grounded answers",
+  "status": "AUTHOR_DRAFT_REQUIRES_HUMAN_GOLD_REVIEW",
+  "execution_status": "NOT_RUN",
+  "partition": {
+    "development": [
+      "F01",
+      "F02",
+      "F03",
+      "F04",
+      "F05",
+      "F06",
+      "F07",
+      "F08",
+      "F09",
+      "F10",
+      "F11",
+      "F12",
+      "F13",
+      "F14",
+      "F15",
+      "F16",
+      "F17",
+      "F18",
+      "F19",
+      "F20",
+      "F21",
+      "F22",
+      "F23",
+      "F24",
+      "F25",
+      "F26",
+      "F27",
+      "F28",
+      "F29",
+      "F30",
+      "F31",
+      "F32",
+      "F33",
+      "F34",
+      "F35",
+      "F36",
+      "F37"
+    ],
+    "final": [],
+    "final_policy": "Existing final sources/questions are not imported. This exposed development set is not a sealed final holdout; create an independent family-level holdout before finalist evaluation."
+  },
+  "counts": {
+    "families": 37,
+    "sources": 93,
+    "contexts": 56,
+    "questions": 117,
+    "source_facts": 132,
+    "source_relations": 12,
+    "upstream_variables": 489,
+    "draft_linked_variables": 158
+  },
+  "families": [
+    {
+      "id": "F01",
+      "title": "단일 작업과 질문 표현",
+      "variables": [
+        "IN-01",
+        "IN-27",
+        "EX-01",
+        "EX-02",
+        "QU-04",
+        "RT-22"
+      ],
+      "focus": "기본 회상; 표현만 다른 질문은 같은 정답을 유지",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "id": "F02",
+      "title": "행위자·수신자·대상",
+      "variables": [
+        "EX-03",
+        "EX-04",
+        "EV-04"
+      ],
+      "focus": "한 문장 안의 역할을 바꾸지 않음",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "id": "F03",
+      "title": "사용자와 타인의 선호",
+      "variables": [
+        "IN-26",
+        "EX-25",
+        "MW-04",
+        "MW-14"
+      ],
+      "focus": "주체별 선호를 분리",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "id": "F04",
+      "title": "부정과 대안",
+      "variables": [
+        "IN-41",
+        "EX-19",
+        "EV-06",
+        "RR-33"
+      ],
+      "focus": "부정 범위와 긍정 대안을 함께 보존",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "id": "F05",
+      "title": "예정과 완료",
+      "variables": [
+        "IN-37",
+        "EX-11",
+        "AG-29",
+        "EV-07"
+      ],
+      "focus": "예정일은 완료 증거가 아님",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "id": "F06",
+      "title": "조건부 계획과 조건 충족",
+      "variables": [
+        "IN-42",
+        "EX-20",
+        "EV-07"
+      ],
+      "focus": "조건의 충족과 실제 실행은 별개",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "id": "F07",
+      "title": "추측에서 확인으로",
+      "variables": [
+        "IN-35",
+        "IN-36",
+        "EX-12",
+        "EX-13",
+        "EV-08"
+      ],
+      "focus": "추측은 확정 원인으로 승격하지 않음",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "id": "F08",
+      "title": "선후관계와 원인 구별",
+      "variables": [
+        "EX-15",
+        "EX-14",
+        "EV-28"
+      ],
+      "focus": "시간 순서만으로 인과를 만들지 않음",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "id": "F09",
+      "title": "명시된 인과와 해결 효과",
+      "variables": [
+        "IN-28",
+        "IN-29",
+        "EX-14",
+        "QI-07"
+      ],
+      "focus": "원인·조치·결과의 연결",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "id": "F10",
+      "title": "발언 시각·대상 일정·실행 구별",
+      "variables": [
+        "EX-05",
+        "EX-11",
+        "EX-13",
+        "QU-22",
+        "RT-04"
+      ],
+      "focus": "어제의 발언과 다음 주 회의, 취소 의도를 구분",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "id": "F11",
+      "title": "사건 날짜와 늦은 저장",
+      "variables": [
+        "EX-05",
+        "EX-06",
+        "RT-07",
+        "RT-08",
+        "EV-03"
+      ],
+      "focus": "저장 순서로 사건의 최신성을 정하지 않음",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "id": "F12",
+      "title": "여러 원문의 담당자 변경",
+      "variables": [
+        "EX-17",
+        "QI-11",
+        "QI-12",
+        "EV-09",
+        "LC-24"
+      ],
+      "focus": "처음·과거 시점·현재를 독립 질문으로 비교",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "id": "F13",
+      "title": "해결되지 않은 충돌",
+      "variables": [
+        "IN-66",
+        "ST-23",
+        "EV-11",
+        "AG-12"
+      ],
+      "focus": "순서나 정정 근거가 없는 기록은 임의 우선하지 않음",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "id": "F14",
+      "title": "동명이인과 모호성",
+      "variables": [
+        "ST-08",
+        "RR-23",
+        "CV-16",
+        "AG-08"
+      ],
+      "focus": "직업·관계 맥락으로 구분; 모호하면 확인",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "id": "F15",
+      "title": "프로젝트와 평가 기준 구분",
+      "variables": [
+        "ST-09",
+        "RT-12",
+        "RR-16",
+        "EV-24"
+      ],
+      "focus": "높은 수치가 다른 프로젝트에서 옮겨오지 않음",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "id": "F16",
+      "title": "숫자·단위와 유사 방해 기록",
+      "variables": [
+        "IN-33",
+        "IN-34",
+        "EV-02",
+        "RR-34"
+      ],
+      "focus": "RAM과 가격, 프로젝트를 분리",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "id": "F17",
+      "title": "기술 식별자와 특수문자",
+      "variables": [
+        "IN-74",
+        "IN-75",
+        "IN-76",
+        "IN-77",
+        "QU-24",
+        "QU-26",
+        "QU-27",
+        "QU-35",
+        "QU-38"
+      ],
+      "focus": "경로·버전·심볼을 정규화 중 훼손하지 않음",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "id": "F18",
+      "title": "명시된 한영 별칭",
+      "variables": [
+        "EX-18",
+        "QU-08",
+        "QU-09",
+        "QU-10",
+        "RR-18"
+      ],
+      "focus": "원문이 선언한 별칭으로 검색; 범위를 과대 확장하지 않음",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "id": "F19",
+      "title": "오타·띄어쓰기·비문",
+      "variables": [
+        "IN-54",
+        "IN-55",
+        "IN-56",
+        "IN-57",
+        "QU-11",
+        "QU-12"
+      ],
+      "focus": "원문 표현 변형을 별도 상황에서 비교",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "id": "F20",
+      "title": "목록 안의 서로 다른 상태",
+      "variables": [
+        "IN-04",
+        "IN-78",
+        "IN-79",
+        "IN-45",
+        "RT-18",
+        "RT-19"
+      ],
+      "focus": "프로젝트별 예정·완료를 섞지 않음",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "id": "F21",
+      "title": "자연스러운 장문과 문장 연결",
+      "variables": [
+        "IN-03",
+        "IN-45",
+        "IN-49",
+        "EX-17",
+        "EV-23"
+      ],
+      "focus": "여러 주제의 서사·반복 이름·인용·이모지·후반 정정을 함께 점검",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "id": "F22",
+      "title": "분산 근거와 결정 이유",
+      "variables": [
+        "AG-16",
+        "RR-22",
+        "RR-32",
+        "EV-14"
+      ],
+      "focus": "연결이 명시된 여러 근거를 종합",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "id": "F23",
+      "title": "제안·미측정과 잘못된 전제",
+      "variables": [
+        "AG-13",
+        "AG-15",
+        "AG-35",
+        "EV-13",
+        "EV-20"
+      ],
+      "focus": "질문이 제시한 숫자를 사실로 받아들이지 않음",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "id": "F24",
+      "title": "답변 가능한 부분과 없는 부분",
+      "variables": [
+        "AG-14",
+        "EV-13",
+        "QI-15"
+      ],
+      "focus": "복합 질문에서 아는 부분은 답하고 나머지는 보류",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "id": "F25",
+      "title": "불명확한 지시 대상",
+      "variables": [
+        "IN-65",
+        "CV-13",
+        "CV-16",
+        "AG-08"
+      ],
+      "focus": "원문 자체가 모호하면 추출·답변도 대상을 확정하지 않음",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "id": "F26",
+      "title": "대화 맥락과 선택한 결과",
+      "variables": [
+        "CV-02",
+        "CV-04",
+        "CV-07",
+        "CV-19",
+        "AG-07"
+      ],
+      "focus": "후속 질문을 독립 질문으로 평가하지 않음",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "id": "F27",
+      "title": "같은 기록의 수정과 구버전 배제",
+      "variables": [
+        "ST-05",
+        "ST-10",
+        "EX-07",
+        "RR-35",
+        "EV-18",
+        "LC-11"
+      ],
+      "focus": "버전 변경은 덮어쓴 정답이 아니라 단계별 상태로 보존",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "id": "F28",
+      "title": "삭제·복원과 캐시",
+      "variables": [
+        "ST-13",
+        "ST-15",
+        "SEC-04",
+        "SEC-05",
+        "LC-12"
+      ],
+      "focus": "상태 변화는 새 DB가 아니라 연속 작업으로도 검증해야 함",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "id": "F29",
+      "title": "저장 동의와 새 세션",
+      "variables": [
+        "IN-05",
+        "EX-24",
+        "MW-01",
+        "MW-02",
+        "LC-21",
+        "LC-22"
+      ],
+      "focus": "입력에 있는 정보와 장기 저장된 정보는 다름",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "id": "F30",
+      "title": "사용자 격리와 접근 제한",
+      "variables": [
+        "EX-23",
+        "RT-31",
+        "SEC-01",
+        "SEC-03",
+        "EV-29",
+        "LC-10"
+      ],
+      "focus": "권한은 서버 관측으로 검증; LLM 응답만으로 보안 통과 불가",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "id": "F31",
+      "title": "원문 속 지시와 인용",
+      "variables": [
+        "SEC-08",
+        "SEC-09",
+        "EV-27",
+        "LC-23"
+      ],
+      "focus": "원문은 데이터로 처리하고 역할 위장을 실행하지 않음",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "id": "F32",
+      "title": "동일 사건의 중복 출처",
+      "variables": [
+        "ST-02",
+        "ST-03",
+        "RT-30",
+        "RR-28",
+        "EV-26",
+        "LC-19"
+      ],
+      "focus": "기록 수와 사건 수를 구분하고 대체 근거를 허용",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "id": "F33",
+      "title": "범위·제외·완료 필터",
+      "variables": [
+        "RT-03",
+        "RT-12",
+        "RT-13",
+        "RT-23",
+        "RT-25",
+        "EV-25"
+      ],
+      "focus": "정답 목록은 고정된 기억 범위 안에서만 완전함",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "id": "F34",
+      "title": "빈 기억과 정보 부재",
+      "variables": [
+        "PF-01",
+        "RT-26",
+        "AG-09",
+        "EV-19"
+      ],
+      "focus": "기억 없음과 질문 모호성을 구별",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "id": "F35",
+      "title": "동일 평가 기준의 수치 변화",
+      "variables": [
+        "IN-34",
+        "EV-02",
+        "EV-24",
+        "QU-21"
+      ],
+      "focus": "퍼센트포인트와 상대 개선율을 구별",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "id": "F36",
+      "title": "같은 배포 계획의 취소",
+      "variables": [
+        "IN-38",
+        "ST-07",
+        "QI-12",
+        "EV-07",
+        "LC-05"
+      ],
+      "focus": "취소는 실행 완료가 아니며 같은 사건만 연결",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "id": "F37",
+      "title": "유사 방해 기록 32개와 순위 검증",
+      "variables": [
+        "RR-05",
+        "RR-16",
+        "RR-24",
+        "RR-26",
+        "EV-02",
+        "EV-09"
+      ],
+      "focus": "정답 프로젝트와 별도 프로젝트를 구분하고 변경 전후 근거를 검색한다.",
+      "split": "development",
+      "review_status": "AUTHOR_DRAFT",
+      "execution_status": "NOT_RUN"
+    }
+  ],
+  "integrity": [
+    {
+      "file": "sources.json",
+      "sha256": "4d33e2b85795e9de0051f811bab7e8dac1fb383c4a401340e6e6f1f7244b415c"
+    },
+    {
+      "file": "contexts.json",
+      "sha256": "b8666f8e68cf70f7c3e1a06af14cb8ab0d02c9d594089072ea415475313adfea"
+    },
+    {
+      "file": "questions.json",
+      "sha256": "e2ab64d9565ecb761047cb108f850629bf1b528b1336c3aa9b47f2a8de017ec9"
+    },
+    {
+      "file": "coverage.json",
+      "sha256": "7b6f4c984609fdc05dc1f27ce88a35954b519eb51f9d4747286cf1c3fcdb37e6"
+    }
+  ],
+  "upstream": [
+    {
+      "file": "source_records.json",
+      "path": "C:\\development\\Personal-Memory-Agent\\evaluation\\main_suite\\data\\source_records.json",
+      "sha256": "addecf6c3aa3cc0e0bb95d57c17eb0681e19df3e5a542e6d8c223465cd14819c"
+    },
+    {
+      "file": "catalog.json",
+      "path": "C:\\development\\Personal-Memory-Agent\\evaluation\\main_suite\\data\\catalog.json",
+      "sha256": "b33eabc7119424b22bbaf94a7bd525f34be50b10221ef78c435c84ada0efb0c9"
+    }
+  ],
+  "comparison_contract": {
+    "fixed": [
+      "dataset file hashes",
+      "context state and setup order",
+      "stage inputs",
+      "retrieval corpus",
+      "now",
+      "owner scope",
+      "random seed/repetition policy",
+      "runtime and hardware when measuring latency"
+    ],
+    "independent_axes": [
+      "local_model_id_and_hash",
+      "representation_method",
+      "representation_version",
+      "extraction_prompt_id_version_hash",
+      "query_prompt_id_version_hash",
+      "answer_prompt_id_version_hash",
+      "retrieval_configuration"
+    ],
+    "mode": "single_axis_change_for_attribution; multiple-axis changes are configuration exploration",
+    "stages": [
+      "extraction_all_source_facts",
+      "retrieval_with_frozen_extraction_artifact",
+      "answer_with_frozen_retrieval_artifact",
+      "end_to_end"
+    ],
+    "gold_visibility": "Never pass gold facts, highlights, relations, answer keys or expected state to the model. Only task policy and permitted raw source/context inputs.",
+    "score_policy": "Report denominators and NOT_RUN/ERROR/PENDING_REVIEW separately. No aggregate PASS claim for 489 variables. Semantic claims require reviewed gold; keyword presence cannot establish correctness.",
+    "unsupported_policy": "UI/security/performance/state assertions require their actual observations; answer correctness alone cannot pass them."
+  }
+}

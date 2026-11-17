@@ -1,0 +1,90 @@
+{
+  "version": "answer-criteria-v2.0.0",
+  "updated_on": "2026-11-05",
+  "semantic_checks": [
+    "질문에서 실제로 요구한 필수 의미와 하위 질문을 확인",
+    "정답 핵심뿐 아니라 덧붙인 모든 사실의 원문 근거 확인",
+    "계획·진행·완료·미확인 상태와 최신 정정 보존",
+    "인물·대상·발언자·시간·수량·단위·부정·인과 연결 확인",
+    "질문 밖의 배경 설명은 필수로 강제하지 않음",
+    "인용 위치 일치와 행동 태그 일치는 의미 통과를 뜻하지 않음",
+    "모호한 원문·질문·정답 초안은 기준 문제로 보류"
+  ],
+  "overrides": [
+    {
+      "dataset_fingerprint": "c3907cb3b2bc54a7be4ca492de8e1b6e8dc64a5fee336b445707671a2585e613",
+      "question_id": "CHAT-development-T4",
+      "binding": "ce1310327c78b69b3f3d54b7e8b60eb8be4ffda15c3a4269d0ac36d9cd99c97e",
+      "citation_required": false,
+      "task_type": "general_arithmetic",
+      "note": "명시적으로 지정된 일반 산술 문항입니다. 개인 기록 인용을 요구하지 않습니다. 정답 의미는 별도 검토합니다."
+    },
+    {
+      "dataset_fingerprint": "c3907cb3b2bc54a7be4ca492de8e1b6e8dc64a5fee336b445707671a2585e613",
+      "question_id": "CHAT-final-T4",
+      "binding": "8900d4de266b1bc574582f18c6beed2212d712be08e418f2b2e4faeb81c6f678",
+      "citation_required": false,
+      "task_type": "general_arithmetic",
+      "note": "명시적으로 지정된 일반 산술 문항입니다. 개인 기록 인용을 요구하지 않습니다. 정답 의미는 별도 검토합니다."
+    },
+    {
+      "dataset_fingerprint": "c3907cb3b2bc54a7be4ca492de8e1b6e8dc64a5fee336b445707671a2585e613",
+      "question_id": "MC-01-Q6",
+      "binding": "929412fb75a7091bf1086ed9654f940b4304af9aaa580314438358291c3c8d3e",
+      "effective": {
+        "reference_answer": "작성자는 사용자이고 검토자는 지연이다.",
+        "required_claims": [
+          "작성자는 사용자이고 검토자는 지연이다."
+        ]
+      },
+      "note": "이름을 묻는 질문입니다. 초안 작성·배포 시각 검토라는 세부 범위는 선택적인 배경이며 필수 답변으로 강제하지 않습니다."
+    },
+    {
+      "dataset_fingerprint": "c3907cb3b2bc54a7be4ca492de8e1b6e8dc64a5fee336b445707671a2585e613",
+      "question_id": "NR-F-03-Q1",
+      "binding": "4760493fa2e5e3e6ac057accaaf1a8ed46565ecab8fce919114b662b303a437a",
+      "effective": {
+        "reference_answer": "검은색 망원경과 삼각대를 빌렸다.",
+        "required_claims": [
+          "검은색 망원경과 삼각대를 빌렸다."
+        ]
+      },
+      "note": "실제로 받은 품목을 묻습니다. 가방을 받지 않았다는 배경은 선택적이며, 가방을 받았다고 주장하면 의미 오류입니다."
+    },
+    {
+      "dataset_fingerprint": "c3907cb3b2bc54a7be4ca492de8e1b6e8dc64a5fee336b445707671a2585e613",
+      "question_id": "NR-D-02-Q6",
+      "binding": "b51275b3b559e863daa13255e52762bf6222d15759e8f1876be19146f13063c8",
+      "effective": {
+        "reference_answer": "통계판 배포와 상담 화면은 다른 작업이다.",
+        "required_claims": [
+          "통계판 배포와 상담 화면은 다른 작업이다."
+        ]
+      },
+      "note": "작업 동일 여부에 직접 답하도록 기준 범위를 좁혔습니다. 담당자와 버튼 구현 상태를 덧붙이면 그 내용도 원문으로 확인합니다."
+    },
+    {
+      "dataset_fingerprint": "c3907cb3b2bc54a7be4ca492de8e1b6e8dc64a5fee336b445707671a2585e613",
+      "question_id": "STATE-final-replace",
+      "binding": "fd5426b3b70aeb97b48dcf425826f7a69bf652a290d017995ef22fff1d2faf42",
+      "needs_revision": true,
+      "note": "원문 파란 통로 옮겼다는 파란 통으로와 통로로 해석이 갈립니다. 원문 개정 전에는 의미 판정을 보류합니다. 기존 원문·정답은 보존합니다."
+    },
+    {
+      "dataset_fingerprint": "9d2c113876b31b01e41dbab1f43b292d26ca03e4bece736db3f7ac100c3f293b",
+      "question_id": "D-dialogue-T4",
+      "binding": "ce1310327c78b69b3f3d54b7e8b60eb8be4ffda15c3a4269d0ac36d9cd99c97e",
+      "citation_required": false,
+      "task_type": "general_arithmetic",
+      "note": "일반 산술로 명시한 주제 전환 턴입니다. 개인 기억 인용을 요구하지 않으며 정답 의미는 별도 검토합니다."
+    },
+    {
+      "dataset_fingerprint": "9d2c113876b31b01e41dbab1f43b292d26ca03e4bece736db3f7ac100c3f293b",
+      "question_id": "C-dialogue-T4",
+      "binding": "1609ec216a87438452ab1ade0efc575915095d58f343cf16b56cd09b2feb936c",
+      "citation_required": false,
+      "task_type": "general_arithmetic",
+      "note": "일반 산술로 명시한 주제 전환 턴입니다. 개인 기억 인용을 요구하지 않으며 정답 의미는 별도 검토합니다."
+    }
+  ]
+}

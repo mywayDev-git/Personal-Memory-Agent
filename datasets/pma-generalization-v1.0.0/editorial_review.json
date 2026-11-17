@@ -1,0 +1,785 @@
+{
+  "status": "AUTHOR_RECHECKED_NOT_INDEPENDENT",
+  "items": [
+    {
+      "question_id": "D-identity-BASE",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "D-identity-PARAPHRASE",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "D-identity-DISTRACTOR",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "D-identity-CONTRAST",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "D-status-BASE",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "D-status-PARAPHRASE",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "D-status-DISTRACTOR",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "D-status-CONTRAST",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "D-condition-BASE",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "D-condition-PARAPHRASE",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "D-condition-DISTRACTOR",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "D-condition-CONTRAST",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "D-multievidence-BASE",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "D-multievidence-PARAPHRASE",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "D-multievidence-DISTRACTOR",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "D-multievidence-CONTRAST",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "D-cumulative-BASE",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "D-cumulative-PARAPHRASE",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "D-cumulative-DISTRACTOR",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "D-cumulative-CONTRAST",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "D-access-BASE",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "D-access-PARAPHRASE",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "D-access-DISTRACTOR",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "D-access-CONTRAST",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "C-identity-BASE",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "C-identity-PARAPHRASE",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "C-identity-DISTRACTOR",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "C-identity-CONTRAST",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "C-status-BASE",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "C-status-PARAPHRASE",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "C-status-DISTRACTOR",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "C-status-CONTRAST",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "C-condition-BASE",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "C-condition-PARAPHRASE",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "C-condition-DISTRACTOR",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "C-condition-CONTRAST",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "C-multievidence-BASE",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "C-multievidence-PARAPHRASE",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "C-multievidence-DISTRACTOR",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "C-multievidence-CONTRAST",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "C-cumulative-BASE",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "C-cumulative-PARAPHRASE",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "C-cumulative-DISTRACTOR",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "C-cumulative-CONTRAST",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "C-access-BASE",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "C-access-PARAPHRASE",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "C-access-DISTRACTOR",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "C-access-CONTRAST",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "D-dialogue-T1",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "D-dialogue-T2",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "D-dialogue-T3",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "D-dialogue-T4",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "D-dialogue-T5",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "C-dialogue-T1",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "C-dialogue-T2",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "C-dialogue-T3",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "C-dialogue-T4",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "C-dialogue-T5",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "D-empty",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    },
+    {
+      "question_id": "C-empty",
+      "status": "AUTHOR_RECHECKED",
+      "independent_review": false,
+      "checks": [
+        "exact_support_spans",
+        "required_answer_scope",
+        "forbidden_claims",
+        "accessible_support",
+        "variant_expectation"
+      ],
+      "note": "Construction-time author review only. Independent human review and actual model evaluation remain pending."
+    }
+  ]
+}

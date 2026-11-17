@@ -1,0 +1,2 @@
+# Preserve exact file bytes; dataset manifests validate source file SHA-256 hashes.
+* -text

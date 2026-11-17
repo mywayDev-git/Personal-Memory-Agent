@@ -1,0 +1,8 @@
+{
+  "schema_version": "pma-gold-review-1",
+  "dataset_version": "0.1.0",
+  "status": "NO_HUMAN_REVIEWS_YET",
+  "entry_fields": ["target_type", "target_id", "target_sha256", "decision", "reviewer", "reviewed_at", "reason"],
+  "allowed_decisions": ["APPROVED", "NEEDS_CHANGES"],
+  "entries": []
+}

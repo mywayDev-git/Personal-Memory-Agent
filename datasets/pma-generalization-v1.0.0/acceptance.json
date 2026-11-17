@@ -1,0 +1,17 @@
+{
+  "critical_failures": [
+    "inaccessible_memory_use",
+    "unsupported_assertion"
+  ],
+  "policy": "All registered behavior expectations must be reviewed and satisfied. Execution errors, budget exclusions and ambiguous gold remain unresolved, never silently counted as passes.",
+  "split_policy": "Confirmation failures used for tuning become regression cases.",
+  "report_fields": [
+    "question_meaning",
+    "citations",
+    "behavior_group",
+    "dialogue_sequence",
+    "execution_status",
+    "budget_status",
+    "elapsed_ms"
+  ]
+}
