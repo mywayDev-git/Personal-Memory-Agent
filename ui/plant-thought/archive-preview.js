@@ -167,7 +167,7 @@
   renderRecent=function(){originalRenderRecent();};
   openRecord=function(index){const record=records[index];if(record)showFullSource(record.sampleId);};
   selectArchiveRecordDate=function(index){const record=records[index];if(record)openSource(record.sampleId);};
-  runSearch=function(reveal=false){
+  runSearch=function(reveal=false, scroll=true){
     if(!reveal){archiveSearchActive=false;syncArchivePanel();return;}
     archiveSearchActive=true;syncArchivePanel();const text=el('archiveInput').value.trim(),query=normal(text);
     const allSources=collection.records.map(record=>({sampleId:record.id,title:record.title,body:record.body,date:record.date||'날짜 미상',type:record.synthetic?'가상 원문':'개인 기록'}));
@@ -175,8 +175,11 @@
     el('resultCount').textContent=matches.length+'개 원문';const mode=searchFilter==='exact'?'원문 전체':searchFilter==='semantic'?'제목':'제목·원문 전체';el('searchQueryCaption').textContent='현재 자료함 전체 '+collection.record_count+'개 원문의 '+mode+(text?'에서 “'+text+'” 검색':' 보기');
     const target=el('searchResults');target.replaceChildren();
     for(const record of matches)target.appendChild(makeRecordRow(record,{search:true}));
-    if(!matches.length)empty(target,'일치하는 예시 원문이 없어요','현재 자료함 전체 원문을 검색했습니다. 검색어를 바꿔 다시 찾아보세요.');
-    remember();scrollToSearchResults();
+    if(!matches.length){
+      if(!collection.synthetic && !collection.records.length)empty(target,'저장된 개인 기록이 없어요','기록을 작성하거나 대화의 기록 초안을 확인해 저장하면 여기에 표시됩니다.');
+      else empty(target,'일치하는 원문이 없어요','검색어를 바꿔 다시 찾아보세요.');
+    }
+    remember();if(scroll)scrollToSearchResults();
   };
   function applyProfile(next,restore=false){
     const keepSearch=archiveSearchActive,searchText=el('archiveInput').value,priorDate=selected,priorRecord=sourceMap.get(recordId);
@@ -202,6 +205,11 @@
   detailRecordId=sourceMap.has(previousState?.detailRecordId)?previousState.detailRecordId:null;
   window.PlantArchiveView={
     selectedId:()=>recordId,
+    showPersonalRecords(){
+      if(collection.synthetic)return;
+      el('archiveInput').value='';
+      runSearch(true,false);
+    },
     setCollection(next){
       collection=next;window.PlantArchiveSamples=next;sourceMap=new Map(next.records.map(r=>[r.id,r]));questionMap=new Map(next.examples.map(q=>[q.id,q]));
       el('archiveProfile').replaceChildren(...next.profiles.map(p=>{const o=document.createElement('option');o.value=p.id;o.textContent=p.label;return o;}));

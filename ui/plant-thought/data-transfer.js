@@ -61,13 +61,16 @@
  const remember=previewRemember;
  previewRemember=function(){remember();if(ready&&!locked){dirty=JSON.stringify(previewThreads)!==persistedThreads;if(dirty){clearTimeout(timer);timer=setTimeout(()=>persist(),450);}}};
  async function flush(){available();await persist();if(saveFailure)throw saveFailure;while(dirty)await persist();}
- window.PlantLibraryPersistence=Object.freeze({flush});
- function personalCollection(){return {version:1,dataset:'personal-library',synthetic:false,default_profile:'personal',title:'개인 자료함',profiles:[{id:'personal',label:'개인 자료함',record_count:personalRecords.length,question_count:0}],records:personalRecords.map(r=>({...r,profile:'personal',imported_at:null})),examples:[],record_count:personalRecords.length,question_count:0,provenance:{files:{}}};}
+ async function refreshRecords(){const response=await fetch('/api/library/state',{cache:'no-store'});if(!response.ok)throw Error('기록 상태를 확인하지 못했습니다.');const data=await response.json();revision=data.revision;personalRecords=data.records;switchCollection(collection);}
+ async function recordOperation(action){available();clearTimeout(timer);await flush();locked=true;try{return await action();}finally{try{await refreshRecords();}finally{locked=false;if(dirty)persist();}}}
+ window.PlantLibraryPersistence=Object.freeze({flush,recordOperation});
+ function personalCollection(){const active=personalRecords.filter(r=>!r.deleted_at);return {version:1,dataset:'personal-library',synthetic:false,default_profile:'personal',title:'개인 자료함',profiles:[{id:'personal',label:'개인 자료함',record_count:active.length,question_count:0}],records:active.map(r=>({...r,profile:'personal',imported_at:null})),examples:[],record_count:active.length,question_count:0,provenance:{files:{}}};}
  function switchCollection(next){
   next=next==='samples'&&testEnabled?'samples':'personal';
   collection=next;collectionSelect.value=next;document.body.dataset.libraryCollection=next;
   view.setCollection(next==='personal'?personalCollection():samples);
-  summary.textContent=next==='personal'?'원문 '+personalRecords.length+'개 · AI 검색 '+personalRecords.filter(r=>r.search_enabled).length+'개':'가상 예시 '+samples.record_count+'개';
+  if(next==='personal' && document.querySelector('.page.active')?.id==='archive')view.showPersonalRecords();
+  summary.textContent=next==='personal'?'원문 '+personalRecords.filter(r=>!r.deleted_at).length+'개 · AI 검색 '+personalRecords.filter(r=>r.search_enabled&&!r.deleted_at).length+'개':'가상 예시 '+samples.record_count+'개';
   document.querySelector('#archive .lead').textContent=next==='personal'?'불러오거나 작성한 개인 기록을 날짜별로 살펴보세요.':'가상 기록을 달력과 목록으로 살펴보세요.';
   const calendarNote=document.querySelector('#archiveCalendar p.notice');if(calendarNote)calendarNote.textContent='● 현재 자료함의 기록일을 표시합니다. 사건 날짜는 본문에서 확인하세요.';
   previewRenderMessages();try{sessionStorage.setItem('plant-thought-library-collection',next);}catch{}
@@ -146,7 +149,10 @@
   }catch(error){showError(error);}
  }
  switchCollection(testEnabled?'samples':'personal');
- const navigate=go;go=function(id){navigate(id==='memorylab'&&!testEnabled?'settings':id);};
+ const navigate=go;go=function(id){
+  navigate(id==='memorylab'&&!testEnabled?'settings':id);
+  if(id==='archive' && collection==='personal')view.showPersonalRecords();
+ };
  if(!testEnabled&&document.querySelector('.page.active')?.id==='memorylab')go('settings');
  previewRenderHistory();initialize();
 })();

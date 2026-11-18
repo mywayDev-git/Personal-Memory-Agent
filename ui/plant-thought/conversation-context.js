@@ -16,7 +16,7 @@
   if(value.task)out.task={request_id:string(value.task.request_id,160),intent:string(value.task.intent,30),status:['completed','waiting'].includes(value.task.status)?value.task.status:invalid(),topic_id:value.task.topic_id==null?null:string(value.task.topic_id,160)};
   out.topics=array(value.topics,6).map(t=>({id:string(t.id,160),label:string(t.label,200),scope:string(t.scope,20),kind:string(t.kind,30),questions:array(t.questions,3).map(q=>string(q,600)),utterances:array(t.utterances||[],8).map(q=>string(q,600)),category:t.category==='story'?'story':'request',references:array(t.references,4).map(reference),focus:string(t.focus||'',100),correction:string(t.correction||'',300),turn:number(t.turn),needs_target:t.needs_target===true}));
   if(new Set(out.topics.map(t=>t.id)).size!==out.topics.length)invalid();
-  out.pending=array(value.pending,8).map(p=>({id:string(p.id,160),request_id:string(p.request_id,160),topic_id:string(p.topic_id,160),intent:string(p.intent,30),proposal:string(p.proposal,2000),targets:array(p.targets,12).map(id=>string(id,160)),status:['awaiting_confirmation','cancelled'].includes(p.status)?p.status:invalid(),scope:string(p.scope,20),...(p.origin==='ongoing_recording'?{origin:p.origin}:{}),...(p.recording?{recording:recording(p.recording)}:{})}));
+  out.pending=array(value.pending,8).map(p=>({id:string(p.id,160),request_id:string(p.request_id,160),topic_id:string(p.topic_id,160),intent:string(p.intent,30),proposal:string(p.proposal,2000),targets:array(p.targets,12).map(id=>string(id,160)),status:['awaiting_confirmation','cancelled'].includes(p.status)?p.status:invalid(),scope:string(p.scope,20),...(p.save_target?{save_target:['personal_facts','transcript','summary','none'].includes(p.save_target)?p.save_target:invalid(),source_turn_ids:array(p.source_turn_ids||[],10000).map(v=>string(v,180))}:{}),...(p.origin==='ongoing_recording'?{origin:p.origin}:{}),...(p.recording?{recording:recording(p.recording)}:{})}));
   if(new Set(out.pending.map(p=>p.id)).size!==out.pending.length)invalid();
   if(value.awaiting)out.awaiting={question:string(value.awaiting.question,8000),topic_id:value.awaiting.topic_id==null?null:string(value.awaiting.topic_id,160),intent:string(value.awaiting.intent,30),scope:string(value.awaiting.scope,20),type:value.awaiting.type==='target'||value.awaiting.intent==='memory_query'?'target':'content'};
   return out;
@@ -27,11 +27,11 @@
  }
  function snapshot(thread,scope){
   if(thread.context)return normalize(thread.context,thread.id);
-  const latest=thread.messages?.findLast(m=>m.status==='success'&&!m.archived&&m.submission?.analysis_version!=='v2'&&m.result?.context)?.result.context;
+  const latest=thread.messages?.findLast(m=>m.status==='success'&&!m.archived&&!['v2','v3'].includes(m.submission?.analysis_version)&&m.result?.context)?.result.context;
   if(latest)return normalize(latest,thread.id);
   const out=empty(thread.id);
   // Old conversations can contribute user questions and citation references, never old answer prose.
-  for(const m of (thread.messages||[]).filter(m=>m.status==='success'&&!m.archived&&m.submission?.analysis_version!=='v2'&&m.result?.citations?.length).slice(-5)){
+  for(const m of (thread.messages||[]).filter(m=>m.status==='success'&&!m.archived&&!['v2','v3'].includes(m.submission?.analysis_version)&&m.result?.citations?.length).slice(-5)){
    const r=m.result,id='legacy-'+m.submission.request_id,mode=m.submission.collection_id||'samples';
    const refs=r.citations.filter(c=>c.quote.length<=1000).slice(0,4).map(reference);
    out.topics.push({id,label:r.citations[0].title.slice(0,200),scope:mode,kind:'memory_query',questions:[m.submission.text.slice(0,600)],references:refs,focus:'',correction:'',turn:out.topics.length});out.active=id;

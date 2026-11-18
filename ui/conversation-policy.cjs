@@ -70,7 +70,7 @@ function apply(plan,data,result,topic){
   const previous=base.pending.find(p=>p.scope===plan.mode&&p.topic_id===topic.id&&p.origin==='ongoing_recording'&&p.status==='awaiting_confirmation');
   const recording={status:'draft',date:d.date,statements:plan.recordingSources?plan.recordingSources.map(s=>s.text):[...new Set([...(previous?.recording?.statements||[]),d.content.slice(0,600)])].slice(-8),reason:'지속 기록 지시에 따라 사용자 표현을 이어서 정리했어요.',...(plan.recordingSources?{sources:plan.recordingSources}:{})};
   result.recording=recording;
-  const row={id:previous?.id||'pending-'+data.request_id,request_id:data.request_id,topic_id:topic.id,intent:'experience',proposal:draft(recording.date,recording.statements).slice(0,2000),targets:[],status:'awaiting_confirmation',scope:plan.mode,origin:'ongoing_recording',recording};
+  const row={id:previous?.id||'pending-'+data.request_id,request_id:data.request_id,topic_id:topic.id,intent:'experience',proposal:draft(recording.date,recording.statements).slice(0,2000),targets:[],status:'awaiting_confirmation',scope:plan.mode,origin:'ongoing_recording',save_target:'personal_facts',source_turn_ids:plan.recordingSources?.map(s=>s.turn_id)||[],recording};
   base.pending=base.pending.filter(p=>p.id!==row.id);base.pending.push(row);
  }
  if(d.explicitRecord&&result.action==='draft'&&topic.category==='story'){
@@ -79,4 +79,4 @@ function apply(plan,data,result,topic){
   if(recording.statements.length){result.recording=recording;const current=base.pending.find(p=>p.request_id===data.request_id);if(current){current.recording=recording;current.origin='ongoing_recording';base.pending=base.pending.filter(p=>p.id===current.id||p.topic_id!==topic.id||p.origin!=='ongoing_recording'||p.status!=='awaiting_confirmation');}}
  }
 }
-module.exports={plain,analyze,statements,draft,response,apply};
+module.exports={plain,analyze,statements,draft,response,apply,acknowledgement};

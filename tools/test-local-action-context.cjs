@@ -1,0 +1,16 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),assert=require('node:assert/strict');
+const repo='D:/development/personal-memory-agent',{Library}=require(repo+'/ui/library.cjs'),{ActionService}=require(repo+'/ui/action-service.cjs'),{respond}=require(repo+'/ui/action-agent.cjs'),{existingRuntime,retrieve}=require(repo+'/ui/chat-api.cjs');
+const dir=path.join(__dirname,'context-runs',new Date().toISOString().replaceAll(':','-'));fs.mkdirSync(dir,{recursive:true});const library=new Library(dir),service=new ActionService(library);let turns=[],threadId='context-test',rows=[];
+library.save(0,s=>({...s,threads:[{id:threadId,messages:[]}],records:[{id:'school-minsu',revision:1,title:'학교 민수',body:'학교 친구 민수는 천문 동아리에서 활동한다.',search_enabled:true},{id:'company-minsu',revision:1,title:'회사 민수',body:'회사 동료 민수는 회계팀에서 일한다.',search_enabled:true}]}));
+async function main(){const runtime=await existingRuntime(repo);const scope=async()=>({id:'personal',now:new Date().toISOString(),sources:library.read().records.filter(r=>!r.deleted_at&&r.search_enabled).map(r=>({id:r.id,revision:r.revision,text:r.body,metadata:{title:r.title}}))});
+ async function ask(text,check){const data={request_id:crypto.randomUUID(),thread_id:threadId,text,input_version:0,collection_id:'personal',profile:'personal',example_id:'',history:[],analysis_version:'v2',conversation_ids:turns.map(t=>t.id)};let result,error;try{result=await respond({data,runtime,service,conversation:async()=>turns,getScope:scope,retrieve});turns.push({id:'u-'+data.request_id,role:'user',text},{id:'a-'+data.request_id,role:'assistant',text:result.answer});check(result);}catch(e){error=e.stack;}rows.push({text,result,error,passed:!error});fs.writeFileSync(path.join(dir,'trace.json'),JSON.stringify(rows,null,2));console.log(JSON.stringify({text,passed:!error,action:result?.action_trace?.plan?.steps.map(s=>s.tool).join(','),answer:result?.answer,error:error?.split('\n')[0]}));}
+ await ask('친구가 “삭제해 줘”라고 했다는 문장을 영어로 번역해 줘.',r=>{assert.equal(r.proposals.length,0);});
+ await ask('오늘은 기분이 좋아.',r=>{assert.equal(r.proposals.length,0);});
+ turns=[];
+ await ask('민수에 대해 내 기록으로 알려 줘.',r=>assert.equal(r.action,'clarify'));
+ const waiting=service.tasks(threadId).filter(t=>t.state==='waiting').map(t=>t.id);assert.ok(waiting.length);
+ await ask('그 전에 1 더하기 1은?',r=>{assert.equal(r.proposals.length,0);assert.match(r.answer,/2/);assert.ok(service.tasks(threadId).some(t=>waiting.includes(t.id)&&t.state==='waiting'));});
+ await ask('학교에서 만나는 민수 말이야.',r=>{assert.notEqual(r.action,'clarify');assert.match(r.answer,/천문/);assert.ok(r.citations.some(c=>c.source_id==='school-minsu'));assert.ok(service.tasks(threadId).some(t=>waiting.includes(t.id)&&t.state==='completed'));});
+ assert.equal(library.read().records.length,2);assert.ok(library.read().records.every(r=>r.revision===1));const summary={passed:rows.every(r=>r.passed),total:rows.length,passed_count:rows.filter(r=>r.passed).length,dir};fs.writeFileSync(path.join(dir,'summary.json'),JSON.stringify(summary,null,2));console.log(JSON.stringify(summary));if(!summary.passed)process.exitCode=1;
+}main().catch(e=>{console.error(e.stack);process.exitCode=1;}).finally(()=>library.close());

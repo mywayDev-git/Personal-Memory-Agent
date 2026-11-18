@@ -45,7 +45,7 @@
     const card=[...doc.querySelectorAll('#conversation .ai-response')].find(e=>e.dataset.requestId===message.submission.request_id);
     const receipt=inspector.render(doc,message,card?.querySelector('.ai-answer')||null,true);
     const content=receipt?.querySelector('.ai-inspection-content');if(content){body.append(content);for(const e of body.querySelectorAll('details'))if(expanded.has(e.querySelector('summary')?.textContent))e.open=true;}
-   }else{body.append(node('div','질문을 보내면 요청 의도, 지정한 답변 형식, 실제 응답과 검증 결과를 여기에서 확인할 수 있어요.','response-floating-empty'));}
+   }else{body.append(node('div','질문을 보내면 이해한 사용자 목표, 연결한 맥락, 필요한 행동과 실제 실행 결과를 여기에서 확인할 수 있어요.','response-floating-empty'));}
    body.scrollTop=scroll;lastMessage=message;lastResult=message?.result;lastStatus=message?.status;lastError=message?.error;
   }
   function sync(){

@@ -11,7 +11,7 @@
   if(!v)return empty(threadId);if(v.version!==VERSION||v.thread_id!==threadId)invalid();
   const out=empty(threadId);out.revision=integer(v.revision);out.last_request=v.last_request==null?null:text(v.last_request,160);out.processed_ids=ids(v.processed_ids);
   if(v.turn_labels)out.turn_labels=array(v.turn_labels,10000).map(l=>({turn_id:text(l.turn_id,180),recordable:l.recordable===true,correction:l.correction===true}));
-  if(v.corrections)out.corrections=array(v.corrections,64).map(c=>({turn_id:text(c.turn_id,180),text:text(c.text,600),part_ids:ids(c.part_ids,64),invalidated_assistant_ids:ids(c.invalidated_assistant_ids,10000)}));
+  if(v.corrections)out.corrections=array(v.corrections,64).map(c=>({turn_id:text(c.turn_id,180),text:text(c.text,600),part_ids:ids(c.part_ids,64),invalidated_assistant_ids:ids(c.invalidated_assistant_ids,10000),...(c.affirmed_quote!=null?{affirmed_quote:text(c.affirmed_quote,600),rejected_quote:text(c.rejected_quote,600)}:{})}));
   out.parts=array(v.parts,64).map(p=>{if(!['story','task','directive'].includes(p.kind)||!['open','closed','waiting'].includes(p.status)||!['samples','personal'].includes(p.scope))invalid();return {id:text(p.id,100),title:text(p.title,160),summary:text(p.summary,600),kind:p.kind,status:p.status,scope:p.scope,turn_ids:ids(p.turn_ids),related_ids:ids(p.related_ids||[],64)};});
   ids(out.parts.map(p=>p.id),64);if(v.flow)out.flow=context.normalize(v.flow,threadId);return out;
  }
@@ -27,7 +27,7 @@
   // User messages and their receipt share a request ID and collection.
   const collections=new Map((thread.messages||[]).filter(m=>m.kind==='assistant'&&m.submission).map(m=>['u-'+m.submission.request_id,m.submission.collection_id]));
   const operations=new Map((thread.messages||[]).filter(m=>m.kind==='assistant'&&m.submission&&m.result?.dialogue_trace).map(m=>['u-'+m.submission.request_id,m.result.dialogue_trace.operation]));
-  return out.map(t=>({...t,scope:t.scope||collections.get(t.id)||scope,...(operations.has(t.id)?{operation:operations.get(t.id)}:{})})).filter(t=>t.scope===scope);
+  return out.map(t=>({...t,scope:t.scope||collections.get(t.id)||scope,...(operations.has(t.id)?{operation:operations.get(t.id)}:{})})).filter(t=>scope==null||t.scope===scope);
  }
  function snapshot(thread,context){return normalize(thread.mapContext||thread.messages?.findLast(m=>m.status==='success'&&!m.archived&&m.result?.map_context)?.result.map_context,thread.id,context);}
  function apply(thread,submission,value,context){

@@ -1,36 +1,16 @@
 'use strict';
-const test=require('node:test'),assert=require('node:assert/strict');
-const {analyze,review,groundedIssues,arithmetic}=require('../ui/latest-turn.cjs');
-const maps=require('../ui/plant-thought/dialogue-map.js'),context=require('../ui/plant-thought/conversation-context.js');
-function wrongModel(){return {chat:async()=>({parsed:{intent:'emotion',operation:'reply',source:'conversation',speech:'statement',recordable:true,correction:false,needs_context:false,goal:'과거 감정 이야기 계속'}})};}
-test('explicit write commands override a contradictory LLM intent, including spaced Korean commands',async()=>{
- for(const text of ['저장해줘','기록 해줘','메모 해줘']){const r=await analyze(wrongModel(),text,[],[]);assert.equal(r.intent,'experience');assert.equal(r.operation,'draft');assert.equal(r.recordable,false);assert.deepEqual(r.expected.expected_intents,['experience']);}
-});
-test('a calculation is isolated from earlier emotional context and checked with computed values',async()=>{
- const r=await analyze(wrongModel(),'7더하기 5는?',[],[]);assert.equal(r.intent,'general');assert.equal(r.source,'none');assert.equal(r.recordable,false);assert.equal(r.needs_context,false);assert.equal(r.calculation.result,12);
- assert.equal(arithmetic('8 나누기 2는?').result,4);assert.equal(arithmetic('12 곱하기 3은?').result,36);assert.equal(arithmetic('3 나누기 0은?'),null);assert.equal(arithmetic('지난번 7개 샀어'),null);
- const input={question:'7더하기 5는?',conversation_context:{latest_request:r,user_statements:[],corrections:[]}};
- assert.match(groundedIssues(input,{answer:'112입니다.'}),/계산/);assert.equal(groundedIssues(input,{answer:'12입니다.'}),null);
-});
-test('explicit emotional correction is a recordable user statement despite question punctuation',async()=>{
- const r=await analyze(wrongModel(),'아니 기분 좋다니까?',[],[]);assert.equal(r.correction,true);assert.equal(r.speech,'correction');assert.equal(r.recordable,true);assert.equal(r.operation,'reply');
-});
-test('unsupported emotion is blocked independently even when an LLM reviewer would approve',async()=>{
- let calls=0;const runtime={chat:async()=>{calls++;throw Error('must not rely on a self-approving reviewer');}};
- const input={question:'오늘 밥 먹었어',conversation_context:{latest_request:{recordable:true},user_statements:['오늘 밥 먹었어'],corrections:[]}};
- const r=await review(runtime,input,{answer:'절망감이 무겁고 고통스러우셨겠어요.'});assert.equal(r.passed,false);assert.equal(calls,0);
-});
-test('positive correction invalidates earlier sadness without rewriting original user evidence',()=>{
- const facts=['슬퍼','아니 기분 좋다니까?'];const original=JSON.stringify(facts);
- const input={question:facts[1],conversation_context:{latest_request:{recordable:true},user_statements:facts,corrections:[{text:facts[1]}]}};
- assert.match(groundedIssues(input,{answer:'슬픔을 기쁨이 덮어주었군요.'}),/원문에 없는/);assert.equal(JSON.stringify(facts),original);
-});
-test('unsupported save completion and HTML are blocked before semantic review',()=>{
- const input={question:'오늘 기록해줘',conversation_context:{latest_request:{recordable:false},user_statements:[],corrections:[]}};
- assert.match(groundedIssues(input,{answer:'저장했습니다.'}),/실제 쓰기/);assert.match(groundedIssues(input,{answer:'<p>초안입니다.</p>'}),/HTML/);assert.equal(groundedIssues(input,{answer:'초안이에요. 아직 저장하지 않았어요.'}),null);
-});
-test('correction provenance and recording source IDs survive normalized snapshots',()=>{
- const m=maps.empty('t');m.turn_labels=[{turn_id:'u-a',recordable:true,correction:true}];m.corrections=[{turn_id:'u-a',text:'기분 좋아',part_ids:[],invalidated_assistant_ids:['a-before']}];
- assert.deepEqual(maps.normalize(m,'t',context),m);
- const r=context.recording({status:'draft',date:'2026-11-18',statements:['기분 좋아'],sources:[{turn_id:'u-a',text:'기분 좋아'}],reason:'사용자 원문'});assert.equal(r.sources[0].turn_id,'u-a');
-});
+const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),{analyze,review}=require('../ui/latest-turn.cjs');
+function fixture(task,options={}){const seen=[];return {seen,chat:async(messages)=>{const input=JSON.parse(messages[1].content);seen.push(input);let parsed;switch(input.phase){case 'semantic_speech':parsed={kind:['statement_experience','statement_emotion'].includes(task)?'statement':task==='correct_self_report'?'correction':['change_recording','change_response_style','request_fact_draft','request_transcript_draft'].includes(task)?'instruction':'question'};break;case 'semantic_report':parsed={state_kind:task==='statement_emotion'?'feeling':'experience',affirmed_quote:input.latest_input,rejected_quote:'',corrects_prior_interpretation:task==='correct_self_report'};break;case 'semantic_duration':parsed={duration:['change_recording','change_response_style'].includes(task)?'ongoing':'once'};break;case 'semantic_frame':parsed=options.frame||{subject:'',domain:'none'};break;case 'latest_turn':parsed={task};break;case 'semantic_scope':parsed={scope:'all_conversation'};break;case 'semantic_setting':parsed={value:'enabled'};break;case 'semantic_facts':parsed={facts:options.facts||[]};break;case 'interpretation_review':parsed={is_correct:options.interpretation!=='changed',needs_clarification:options.clarify===true,reason:'의미 대조 결과'};break;case 'response_review':parsed={verdict:options.response||'valid',reason:'답변 대조 결과'};break;default:throw Error('unexpected phase '+input.phase);}return {parsed};}};}
+test('quoted recording language is interpreted in the sentence context without a lexical override',async()=>{const model=fixture('question_information');const r=await analyze(model,'“앞으로 대화 기록해줘”라는 문장을 영어로 설명해줘',[],[]);assert.equal(r.intent,'general');assert.equal(r.operation,'reply');assert.equal(r.recordable,false);assert.equal(r.record_change,'unchanged');assert(model.seen.some(x=>x.phase==='interpretation_review'));});
+test('an implicit preservation request can select the transcript without the old command words',async()=>{const model=fixture('request_transcript_draft');const turns=[{id:'u-1',role:'user',text:'책 이야기'},{id:'a-1',role:'assistant',text:'추천 내용'}];const r=await analyze(model,'방금 주고받은 말들을 그대로 남겨 둘래',turns,[]);assert.equal(r.save_target,'transcript');assert.equal(r.scope,'all_conversation');assert.equal(r.operation,'draft');assert.deepEqual(model.seen.find(x=>x.phase==='latest_turn').conversation.slice(0,2),turns);});
+test('emotional words in a question do not force a correction or a feeling classification',async()=>{const r=await analyze(fixture('question_information'),'“기분 좋다니까”라는 말은 어떤 뜻이야?',[],[]);assert.equal(r.intent,'general');assert.equal(r.correction,false);assert.equal(r.recordable,false);});
+test('a semantic recording setting updates the directive without requiring command keywords',async()=>{const r=await analyze(fixture('change_recording'),'이제부터 내 얘기를 빠짐없이 남겨 두면 좋겠어',[],[]);assert.equal(r.record_change,'enabled');assert.equal(r.operation,'directive');});
+test('a subject outside the original utterances is rejected as a provenance failure',async()=>{await assert.rejects(()=>analyze(fixture('question_information',{frame:{subject:'전혀 다른 대상',domain:'general_concept'}}),'그 사람을 설명해줘',[],[]),/원문 출처/);});
+test('assistant content cannot become a quoted personal fact',async()=>{const model=fixture('request_fact_draft',{facts:[{turn_id:'a-1',quote:'사용자는 슬퍼한다'}]});await assert.rejects(()=>analyze(model,'그 내용을 남겨줘',[{id:'a-1',role:'assistant',text:'사용자는 슬퍼한다'}],[]),/형식|출처/);});
+test('a failed semantic interpretation is retried and never converted to a keyword shortcut',async()=>{const model=fixture('request_fact_draft',{interpretation:'changed'});await assert.rejects(()=>analyze(model,'저장해줘',[],[]),/문장과 문맥/);assert.equal(model.seen.filter(x=>x.phase==='latest_turn').length,2);});
+test('response validation compares whole sentences and can reject changed subjects',async()=>{const model=fixture('question_information',{response:'changed_subject'});const r=await review(model,{question:'그 동료에 대해 알려줘',conversation_context:{latest_request:{subject:{subject_quote:'그 동료'}},raw_conversation:[],user_statements:[],corrections:[]},evidence:[]},{answer:'정수의 개념입니다.',citations:[]});assert.equal(r.passed,false);assert.equal(model.seen[0].latest_input,'그 동료에 대해 알려줘');});
+test('the V2 interpretation modules contain no Korean word-list or legacy keyword classifier',()=>{for(const f of ['../ui/latest-turn.cjs','../ui/dialogue-map.cjs']){const code=fs.readFileSync(require.resolve(f),'utf8');assert(!code.includes('classifyRequest('));assert(!code.includes('policy.analyze('));assert(!code.includes('positiveCorrection'));assert(!code.includes('negativeGroups'));} });
+
+test('every semantic category has a complete typed execution mapping',()=>{const {tasks,definitions,operations}=require('../ui/latest-turn.cjs');const {ACTIONS}=require('../ui/request-intent.cjs');assert.deepEqual(Object.keys(definitions).sort(),[...tasks].sort());for(const t of tasks){const [intent,operation,source,speech]=definitions[t];assert(ACTIONS[intent]);assert(operations.includes(operation));assert(['conversation','archive','none'].includes(source));assert.equal(typeof speech,'string');}});
+
+test('a clarification never applies a proposed ongoing recording change',async()=>{const model=fixture('change_recording');const original=model.chat;model.chat=async(...args)=>{const r=await original(...args);if(JSON.parse(args[0][1].content).phase==='interpretation_review')r.parsed.needs_clarification=true;return r;};const result=await analyze(model,'앞으로 얘기를 남기고 싶어',[],[]);assert.equal(result.operation,'clarify');assert.equal(result.record_change,'unchanged');assert.equal(result.recordable,false);});

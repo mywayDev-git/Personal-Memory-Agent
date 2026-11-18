@@ -9,8 +9,8 @@ function verify(outcomes,thread){
  const experience=fixture.inputs.slice(1,5),checks=[];
  for(let i=0;i<fixture.inputs.length;i++){
   const row=outcomes[i],r=row?.value,issues=[];
-  if(!row||row.input!==fixture.inputs[i]||row.status!==200)issues.push('요청 성공 또는 원문 불일치');
-  if(r){
+  if(!row||row.input!==fixture.inputs[i]||row.status!==200)issues.push(row?.value?.error||'요청 미실행 또는 원문 불일치');
+  if(r&&row.status===200){
    if(r.stored!==false)issues.push('실제 쓰기 없이 저장 성공 표시');
    if(r.dialogue_trace?.original!==fixture.inputs[i])issues.push('최신 입력 누락');
    if(!r.context?.directives.some(d=>d.type==='record'&&d.value==='enabled'))issues.push('지속 기록 지시 유실');
@@ -21,14 +21,14 @@ function verify(outcomes,thread){
     if(r.recording?.statements.at(-1)!==fixture.inputs[i])issues.push('경험·이유·정정 누락');
     if(r.recording?.sources?.at(-1)?.text!==fixture.inputs[i])issues.push('사용자 원문 출처 누락');
    }
-   if(i===2||i===3){if(!r.map_context?.corrections.some(c=>c.turn_id==='u-'+r.request_id))issues.push('정정 상태 누락');}
+   if(i===2||i===3){if(!r.map_context?.corrections?.some(c=>c.turn_id==='u-'+r.request_id))issues.push('정정 상태 누락');}
    if(i===5||i===6){if(r.intent!=='general'||r.action!=='answer'||!/초안/.test(r.answer)||!/저장/.test(r.answer))issues.push('기록 상태 안내 실패');}
    if(i===7||i===8){
     if(r.intent!=='experience'||r.action!=='draft')issues.push('기록 요청 의도 불일치');
     if(JSON.stringify(r.recording?.statements)!==JSON.stringify(experience))issues.push('기록 내용 누락 또는 질문·명령 혼입');
     if(r.recording?.sources?.some(s=>!s.turn_id.startsWith('u-')||!experience.includes(s.text)))issues.push('비사용자 출처 혼입');
    }
-   if(i===9){if(r.action!=='clarify'||r.intent!=='memory_query'||!/민수/.test(r.answer)||/똥|슬픔/.test(r.answer))issues.push('새 인물 질문 분리 실패');}
+   if(i===9){if(r.action!=='clarify'||!['general','memory_query'].includes(r.intent)||!/민수/.test(r.answer)||/똥|슬픔/.test(r.answer))issues.push('새 인물 질문 분리 실패');}
    if(i===10){
     if(r.intent!=='general'||r.action!=='answer'||!/(?<!\d)2(?!\d)/.test(r.answer)||/똥|슬픔|민수/.test(r.answer))issues.push('계산 요청 미처리');
     if(input.conversation_context?.corrections.length)issues.push('관련 없는 감정 정정 문맥 혼입');

@@ -16,12 +16,20 @@ function decision(text,userId,old,batch){
 async function app(t,change,options={}){
  const thread={id:'map-test',draft:'',inputVersion:0,messages:[]};let modelCalls=0,scopeCalls=0;
  const runtime={chat:async(messages,schema)=>{const input=JSON.parse(messages[1].content);modelCalls++;
+  if(input.phase==='semantic_speech'){const v=decision(input.latest_input,'current',[],[]).decision;return {parsed:{kind:/내 기록에서/.test(input.latest_input)?'question':v.operation==='directive'||v.operation==='draft'?'instruction':v.operation==='close'?'reference':v.intent==='emotion'?'statement':'question'}};}
+  if(input.phase==='semantic_report')return {parsed:{state_kind:'feeling',affirmed_quote:input.latest_input,rejected_quote:'',corrects_prior_interpretation:false}};
+  if(input.phase==='semantic_duration')return {parsed:{duration:'once'}};
+  if(input.phase==='semantic_frame')return {parsed:{subject:'',domain:'none'}};
   if(input.phase==='latest_turn'){
    const d=decision(input.latest_input,'current',[],[]),v=d.decision;
-   if(/내 기록에서/.test(input.latest_input))Object.assign(v,{intent:'memory_query',source:'archive',speech:'question'});
-   return {parsed:{intent:v.intent,operation:v.operation,source:v.source,speech:v.speech,recordable:d.parts[0].kind==='story'&&v.operation==='reply',correction:false,needs_context:v.source==='conversation'||['close','resume'].includes(v.operation),goal:input.latest_input}};
+   const task=/내 기록에서/.test(input.latest_input)?'question_personal_memory':v.operation==='directive'?'change_recording':v.operation==='draft'?'request_fact_draft':v.operation==='close'?'close_topic':v.intent==='emotion'?'statement_emotion':'question_information';
+   return {parsed:{task}};
   }
-  if(input.phase==='response_review')return {parsed:{addresses_latest_request:true,unsupported_personal_claim:false,contradicts_correction:false,claims_unexecuted_write:false,reason:''}};
+  if(input.phase==='semantic_setting')return {parsed:{value:'enabled'}};
+  if(input.phase==='semantic_scope')return {parsed:{scope:'all_conversation'}};
+  if(input.phase==='semantic_facts')return {parsed:{facts:input.conversation.filter(t=>t.role==='user'&&decision(t.text,t.id,[],[]).parts[0].kind==='story'&&!/끝|여기까지/.test(t.text)).map(t=>({turn_id:t.id,quote:t.text}))}};
+  if(input.phase==='interpretation_review')return {parsed:{is_correct:true,needs_clarification:false,reason:''}};
+  if(input.phase==='response_review')return {parsed:{verdict:'valid',reason:''}};
   if(input.phase==='dialogue_map'){const text=[...input.new_turns].reverse().find(t=>t.role==='user')?.text||input.current_input;const out=decision(text,input.latest_user_id,input.parts,input.new_turns);if(input.latest_request)for(const key of ['intent','operation','source','speech'])out.decision[key]=input.latest_request[key];if(schema.properties.decision.properties.scope.enum.length===1)out.decision.scope=schema.properties.decision.properties.scope.enum[0];return {parsed:change?change(out,input):out};}
   assert.equal(typeof input.question,'string');assert(input.conversation_context.augmented_request);if(input.evidence.length)return {parsed:{intent:'memory_query',action:'answer',answer:'회사 하린입니다.',citations:[{evidence_id:input.evidence[0].evidence_id,sentence_id:'S1'}]}};
   assert.equal(schema.properties.citations.maxItems,0);
