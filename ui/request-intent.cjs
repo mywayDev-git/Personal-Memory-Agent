@@ -28,7 +28,7 @@ function commandText(text){
 }
 function contract(kind,intents,actions,retrieval){return {version:VERSION,kind,expected_intents:intents,allowed_actions:actions,retrieval};}
 function classifyRequest(text){
- const active=commandText(text),clauses=active.split(/[.!?。！？\n]+/u).map(s=>s.trim()).filter(Boolean);
+ const active=commandText(text).replace(/(기록|저장|기억|메모)\s+(?=해)/g,'$1'),clauses=active.split(/[.!?。！？\n]+/u).map(s=>s.trim()).filter(Boolean);
  const intents=new Set();let query=false,negative=false;
  for(const clause of clauses){
   if(noStore.test(clause)||withoutStoring.test(clause))negative=true;

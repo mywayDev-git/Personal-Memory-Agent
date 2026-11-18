@@ -61,6 +61,7 @@
  const remember=previewRemember;
  previewRemember=function(){remember();if(ready&&!locked){dirty=JSON.stringify(previewThreads)!==persistedThreads;if(dirty){clearTimeout(timer);timer=setTimeout(()=>persist(),450);}}};
  async function flush(){available();await persist();if(saveFailure)throw saveFailure;while(dirty)await persist();}
+ window.PlantLibraryPersistence=Object.freeze({flush});
  function personalCollection(){return {version:1,dataset:'personal-library',synthetic:false,default_profile:'personal',title:'개인 자료함',profiles:[{id:'personal',label:'개인 자료함',record_count:personalRecords.length,question_count:0}],records:personalRecords.map(r=>({...r,profile:'personal',imported_at:null})),examples:[],record_count:personalRecords.length,question_count:0,provenance:{files:{}}};}
  function switchCollection(next){
   next=next==='samples'&&testEnabled?'samples':'personal';

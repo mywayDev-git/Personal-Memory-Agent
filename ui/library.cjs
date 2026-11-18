@@ -3,6 +3,7 @@ const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypt
 const {DatabaseSync}=require('node:sqlite');
 const {normalizeInspection}=require('./chat-inspection.cjs');
 const contextState=require('./plant-thought/conversation-context.js');
+const maps=require('./plant-thought/dialogue-map.js');
 const FORMAT='plant-thought-backup',MAX_BYTES=20*1024*1024;
 const fail=(message,status=400)=>{throw Object.assign(Error(message),{status});};
 const canonical=value=>JSON.stringify(value&&typeof value==='object'?Array.isArray(value)?value.map(v=>JSON.parse(canonical(v))):Object.fromEntries(Object.keys(value).sort().map(k=>[k,JSON.parse(canonical(value[k]))])):value);
@@ -14,7 +15,8 @@ function integer(v,min=0){if(!Number.isSafeInteger(v)||v<min)fail('정수 값이
 function list(v,max){if(!Array.isArray(v)||v.length>max)fail('자료 목록의 형식 또는 개수가 올바르지 않습니다.');return v;}
 function unique(rows){if(new Set(rows.map(r=>r.id)).size!==rows.length)fail('파일 안에 같은 ID가 중복되어 있습니다.');return rows;}
 function citation(c){if(!c||typeof c!=='object')fail('인용 형식이 올바르지 않습니다.');const start=integer(c.start),end=integer(c.end);if(end<start)fail('인용 구간이 올바르지 않습니다.');return {source_id:id(c.source_id),revision:integer(c.revision,1),title:text(c.title??'',1000),quote:text(c.quote),start,end,...(c.original_source_id?{original_source_id:id(c.original_source_id)}:{})};}
-function submission(s,threadId){if(!s||typeof s!=='object')fail('대화 제출 정보가 없습니다.');if(s.thread_id!==threadId)fail('대화와 제출 정보의 ID가 다릅니다.');return {request_id:id(s.request_id),thread_id:threadId,text:text(s.text,8000),input_version:integer(s.input_version??0),profile:text(s.profile??'personal',80),example_id:text(s.example_id??'',160),collection_id:s.collection_id==='personal'?'personal':'samples',history:list(s.history??[],4).map(v=>text(v,8000)),...(s.context?{context:contextState.normalize(s.context,threadId)}:{}),...(s.context_selection?{context_selection:id(s.context_selection)}:{}),...(s.pending_target?{pending_target:id(s.pending_target)}:{}),...(s.inspect===true?{inspect:true}:{})};}
+function mapSubmission(s,threadId){if(s.analysis_version==null||s.analysis_version==='v1')return s.analysis_version?{analysis_version:'v1'}:{};if(s.analysis_version!=='v2')fail('지원하지 않는 대화 버전입니다.');return {analysis_version:'v2',map_context:maps.normalize(s.map_context,threadId,contextState),conversation_ids:list(s.conversation_ids,10000).map(v=>text(v,180))};}
+function submission(s,threadId){if(!s||typeof s!=='object')fail('대화 제출 정보가 없습니다.');if(s.thread_id!==threadId)fail('대화와 제출 정보의 ID가 다릅니다.');return {request_id:id(s.request_id),thread_id:threadId,text:text(s.text,8000),input_version:integer(s.input_version??0),profile:text(s.profile??'personal',80),example_id:text(s.example_id??'',160),collection_id:s.collection_id==='personal'?'personal':'samples',history:list(s.history??[],4).map(v=>text(v,8000)),...(s.context?{context:contextState.normalize(s.context,threadId)}:{}),...(s.context_selection?{context_selection:id(s.context_selection)}:{}),...(s.pending_target?{pending_target:id(s.pending_target)}:{}),...(s.inspect===true?{inspect:true}:{}),...mapSubmission(s,threadId)};}
 function thread(t){
  if(!t||typeof t!=='object')fail('대화 형식이 올바르지 않습니다.');const threadId=id(t.id);
  const messages=list(t.messages,10000).map(m=>{
@@ -30,6 +32,9 @@ function thread(t){
   if(m.error!=null)row.error=text(m.error,4000);if(m.stage!=null)row.stage=text(m.stage,100);
   if(m.result){const r=m.result;if(r.request_id!==row.submission.request_id||r.thread_id!==threadId)fail('AI 응답 ID가 일치하지 않습니다.');row.result={request_id:r.request_id,thread_id:threadId,answer:text(r.answer),action:text(r.action,80),intent:text(r.intent,80),model:text(r.model??'',200),citations:list(r.citations??[],100).map(citation),scope:{mode:text(r.scope?.mode??'restored',80),accessible_count:integer(r.scope?.accessible_count??0),retrieved_count:integer(r.scope?.retrieved_count??0)},stored:false};}
   if(row.result){const r=m.result;for(const field of ['profile','example_id','context_id'])if(r.scope?.[field]!=null)row.result.scope[field]=text(r.scope[field],160);if(r.elapsed_ms!=null){if(typeof r.elapsed_ms!=='number'||!Number.isFinite(r.elapsed_ms)||r.elapsed_ms<0)fail('응답 시간 형식이 올바르지 않습니다.');row.result.elapsed_ms=r.elapsed_ms;}if(r.usage){row.result.usage={};for(const field of ['prompt_tokens','completion_tokens','total_tokens'])if(r.usage[field]!=null)row.result.usage[field]=integer(r.usage[field]);}}
+  if(row.result&&m.result.analysis_version)row.result.analysis_version=text(m.result.analysis_version,10);
+  if(row.result&&m.result.map_context)row.result.map_context=maps.normalize(m.result.map_context,threadId,contextState);
+  if(row.result&&m.result.dialogue_trace)row.result.dialogue_trace=maps.trace(m.result.dialogue_trace);
   if(row.result&&m.result.context)row.result.context=contextState.normalize(m.result.context,threadId);
   if(row.result&&m.result.recording)row.result.recording=contextState.recording(m.result.recording);
   if(row.result&&m.result.context_info)row.result.context_info=contextState.trace(m.result.context_info);
@@ -42,6 +47,7 @@ function thread(t){
   if(row.status==='success'&&!row.result)fail('완료된 AI 답변의 내용이 없습니다.');return row;
  });
  const out={id:threadId,title:text(t.title??'새 대화',1000),draft:text(t.draft??'',8000),inputVersion:integer(t.inputVersion??0),createdAt:date(t.createdAt),updatedAt:date(t.updatedAt),messages};
+ if(t.mapContext)out.mapContext=maps.normalize(t.mapContext,threadId,contextState);
  if(t.context)out.context=contextState.normalize(t.context,threadId);
  if(t.deletedAt!=null)out.deletedAt=integer(t.deletedAt,1);
  if(t.sampleScope)out.sampleScope={profile:text(t.sampleScope.profile??'personal',80),questionId:text(t.sampleScope.questionId??'',160),collectionId:t.sampleScope.collectionId==='personal'?'personal':'samples'};
@@ -79,6 +85,8 @@ function merge(state,incoming,options={}){
    m.submission.thread_id=row.id;if(m.result){m.result.thread_id=row.id;for(const c of m.result.citations){const mapped=mapping.get(c.source_id);if(mapped?.startsWith('unavailable-'))c.original_source_id=c.source_id;c.source_id=mapped||c.source_id;}}
   }
   if(kind==='threads'){
+    if(row.mapContext)row.mapContext=maps.rebind(row.mapContext,row.id,contextState,mapping);
+    for(const m of row.messages)if(m.kind==='assistant'){if(m.submission.map_context)m.submission.map_context=maps.rebind(m.submission.map_context,row.id,contextState,mapping);if(m.result?.map_context)m.result.map_context=maps.rebind(m.result.map_context,row.id,contextState,mapping);}
     if(row.context)row.context=contextState.remap(row.context,row.id,mapping);
     for(const m of row.messages)if(m.kind==='assistant'){
       if(m.submission.context)m.submission.context=contextState.remap(m.submission.context,row.id,mapping);

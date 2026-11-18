@@ -25,7 +25,6 @@
   let open=saved?.open===true,selection='latest',threadId=null,lastMessage=null,lastResult=null,lastStatus=null,lastError=null,optionSignature='';
   function save(){try{win.sessionStorage.setItem(storageKey,JSON.stringify({version:1,open}));}catch{}}
   function close(focus=false){open=false;panel.hidden=true;launcher.setAttribute('aria-expanded','false');launcher.setAttribute('aria-label','요청·응답 정보 패널 열기');save();if(focus&&!host.hidden)launcher.focus();}
-  function closeOther(){const other=doc.getElementById('archiveDockToggle');if(other?.getAttribute('aria-expanded')==='true')other.click();}
   function render(force=false){
    const thread=win.previewThread?.();if(thread?.id!==threadId){threadId=thread?.id||null;selection='latest';force=true;}
    const current=selectResponse(thread,selection);selection=current.selection;
@@ -54,13 +53,12 @@
    if(!win.PlantTestMode?.enabled&&open)close();
    if(!allowed)return;
    panel.hidden=!open;launcher.setAttribute('aria-expanded',String(open));launcher.setAttribute('aria-label',open?'요청·응답 정보 패널 접기':'요청·응답 정보 패널 열기');
-   if(open)closeOther();render();
+   render();
   }
-  launcher.addEventListener('click',()=>{if(open){close();return;}closeOther();open=true;panel.hidden=false;launcher.setAttribute('aria-expanded','true');launcher.setAttribute('aria-label','요청·응답 정보 패널 접기');render(true);save();dismiss.focus();});
+  launcher.addEventListener('click',()=>{if(open){close();return;}open=true;panel.hidden=false;launcher.setAttribute('aria-expanded','true');launcher.setAttribute('aria-label','요청·응답 정보 패널 접기');render(true);save();dismiss.focus();});
   dismiss.addEventListener('click',()=>close(true));
   select.addEventListener('change',()=>{selection=select.value;render(true);});
   host.addEventListener('keydown',event=>{if(event.key==='Escape'&&open){event.preventDefault();event.stopPropagation();close(true);}},true);
-  doc.getElementById('archiveDockToggle')?.addEventListener('click',()=>{if(doc.getElementById('archiveDockToggle').getAttribute('aria-expanded')==='true')close();});
   doc.addEventListener('plant:test-mode-changed',sync);
   const draw=win.previewRenderMessages;win.previewRenderMessages=function(...args){const result=draw.apply(this,args);sync();return result;};
   const navigate=win.go;win.go=function(...args){const result=navigate.apply(this,args);sync();return result;};

@@ -1,7 +1,7 @@
 'use strict';
 // An execution receipt: explicit inputs, declared output fields, and checks. No hidden reasoning.
 const VERSION='chat-inspection-v1';
-const CHECKS=['conversation_context','schema','write_policy','intent_action','request_intent','conversation_context','citation_references','required_citations'];
+const CHECKS=['conversation_context','schema','write_policy','intent_action','request_intent','latest_grounding','citation_references','required_citations'];
 const STAGES=['context','scope','context','retrieval','connection','model','validation','complete'];
 function invalid(){throw Object.assign(Error('요청·응답 정보의 형식이 올바르지 않습니다.'),{status:400});}
 function string(v,max=40000){if(typeof v!=='string'||v.length>max)invalid();return v;}
@@ -24,7 +24,7 @@ function normalizeInspection(value){
  if(body.temperature!==0||body.stream!==false||body.chat_template_kwargs?.enable_thinking!==false)invalid();
  const out={version:VERSION,captured_at:string(value.captured_at,64),stage:value.stage,context_tokens:number(value.context_tokens,1),input_prepared:value.input_prepared===true,model_response_received:value.model_response_received===true,
  request_body:{messages,temperature:0,seed:number(body.seed),max_tokens:number(body.max_tokens,1),stream:false,chat_template_kwargs:{enable_thinking:false},response_format:{type:'json_schema',json_schema:{name:string(format.json_schema.name,100),strict:true,schema:schemaCopy(format.json_schema.schema)}}},checks:{}};
- for(const key of CHECKS){const state=value.checks?.[key]??(['intent_action','request_intent','conversation_context'].includes(key)?'not_run':undefined);if(!['not_run','passed','failed','not_required'].includes(state))invalid();out.checks[key]=state;}
+ for(const key of CHECKS){const state=value.checks?.[key]??(['intent_action','request_intent','conversation_context','latest_grounding'].includes(key)?'not_run':undefined);if(!['not_run','passed','failed','not_required'].includes(state))invalid();out.checks[key]=state;}
  if(value.output!=null){const p=value.output;if(!p||!Array.isArray(p.citations)||p.citations.length>100)invalid();out.output={intent:string(p.intent,80),action:string(p.action,80),answer:string(p.answer,200000),citations:p.citations.map(c=>({evidence_id:string(c.evidence_id,160),sentence_id:string(c.sentence_id,160)}))};}
  if(Buffer.byteLength(JSON.stringify(out))>1000000)invalid();return out;
 }

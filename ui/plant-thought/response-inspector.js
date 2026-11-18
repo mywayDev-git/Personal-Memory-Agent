@@ -23,7 +23,7 @@
   advice:{when:'사용자가 요청한 고민이나 목표에 대해 실천할 수 있는 작은 방법을 제안하는 경우입니다.',context:'사용자가 독서를 시작할 방법을 물었습니다.',user:'독서 습관을 어떻게 시작할까?',response:'하루 10분처럼 작은 목표로 시작하고, 읽을 책을 미리 가까이 두는 방법을 시도해 보세요.'}
  };
  const stages={context:'대화 맥락 확인',scope:'기록 범위 확인',retrieval:'원문 검색',connection:'AI 연결',model:'모델 호출',validation:'답변 검증',complete:'처리 완료'};
- const checks={conversation_context:'대화 대상과 현재 원문 연결',schema:'응답 JSON 형식',write_policy:'기록 변경 응답 규칙',intent_action:'의도와 후속 행동의 일치',request_intent:'명시적 입력 요청과 응답 분류의 일치',citation_references:'인용 문장과 원문 연결',required_citations:'기억 답변의 필수 인용'};
+ const checks={conversation_context:'대화 대상과 현재 원문 연결',schema:'응답 JSON 형식',write_policy:'기록 변경 응답 규칙',intent_action:'의도와 후속 행동의 일치',request_intent:'명시적 입력 요청과 응답 분류의 일치',latest_grounding:'최신 요청·정정·사용자 원문과 답변의 일치',citation_references:'인용 문장과 원문 연결',required_citations:'기억 답변의 필수 인용'};
  const checkStates={not_run:'확인 단계에 도달하지 않음',passed:'통과',failed:'실패',not_required:'이 응답에는 해당 없음'};
  const features=[['h1,h2,h3,h4,h5,h6','제목'],['p','문단'],['ul','글머리 목록'],['ol','번호 목록'],['table','표'],['pre','코드 블록'],['blockquote','인용문'],['strong,em','강조'],['a','링크']];
  function label(map,value){return value?(map[value]||'알 수 없는 분류')+' ('+value+')':'분류 결과 없음';}

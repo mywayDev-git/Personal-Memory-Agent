@@ -23,15 +23,15 @@
  }
  function recording(value){
   if(!['draft','skipped'].includes(value.status)||!/^\d{4}-\d{2}-\d{2}$/.test(value.date))invalid();
-  return {status:value.status,date:string(value.date,10),statements:array(value.statements||[],8).map(s=>string(s,600)),reason:string(value.reason||'',200)};
+  return {status:value.status,date:string(value.date,10),statements:array(value.statements||[],8).map(s=>string(s,600)),reason:string(value.reason||'',200),...(value.sources?{sources:array(value.sources,8).map(s=>({turn_id:string(s.turn_id,180),text:string(s.text,600)}))}:{})};
  }
  function snapshot(thread,scope){
   if(thread.context)return normalize(thread.context,thread.id);
-  const latest=thread.messages?.findLast(m=>m.status==='success'&&!m.archived&&m.result?.context)?.result.context;
+  const latest=thread.messages?.findLast(m=>m.status==='success'&&!m.archived&&m.submission?.analysis_version!=='v2'&&m.result?.context)?.result.context;
   if(latest)return normalize(latest,thread.id);
   const out=empty(thread.id);
   // Old conversations can contribute user questions and citation references, never old answer prose.
-  for(const m of (thread.messages||[]).filter(m=>m.status==='success'&&!m.archived&&m.result?.citations?.length).slice(-5)){
+  for(const m of (thread.messages||[]).filter(m=>m.status==='success'&&!m.archived&&m.submission?.analysis_version!=='v2'&&m.result?.citations?.length).slice(-5)){
    const r=m.result,id='legacy-'+m.submission.request_id,mode=m.submission.collection_id||'samples';
    const refs=r.citations.filter(c=>c.quote.length<=1000).slice(0,4).map(reference);
    out.topics.push({id,label:r.citations[0].title.slice(0,200),scope:mode,kind:'memory_query',questions:[m.submission.text.slice(0,600)],references:refs,focus:'',correction:'',turn:out.topics.length});out.active=id;
@@ -55,9 +55,13 @@
  function trace(v){if(!['new_topic','related','continue','return','correction','cancel','mixed'].includes(v.relation))invalid();return {relation:v.relation,topic:v.topic==null?null:string(v.topic,200),choices:array(v.choices||[],8).map(c=>({id:string(c.id,160),label:string(c.label,200),...(c.pending?{pending:true}:{})}))};}
  function rebind(thread,newId){
   thread.id=newId;if(thread.context)thread.context=remap(thread.context,newId);
+  const maps=typeof module==='object'&&module.exports?require('./dialogue-map.js'):window.PlantDialogueMap;
+  if(thread.mapContext)thread.mapContext=maps.rebind(thread.mapContext,newId,{normalize,remap});
   for(const m of thread.messages||[])if(m.kind==='assistant'){
    m.submission.thread_id=newId;if(m.submission.context)m.submission.context=remap(m.submission.context,newId);
+   if(m.submission.map_context)m.submission.map_context=maps.rebind(m.submission.map_context,newId,{normalize,remap});
    if(m.result){m.result.thread_id=newId;if(m.result.context)m.result.context=remap(m.result.context,newId);
+    if(m.result.map_context)m.result.map_context=maps.rebind(m.result.map_context,newId,{normalize,remap});
     for(const p of m.result.parts||[])if(p.result){p.result.thread_id=newId;if(p.result.context)p.result.context=remap(p.result.context,newId);}
    }
   }return thread;

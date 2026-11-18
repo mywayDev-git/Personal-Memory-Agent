@@ -91,12 +91,13 @@
       const details=node('details',null,'chat-recording-preview');details.append(node('summary','기록 초안 보완 · '+result.recording.date+' · 저장 전'));
       details.append(node('p','사용자가 표현한 경험과 느낌'));for(const text of result.recording.statements)details.append(node('blockquote',text));body.append(details);
     }
+    const mapView=window.PlantDialogueMapView?.(result);if(mapView)body.append(mapView);
     for(const choice of result.context_info?.choices||[]){const button=node('button',choice.label,'chat-context-choice');button.type='button';button.disabled=pending(thread);button.addEventListener('click',()=>submitContextChoice(thread,message.submission.text,choice.pending?{pendingTarget:choice.id}:{selection:choice.id}));body.append(button);}
   }
   previewRenderMessages=function(){
     const log=el('conversation'),thread=previewThread();log.replaceChildren();
     document.querySelector('.chat-ongoing-instructions')?.remove();
-    const mode=currentScope().collectionId||'samples',directives=thread?.context?.directives?.filter(d=>d.scope===mode)||[];
+    const mode=currentScope().collectionId||'samples',activeContext=window.PlantChatVersion?.current()==='v2'?thread?.mapContext?.flow:thread?.context,directives=activeContext?.directives?.filter(d=>d.scope===mode)||[];
     if(directives.length){const strip=node('div',null,'chat-ongoing-instructions');strip.setAttribute('aria-label','이 대화의 지속 지시');
       for(const d of directives){const label=d.type==='record'?(d.value==='enabled'?'기록 초안 이어가기 켜짐':'기록 초안 이어가기 꺼짐'):(d.value==='brief'?'짧은 답변':'기본 답변 길이');strip.append(node('span',label));}
       strip.append(node('small','현재 대화에 적용'));document.querySelector('#chat .chat-input-area').prepend(strip);
@@ -108,7 +109,7 @@
       const card=node('article',null,'ai-response');card.setAttribute('aria-label','AI 응답');card.dataset.requestId=message.submission.request_id;
       const avatar=node('span','♧','ai-response-avatar');avatar.setAttribute('aria-hidden','true');
       const body=node('div',null,'ai-response-body'),header=node('div',null,'ai-response-header');
-      const brand=node('span','Plant Thought','ai-response-brand');header.append(brand);body.append(header);card.append(avatar,body);
+      const brand=node('span','Plant Thought','ai-response-brand');header.append(brand,node('span',message.submission.analysis_version==='v2'?'V2 · 대화 지도':'V1','chat-version-label'));body.append(header);card.append(avatar,body);
       if(message.archived&&message.status!=='success'){body.append(node('p','가져온 대화의 중단된 요청입니다. 자동으로 재실행하지 않습니다.'),node('p',message.error||''));}
       else if(message.status==='pending'){card.setAttribute('role','status');body.append(node('p','요청과 대화 맥락을 확인하고 답변을 만드는 중이에요.','ai-pending'));}
       else if(['error','cancelled'].includes(message.status)){
@@ -121,7 +122,7 @@
       }
       log.append(card);
     }
-    const waiting=thread?.context?.pending.filter(p=>p.status==='awaiting_confirmation'&&p.scope===(currentScope().collectionId||'samples'))||[];
+    const waiting=activeContext?.pending.filter(p=>p.status==='awaiting_confirmation'&&p.scope===(currentScope().collectionId||'samples'))||[];
     if(waiting.length){const details=node('details',null,'chat-pending-tasks');details.append(node('summary','확인 대기 초안 '+waiting.length+'개'));
       for(const task of waiting){const row=node('div',null,'chat-pending-task');row.append(node('p',task.proposal));const cancel=node('button','이 초안 취소');cancel.type='button';cancel.disabled=pending(thread);cancel.addEventListener('click',()=>submitContextChoice(thread,'그 작업 취소해줘',{pendingTarget:task.id}));row.append(cancel);details.append(row);}log.append(details);}
     el('chatInput').value=thread?.draft||'';updateChatInput();previewRenderHistory();scopeLabel();
@@ -144,13 +145,14 @@
     if(previewActiveId===thread.id)previewRenderMessages();previewRemember();scrollChatToBottom();
     try{
       await bootstrap();
+      if(message.submission.analysis_version==='v2')await window.PlantLibraryPersistence?.flush();
       if(thread.deletedAt||controller.signal.aborted)return;
       const response=await fetch('/api/chat/respond',{method:'POST',headers:{'Content-Type':'application/json','X-Plant-Token':token},body:JSON.stringify(message.submission),signal:AbortSignal.any([AbortSignal.timeout(570000),controller.signal])});
       let result;try{result=await response.json();}catch{throw Object.assign(Error('AI 응답을 읽지 못했습니다.'),{stage:'validation'});}
       if(thread.deletedAt||controller.signal.aborted)return;
       if(!response.ok){if(response.status===403){token=null;bootstrapPromise=null;}throw Object.assign(Error(result.error||'AI 요청에 실패했습니다.'),{stage:result.stage||'connection',inspection:result.inspection});}
       if(result.request_id!==message.submission.request_id||result.thread_id!==thread.id||typeof result.answer!=='string'||!Array.isArray(result.citations))throw Object.assign(Error('응답이 제출한 작업과 일치하지 않습니다.'),{stage:'validation'});
-      message.result=result;message.status='success';state.applyContext(thread,message.submission,result.context);thread.updatedAt=new Date().toISOString();ready=true;
+      message.result=result;message.status='success';state.applyContext(thread,message.submission,result.context,result.map_context);thread.updatedAt=new Date().toISOString();ready=true;
     }catch(error){if(thread.deletedAt||controller.signal.aborted)return;message.status='error';message.stage=error.stage||'connection';message.error=error.name==='TimeoutError'?'응답을 기다리는 시간이 초과됐습니다. 같은 질문을 재시도할 수 있어요.':error.message;if(error.inspection)message.inspection=error.inspection;}
     finally{controllers.delete(message.submission.request_id);}
     if(previewActiveId===thread.id){previewRenderMessages();if(document.querySelector('.page.active')?.id==='chat')scrollChatToBottom();}
@@ -159,7 +161,7 @@
   sendChat=function(){
     const input=el('chatInput');if(!input.value.trim()||pending(previewThread()))return;
     if(!previewThread())newChat();const thread=previewThread();thread.draft=input.value;
-    const scope=currentScope();if(scope?.collectionId!=='personal'&&!scope?.questionId){previewToast('플로팅에서 질문 사례를 먼저 선택해 주세요.');return;}
+    const scope=currentScope();if(window.PlantChatVersion?.current()!=='v2'&&scope?.collectionId!=='personal'&&!scope?.questionId){previewToast('플로팅에서 질문 사례를 먼저 선택해 주세요.');return;}
     const submission=state.submission(thread,scope,{inspect:window.PlantTestMode?.enabled===true}),message={kind:'assistant',status:'pending',submission,createdAt:new Date().toISOString()};
     thread.messages.push({kind:'user',text:submission.text,requestId:submission.request_id,createdAt:new Date().toISOString()},message);thread.title=submission.text.trim().slice(0,28);
     // Consume only the accepted submission; response completion never edits the next draft.
