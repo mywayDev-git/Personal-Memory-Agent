@@ -2,7 +2,7 @@
 const fs=require('node:fs'),path=require('node:path');
 const plantFiles=new Map([
   ['/','index.html'],['/index.html','index.html'],['/plant-thought','index.html'],['/plant-thought/','index.html'],
-  ...['index.html','style.css','preview.css','layout.js','preview.js','diary-dates.js','archive-data.js','archive-preview.js','archive-preview.css','archive-floating.js','archive-floating.css','conversation-context.js','dialogue-map.js','chat-version.js','chat-state.js','markdown-it.min.js','chat-markdown.js','chat-connect.js','chat-connect.css','archive-readiness.js','archive-readiness.css','data-transfer.js','data-transfer.css','response-inspector.js','response-inspector.css','response-floating.js','response-floating.css','floating-workspace.js','dialogue-floating.js','dialogue-floating.css'].map(name=>['/plant-thought/'+name,name]),
+  ...['index.html','style.css','preview.css','layout.js','preview.js','diary-dates.js','archive-data.js','archive-preview.js','archive-preview.css','event-network.js','event-network.css','archive-floating.js','archive-floating.css','conversation-context.js','dialogue-map.js','chat-version.js','chat-state.js','markdown-it.min.js','chat-markdown.js','chat-connect.js','chat-connect.css','archive-readiness.js','archive-readiness.css','data-transfer.js','data-transfer.css','response-inspector.js','response-inspector.css','response-floating.js','response-floating.css','floating-workspace.js','dialogue-floating.js','dialogue-floating.css'].map(name=>['/plant-thought/'+name,name]),
 ]);
 function handleUi(req,res,url,root,{connected=false}={}){
   const file=plantFiles.get(url.pathname);

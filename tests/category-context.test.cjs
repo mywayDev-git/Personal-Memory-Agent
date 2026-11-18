@@ -8,7 +8,7 @@ const {ActionService} = require('../ui/action-service.cjs');
 test('V3 selects with the previous exchange, plans and answers with selected originals, and reuses its index', async t => {
   const db = new DatabaseSync(':memory:');
   t.after(()=>db.close());
-  const service = new ActionService({db,read:()=>({records:[]})});
+  const service = new ActionService({db,isThreadPurged:()=>false,read:()=>({records:[]})});
   const history = [];
   function exchange(id, question, answer, scope='personal') {
     history.push({id:'u-'+id,role:'user',text:question,scope},{id:'a-'+id,role:'assistant',text:answer,scope});

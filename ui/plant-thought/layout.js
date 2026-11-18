@@ -1,5 +1,5 @@
 const pages=[
-  'home','chat','emotion','archive','memorylab','settings'
+  'home','chat','emotion','archive','eventGraph','memorylab','settings'
 ];
 const today=seoulDate();
 const now=new Date(today+'T12:00:00+09:00');
@@ -26,6 +26,8 @@ function safe(v){
 }
 
 function go(id){
+  if(id==='settings'&&document.querySelector('.page.active')?.id==='chat'&&typeof openChatSettings==='function'){openChatSettings();return;}
+  if(id!=='settings'&&document.getElementById('chatSettingsDialog')?.open&&typeof closeChatSettings==='function')closeChatSettings();
   const target=document.getElementById(id);
   if(!target)return;
   if(id==='emotion'){

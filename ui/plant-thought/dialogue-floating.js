@@ -6,7 +6,7 @@
  }
  function mount(win){
   const doc=win.document,node=(tag,text,cls)=>{const e=doc.createElement(tag);if(text!=null)e.textContent=text;if(cls)e.className=cls;return e;};
-  const host=node('div',null,'dialogue-map-host');host.id='dialogueMapHost';
+  const host=node('div',null,'dialogue-map-host');host.id='dialogueMapHost';host.dataset.testOnly='';
   const panel=node('section',null,'dialogue-floating-panel');panel.id='dialogueFloatingPanel';panel.setAttribute('role','dialog');panel.setAttribute('aria-label','대화 지도');
   const header=node('div',null,'dialogue-floating-header'),titles=node('div');titles.append(node('small','V2 · LLM'),node('h2','대화 지도'));
   const close=node('button','접기','dialogue-floating-close');close.type='button';close.setAttribute('aria-label','대화 지도 패널 접기');header.append(titles,close);
@@ -28,9 +28,10 @@
    else body.append(node('p','V2로 대화하면 시간순 파트 요약, 현재 선택한 대상과 연결 원문을 여기서 확인할 수 있어요.','dialogue-floating-empty'));
    body.scrollTop=scroll;lastResult=message?.result;
   }
-  function sync(){host.hidden=!['home','chat','archive'].includes(doc.querySelector('.page.active')?.id);panel.hidden=!open;launcher.setAttribute('aria-expanded',String(open));launcher.setAttribute('aria-label',open?'대화 지도 패널 접기':'대화 지도 패널 열기');if(!host.hidden)render();win.PlantFloatingWindows?.schedule();}
-  function setOpen(value){open=value;sync();save();if(value){render(true);win.PlantFloatingWindows?.focus(panel.id);close.focus({preventScroll:true});}}
+  function sync(){host.hidden=doc.body.dataset.testMode!=='on'||!['home','chat','archive'].includes(doc.querySelector('.page.active')?.id);panel.hidden=host.hidden||!open;launcher.setAttribute('aria-expanded',String(!panel.hidden));launcher.setAttribute('aria-label',open?'대화 지도 패널 접기':'대화 지도 패널 열기');if(!host.hidden)render();win.PlantFloatingWindows?.schedule();}
+  function setOpen(value){if(doc.body.dataset.testMode!=='on')return;open=value;sync();save();if(value){render(true);win.PlantFloatingWindows?.focus(panel.id);close.focus({preventScroll:true});}}
   launcher.addEventListener('click',()=>setOpen(!open));close.addEventListener('click',()=>{setOpen(false);launcher.focus({preventScroll:true});});select.addEventListener('change',()=>{selection=select.value;render(true);});
+  doc.addEventListener('plant:test-mode-changed',sync);
   win.PlantDialogueFloating={open(requestId){selection=requestId||'latest';setOpen(true);}};
   const draw=win.previewRenderMessages;win.previewRenderMessages=function(...args){const result=draw.apply(this,args);sync();return result;};
   const navigate=win.go;win.go=function(...args){const result=navigate.apply(this,args);sync();return result;};

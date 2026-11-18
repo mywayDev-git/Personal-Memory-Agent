@@ -22,6 +22,7 @@ function repository(db) {
       return row ? JSON.parse(row.state) : {hashes:[], categories:[]};
     },
     write(thread, scope, state) {
+      if(db.prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name='thread_tombstones'").get()&&db.prepare('SELECT 1 FROM thread_tombstones WHERE id=?').get(thread))throw Object.assign(Error('완전히 삭제한 대화입니다.'),{status:410});
       db.prepare('INSERT OR REPLACE INTO category_context_v3 VALUES(?,?,?)').run(thread, scope, JSON.stringify(state));
     }
   };

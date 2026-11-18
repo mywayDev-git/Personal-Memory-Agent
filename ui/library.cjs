@@ -51,6 +51,8 @@ function thread(t){
  if(t.mapContext)out.mapContext=maps.normalize(t.mapContext,threadId,contextState);
  if(t.context)out.context=contextState.normalize(t.context,threadId);
  if(t.deletedAt!=null)out.deletedAt=integer(t.deletedAt,1);
+ if(t.pinned!=null){if(typeof t.pinned!=='boolean')fail('대화 고정 값이 올바르지 않습니다.');out.pinned=t.pinned;}
+ if(t.group!=null)out.group=text(t.group,60).trim();
  if(t.sampleScope)out.sampleScope={profile:text(t.sampleScope.profile??'personal',80),questionId:text(t.sampleScope.questionId??'',160),collectionId:t.sampleScope.collectionId==='personal'?'personal':'samples'};
  return out;
 }
@@ -100,9 +102,35 @@ function merge(state,incoming,options={}){
  return {state:out,counts};
 }
 class Library{
- constructor(root){const dir=path.join(root,'.local','library');fs.mkdirSync(dir,{recursive:true});this.db=new DatabaseSync(path.join(dir,'library.sqlite'));this.db.exec('PRAGMA journal_mode=WAL; PRAGMA busy_timeout=5000; CREATE TABLE IF NOT EXISTS library (id INTEGER PRIMARY KEY CHECK(id=1), revision INTEGER NOT NULL, payload TEXT NOT NULL)');this.db.prepare('INSERT OR IGNORE INTO library VALUES(1,0,?)').run(JSON.stringify({threads:[],records:[]}));}
+ constructor(root){const dir=path.join(root,'.local','library');fs.mkdirSync(dir,{recursive:true});this.db=new DatabaseSync(path.join(dir,'library.sqlite'));this.db.exec('PRAGMA journal_mode=WAL; PRAGMA busy_timeout=5000; CREATE TABLE IF NOT EXISTS thread_tombstones(id TEXT PRIMARY KEY, deleted_at TEXT NOT NULL); CREATE TABLE IF NOT EXISTS library (id INTEGER PRIMARY KEY CHECK(id=1), revision INTEGER NOT NULL, payload TEXT NOT NULL)');this.db.prepare('INSERT OR IGNORE INTO library VALUES(1,0,?)').run(JSON.stringify({threads:[],records:[]}));}
  read(){const row=this.db.prepare('SELECT * FROM library WHERE id=1').get();return {revision:row.revision,...JSON.parse(row.payload)};}
- save(revision,transform){this.db.exec('BEGIN IMMEDIATE');try{const before=this.read();if(before.revision!==revision)fail('다른 화면에서 자료가 변경되었습니다. 새로고침 후 다시 시도해 주세요. 현재 대화는 이 탭에 남아 있습니다.',409);const result=transform(before),data=payload(result.state??result);if(Buffer.byteLength(JSON.stringify(data))>MAX_BYTES)fail('저장 자료가 20MB 제한을 넘었습니다.',413);this.db.prepare('UPDATE library SET revision=?,payload=? WHERE id=1').run(before.revision+1,JSON.stringify(data));this.db.exec('COMMIT');return {revision:before.revision+1,...data,...(result.counts?{counts:result.counts}:{})};}catch(e){this.db.exec('ROLLBACK');throw e;}}
+ save(revision,transform){this.db.exec('BEGIN IMMEDIATE');try{const before=this.read();if(before.revision!==revision)fail('다른 화면에서 자료가 변경되었습니다. 새로고침 후 다시 시도해 주세요. 현재 대화는 이 탭에 남아 있습니다.',409);const result=transform(before),data=payload(result.state??result);data.threads=data.threads.filter(t=>!this.isThreadPurged(t.id));if(Buffer.byteLength(JSON.stringify(data))>MAX_BYTES)fail('저장 자료가 20MB 제한을 넘었습니다.',413);this.db.prepare('UPDATE library SET revision=?,payload=? WHERE id=1').run(before.revision+1,JSON.stringify(data));this.db.exec('COMMIT');return {revision:before.revision+1,...data,purgedThreadIds:this.purgedThreadIds(),...(result.counts?{counts:result.counts}:{})};}catch(e){this.db.exec('ROLLBACK');throw e;}}
+ purgedThreadIds(){return this.db.prepare('SELECT id FROM thread_tombstones').all().map(r=>r.id);}
+ isThreadPurged(threadId){return !!this.db.prepare('SELECT 1 FROM thread_tombstones WHERE id=?').get(threadId);}
+ purgeThread(revision,threadId){
+  id(threadId);
+  if(this.isThreadPurged(threadId))return {...this.read(),purgedThreadIds:this.purgedThreadIds()};
+  return this.save(revision,state=>{
+   const target=state.threads.find(t=>t.id===threadId);
+   if(!target)fail('삭제할 대화를 찾을 수 없습니다.',404);
+   if(!target.deletedAt)fail('삭제한 대화만 완전히 삭제할 수 있습니다.',409);
+   const exists=table=>!!this.db.prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name=?").get(table);
+   const requests=new Set();
+   for(const m of target.messages){if(m.requestId)requests.add(m.requestId);if(m.submission?.request_id)requests.add(m.submission.request_id);for(const p of m.result?.parts||[])if(p.id)requests.add(p.id);}
+   for(const table of ['action_tasks','action_proposals'])if(exists(table))for(const r of this.db.prepare('SELECT request_id FROM '+table+' WHERE thread_id=?').all(threadId))requests.add(r.request_id);
+   if(exists('action_requests'))for(const r of this.db.prepare("SELECT id FROM action_requests WHERE json_extract(result,'$.thread_id')=?").all(threadId))requests.add(r.id);
+   if(exists('action_receipts')){
+    this.db.prepare("DELETE FROM action_receipts WHERE json_extract(payload,'$.thread_id')=?").run(threadId);
+    if(exists('action_proposals'))this.db.prepare('DELETE FROM action_receipts WHERE proposal_id IN (SELECT id FROM action_proposals WHERE thread_id=?)').run(threadId);
+   }
+   for(const table of ['action_tasks','action_proposals'])if(exists(table))this.db.prepare('DELETE FROM '+table+' WHERE thread_id=?').run(threadId);
+   for(const table of ['action_requests','action_goal_plans'])if(exists(table)){const remove=this.db.prepare('DELETE FROM '+table+' WHERE id=?');for(const request of requests)remove.run(request);}
+   if(exists('category_context_v3'))this.db.prepare('DELETE FROM category_context_v3 WHERE thread=?').run(threadId);
+   // Keep independently saved records and their edit history.
+   this.db.prepare('INSERT INTO thread_tombstones VALUES(?,?)').run(threadId,new Date().toISOString());
+   return {...state,threads:state.threads.filter(t=>t.id!==threadId)};
+  });
+ }
  close(){if(!this.closed){this.db.close();this.closed=true;}}
 }
 function sampleRecords(root){return JSON.parse(fs.readFileSync(path.join(root,'datasets/pma-generalization-v1.0.0/sources.json'),'utf8')).records.map(s=>record({id:s.id,revision:s.revision,title:s.metadata.title,body:s.text,date:s.metadata.created_at?new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul'}).format(new Date(s.metadata.created_at)):null,created_at:s.metadata.created_at,origin_id:s.id,synthetic:true}));}
@@ -115,20 +143,35 @@ function createLibraryApi(root,{library=new Library(root)}={}){
   try{
    const host=req.headers.host||'';if(!/^(127\.0\.0\.1|localhost):\d+$/.test(host)||(req.headers.origin&&req.headers.origin!=='http://'+host))fail('현재 로컬 화면에서만 요청할 수 있습니다.',403);
    const route=url.pathname.slice('/api/library/'.length);
-   if(req.method==='GET'&&route==='state'){json(res,200,{token,...library.read()});return true;}
+   if(req.method==='GET'&&route==='state'){json(res,200,{token,...library.read(),purgedThreadIds:library.purgedThreadIds()});return true;}
    if(req.method!=='POST')fail('지원하지 않는 요청입니다.',405);
    if(req.headers['x-library-token']!==token)fail('연결 정보가 만료됐습니다. 새로고침해 주세요.',403);
    if(!String(req.headers['content-type']).startsWith('application/json'))fail('JSON 요청이 필요합니다.',415);
    const parts=[];let bytes=0;for await(const part of req){bytes+=part.length;if(bytes>MAX_BYTES)fail('파일 또는 요청은 20MB까지 지원합니다.',413);parts.push(part);}let body;try{body=JSON.parse(Buffer.concat(parts).toString('utf8'));}catch{fail('JSON 파일을 읽을 수 없습니다.');}
    const current=library.read();
    if(route==='save'){const threads=unique(list(body.threads,2000).map(thread));json(res,200,library.save(body.revision,state=>({...state,threads})));}
+   else if(route==='thread-purge'){json(res,200,library.purgeThread(body.revision,body.threadId));}
    else if(route==='export'){
-    const kind=body.kind??'full',data={threads:kind==='archive'?[]:current.threads.filter(t=>(body.includeDeleted===true||!t.deletedAt)&&(!body.threadIds||body.threadIds.includes(t.id))).map(t=>({...t,draft:body.includeDrafts===false?'':t.draft})),records:kind==='chat'?[]:(body.collection==='samples'?sampleRecords(root):current.records).filter(r=>!body.recordIds||body.recordIds.includes(r.id))};
+    const kind=body.kind??'full',data={threads:kind==='archive'?[]:current.threads.filter(t=>(body.includeDeleted===true||!t.deletedAt)&&(!body.threadIds||body.threadIds.includes(t.id))).map(t=>({...t,draft:body.includeDrafts===false?'':t.draft})),records:kind==='chat'?[]:(body.collection==='samples'?sampleRecords(root):current.records).filter(r=>(kind=== 'full'||!r.deleted_at)&&(!body.recordIds||body.recordIds.includes(r.id)))};
     const backup=makeBackup(data,kind);json(res,200,{backup,markdown:body.markdown===true?markdown(backup.payload):null});
    }else if(route==='inspect'){const incoming=readBackup(body.backup);json(res,200,{revision:current.revision,plan:planImport(current,incoming),counts:body.backup.counts});}
-   else if(route==='import'){const incoming=readBackup(body.backup);json(res,200,library.save(body.revision,state=>merge(state,incoming,body.options)));}
+   else if(route==='import'){const incoming=readBackup(body.backup);for(const t of incoming.threads)if(library.isThreadPurged(t.id)){t.id=crypto.randomUUID();contextState.rebind(t,t.id);}json(res,200,library.save(body.revision,state=>merge(state,incoming,body.options)));}
    else if(route==='record'){const r=record({...body.record,id:crypto.randomUUID(),revision:1,created_at:new Date().toISOString(),synthetic:false});if(!r.body.trim())fail('기록 내용을 입력해 주세요.');json(res,200,library.save(body.revision,state=>({...state,records:[...state.records,r]})));}
-   else if(route==='search-settings'){const ids=list(body.recordIds,10000).map(id);json(res,200,library.save(body.revision,state=>({...state,records:state.records.map(r=>({...r,search_enabled:ids.includes(r.id)}))})));}
+   else if(['record-update','record-delete','record-restore'].includes(route)){
+    const recordId=id(body.recordId),expected=integer(body.expectedRevision,1);
+    const result=library.save(body.revision,state=>{
+     const old=state.records.find(r=>r.id===recordId);if(!old)fail('기록을 찾을 수 없습니다.',404);
+     if(old.revision!==expected)fail('다른 화면에서 기록이 바뀌었습니다. 기록을 다시 열어 주세요.',409);
+     if(route!=='record-restore'&&old.deleted_at)fail('삭제한 기록을 먼저 복원해 주세요.',409);
+     if(route==='record-restore'&&!old.deleted_at)fail('이미 복원된 기록입니다.',409);
+     let next={...old,revision:old.revision+1,updated_at:new Date().toISOString()};
+     if(route==='record-update'){next=record({...next,title:body.record?.title,body:body.record?.body,date:body.record?.date});if(!next.body.trim())fail('기록 내용을 입력해 주세요.');}
+     else if(route==='record-delete'){next.deleted_at=next.updated_at;next.search_enabled=false;}
+     else{delete next.deleted_at;}
+     return {...state,records:state.records.map(r=>r.id===recordId?next:r)};
+    });json(res,200,result);
+   }
+   else if(route==='search-settings'){const ids=list(body.recordIds,10000).map(id);json(res,200,library.save(body.revision,state=>({...state,records:state.records.map(r=>({...r,search_enabled:!r.deleted_at&&ids.includes(r.id)}))})));}
    else fail('지원하지 않는 요청입니다.',404);
   }catch(e){json(res,e.status||500,{error:e.status?e.message:'자료를 처리하지 못했습니다. 기존 자료는 유지됩니다.'});}
   return true;

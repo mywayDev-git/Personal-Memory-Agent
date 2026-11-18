@@ -3,6 +3,7 @@
 body[data-library-collection=personal] .sample-collection-strip{display:none!important}
 
 /* Test tools are opt-in; their visibility follows the saved setting. */
+body:not([data-test-mode="on"]) .chat-version-bar,
 body:not([data-test-mode="on"]) .sample-collection-strip,
 body:not([data-test-mode="on"]) .transfer-collection,
 body:not([data-test-mode="on"]) [data-test-only],
@@ -10,7 +11,6 @@ body:not([data-test-mode="on"]) #archiveInspectorHost,
 body:not([data-test-mode="on"]) .archive-readiness-compact,
 body:not([data-test-mode="on"]) .archive-readiness-overview,
 body:not([data-test-mode="on"]) .archive-readiness-badge,
-body:not([data-test-mode="on"]) .preview-strip>button,
 body:not([data-test-mode="on"]) #memorylab{display:none!important}
 body[data-library-collection="personal"] .sample-collection-strip{display:none}
 .test-mode-settings{max-width:760px;margin-top:24px}.test-mode-settings h3{margin-top:0}.test-mode-settings .setting{align-items:center;gap:20px}.test-mode-settings label{cursor:pointer;color:#314c38}.test-mode-settings .setting>div{min-width:0}.test-mode-settings .setting p{max-width:550px;line-height:1.8}
@@ -22,3 +22,8 @@ body[data-test-mode="off"] #chat .chat-input-area{padding-bottom:calc(16px + env
 
 .test-mode-settings input.test-mode-switch{width:44px;height:26px}
 body.chat-mode .transfer-collection{display:none}
+
+#chatSidebar .sidebar-label{display:flex;align-items:center;justify-content:space-between;gap:8px}
+
+.record-edit-form{display:grid;gap:16px;margin-top:20px}.record-edit-form label{display:grid;gap:7px;font-size:12px}.record-edit-form input,.record-edit-form textarea{width:100%;border:1px solid #d5dfcf;border-radius:8px;background:white;color:#365039;padding:10px 12px;font:inherit}.record-edit-form textarea{min-height:220px;resize:vertical;line-height:1.8}.record-dialog-error{color:#a1352d;font-size:12px;white-space:pre-wrap}.record-trash-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}.record-trash-row span{min-width:0;overflow-wrap:anywhere}.record-trash-row button{flex:none}
+.transfer-dialog>button.record-delete{background:#a4433b;color:white}

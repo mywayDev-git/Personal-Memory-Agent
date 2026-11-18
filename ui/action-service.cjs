@@ -13,6 +13,7 @@ class ActionService{
    CREATE TABLE IF NOT EXISTS action_requests(id TEXT PRIMARY KEY,fingerprint TEXT NOT NULL,result TEXT NOT NULL);
    CREATE TABLE IF NOT EXISTS action_goal_plans(id TEXT PRIMARY KEY,fingerprint TEXT NOT NULL,payload TEXT NOT NULL);`);
  }
+ assertThread(threadId){if(this.library.isThreadPurged(threadId))fail('완전히 삭제한 대화입니다. 새 대화를 시작해 주세요.',410);}
  tasks(threadId){return this.db.prepare("SELECT * FROM action_tasks WHERE thread_id=? ORDER BY (state='waiting') DESC,rowid DESC LIMIT 24").all(threadId).map(r=>({...r,detail:JSON.parse(r.detail)}));}
  pending(threadId){return this.db.prepare("SELECT * FROM action_proposals WHERE thread_id=? AND state='pending' ORDER BY rowid DESC").all(threadId).map(r=>this.decode(r));}
  decode(row){return row?{...JSON.parse(row.payload),id:row.id,version:row.version,status:row.state}:null;}
@@ -20,21 +21,21 @@ class ActionService{
  receipt(id){const r=this.db.prepare('SELECT payload FROM action_receipts WHERE id=?').get(id);return r?JSON.parse(r.payload):null;}
  recentReceipts(threadId){return this.db.prepare("SELECT payload FROM action_receipts WHERE json_extract(payload,'$.thread_id')=? ORDER BY rowid DESC LIMIT 12").all(threadId).map(r=>{const {record,...receipt}=JSON.parse(r.payload);return receipt;});}
  getGoalPlan(data){const row=this.db.prepare('SELECT * FROM action_goal_plans WHERE id=?').get(data.request_id);if(!row)return null;if(row.fingerprint!==hash(data))fail('같은 요청 ID의 목표 제출 내용이 다릅니다.',409);return JSON.parse(row.payload);}
- rememberGoalPlan(data,plan){const old=this.getGoalPlan(data);if(old)return old;this.db.prepare('INSERT INTO action_goal_plans VALUES(?,?,?)').run(data.request_id,hash(data),JSON.stringify(plan));return plan;}
+ rememberGoalPlan(data,plan){this.assertThread(data.thread_id);const old=this.getGoalPlan(data);if(old)return old;this.db.prepare('INSERT INTO action_goal_plans VALUES(?,?,?)').run(data.request_id,hash(data),JSON.stringify(plan));return plan;}
  proposalForRequest(requestId){return this.decode(this.db.prepare('SELECT * FROM action_proposals WHERE request_id=?').get(requestId));}
  bindGoal(taskId,proposals){for(const p of proposals){const stored=this.proposal(p.id);if(!stored)continue;p.task_id=taskId;this.db.prepare('UPDATE action_proposals SET payload=? WHERE id=?').run(JSON.stringify({...stored,task_id:taskId}),p.id);}}
  cached(data){const r=this.db.prepare('SELECT * FROM action_requests WHERE id=?').get(data.request_id);if(!r)return null;if(r.fingerprint!==hash(data))fail('같은 요청 ID의 제출 내용이 다릅니다.',409);const result=JSON.parse(r.result);
   if(result.proposals){result.proposals=result.proposals.map(p=>this.proposal(p.id)||p);const receipts=result.proposals.map(p=>this.receipt(p.operation_id)).filter(Boolean);result.executions=[...new Map([...(result.executions||[]),...receipts].map(r=>[r.proposal_id,r])).values()];result.stored=result.executions.some(r=>r.status==='succeeded'&&r.operation==='create');if(result.action_trace?.steps)for(const step of result.action_trace.steps){const receipt=result.executions.find(r=>r.proposal_id===step.proposal_id);if(receipt)step.status=receipt.status==='succeeded'?'committed':'cancelled';}}
   if(result.proposal){result.proposal=this.proposal(result.proposal.id);const receipt=this.receipt(result.proposal.operation_id);if(receipt){result.execution=receipt;result.answer=receipt.message;result.action=receipt.status==='cancelled'?'cancelled':'committed';result.stored=receipt.status==='succeeded'&&receipt.operation==='create';}}return result;}
- remember(data,result){this.db.prepare('INSERT INTO action_requests VALUES(?,?,?) ON CONFLICT(id) DO UPDATE SET result=excluded.result').run(data.request_id,hash(data),JSON.stringify(result));}
- task(data,decision,detail){
+ remember(data,result){this.assertThread(data.thread_id);this.db.prepare('INSERT INTO action_requests VALUES(?,?,?) ON CONFLICT(id) DO UPDATE SET result=excluded.result').run(data.request_id,hash(data),JSON.stringify(result));}
+ task(data,decision,detail){this.assertThread(data.thread_id);
   const rows=this.tasks(data.thread_id),existing=rows.find(t=>t.request_id===data.request_id)||(decision.task_id&&rows.find(t=>t.id===decision.task_id&&t.state==='waiting'));
   const id=existing?.id||uuid(),goal=existing?.goal||decision.goal||data.text;
   if(detail.steps){const pending=(existing?.detail?.steps||[]).filter(s=>s.proposal_id&&s.status==='awaiting_confirmation'&&!detail.steps.some(next=>next.proposal_id===s.proposal_id));detail={...detail,steps:[...pending,...detail.steps]};}
   const status=detail.steps?.some(s=>s.status==='awaiting_confirmation')?'waiting':decision.status||(decision.action==='clarify'?'waiting':'completed');
   this.db.prepare('INSERT OR REPLACE INTO action_tasks VALUES(?,?,?,?,?,?)').run(id,data.thread_id,data.request_id,goal,status,JSON.stringify(detail));return id;
  }
- propose(data,decision,change,sourceRefs){
+ propose(data,decision,change,sourceRefs){this.assertThread(data.thread_id);
   const old=this.db.prepare('SELECT * FROM action_proposals WHERE request_id=?').get(data.request_id);
   if(old){const p=this.decode(old);if(p.thread_id!==data.thread_id||p.submitted_text!==data.text||(p.request_fingerprint&&p.request_fingerprint!==hash(data)))fail('같은 요청 ID의 내용이 다릅니다.',409);return p;}
   if(!['create','update','delete','restore'].includes(decision.action))fail('지원하지 않는 기록 작업입니다.');

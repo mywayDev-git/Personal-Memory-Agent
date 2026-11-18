@@ -29,3 +29,5 @@ body .floating-managed-launcher{width:62px!important;min-height:62px;padding:12p
 .floating-resize-handle:hover,.floating-resize-handle:focus-visible{background:#8da77830;outline:2px solid #819e6e;outline-offset:-2px}
 .floating-interacting,.floating-interacting *{user-select:none!important}.floating-interacting .floating-draggable-header{cursor:grabbing}
 .floating-gesture{box-shadow:0 18px 60px #213d293d!important}
+
+body:not([data-test-mode="on"]) .dialogue-map-host{display:none!important}

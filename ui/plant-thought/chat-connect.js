@@ -38,23 +38,26 @@
    else if(!message.archived){const actions=node('div',null,'transfer-actions');for(const [label,decision]of [[({create:'기록하기',update:'수정 반영',delete:'삭제 확인',restore:'복원 확인'})[p.operation],'confirm'],['취소','cancel']]){const b=node('button',operationBusy.has(p.id)?'처리 확인 중…':label);b.type='button';b.disabled=operationBusy.size>0||thread.deletedAt||pending(thread)||p.status!=='pending';if(p.operation==='delete'&&decision==='confirm'){b.style.background='#a43d35';b.style.color='white';}b.addEventListener('click',()=>executeProposal(thread,message,p,decision));actions.append(b);}card.append(actions);}
    if(p.operationError)card.append(node('p',p.operationError,'ai-error-message'));return card;
   }
-  function goalSummary(result,thread,message){const trace=result.action_trace,plan=trace.plan,details=node('details',null,'chat-dialogue-map');details.append(node('summary','이번 목표와 행동 · '+plan.steps.length+'개'));details.append(node('strong',plan.goal));
-   if(plan.context_summary)details.append(node('p',plan.context_summary));
-   const tool={search:'기록 조회',create:'새 기록 초안',save_transcript:'대화 원문 보관',update:'수정 초안',delete:'삭제 초안',restore:'복원 초안',cancel:'대기 초안 취소'},status={planned:'계획에 포함',completed:'조회 완료',awaiting_confirmation:'확인 대기',committed:'반영 완료',cancelled:'취소 완료',needs_input:'구분 필요',failed:'처리 실패'};
-   const list=node('ol');for(const step of trace.steps){const item=node('li');item.append(node('strong',(tool[step.tool]||step.tool)+' · '+(status[step.status]||step.status)),node('p',step.purpose));if(step.question)item.append(node('p',step.question));if(step.error)item.append(node('p',step.error,'ai-error-message'));list.append(item);}details.append(list);
-   if(!trace.steps.length)details.append(node('p','모델이 추가 도구 실행을 요청하지 않았습니다.'));
-   if(trace.observations.length)details.append(node('small','현재 자료함 전체 '+result.scope.accessible_count+'개 원문에서 조회한 근거를 사용합니다.'));
-   if(trace.reply_error)details.append(node('p',trace.reply_error.message,'ai-error-message'));
-   if(trace.reply_error||trace.steps.some(s=>s.status==='failed')){const retry=node('button','실패한 단계 다시 준비');retry.type='button';retry.disabled=message.archived||thread.deletedAt||pending(thread);retry.addEventListener('click',()=>run(thread,message));details.append(retry);}
-   return details;
+  function appendActionRetry(parent,result,thread,message){
+    const trace=result.action_trace;if(!trace?.reply_error&&!trace?.steps?.some(s=>s.status==='failed'))return;
+    const retry=node('button','실패한 단계 다시 준비','ai-retry');retry.type='button';retry.disabled=message.archived||thread.deletedAt||pending(thread);retry.addEventListener('click',()=>run(thread,message));parent.append(retry);
   }
   const currentScope=()=>state.scope(previewThread(),previewSnapshot().sampleArchive);
   const pending=thread=>thread?.messages.some(m=>m.kind==='assistant'&&m.status==='pending'&&!m.archived);
-  function scopeLabel(){document.querySelector('.chat-topbar-label').textContent=(ready?'로컬 AI':'AI 연결 확인')+' · '+(window.PlantArchiveSamples.synthetic?'가상 예시 ':'개인 자료함 ')+window.PlantArchiveSamples.record_count+'개';}
-  async function bootstrap(){
-    if(!bootstrapPromise)bootstrapPromise=fetch('/api/chat/bootstrap',{cache:'no-store'}).then(async response=>{if(!response.ok)throw Error('연결 정보를 불러오지 못했습니다.');const data=await response.json();token=data.token;ready=data.ready;const strip=document.querySelector('.preview-strip');strip.querySelector('strong').textContent=ready?'로컬 AI 연결':'AI 연결 확인 필요';strip.querySelector('div>span:last-child').textContent=ready?'Qwen3.5 4B · 선택한 자료함의 원문에서 검색해 답변합니다.':data.note;scopeLabel();return data;}).catch(error=>{bootstrapPromise=null;ready=false;document.querySelector('.preview-strip strong').textContent='AI 연결 실패';document.querySelector('.preview-strip div>span:last-child').textContent=error.message;throw error;});
+  const connectionBadge=document.querySelector('.preview-strip');
+  function connectionStatus(status,label,detail){connectionBadge.dataset.state=status;connectionBadge.querySelector('strong').textContent=label;connectionBadge.title=detail;connectionBadge.setAttribute('aria-label',label+' · '+detail+' · 눌러서 다시 확인');}
+  async function bootstrap(force=false){
+    if(force)bootstrapPromise=null;
+    if(!bootstrapPromise){
+      connectionStatus('checking','AI 확인 중','로컬 AI 연결을 확인하고 있어요.');
+      bootstrapPromise=fetch('/api/chat/bootstrap',{cache:'no-store'}).then(async response=>{
+        if(!response.ok)throw Error('연결 정보를 불러오지 못했습니다.');const data=await response.json();token=data.token;ready=data.ready;
+        connectionStatus(ready?'connected':'offline',ready?'로컬 AI 연결':'AI 연결 확인',ready?(data.model||'로컬 모델')+' · 선택한 자료함의 원문에서 검색해 답변합니다.':data.note||'로컬 AI에 연결하지 못했습니다.');return data;
+      }).catch(error=>{bootstrapPromise=null;ready=false;connectionStatus('error','AI 연결 실패',error.message);throw error;});
+    }
     return bootstrapPromise;
   }
+  connectionBadge.addEventListener('click',async()=>{connectionBadge.disabled=true;try{await bootstrap(true);}catch{}finally{connectionBadge.disabled=false;}});
   function sourceLink(citation,label='기록 열기',className='ai-source-open'){
     const button=node('button',label,className);button.type='button';button.addEventListener('click',()=>{
       const source=window.PlantArchiveSamples.records.find(r=>r.id===citation.source_id&&r.revision===citation.revision&&r.body.slice(citation.start,citation.end)===citation.quote);if(!source){previewToast('현재 자료함에 같은 버전의 인용 원문이 없습니다. 인용 문구는 대화에 보존되어 있어요.');return;}
@@ -69,7 +72,7 @@
       if(!grouped.has(key))grouped.set(key,{citation,quotes:new Set()});
       grouped.get(key).quotes.add(citation.quote);
     }
-    const details=node('details',null,'ai-sources');details.open=message.evidenceExpanded!==false;
+    const details=node('details',null,'ai-sources');details.open=message.evidenceExpanded===true;
     details.append(node('summary','참고한 기록 '+grouped.size+'개'));
     const list=node('div',null,'ai-sources-list');
     for(const {citation,quotes}of grouped.values()){
@@ -132,7 +135,6 @@
       const details=node('details',null,'chat-recording-preview');details.append(node('summary','기록 초안 보완 · '+result.recording.date+' · 저장 전'));
       details.append(node('p','사용자가 표현한 경험과 느낌'));for(const text of result.recording.statements)details.append(node('blockquote',text));body.append(details);
     }
-    const mapView=window.PlantDialogueMapView?.(result);if(mapView)body.append(mapView);
     for(const choice of result.context_info?.choices||[]){const button=node('button',choice.label,'chat-context-choice');button.type='button';button.disabled=pending(thread);button.addEventListener('click',()=>submitContextChoice(thread,message.submission.text,choice.pending?{pendingTarget:choice.id}:{selection:choice.id}));body.append(button);}
   }
   previewRenderMessages=function(){
@@ -152,25 +154,40 @@
       const body=node('div',null,'ai-response-body'),header=node('div',null,'ai-response-header');
       const brand=node('span','Plant Thought','ai-response-brand');header.append(brand,node('span',['v2','v3'].includes(message.submission.analysis_version)?(message.submission.analysis_version==='v3'?'V3 · 카테고리 대화':'V2 · 문맥 목표와 행동'):'V1','chat-version-label'));body.append(header);card.append(avatar,body);
       if(message.archived&&message.status!=='success'){body.append(node('p','가져온 대화의 중단된 요청입니다. 자동으로 재실행하지 않습니다.'),node('p',message.error||''));}
-      else if(message.status==='pending'){card.setAttribute('role','status');body.append(node('p','대화 문맥에서 목표와 필요한 행동을 준비하고 있어요.','ai-pending'));if(message.result?.action_trace?.version==='goal-actions-v1'){body.append(goalSummary(message.result,thread,message));for(const p of proposalList(message.result))body.append(proposalCard(message.result,thread,message,p));}}
+      else if(message.status==='pending'){card.setAttribute('role','status');body.append(node('p','대화 문맥에서 목표와 필요한 행동을 준비하고 있어요.','ai-pending'));if(message.result?.action_trace?.version==='goal-actions-v1'){for(const p of state.recordActionProposals(message.result,message,thread))body.append(proposalCard(message.result,thread,message,p));}}
       else if(['error','cancelled'].includes(message.status)){
         const cancelled=message.status==='cancelled';
         card.classList.add(cancelled?'ai-cancelled':'ai-error');card.setAttribute('role',cancelled?'status':'alert');
         body.append(node('strong',cancelled?'응답 수신을 중단했어요.':(stageName[message.stage]||'AI 처리')+'에 실패했어요.','ai-error-label'),node('p',message.error,'ai-error-message'));
-        const retry=node('button','재시도','ai-retry');retry.type='button';retry.addEventListener('click',()=>run(thread,message));retry.disabled=pending(thread);body.append(retry);if(message.result?.action_trace?.version==='goal-actions-v1'){body.append(node('p','이전에 준비한 작업은 유지됩니다.'));body.append(goalSummary(message.result,thread,message));for(const p of proposalList(message.result))body.append(proposalCard(message.result,thread,message,p));}
+        const retry=node('button','재시도','ai-retry');retry.type='button';retry.addEventListener('click',()=>run(thread,message));retry.disabled=pending(thread);body.append(retry);if(message.result?.action_trace?.version==='goal-actions-v1'){body.append(node('p','이전에 준비한 작업은 유지됩니다.'));for(const p of state.recordActionProposals(message.result,message,thread))body.append(proposalCard(message.result,thread,message,p));}
       }else if(message.result){
-        renderResult(body,header,message.result,thread,message);if(message.result.action_trace?.version==='goal-actions-v1')body.append(goalSummary(message.result,thread,message));for(const p of proposalList(message.result))body.append(proposalCard(message.result,thread,message,p));
+        renderResult(body,header,message.result,thread,message);if(message.result.action_trace?.version==='goal-actions-v1')appendActionRetry(body,message.result,thread,message);for(const p of state.recordActionProposals(message.result,message,thread))body.append(proposalCard(message.result,thread,message,p));
       }
       log.append(card);
     }
     const waiting=activeContext?.pending.filter(p=>p.status==='awaiting_confirmation'&&p.scope===(currentScope().collectionId||'samples'))||[];
     if(waiting.length){const details=node('details',null,'chat-pending-tasks');details.append(node('summary','확인 대기 초안 '+waiting.length+'개'));
       for(const task of waiting){const row=node('div',null,'chat-pending-task');row.append(node('p',task.proposal));const cancel=node('button','이 초안 취소');cancel.type='button';cancel.disabled=pending(thread);cancel.addEventListener('click',()=>submitContextChoice(thread,'그 작업 취소해줘',{pendingTarget:task.id}));row.append(cancel);details.append(row);}log.append(details);}
-    el('chatInput').value=thread?.draft||'';updateChatInput();previewRenderHistory();scopeLabel();
+    el('chatInput').value=thread?.draft||'';updateChatInput();previewRenderHistory();
   };
-  updateDemoControls=function(){el('chatSend').disabled=!el('chatInput').value.trim()||pending(previewThread());el('chatSend').setAttribute('aria-busy',String(!!pending(previewThread())));};
-  document.addEventListener('input',event=>{if(event.target!==el('chatInput'))return;const thread=previewThread();if(thread){thread.draft=event.target.value;thread.inputVersion=(thread.inputVersion||0)+1;}scopeLabel();previewRemember();});
-  document.addEventListener('plant:question-selected',event=>{const thread=previewThread();if(thread){thread.sampleScope={profile:event.detail.profile,questionId:event.detail.questionId};scopeLabel();previewRemember();}});
+  updateDemoControls=function(){
+    const button=el('chatSend'),busy=!!pending(previewThread());button.disabled=!busy&&!el('chatInput').value.trim();button.dataset.state=busy?'stop':'send';
+    button.setAttribute('aria-label',busy?'응답 생성 중지':'질문 보내기');button.setAttribute('aria-busy',String(busy));button.title=busy?'응답 생성 중지':'질문 보내기';
+    button.innerHTML=busy?'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="1.5"/></svg>':'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 18V6m-6 6 6-6 6 6"/></svg>';
+  };
+  function stopGeneration(){
+    const thread=previewThread();if(!thread)return;
+    for(const message of thread.messages)if(message.kind==='assistant'&&message.status==='pending'&&!message.archived){
+      const id=message.submission.request_id,request=controllers.get(id);
+      if(token)fetch('/api/chat/cancel',{method:'POST',headers:{'Content-Type':'application/json','X-Plant-Token':token},body:JSON.stringify({request_id:id,thread_id:thread.id})}).catch(()=>{});
+      message.status='cancelled';message.stage='cancelled';message.error='사용자가 응답 생성을 중지했습니다. 같은 질문을 재시도할 수 있어요.';
+      request?.controller.abort();controllers.delete(id);
+    }
+    previewRemember();previewRenderMessages();el('chatInput').focus();
+  }
+  el('chatSend').onclick=()=>{if(pending(previewThread()))stopGeneration();else sendChat();};
+  document.addEventListener('input',event=>{if(event.target!==el('chatInput'))return;const thread=previewThread();if(thread){thread.draft=event.target.value;thread.inputVersion=(thread.inputVersion||0)+1;}previewRemember();});
+  document.addEventListener('plant:question-selected',event=>{const thread=previewThread();if(thread){thread.sampleScope={profile:event.detail.profile,questionId:event.detail.questionId};previewRemember();}});
   document.addEventListener('plant:thread-deleted',event=>{
     for(const [id,request]of controllers)if(request.threadId===event.detail.id)request.controller.abort();
     const thread=previewThreads.find(t=>t.id===event.detail.id);
@@ -195,7 +212,7 @@
       if(result.request_id!==message.submission.request_id||result.thread_id!==thread.id||typeof result.answer!=='string'||!Array.isArray(result.citations))throw Object.assign(Error('응답이 제출한 작업과 일치하지 않습니다.'),{stage:'validation'});
       message.result=result;for(const receipt of result.executions||[])applyReceipt(thread,receipt);message.status='success';state.applyContext(thread,message.submission,result.context,result.map_context);thread.updatedAt=new Date().toISOString();ready=true;
     }catch(error){if(thread.deletedAt||controller.signal.aborted)return;message.status='error';message.stage=error.stage||'connection';message.error=error.name==='TimeoutError'?'응답을 기다리는 시간이 초과됐습니다. 같은 질문을 재시도할 수 있어요.':error.message;if(error.inspection)message.inspection=error.inspection;}
-    finally{controllers.delete(message.submission.request_id);}
+    finally{if(controllers.get(message.submission.request_id)?.controller===controller)controllers.delete(message.submission.request_id);}
     if(previewActiveId===thread.id){previewRenderMessages();if(document.querySelector('.page.active')?.id==='chat')scrollChatToBottom();}
     previewRemember();
   }
@@ -209,7 +226,6 @@
     thread.draft='';thread.inputVersion=(thread.inputVersion||0)+1;input.value='';updateChatInput();
     run(thread,message);input.focus();
   };
-  const previousGo=go;go=function(id){previousGo(id);if(id==='chat')scopeLabel();};
   for(const thread of previewThreads)for(const message of thread.messages){
     if(message.kind==='assistant'&&message.status==='error'&&message.error==='대화를 삭제하여 응답 수신을 중단했습니다. 복원 후 재시도할 수 있어요.')message.status='cancelled';
     if(message.kind==='assistant'&&message.status==='pending'&&!message.archived){message.status='error';message.stage='connection';message.error='화면이 새로 열려 이전 처리 결과를 확인해야 합니다. 같은 제출본으로 재시도해 주세요.';}

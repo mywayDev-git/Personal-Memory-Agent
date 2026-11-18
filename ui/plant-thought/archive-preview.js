@@ -55,7 +55,7 @@
     openSource(id);
     el('detailTitle').textContent=record.title;el('detailBody').textContent=record.body;
     el('detailDate').textContent=(record.date||'날짜 미상')+' · '+collection.profiles.find(p=>p.id===record.profile).label+(collection.synthetic?' · 가상 원문 · v':' · 개인 자료함 · v')+record.revision;
-    go('recordDetail');remember();
+    go('recordDetail');remember();document.dispatchEvent(new CustomEvent('plant:record-opened'));
   }
   function focusQuestion(id){
     const q=questionMap.get(id);if(!q||q.profile!==profile)return;questionId=id;
@@ -205,17 +205,24 @@
   detailRecordId=sourceMap.has(previousState?.detailRecordId)?previousState.detailRecordId:null;
   window.PlantArchiveView={
     selectedId:()=>recordId,
+    detailRecord:()=>sourceMap.get(detailRecordId)||null,
+    showRecord:showFullSource,
     showPersonalRecords(){
       if(collection.synthetic)return;
       el('archiveInput').value='';
       runSearch(true,false);
     },
     setCollection(next){
+      const nextCollectionId=next.synthetic?'samples':'personal';
+      const keepDetail=(collection.synthetic===next.synthetic?detailRecordId:null)||(previousState?.collectionId===nextCollectionId?previousState.detailRecordId:null);
       collection=next;window.PlantArchiveSamples=next;sourceMap=new Map(next.records.map(r=>[r.id,r]));questionMap=new Map(next.examples.map(q=>[q.id,q]));
       el('archiveProfile').replaceChildren(...next.profiles.map(p=>{const o=document.createElement('option');o.value=p.id;o.textContent=p.label;return o;}));
       recordId=null;questionId=null;detailRecordId=null;applyProfile(next.default_profile);
       el('archiveJumpExamples').hidden=!next.examples.length;
       document.dispatchEvent(new CustomEvent('plant:collection-changed'));
+      if(document.querySelector('.page.active')?.id==='recordDetail'){
+        if(keepDetail&&sourceMap.has(keepDetail))showFullSource(keepDetail);
+      }
     }
   };
   applyProfile(previousState?.profile||profile,true);

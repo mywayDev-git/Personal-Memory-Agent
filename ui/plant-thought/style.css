@@ -357,16 +357,15 @@ body.chat-mode footer{display:none}
 .sidebar-brand span{font-size:26px}
 .new-chat-btn{display:flex;align-items:center;gap:11px;width:100%;padding:11px 10px;border:0;border-radius:9px;background:transparent;color:#303b32;text-align:left;font-size:13px}
 .new-chat-btn:hover,.chat-session:hover{background:var(--chat-hover)}
-.sidebar-label{margin:8px 18px 12px;font-size:11px;color:#899087}
+.sidebar-label{margin:8px 9px 12px;font-size:14px;font-weight:500;color:#626c60}
 .chat-history{min-height:0}
-.chat-sidebar-scroll{min-height:0;overflow-y:auto;scrollbar-width:thin;padding-bottom:8px}
+.chat-sidebar-scroll{flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-bottom:8px}
 .chat-session{display:block;width:100%;border:0;background:transparent;border-radius:9px;text-align:left;color:#444b44;padding:12px 14px;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .chat-session.active{background:#e1e7d7;color:var(--green)}
 .chat-main{display:flex;flex-direction:column;grid-column:2;justify-self:center;width:100%;max-width:1100px;min-width:0;min-height:0;height:100%;background:var(--bg);position:relative}
 .chat-topbar{height:68px;flex:0 0 68px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;gap:12px;background:transparent}
 .chat-topbar-left,.chat-topbar-actions{display:flex;align-items:center;gap:12px;min-width:0}
 .chat-title{margin:0;font-size:22px;letter-spacing:-.5px;font-weight:600;color:var(--green);white-space:nowrap}
-.chat-topbar-label{font-size:11px;color:#7c8873;background:transparent;padding:5px 0;white-space:nowrap}
 .chat-icon-btn{display:grid;place-items:center;width:36px;height:36px;border:0;border-radius:9px;background:transparent;color:#667066;flex-shrink:0}
 .chat-icon-btn:hover{background:var(--chat-hover)}
 #chat svg,.chat-input-wrapper svg{width:20px;height:20px;stroke:currentColor;stroke-width:1.7;fill:none;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
@@ -428,7 +427,6 @@ body.chat-mode footer{display:none}
   #chat .sidebar-open .chat-sidebar-backdrop{display:block;position:absolute;inset:0;background:#17281c40;z-index:2;border:0;cursor:default}
   #chat .chat-topbar{padding:0 14px;height:62px;flex-basis:62px}
   #chat .chat-title{font-size:20px}
-  #chat .chat-topbar-label{display:none}
   #chat .chat-scroll{padding:18px 18px 28px}
   #chat .chat-main{grid-column:1;height:100%;min-height:0}
   #chat .chat-input-area{padding:10px 14px 12px}
@@ -718,3 +716,10 @@ footer{
     scroll-behavior:auto!important;
   }
 }
+
+/* Sidebar settings stay below the independently scrolling conversation list. */
+.sidebar-settings{flex:none;margin:16px 0 0;padding:12px 0 0;border:0;border-top:1px solid var(--chat-border);border-radius:0;background:transparent;box-shadow:none;color:#626c60}
+.sidebar-settings-button{display:grid;place-items:center;width:38px;height:38px;margin:0;border:0;border-radius:8px;background:transparent;color:inherit;padding:9px}
+.sidebar-settings-button:hover{background:var(--chat-hover)}
+.record-detail-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}.record-detail-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:24px;padding-top:20px;border-top:1px solid var(--line)}.record-detail-actions button{border:1px solid var(--line);background:#f6f8f2;border-radius:8px;color:var(--green2);padding:8px 12px;font-size:12px}.record-detail-actions button:hover{background:#e9eee3}.record-detail-actions .record-delete{color:#a4433b}.record-detail-actions button:disabled{opacity:.45;cursor:default}.record-action-note{font-size:11px;color:var(--muted);line-height:1.8;margin:14px 0 0}.record-action-note[hidden]{display:none}
+@media(max-width:650px){#recordDetail .card{padding:22px!important}.record-detail-heading{align-items:flex-start}.record-detail-actions{flex-wrap:wrap}}

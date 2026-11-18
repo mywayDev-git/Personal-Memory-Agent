@@ -12,6 +12,11 @@ const server=http.createServer(async(req,res)=>{
   try{
     const url=new URL(req.url,'http://127.0.0.1:'+port),host=req.headers.host||'';
     if(!['127.0.0.1:'+port,'localhost:'+port].includes(host)||(req.headers.origin&&req.headers.origin!=='http://'+host)){res.writeHead(403);res.end('Local origin required');return;}
+    if(url.pathname==='/api/event-network' && req.method==='GET'){
+      const network=await require('./event-network.cjs')(root);
+      res.writeHead(200,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'});
+      res.end(JSON.stringify(network));return;
+    }
     if(await library.handle(req,res,url))return;
     if(await chat.handle(req,res,url))return;
     if(await readiness.handle(req,res,url))return;

@@ -52,6 +52,24 @@ test('SQLite persists across reopen and rejects stale revisions and invalid writ
  assert.throws(()=>s.save(0,()=>empty()),/다른 화면/);const before=s.read();assert.throws(()=>s.save(1,()=>({records:[{...record(),revision:-1}]})));assert.deepEqual(s.read(),before);
 });
 async function client(t){const {dir,store}=open(t),api=createLibraryApi(dir,{library:store}),server=http.createServer((req,res)=>api.handle(req,res,new URL(req.url,'http://127.0.0.1')));await new Promise(r=>server.listen(0,'127.0.0.1',r));t.after(()=>new Promise(r=>server.close(r)));const url='http://127.0.0.1:'+server.address().port;const bootstrap=await (await fetch(url+'/api/library/state')).json();return {dir,store,url,post:async(route,body,headers={})=>{const response=await fetch(url+'/api/library/'+route,{method:'POST',headers:{'Content-Type':'application/json','X-Library-Token':bootstrap.token,...headers},body:JSON.stringify(body)});return {status:response.status,data:await response.json()};}};}
+
+test('conversation pin and group survive saves, backups and restore',async t=>{
+ const c=await client(t),organized={...thread(),pinned:true,group:'연구 프로젝트'};
+ assert.equal((await c.post('save',{revision:0,threads:[organized]})).status,200);
+ const restored=readBackup(makeBackup(c.store.read())).threads[0];assert.equal(restored.pinned,true);assert.equal(restored.group,'연구 프로젝트');
+ assert.equal((await c.post('save',{revision:1,threads:[{...organized,group:'x'.repeat(61)}]})).status,400);
+ assert.equal(c.store.read().threads[0].group,'연구 프로젝트');
+});
+
+test('record editing rejects stale versions; deletion is recoverable and disables search',async t=>{
+ const c=await client(t);await c.post('import',{revision:0,backup:makeBackup({records:[record()]},'archive'),options:{searchEnabled:true}});
+ const update=await c.post('record-update',{revision:1,recordId:record().id,expectedRevision:1,record:{title:'수정한 제목',body:'수정한 본문',date:'2026-11-18'}});
+ assert.equal(update.status,200);assert.equal(update.data.records[0].revision,2);assert.equal(update.data.records[0].body,'수정한 본문');
+ const before=c.store.read();assert.equal((await c.post('record-delete',{revision:2,recordId:record().id,expectedRevision:1})).status,409);assert.deepEqual(c.store.read(),before);
+ assert.equal((await c.post('record-update',{revision:2,recordId:record().id,expectedRevision:2,record:{body:' '}})).status,400);assert.deepEqual(c.store.read(),before);
+ const deleted=await c.post('record-delete',{revision:2,recordId:record().id,expectedRevision:2});assert.equal(deleted.status,200);assert.ok(deleted.data.records[0].deleted_at);assert.equal(deleted.data.records[0].search_enabled,false);
+ const restored=await c.post('record-restore',{revision:3,recordId:record().id,expectedRevision:3});assert.equal(restored.status,200);assert.equal(restored.data.records[0].deleted_at,undefined);assert.equal(restored.data.records[0].body,'수정한 본문');assert.equal(restored.data.records[0].revision,4);
+});
 test('API validates origin and token; import preview has no writes; export filters drafts and trash',async t=>{
  const c=await client(t),backup=makeBackup({threads:[thread(),{...thread('deleted'),deletedAt:1}],records:[record()]});
  assert.equal((await c.post('import',{revision:0,backup},{'X-Library-Token':'bad'})).status,403);assert.equal((await c.post('inspect',{backup},{Origin:'http://bad.example'})).status,403);

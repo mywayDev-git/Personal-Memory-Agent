@@ -1,7 +1,7 @@
 'use strict';
 (()=>{
  const key='plant-thought-chat-version-v1';let selected='v2';try{const saved=localStorage.getItem(key);if(['v1','v2','v3'].includes(saved))selected=saved;}catch{}
- const bar=document.createElement('div');bar.className='chat-version-bar';bar.setAttribute('aria-label','대화 처리 버전 선택');
+ const bar=document.createElement('div');bar.className='chat-version-bar';bar.dataset.testOnly='';bar.setAttribute('aria-label','대화 처리 버전 선택');
  const inner=document.createElement('div'),label=document.createElement('label'),select=document.createElement('select'),note=document.createElement('span');
  label.textContent='대화 버전';label.htmlFor='chatVersionSelect';select.id='chatVersionSelect';select.setAttribute('aria-label','대화 처리 버전');
  for(const [value,text]of [['v1','V1 · 기존 맥락 처리'],['v2','V2 · 문맥 목표와 행동'],['v3','V3 · 카테고리 대화']]){const option=document.createElement('option');option.value=value;option.textContent=text;select.append(option);}
@@ -19,5 +19,4 @@
   augmented.append(node('small',t.source==='archive'?'보관소 원문 조회':t.source==='conversation'?'현재 대화 원문 사용':'보관소 검색 없음'));
   for(const turn of t.references){const quote=node('blockquote');quote.append(node('small',turn.role==='user'?'사용자':'AI의 발언'),node('p',turn.text));augmented.append(quote);}details.append(augmented);return details;
  };
- window.PlantDialogueMapView=function(result){if(!result.dialogue_trace)return null;const button=document.createElement('button');button.type='button';button.className='chat-map-open';button.textContent='대화 지도 열기 · '+result.dialogue_trace.parts.length+'개 파트 ↗';button.addEventListener('click',()=>window.PlantDialogueFloating?.open(result.request_id));return button;};
 })();
