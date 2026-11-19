@@ -28,13 +28,31 @@
     });
   }
 
+
+  function recordDraft(thread,message,result=message?.result,date){
+    const text=String(message?.submission?.text||'').trim(),proposal=recordActionProposals(result,message,thread).find(p=>p.operation==='create'&&p.status==='pending'&&p.after?.body?.trim());
+    const title=proposal?.after.title?.trim()||text.split('\n')[0].slice(0,100)||thread?.title||'대화에서 남긴 기록';
+    const answer=String(result?.answer||'').trim();
+    const body=proposal?.after.body?.trim()||[text?'나의 이야기\n'+text:'',answer?'AI와 나눈 내용\n'+answer:''].filter(Boolean).join('\n\n');
+    const dates=typeof module==='object'&&module.exports?require('./diary-dates.js'):{isDiaryDate,seoulDate};
+    const suggested=proposal?.after.date||result?.recording?.date;
+    return {title,body,date:dates.isDiaryDate(suggested)?suggested:dates.isDiaryDate(date)?date:dates.seoulDate()};
+  }
+  function mergeRecordDraft(current,draft,append=true){
+    if(!append)return {...draft};
+    const body=String(current.body||'');
+    return {title:current.title?.trim()?current.title:draft.title,date:body.trim()&&current.date?current.date:draft.date,
+      body:!body.trim()?draft.body:body===draft.body||body.endsWith('\n\n'+draft.body)?body:body+'\n\n'+draft.body};
+  }
+
   const api={
+    recordDraft,mergeRecordDraft,
     recordActionProposals,
     applyContext(thread,submission,value,mapValue){return ['v2','v3'].includes(submission.analysis_version)?maps.apply(thread,submission,mapValue,context):context.apply(thread,submission,value);},
     scope(thread,fallback){if(fallback?.collectionId==='personal')return fallback;const submitted=thread?.messages.findLast(m=>m.submission)?.submission;if(thread?.sampleScope?.collectionId==='personal'||submitted?.collection_id==='personal')return fallback;return thread?.sampleScope||(submitted?{profile:submitted.profile,questionId:submitted.example_id}:fallback);},
     submission(thread,scope,options={}){
       const version=options.version||root?.PlantChatVersion?.current()||'v1',map=['v2','v3'].includes(version)?maps.snapshot(thread,context):null;
-      return Object.freeze({request_id:crypto.randomUUID(),thread_id:thread.id,text:options.text??thread.draft,input_version:thread.inputVersion||0,profile:scope.profile,example_id:scope.questionId||'',collection_id:scope.collectionId||'samples',history:Object.freeze(thread.messages.filter(m=>m.kind==='user').slice(-4).map(m=>m.text)),context:freeze(['v2','v3'].includes(version)?map.flow||context.empty(thread.id):context.snapshot(thread,scope)),...(['v2','v3'].includes(version)?{analysis_version:version,map_context:freeze(map),conversation_ids:Object.freeze(maps.turns(thread,scope.collectionId||'samples').map(t=>t.id))}:{}),...(options.selection?{context_selection:options.selection}:{}),...(options.pendingTarget?{pending_target:options.pendingTarget}:{}),...(options.inspect===true?{inspect:true}:{})});
+      return Object.freeze({request_id:crypto.randomUUID(),thread_id:thread.id,text:options.text??thread.draft,input_version:thread.inputVersion||0,profile:scope.profile,example_id:scope.questionId||'',collection_id:scope.collectionId||'samples',history:Object.freeze(thread.messages.filter(m=>m.kind==='user').slice(-4).map(m=>m.text)),context:freeze(['v2','v3'].includes(version)?map.flow||context.empty(thread.id):context.snapshot(thread,scope)),...(['v2','v3'].includes(version)?{analysis_version:version,map_context:freeze(map),conversation_ids:Object.freeze(maps.turns(thread,scope.collectionId||'samples').map(t=>t.id))}:{}),...(options.selection?{context_selection:options.selection}:{}),...(options.pendingTarget?{pending_target:options.pendingTarget}:{}),...(options.inspect===true?{inspect:true,...(root?.PlantChatSearch?{search_mode:root.PlantChatSearch.current()}:{})}:{})});
     },
     complete(thread,submission){const unchanged=!thread.deletedAt&&thread.id===submission.thread_id&&thread.draft===submission.text&&(thread.inputVersion||0)===submission.input_version;if(unchanged)thread.draft='';return unchanged;},
   };

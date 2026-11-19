@@ -9,6 +9,7 @@
   let sourceMap=new Map(collection.records.map(r=>[r.id,r]));
   let questionMap=new Map(collection.examples.map(q=>[q.id,q]));
   let profile=collection.default_profile,recordId=null,questionId=null,exampleMode='all',exampleQuery='',searchRecordId=null,detailRecordId=null;
+  let detailContext=null;
   const archiveStorageKey='plant-thought-archive-samples-v1';
   let previousState;try{previousState=JSON.parse(sessionStorage.getItem(archiveStorageKey)||'null');}catch{}
   const normal=text=>String(text||'').normalize('NFKC').toLocaleLowerCase('ko-KR').replace(/\s+/g,' ').trim();
@@ -21,7 +22,7 @@
   function textNode(tag,text,className){const node=document.createElement(tag);node.textContent=text;if(className)node.className=className;return node;}
   function makeButton(text,callback,className){const button=textNode('button',text,className);button.type='button';button.addEventListener('click',callback);return button;}
   function empty(target,title,text){target.replaceChildren();const box=document.createElement('div');box.className='archive-empty-state';box.append(textNode('strong',title),textNode('p',text));target.appendChild(box);}
-  function remember(){try{sessionStorage.setItem(archiveStorageKey,JSON.stringify({version:1,profile,recordId,questionId,exampleMode,exampleQuery,selected,detailRecordId,collectionId:collection.synthetic?'samples':'personal'}));}catch{}previewRemember();document.dispatchEvent(new CustomEvent('plant:archive-context',{detail:{profile,questionId}}));}
+  function remember(){try{sessionStorage.setItem(archiveStorageKey,JSON.stringify({version:1,profile,recordId,questionId,exampleMode,exampleQuery,selected,detailRecordId,detailContext,collectionId:collection.synthetic?'samples':'personal'}));}catch{}previewRemember();document.dispatchEvent(new CustomEvent('plant:archive-context',{detail:{profile,questionId}}));}
   const showAll=makeButton('원문 전체 보기',()=>{el('archiveInput').value='';document.dispatchEvent(new Event('plant:archive-show-all'));runSearch(true);},'archive-show-all');showAll.id='archiveShowAll';el('filters').append(showAll);
   function bodyExcerpt(body,query){
     const text=String(body),at=query?text.toLocaleLowerCase('ko-KR').indexOf(query.toLocaleLowerCase('ko-KR')):-1;
@@ -50,13 +51,25 @@
     if(scroll)el('archiveSidePanel').scrollIntoView({behavior:'smooth',block:'nearest'});
     remember();
   }
-  function showFullSource(id){
+  function showFullSource(id,context=null){
     const record=sourceMap.get(id);if(!record)return;detailRecordId=id;
-    openSource(id);
-    el('detailTitle').textContent=record.title;el('detailBody').textContent=record.body;
+    detailContext=context&&typeof context.threadId==='string'&&Array.isArray(context.citations)&&(!context.recordId||context.recordId===id)?{...context,recordId:id}:null;
+    openSource(id);el('detailTitle').textContent=record.title;el('detailBody').replaceChildren();
+    for(const part of window.PlantRecordEvidence.segments(record,detailContext?.citations||[])){
+      if(part.highlighted){const mark=textNode('mark',part.text,'record-evidence-highlight');mark.tabIndex=-1;mark.setAttribute('aria-label','대화에서 참고한 구간');el('detailBody').append(mark);}else el('detailBody').append(document.createTextNode(part.text));
+    }
+    const highlighted=!!el('detailBody').querySelector('mark');el('detailEvidenceNote').hidden=!detailContext;el('detailEvidenceNote').textContent=highlighted?'대화에서 참고한 구간을 표시했어요.':'현재 기록에서 일치하는 참고 구간을 찾지 못했어요.';
+    el('detailBack').textContent=detailContext?'← 대화로 돌아가기':'← 서재 보관소로 돌아가기';
     el('detailDate').textContent=(record.date||'날짜 미상')+' · '+collection.profiles.find(p=>p.id===record.profile).label+(collection.synthetic?' · 가상 원문 · v':' · 개인 자료함 · v')+record.revision;
     go('recordDetail');remember();document.dispatchEvent(new CustomEvent('plant:record-opened'));
+    if(highlighted)requestAnimationFrame(()=>{if(document.querySelector('.page.active')?.id!=='recordDetail'||detailRecordId!==id)return;const mark=el('detailBody').querySelector('mark');if(mark){const bounds=mark.getBoundingClientRect(),headerBottom=document.querySelector('body>header').getBoundingClientRect().bottom;if(bounds.top<headerBottom+16||bounds.bottom>window.innerHeight-16)mark.scrollIntoView({block:'center'});mark.focus({preventScroll:true});}});
   }
+  returnFromRecord=function(){
+    if(!detailContext){go('archive');return;}
+    const origin=detailContext,thread=previewThreads.find(t=>t.id===origin.threadId&&!t.deletedAt);
+    if(thread)previewOpenThread(thread.id);else{go('chat');previewToast('원래 대화를 찾을 수 없어 대화 목록으로 돌아왔어요.');}
+    if(thread)requestAnimationFrame(()=>requestAnimationFrame(()=>{if(document.querySelector('.page.active')?.id==='chat'&&previewActiveId===thread.id){const scroll=el('chatScroll');if(scroll&&Number.isFinite(origin.scrollTop))scroll.scrollTop=origin.scrollTop;}}));
+  };
   function focusQuestion(id){
     const q=questionMap.get(id);if(!q||q.profile!==profile)return;questionId=id;
     const first=q.record_ids.find(sourceId=>sourceMap.get(sourceId)?.profile===profile);
@@ -207,6 +220,12 @@
     selectedId:()=>recordId,
     detailRecord:()=>sourceMap.get(detailRecordId)||null,
     showRecord:showFullSource,
+    showRecordInCalendar(id){
+      const record=sourceMap.get(id);if(!record)return;
+      go('archive');archiveView='calendar';calendarExpanded=false;archiveSearchActive=false;el('archiveInput').value='';recordId=id;
+      selectArchiveDate(record.date||today,false);syncArchiveView();remember();
+      requestAnimationFrame(()=>{if(document.querySelector('.page.active')?.id!=='archive')return;el('archiveWorkspace').scrollIntoView({block:'start',behavior:'smooth'});const row=[...el('selectedList').querySelectorAll('[data-record-id]')].find(node=>node.dataset.recordId===id);row?.focus({preventScroll:true});});
+    },
     showPersonalRecords(){
       if(collection.synthetic)return;
       el('archiveInput').value='';
@@ -214,17 +233,18 @@
     },
     setCollection(next){
       const nextCollectionId=next.synthetic?'samples':'personal';
+      const keepDetailContext=collection.synthetic===next.synthetic?detailContext:previousState?.collectionId===nextCollectionId?previousState.detailContext:null;
       const keepDetail=(collection.synthetic===next.synthetic?detailRecordId:null)||(previousState?.collectionId===nextCollectionId?previousState.detailRecordId:null);
       collection=next;window.PlantArchiveSamples=next;sourceMap=new Map(next.records.map(r=>[r.id,r]));questionMap=new Map(next.examples.map(q=>[q.id,q]));
       el('archiveProfile').replaceChildren(...next.profiles.map(p=>{const o=document.createElement('option');o.value=p.id;o.textContent=p.label;return o;}));
-      recordId=null;questionId=null;detailRecordId=null;applyProfile(next.default_profile);
+      recordId=null;questionId=null;detailRecordId=null;detailContext=keepDetailContext;applyProfile(next.default_profile);
       el('archiveJumpExamples').hidden=!next.examples.length;
       document.dispatchEvent(new CustomEvent('plant:collection-changed'));
       if(document.querySelector('.page.active')?.id==='recordDetail'){
-        if(keepDetail&&sourceMap.has(keepDetail))showFullSource(keepDetail);
+        if(keepDetail&&sourceMap.has(keepDetail))showFullSource(keepDetail,keepDetailContext);
       }
     }
   };
   applyProfile(previousState?.profile||profile,true);
-  if(document.querySelector('.page.active')?.id==='recordDetail'&&(detailRecordId||selectedRecord()))showFullSource(detailRecordId||recordId);
+  if(document.querySelector('.page.active')?.id==='recordDetail'&&(detailRecordId||selectedRecord()))showFullSource(detailRecordId||recordId,previousState?.detailContext);
 })();

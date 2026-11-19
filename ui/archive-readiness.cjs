@@ -1,12 +1,10 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
-const {retrieve}=require('./chat-api.cjs');
 function describeRecord(source){
   const base={record_id:source.id,revision:source.revision,original_checked:false,search_revision:null};
   if(typeof source.text!=='string'||!source.text.trim()||!Number.isSafeInteger(source.revision)||source.revision<1)return {...base,status:'error',reason_code:'invalid_original',reason:'원문 내용 또는 버전을 확인하지 못했습니다.'};
   base.original_checked=true;
-  const rows=retrieve([{id:source.id,revision:source.revision,text:source.text,metadata:{title:source.metadata?.title,created_at:source.metadata?.created_at}}],'',[]);
-  if(!rows.length||rows.some(row=>row.revision!==source.revision||source.text.slice(row.start,row.start+row.text.length)!==row.text))return {...base,status:'error',reason_code:'invalid_search_source',reason:'원문을 검색에 사용할 수 있는지 확인하지 못했습니다.'};
+  // Original availability is independent of whether a particular query has matches.
   return {...base,status:'ready',search_revision:source.revision,reason_code:'all_originals',reason:'전체 원문 검색에 사용할 수 있습니다.'};
 }
 async function buildReadiness(root,{profile,example_id}){

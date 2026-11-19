@@ -5,6 +5,8 @@ const {buildReview,publicReview,validateReview,STAGES}=require('./review.cjs');
 function createApi(root,options={}){
  const store=options.store||new Store(root),runtime=options.runtime||new Runtime(root),engine=new Engine(root,store,runtime),token=crypto.randomBytes(32).toString('hex');let setup=null,terminating=false,setupAbort=null;
  const summaryApi=require('./summary-api.cjs').createSummaryApi(engine,runtime);
+ const chatSearch=require('./chat-retrieval.cjs').createChatRetrieval(engine,runtime);
+ chatSearch.indexes.start({canRun:()=>!engine.busy&&setup?.status!=='RUNNING'&&!terminating});
  const json=(res,code,data)=>{res.writeHead(code,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});res.end(JSON.stringify(data));};
  const body=async req=>{let size=0,parts=[];for await(const part of req){size+=part.length;if(size>200000)throw Error('요청 크기 초과');parts.push(part);}return JSON.parse(Buffer.concat(parts).toString()||'{}');};
  async function handle(req,res,url){
@@ -15,6 +17,8 @@ function createApi(root,options={}){
    const route=url.pathname.slice('/api/baseline'.length);
    if(req.method==='GET'&&route.startsWith('/summary-memory'))return json(res,200,await summaryApi.get(route,url)),true;
    if(req.method==='GET'&&route==='/bootstrap')return json(res,200,{token,runtime:runtime.status(),prompts:{extraction:prompts.extractionPrompts,answer:prompts.answerPrompts,query:prompts.queryPrompts},datasets:['pma-dev-v0.1.0',...(fs.existsSync(path.join(root,'datasets','pma-dev-v0.2.0'))?['pma-dev-v0.2.0']:[]),...(fs.existsSync(path.join(root,'datasets','pma-long-v1.0.1','manifest.json'))?['pma-long-v1.0.1']:[]),...(fs.existsSync(path.join(root,'datasets','pma-long-v2.0.0','manifest.json'))?['pma-long-v2.0.0']:[]),...(fs.existsSync(path.join(root,'datasets','pma-context-v1.0.0','manifest.json'))?['pma-context-v1.0.0']:[]),...(fs.existsSync(path.join(root,'datasets','pma-memory-v2.0.0','manifest.json'))?['pma-memory-v2.0.0']:[]),...(fs.existsSync(path.join(root,'datasets','pma-memory-v3.0.0','manifest.json'))?['pma-memory-v3.0.0']:[]),...(fs.existsSync(path.join(root,'datasets','pma-generalization-v1.0.0','manifest.json'))?['pma-generalization-v1.0.0']:[])],busy:engine.busy,setup}),true;
+   if(req.method==='GET'&&route==='/chat-index-status')return json(res,200,await chatSearch.indexes.status(url.searchParams.get('collection'),url.searchParams.get('mode'))),true;
+   if(req.method==='GET'&&route==='/chat-search-status')return json(res,200,{job:chatSearch.status(url.searchParams.get('id'))}),true;
    if(req.method==='GET'&&route==='/status')return json(res,200,{runtime:runtime.status(),busy:engine.busy,setup}),true;
    if(req.method==='GET'&&route==='/dataset'){const ds=await engine.dataset(url.searchParams.get('id')||undefined);return json(res,200,{...ds.d,fingerprint:ds.fingerprint}),true;}
    if(req.method==='GET'&&route==='/runs')return json(res,200,{runs:store.list(url.searchParams.get('trash')==='1')}),true;
@@ -48,6 +52,14 @@ function createApi(root,options={}){
    }
    if(terminating)throw Error('모델 프로세스 종료를 확인하는 중입니다.');
    if(route.startsWith('/summary-memory')){if(setup?.status==='RUNNING')throw Error('모델 설정 작업 중입니다.');return json(res,200,await summaryApi.post(route,data)),true;}
+   if(route==='/chat-index/enable'){chatSearch.indexes.enable(data.mode);return json(res,200,{enabled:true}),true;}
+   if(route==='/chat-index/prepare'){return json(res,202,{job:chatSearch.indexes.enqueue(data.collection,data.mode)}),true;}
+   if(route==='/chat-index/cancel'){return json(res,200,{cancelled:chatSearch.indexes.cancel(data.collection,data.mode)}),true;}
+   if(route==='/chat-search'){
+    if(setup?.status==='RUNNING')throw Error('모델 설정이 끝난 뒤 재시도해 주세요.');
+    const controller=new AbortController(),disconnected=()=>{if(!res.writableEnded)controller.abort();};res.once('close',disconnected);
+    try{return json(res,200,await require('./token-usage.cjs').track(engine,{id:'chat-retrieval-'+data.request_id,transient:true,created_at:new Date().toISOString()},()=>chatSearch.search(data,controller.signal))),true;}finally{res.off('close',disconnected);}
+   }
    if(route==='/budget-preview'){if(setup?.status==='RUNNING')throw Error('모델 설정 작업 중입니다.');return json(res,200,await engine.previewBudget(data)),true;}
    if(route==='/models/download'){
     if(engine.busy||setup?.status==='RUNNING')throw Error('실행/설정 작업 중입니다.');const selected=models.filter(m=>(data.model_ids||[]).includes(m.id));if(!selected.length||selected.length!==(data.model_ids||[]).length)throw Error('모델 선택 오류');
@@ -65,6 +77,6 @@ function createApi(root,options={}){
    json(res,404,{error:'지원하지 않는 API'});return true;
   }catch(e){json(res,400,{error:e.message,operation_id:e.operation_id,token_usage:e.token_usage,metadata_artifact_id:e.metadata_artifact_id,index_validation:e.index_validation});return true;}
  }
- return {handle,engine,store,runtime,close:async()=>{if(engine.abort)engine.abort.abort();await runtime.stopAll();store.db.close();}};
+ return {handle,engine,store,runtime,close:async()=>{if(engine.abort)engine.abort.abort();await chatSearch.indexes.close();await runtime.stopAll();store.db.close();}};
 }
 module.exports={createApi};

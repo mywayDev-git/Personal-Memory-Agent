@@ -24,7 +24,7 @@ const koreaDate=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul'}).for
 const stageError=message=>Object.assign(Error(message),{stage:'validation'});
 function verifiedSources(entries,turns){return entries.map(s=>{const turn=turns.find(t=>t.id===s.turn_id&&t.role==='user');if(!s.quote||!turn||!turn.text.includes(s.quote))throw stageError('기록 내용의 사용자 원문 출처를 확인하지 못했습니다.');return {turn_id:turn.id,role:'user',quote:s.quote};});}
 function quoteEvidence(observations){return [...new Map(observations.flatMap(o=>o.results||[]).map(r=>[r.id+'@'+r.start,r])).values()].map((r,i)=>({...r,ref_id:'R'+(i+1)}));}
-async function respond({data,runtime,service,conversation,getScope,retrieve}){
+async function respond({data,runtime,service,conversation,getScope,retrieve,searchRecords}){
  const cached=service.cached(data);
  if(cached){
   if(cached.action_trace?.version===VERSION){if(!cached.action_trace.reply_error&&!cached.action_trace.steps.some(s=>s.status==='failed'))return cached;}
@@ -36,10 +36,14 @@ async function respond({data,runtime,service,conversation,getScope,retrieve}){
  const scope=await getScope(data),scopeInfo={id:scope.id,collection_id:data.collection_id,accessible_count:scope.sources.length,coverage:'all-records-in-selected-collection',read_only:data.collection_id==='samples'};
  const records=service.library.read().records,allTasks=service.tasks(data.thread_id),allPending=service.pending(data.thread_id);
  const known=data.collection_id==='personal'?records.slice(-12).map(r=>({id:r.id,revision:r.revision,title:r.title,deleted:!!r.deleted_at})):[];
+ const advancedSearch=!!data.search_mode&&data.search_mode!=='legacy',searchTraces=[];
  const observations=[],outcomes=[],proposals=[],executions=[],modelCalls=[];
  let calls=0;const usage={prompt_tokens:0,completion_tokens:0,total_tokens:0};
  async function call(phase,messages,schema){const config={seed:42,context_tokens:8192,output_tokens:1536};const r=await runtime.chat(messages,schema,config);calls++;if(data.inspect)modelCalls.push({phase,messages,schema,config,output:r.parsed,usage:r.usage,elapsed_ms:r.elapsed_ms});for(const key of Object.keys(usage))usage[key]+=r.usage?.[key]||0;return r.parsed;}
- function search(query,origin){const evidence=searchScope(scope,query,retrieve);const observation={tool:'search',origin,status:'completed',query,scope:scope.id,accessible_count:scope.sources.length,results:evidence.map(e=>({id:e.source_id,revision:e.revision,title:e.metadata.title,quote:e.text,start:e.start}))};observations.push(observation);return observation;}
+ async function search(query,origin){let evidence;
+  try{if(advancedSearch){const result=await searchRecords(scope,query);evidence=result.evidence;searchTraces.push({...result.trace,query,status:'completed'});}else evidence=searchScope(scope,query,retrieve);}
+  catch(error){searchTraces.push({mode:data.search_mode,query,status:'failed',error:error.message});throw error;}
+ const observation={tool:'search',origin,status:'completed',query,scope:scope.id,accessible_count:scope.sources.length,results:evidence.map(e=>({id:e.source_id,revision:e.revision,title:e.metadata.title,quote:e.text,start:e.start}))};observations.push(observation);return observation;}
  const v3 = data.analysis_version === 'v3';
  let categoryContext;
  let tasks = allTasks, pending = allPending, receipts = service.recentReceipts(data.thread_id);
@@ -55,10 +59,10 @@ async function respond({data,runtime,service,conversation,getScope,retrieve}){
    });
  }
  // Read-only prefetch is not a decision about the user's intent.
- if(!v3 && data.collection_id==='samples'){
-  const query=data.text;const observation=search(query,'app_prefetch');const previous=turns.slice(0,-1).findLast(t=>t.role==='user');
-  if(!observation.results.length&&previous)search(previous.text+'\n'+data.text,'app_context_prefetch');
- }else if(!v3){
+ if(!v3 && !advancedSearch && data.collection_id==='samples'){
+  const query=data.text;const observation=await search(query,'app_prefetch');const previous=turns.slice(0,-1).findLast(t=>t.role==='user');
+  if(!observation.results.length&&previous)await search(previous.text+'\n'+data.text,'app_context_prefetch');
+ }else if(!v3&&!advancedSearch){
   const recent=records.filter(r=>!r.deleted_at&&r.search_enabled).slice(-12);
   if(recent.length)observations.push({tool:'read_recent_records',origin:'app_prefetch',status:'completed',scope:scope.id,accessible_count:scope.sources.length,results:recent.map(r=>({id:r.id,revision:r.revision,title:r.title,quote:r.body.slice(0,600),start:0}))});
  }
@@ -110,7 +114,7 @@ async function respond({data,runtime,service,conversation,getScope,retrieve}){
   const row={index,tool:step.tool,purpose:step.purpose,status:'planned'};outcomes.push(row);
   try{
    if(!tools.includes(step.tool))throw stageError('사용할 수 없는 도구입니다.');
-   if(step.tool==='search'){const observed=search(step.query||plan.goal,'model_tool');row.status='completed';row.result_count=observed.results.length;row.accessible_count=scope.sources.length;continue;}
+   if(step.tool==='search'){const observed=await search(step.query||plan.goal,'model_tool');row.status='completed';row.result_count=observed.results.length;row.accessible_count=scope.sources.length;continue;}
    if(step.tool==='cancel'){
     const p=service.proposal(step.target_id);if(p?.thread_id===data.thread_id&&p.status==='cancelled'){const receipt=service.receipt(p.operation_id);if(receipt?.status==='cancelled'){executions.push(receipt);row.status='cancelled';row.proposal_id=p.id;continue;}}if(!p||p.thread_id!==data.thread_id||p.status!=='pending'){row.status='needs_input';row.question='취소할 확인 대기 초안을 선택해 주세요.';continue;}
     const receipt=service.execute({thread_id:data.thread_id,proposal_id:p.id,version:p.version,operation_id:p.operation_id,decision:'cancel'});executions.push(receipt);row.status='cancelled';row.proposal_id=p.id;continue;
@@ -139,6 +143,7 @@ step_results는 실제 앱 결과다. awaiting_confirmation은 초안만 준비�
  const citations=[];for(const item of reply.support){const e=evidence.find(e=>e.ref_id===item.ref_id);if(!e)throw stageError('답변의 근거가 실제 검색 결과에 없습니다.');if(!citations.some(c=>c.source_id===e.id&&c.start===e.start))citations.push({source_id:e.id,revision:e.revision,title:e.title,quote:e.quote,start:e.start,end:e.start+e.quote.length});}
  const action={answered:'answer',partial:'partial_answer',not_found:'abstain',conflict:'report_conflict',needs_input:'clarify'}[reply.outcome];
  const result={request_id:data.request_id,thread_id:data.thread_id,analysis_version:data.analysis_version,intent:'contextual',action,answer:reply.answer,citations,model:'Qwen3.5 4B',scope:{mode:data.collection_id==='personal'?'personal':'all-originals',accessible_count:scope.sources.length,retrieved_count:evidence.length},stored:executions.some(e=>e.operation==='create'&&e.status==='succeeded'),proposals,executions};
+ result.retrieval_trace=advancedSearch?{mode:data.search_mode,status:searchTraces.some(s=>s.status==='failed')?'failed':searchTraces.length?'completed':'skipped',searches:searchTraces}:{mode:'legacy',status:observations.some(o=>o.tool==='search')?'completed':'skipped',searches:[]};
  const unfinished=proposals.some(p=>p.status==='pending')||!!replyError||reply.outcome==='needs_input'||outcomes.some(s=>['needs_input','failed'].includes(s.status));
  result.task_id=service.task(data,{goal:plan.goal,task_id:plan.task_id,status:unfinished?'waiting':'completed'},{question:reply.question||outcomes.find(s=>s.question)?.question||'',context_summary:plan.context_summary,steps:outcomes,...(replyError?{reply_error:replyError}:{})});service.bindGoal(result.task_id,proposals);
  const maps=require('./plant-thought/dialogue-map.js'),context=require('./plant-thought/conversation-context.js'),map=maps.normalize(data.map_context,data.thread_id,context);

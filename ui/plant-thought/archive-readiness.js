@@ -1,5 +1,5 @@
 'use strict';
-// Read-only readiness checks. Does not start models, generate answers, or write records.
+// Read original availability; explicit preparation controls build the selected search index.
 (()=>{
   const collection=window.PlantArchiveSamples;if(!collection)return;
   const node=(tag,text,cls)=>{const el=document.createElement(tag);if(text!=null)el.textContent=text;if(cls)el.className=cls;return el;};
@@ -14,7 +14,7 @@
   const dismiss=node('button','닫기','archive-readiness-dismiss');dismiss.type='button';dismiss.setAttribute('aria-label','기록 준비 상태 닫기');dismiss.addEventListener('click',()=>closeOverview(true));
   function closeOverview(focus=false){overview.hidden=true;compact.setAttribute('aria-expanded','false');if(focus)compact.focus({preventScroll:true});}
   function positionOverview(){const anchor=compact.getBoundingClientRect(),width=overview.offsetWidth,height=overview.offsetHeight;overview.style.left=Math.max(12,Math.min(anchor.left,innerWidth-width-12))+'px';const below=anchor.bottom+8;overview.style.top=(below+height<=innerHeight-12?below:Math.max(12,anchor.top-height-8))+'px';}
-  compact.addEventListener('click',()=>{if(!overview.hidden){closeOverview();return;}overview.hidden=false;compact.setAttribute('aria-expanded','true');positionOverview();dismiss.focus({preventScroll:true});});
+  compact.addEventListener('click',()=>{if(!overview.hidden){closeOverview();return;}overview.hidden=false;compact.setAttribute('aria-expanded','true');positionOverview();refreshPreparation();dismiss.focus({preventScroll:true});});
   document.addEventListener('click',event=>{if(!overview.hidden&&!overview.contains(event.target)&&!compact.contains(event.target))closeOverview();});
   document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!overview.hidden){event.preventDefault();closeOverview(true);}});
   document.addEventListener('focusin',event=>{if(!overview.hidden&&!overview.contains(event.target)&&!compact.contains(event.target))closeOverview();});
@@ -28,6 +28,44 @@
   const refresh=node('button','다시 확인','archive-readiness-refresh');refresh.type='button';refresh.addEventListener('click',()=>{checkRecords();checkService(true);});controls.append(filters,refresh);
   const note=node('p',null,'archive-readiness-note');note.setAttribute('role','status');
   overview.append(heading,contextLabel,controls,note);document.body.append(overview);
+  const preparation=node('section',null,'archive-preparation');preparation.setAttribute('aria-label','기록 준비');
+  const preparationTitle=node('h3','기록 준비'),preparationHelp=node('p','선택한 자료함 전체를 그래프 검색에 사용할 수 있도록 준비합니다. 대화와 원문은 바뀌지 않습니다.');
+  const preparationLabel=node('label','준비할 방식'),preparationSelect=node('select');preparationSelect.setAttribute('aria-label','기록 준비 방식');
+  for(const [id,label]of [['G1-linked','사건 연결과 근거 확인'],['G1','사건별 정리'],['G1-claim','주장과 근거 정리'],['G2','여러 대상과 사실 정리']]){const option=node('option',label);option.value=id;preparationSelect.append(option);}
+  const selectedMode=window.PlantChatSearch?.current();preparationSelect.value=[...preparationSelect.options].some(o=>o.value===selectedMode)?selectedMode:'G1-linked';preparationLabel.append(preparationSelect);
+  const preparationState=node('p','준비 상태를 확인해 주세요.','archive-preparation-state');preparationState.setAttribute('role','status');
+  const preparationButtons=node('div',null,'archive-preparation-actions'),prepare=node('button','기록 준비'),stop=node('button','준비 중지');prepare.type=stop.type='button';stop.hidden=true;preparationButtons.append(prepare,stop);preparation.append(preparationTitle,preparationHelp,preparationLabel,preparationState,preparationButtons);overview.append(preparation);
+  let preparationResult=null,preparationError='',preparationBusy=false,preparationChecking=false,preparationToken=null;
+  const preparationTarget=()=>({collection:window.PlantArchiveSamples?.synthetic===false?'personal':'samples',mode:preparationSelect.value});
+  function renderPreparation(){
+    const result=preparationResult,busy=['queued','indexing'].includes(result?.status),chatBusy=previewThreads.some(t=>!t.deletedAt&&t.messages.some(m=>m.kind==='assistant'&&m.status==='pending'&&!m.archived));
+    const labels={not_prepared:'준비 전',stale:'갱신 필요',queued:'준비 대기',indexing:'준비 중',ready:'준비 완료',failed:'준비 실패',cancelled:'준비 중지됨'};
+    preparationState.textContent=preparationError||(preparationChecking&&!result?'준비 상태 확인 중…':result?(labels[result.status]||'확인 필요')+' · '+(result.indexed_count||0)+' / '+result.source_count+'개 기록'+(result.error?' · '+result.error:''):'준비 상태를 확인해 주세요.');
+    preparationState.dataset.state=preparationError?'failed':result?.status||'unchecked';
+    prepare.hidden=busy;stop.hidden=!busy;prepare.disabled=preparationBusy||preparationChecking||chatBusy;stop.disabled=preparationBusy;preparationSelect.disabled=preparationBusy||busy;
+    prepare.textContent=result?.status==='ready'?'기록 다시 준비':['failed','cancelled','stale'].includes(result?.status)?'기록 다시 준비':'기록 준비';
+    preparationHelp.textContent=chatBusy?'대화 생성을 마친 뒤 기록을 준비할 수 있어요.':'선택한 자료함 전체를 그래프 검색에 사용할 수 있도록 준비합니다. 대화와 원문은 바뀌지 않습니다.';
+    if(result)compact.textContent='기록 준비 상태 · '+(labels[result.status]||'확인 필요');
+    if(!overview.hidden)positionOverview();
+  }
+  async function refreshPreparation(){
+    if(preparationChecking)return;preparationChecking=true;renderPreparation();const target=preparationTarget(),key=JSON.stringify(target);
+    try{const response=await fetch('/api/baseline/chat-index-status?'+new URLSearchParams(target),{cache:'no-store',signal:AbortSignal.timeout(15000)}),result=await response.json();if(!response.ok)throw Error(result.error||'기록 준비 상태를 확인하지 못했습니다.');if(key!==JSON.stringify(preparationTarget()))return;preparationResult=result;preparationError='';}
+    catch(error){if(key===JSON.stringify(preparationTarget()))preparationError=error.message;}
+    finally{preparationChecking=false;renderPreparation();}
+  }
+  async function preparationAction(action){
+    if(preparationBusy)return;preparationBusy=true;preparationError='';renderPreparation();
+    try{
+      if(action==='prepare'&&previewThreads.some(t=>!t.deletedAt&&t.messages.some(m=>m.kind==='assistant'&&m.status==='pending'&&!m.archived)))throw Error('대화 생성을 마친 뒤 다시 시도해 주세요.');
+      const target=preparationTarget();if(!preparationToken){const response=await fetch('/api/baseline/bootstrap',{cache:'no-store',signal:AbortSignal.timeout(15000)});if(!response.ok)throw Error('로컬 AI 연결을 확인해 주세요.');preparationToken=(await response.json()).token;}
+      const response=await fetch('/api/baseline/chat-index/'+action,{method:'POST',headers:{'Content-Type':'application/json','X-Memory-Lab-Token':preparationToken},body:JSON.stringify(target),signal:AbortSignal.timeout(15000)}),result=await response.json();if(!response.ok){if(response.status===403)preparationToken=null;throw Error(result.error||'기록 준비 요청을 처리하지 못했습니다.');}
+      await refreshPreparation();
+    }catch(error){preparationError=error.message;}finally{preparationBusy=false;renderPreparation();}
+  }
+  preparationSelect.addEventListener('change',()=>{preparationResult=null;preparationError='';refreshPreparation();});prepare.onclick=()=>preparationAction('prepare');stop.onclick=()=>preparationAction('cancel');
+  refresh.addEventListener('click',()=>refreshPreparation());
+  const preparationTimer=setInterval(()=>{if(!overview.hidden||['queued','indexing'].includes(preparationResult?.status))refreshPreparation();},2000);window.addEventListener('pagehide',()=>clearInterval(preparationTimer),{once:true});
   const dialog=node('dialog',null,'archive-readiness-dialog');dialog.setAttribute('aria-label','기록 준비 상태 상세');document.body.append(dialog);
   dialog.addEventListener('click',event=>{if(event.target===dialog){const rect=dialog.getBoundingClientRect();if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom)dialog.close();}});
   dialog.addEventListener('close',()=>{dialogRecord=null;if(returnFocus?.isConnected)returnFocus.focus({preventScroll:true});});
@@ -54,7 +92,7 @@
     note.textContent=state.phase==='done'?'마지막 확인 '+formatTime(state.result.checked_at)+' · 전체 원문이 검색 대상입니다. 필터는 준비 상태만 구분합니다.':state.phase==='checking'?'전체 원문 버전과 검색 가능 여부를 확인하고 있습니다.':state.phase==='error'?state.error:'아직 상태를 확인하지 않았습니다.';
     compact.textContent='기록 준비 상태 · '+(state.phase==='done'?counts.ready+'/'+counts.all:names[state.phase==='error'?'error':state.phase==='checking'?'checking':'unchecked'])+(filter!=='all'?' · '+names[filter]:'');
     compact.title=state.phase==='done'?'사용 가능 '+counts.ready+'개 / 전체 '+counts.all+'개 · 눌러 상세 상태와 필터 보기':'눌러 기록 준비 상태와 다시 확인 보기';
-    hydrate();if(!overview.hidden)positionOverview();if(dialog.open)renderDialog();
+    hydrate();renderPreparation();if(!overview.hidden)positionOverview();if(dialog.open)renderDialog();
   }
   function formatTime(value){if(!value)return '확인 전';return new Intl.DateTimeFormat('ko-KR',{timeZone:'Asia/Seoul',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(new Date(value));}
   function renderDialog(){

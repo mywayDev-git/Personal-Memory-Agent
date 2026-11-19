@@ -14,7 +14,7 @@
  document.body.dataset.testMode=testEnabled?'on':'off';
  const testCard=node('section',null,'card test-mode-settings'),testTitle=node('h3','테스트 기능');
  const testRow=node('div',null,'setting'),testText=node('div'),testLabel=node('label','테스트 모드 켜기');testLabel.htmlFor='testModeToggle';
- const testDescription=node('p','가상 원문 199개와 질문·답변 예시, Memory Lab을 사용할 수 있어요.','muted small');testDescription.id='testModeDescription';
+ const testDescription=node('p','가상 원문 199개와 질문·답변 예시, Memory Lab을 사용할 수 있어요. 상단에서 대화 버전과 기록 검색 방식을 선택할 수 있어요.','muted small');testDescription.id='testModeDescription';
  testText.append(testLabel,testDescription);
  const testToggle=node('input');testToggle.type='checkbox';testToggle.id='testModeToggle';testToggle.className='test-mode-switch';testToggle.setAttribute('role','switch');testToggle.setAttribute('aria-describedby','testModeDescription');testToggle.checked=testEnabled;testToggle.disabled=true;
  const modeStatus=node('p',null,'test-mode-status');modeStatus.setAttribute('role','status');
@@ -176,14 +176,16 @@
  document.addEventListener('plant:record-opened',syncRecordActions);document.addEventListener('plant:collection-changed',syncRecordActions);syncRecordActions();
  const archiveActions=node('div',null,'transfer-actions');archiveActions.append(button('내보내기',()=>exportDialog('archive')),button('이 기록 내보내기',()=>{const id=view.selectedId();if(!id)throw Error('내보낼 기록을 선택해 주세요.');return exportDialog('archive',[id]);}),button('불러오기',importFile));document.querySelector('#archive .archive-toolbar').append(archiveActions);
  const history=previewRenderHistory;
- previewRenderHistory=function(){history();for(const menu of document.querySelectorAll('.preview-thread-menu')){const threadId=menu.id.slice('thread-menu-'.length);const b=button('이 대화 내보내기',()=>{previewCloseThreadMenus();return exportDialog('chat',[threadId]);});b.className='transfer-thread-export';b.setAttribute('role','menuitem');menu.insertBefore(b,menu.querySelector('.preview-delete-thread'));menu.addEventListener('keydown',event=>{const items=[...menu.querySelectorAll('button')];const index=items.indexOf(document.activeElement);let target;if(event.key==='ArrowDown')target=(index+1)%items.length;else if(event.key==='ArrowUp')target=(index+items.length-1)%items.length;else if(event.key==='Home')target=0;else if(event.key==='End')target=items.length-1;else return;event.preventDefault();event.stopPropagation();items[target].focus();},true);}};
+ previewRenderHistory=function(){history();for(const menu of document.querySelectorAll('.preview-thread-menu:not(.preview-group-menu)')){const threadId=menu.id.slice('thread-menu-'.length);const b=button('이 대화 내보내기',()=>{previewCloseThreadMenus();return exportDialog('chat',[threadId]);});b.className='transfer-thread-export';b.setAttribute('role','menuitem');menu.insertBefore(b,menu.querySelector('.preview-delete-thread'));menu.addEventListener('keydown',event=>{const items=[...menu.querySelectorAll('button')];const index=items.indexOf(document.activeElement);let target;if(event.key==='ArrowDown')target=(index+1)%items.length;else if(event.key==='ArrowUp')target=(index+items.length-1)%items.length;else if(event.key==='Home')target=0;else if(event.key==='End')target=items.length-1;else return;event.preventDefault();event.stopPropagation();items[target].focus();},true);}};
+ let savingRecord=false;
  addRecord=async function(){
-  try{await flush();const title=document.getElementById('recordTitle').value,body=document.getElementById('recordBody').value,date=document.getElementById('recordDate').value||null;if(!body.trim())throw Error('기록 내용을 입력해 주세요.');
-   const result=await api('record',{revision,record:{title,body,date,search_enabled:true}});revision=result.revision;personalRecords=result.records;switchCollection('personal');document.getElementById('recordBody').value='';document.getElementById('recordTitle').value='';previewRemember();setStatus('개인 자료함에 기록을 저장했어요.');previewToast(status.textContent);
-  }catch(error){showError(error);}
+  if(savingRecord)return;savingRecord=true;if(saveRecordButton)saveRecordButton.disabled=true;
+  try{await flush();const title=document.getElementById('recordTitle').value,body=document.getElementById('recordBody').value,date=document.getElementById('recordDate').value||today;if(!body.trim())throw Error('기록 내용을 입력해 주세요.');
+   const result=await api('record',{revision,record:{title,body,date,search_enabled:true}}),saved=result.records.at(-1);revision=result.revision;personalRecords=result.records;switchCollection('personal');document.getElementById('recordBody').value='';document.getElementById('recordTitle').value='';document.getElementById('recordDate').value=date;view.showRecordInCalendar(saved.id);previewRemember();setStatus('개인 자료함에 기록을 저장했어요.');previewToast('기록을 저장했어요. 선택한 날짜의 달력에서 확인하세요.');
+  }catch(error){showError(error);}finally{savingRecord=false;if(saveRecordButton)saveRecordButton.disabled=false;}
  };
- const note=document.querySelector('#emotion .notice');if(note)note.textContent='저장을 누르면 이 기기의 개인 자료함에 기록을 저장하고 AI 검색에 포함합니다.';
- const saveRecordButton=document.querySelector('#emotion button.primary');if(saveRecordButton)saveRecordButton.textContent='개인 자료함에 저장 ↗';
+ const note=document.querySelector('#emotion .notice');if(note)note.textContent='저장하면 개인 자료함과 AI 검색에 반영하고, 해당 날짜의 달력으로 이동합니다.';
+ const saveRecordButton=document.querySelector('#emotion button.primary');if(saveRecordButton)saveRecordButton.textContent='저장하고 달력에서 보기 ↗';
  document.addEventListener('plant:collection-changed',()=>{const select=document.getElementById('archiveProfile');select.disabled=collection==='personal';});
  // Keep the browser's close warning while a server write is still pending.
  window.addEventListener('beforeunload',event=>{if(dirty||saveFailure){event.preventDefault();event.returnValue='';}});

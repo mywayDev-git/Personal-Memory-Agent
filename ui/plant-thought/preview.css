@@ -67,3 +67,20 @@
 
 .preview-toast{display:flex;align-items:center;justify-content:space-between;gap:16px;line-height:1.6}.preview-toast>span{min-width:0;overflow-wrap:anywhere}.preview-toast-action{flex:none;border:1px solid #ffffff66;border-radius:6px;background:transparent;color:#fff;padding:7px 11px;font:inherit;font-weight:600;white-space:nowrap}.preview-toast-action:hover{background:#ffffff18}.preview-toast-action:focus-visible{outline:2px solid #fff;outline-offset:3px}.chat-settings-dialog>.preview-toast{position:relative;left:auto;bottom:auto;transform:none;max-width:none;flex:none;margin:0 24px 18px}
 @media(max-width:600px){.chat-settings-dialog>.preview-toast{margin:0 18px 15px}.preview-toast{gap:12px;padding:12px 14px}}
+
+.sidebar-group-more{opacity:0;pointer-events:none}.sidebar-section-toolbar:hover .sidebar-group-more,.sidebar-section-toolbar:focus-within .sidebar-group-more,.sidebar-group-more[aria-expanded="true"]{opacity:1;pointer-events:auto}.sidebar-group-more svg circle{fill:currentColor;stroke:none}.preview-group-menu .preview-delete-thread{margin:0}
+@media(hover:none){.sidebar-group-more{opacity:1;pointer-events:auto}}
+
+/* History menus use the chat typography and quiet library palette. */
+.preview-thread-menu{width:184px;max-height:calc(100dvh - 16px);overflow-y:auto;overscroll-behavior:contain;padding:5px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--green2);font:400 12px/1.6 "Noto Sans KR",sans-serif;box-shadow:0 8px 26px #193c2e12}
+.preview-thread-menu>button[role="menuitem"]{display:block;width:100%;margin:0;padding:9px 11px;border:0;border-radius:6px;background:transparent;color:var(--green2);font:inherit;text-align:left;letter-spacing:0}
+.preview-thread-menu>button[role="menuitem"]:hover{background:var(--soft);color:var(--green)}
+.preview-thread-menu>.preview-delete-thread[role="menuitem"]{margin-top:4px;color:#9a5b50;background:transparent}
+.preview-thread-menu>.preview-delete-thread[role="menuitem"]:hover{background:#f4e9e4;color:#87483e}
+.preview-group-menu>.preview-delete-thread[role="menuitem"]{margin-top:0}
+
+.home-recent-chats{max-width:780px;margin:16px auto 0;padding:0 6px;text-align:left}.home-recent-chats[hidden]{display:none}.home-recent-chats>h2{margin:0 0 5px;padding:0 9px;font:400 11px/1.6 "Noto Sans KR",sans-serif;color:var(--muted)}.home-recent-chat-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.home-recent-chat{display:flex;align-items:center;gap:8px;min-width:0;padding:8px 9px;border:0;border-radius:7px;background:transparent;color:var(--green2);text-align:left;font:400 12px/1.6 "Noto Sans KR",sans-serif}.home-recent-chat:hover{background:var(--soft);color:var(--green)}.home-recent-chat .preview-thread-title{flex:1;min-width:0;width:auto}.home-recent-chat-arrow{flex:none;color:var(--muted);opacity:.55}.home-recent-chat:hover .home-recent-chat-arrow{opacity:1}@media(max-width:600px){.home-recent-chat-list{grid-template-columns:1fr;gap:1px}.home-recent-chats{margin-top:13px}}
+
+/* Selected conversation and its title use the same garden palette. */
+#chatHistory .preview-thread-row.is-active{background:#dfe8d6;box-shadow:inset 0 0 0 1px #cbd8c0}#chatHistory .preview-thread-row.is-active:hover{background:#d9e4cf}#chatHistory .preview-thread-row.is-active .preview-thread{color:var(--green);font-weight:600;background:transparent}
+.chat-topbar-left{flex:1;overflow:hidden}.chat-topbar-actions{flex-shrink:0}.chat-title{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}

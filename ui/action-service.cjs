@@ -71,6 +71,7 @@ class ActionService{
     const records=before?state.records.map(r=>r.id===after.id?after:r):[...state.records,after];
     const next=payload({...state,records});if(Buffer.byteLength(JSON.stringify(next))>MAX_BYTES)fail('저장 용량을 초과했습니다.',413);
     this.db.prepare('UPDATE library SET revision=?,payload=? WHERE id=1').run(state.revision+1,JSON.stringify(next));
+    this.library.indexChanged(state.records,next.records);
     this.db.prepare('INSERT INTO record_history VALUES(?,?,?,?)').run(p.operation_id,p.target_id,before?JSON.stringify(before):null,JSON.stringify(after));
     result={...result,status:'succeeded',revision:state.revision+1,record_revision:after.revision,record:after};
    }

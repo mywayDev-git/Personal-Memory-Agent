@@ -1,0 +1,6 @@
+const test=require('node:test'),assert=require('node:assert/strict'),path=require('node:path');
+const {describe}=require(path.join(process.env.PMA_APP_ROOT||path.resolve(__dirname,'..'),'ui/plant-thought/search-modes.js'));
+test('completed response shows the executed mode rather than a different selected mode',()=>{const result=describe({search_mode:'R0'},{retrieval_trace:{mode:'G1-linked',status:'completed'}});assert.equal(result.label,'G1 · 사건 연결·근거 확인');});
+test('skipped search is reported as unused instead of claiming the selected route ran',()=>{assert.equal(describe({search_mode:'R0'},{retrieval_trace:{mode:'R0',status:'skipped'}}).label,'기록 검색 없음');});
+test('pending, cancelled and old unrecorded responses distinguish selection from execution',()=>{assert.match(describe({search_mode:'R0'},null,'pending').label,/선택$/);assert.match(describe({search_mode:'R0'},null,'cancelled').label,/미완료$/);assert.equal(describe({},{}).label,'검색 방식 미기록');});
+test('failure remains visible and compound responses preserve each executed method',()=>{assert.match(describe({}, {retrieval_trace:{mode:'R0',status:'failed'}}).label,/검색 실패/);const result=describe({}, {parts:[{result:{retrieval_trace:{mode:'R0',status:'completed'}}},{result:{retrieval_trace:{mode:'G2',status:'completed'}}}]});assert.equal(result.label,'R0 · 원문 청크 / G2 · 다중 대상·사실');});

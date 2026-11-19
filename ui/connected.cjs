@@ -4,6 +4,7 @@ const {handleUi}=require('./routes.cjs'),{createChatApi}=require('./chat-api.cjs
 const {createLibraryApi}=require('./library.cjs');
 const root=path.resolve(__dirname,'..'),port=Number(process.env.UI_PORT||4330),readiness=createReadinessApi(root);
 const library=createLibraryApi(root),chat=createChatApi(root,{actions:new (require('./action-service.cjs').ActionService)(library.library),conversation:data=>{const t=library.library.read().threads.find(t=>t.id===data.thread_id&&!t.deletedAt);return t?require('./plant-thought/dialogue-map.js').turns(t):null;},resume:data=>{const thread=library.library.read().threads.find(t=>t.id===data.thread_id&&!t.deletedAt);const message=thread?.messages.find(m=>m.kind==='assistant'&&!m.archived&&m.submission.request_id===data.request_id&&m.result?.parts);return message?{submission:message.submission,parts:message.result.parts}:null;}});
+const exploreEvents=require('./event-explorer.cjs').api(library.library,root);
 const names=['baseline.js','baseline.css','summary.js','summary.css','summary-lab.js','app.js','style.css','timing.js','usage-ui.js','usage-ui.css','structured-lab.js','event-graph-viewer.js','event-graph-viewer.css','stage-review.js','stage-review.css','answer-evaluation.js','answer-evaluation.css'];
 const files=new Map(names.map(name=>['/'+name,name]));
 for(const route of ['/baseline','/baseline/','/baseline.html'])files.set(route,'baseline.html');
@@ -12,6 +13,7 @@ const server=http.createServer(async(req,res)=>{
   try{
     const url=new URL(req.url,'http://127.0.0.1:'+port),host=req.headers.host||'';
     if(!['127.0.0.1:'+port,'localhost:'+port].includes(host)||(req.headers.origin&&req.headers.origin!=='http://'+host)){res.writeHead(403);res.end('Local origin required');return;}
+    if(url.pathname==='/api/event-explorer'){await exploreEvents(req,res,url);return;}
     if(url.pathname==='/api/event-network' && req.method==='GET'){
       const network=await require('./event-network.cjs')(root);
       res.writeHead(200,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'});

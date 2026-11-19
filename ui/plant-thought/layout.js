@@ -26,8 +26,7 @@ function safe(v){
 }
 
 function go(id){
-  if(id==='settings'&&document.querySelector('.page.active')?.id==='chat'&&typeof openChatSettings==='function'){openChatSettings();return;}
-  if(id!=='settings'&&document.getElementById('chatSettingsDialog')?.open&&typeof closeChatSettings==='function')closeChatSettings();
+  if(document.getElementById('chatSettingsDialog')?.open&&typeof closeChatSettings==='function')closeChatSettings();
   const target=document.getElementById(id);
   if(!target)return;
   if(id==='emotion'){
@@ -73,6 +72,7 @@ function recordIndex(r){
   return records.indexOf(r);
 }
 
+function returnFromRecord(){go('archive');}
 function openRecord(index){
   const r=records[index];
   if(!r)return;

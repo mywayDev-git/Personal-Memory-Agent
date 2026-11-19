@@ -42,19 +42,36 @@ function previewSnapshot(){
 }
 function previewRemember(){try{sessionStorage.setItem(previewStorageKey,JSON.stringify(previewSnapshot()));}catch{/* Private/limited browser storage must not prevent UI navigation. */}}
 function previewCloseThreadMenus({focus=false}={}){
-  for(const toggle of document.querySelectorAll('.preview-thread-more[aria-expanded="true"]')){
+  for(const toggle of document.querySelectorAll('.preview-thread-more[aria-expanded="true"],.sidebar-group-more[aria-expanded="true"]')){
     toggle.setAttribute('aria-expanded','false');const menu=document.getElementById(toggle.getAttribute('aria-controls'));if(menu)menu.hidden=true;if(focus)toggle.focus({preventScroll:true});
   }
 }
-document.addEventListener('click',event=>{if(!event.target.closest('.preview-thread-row,.preview-thread-menu'))previewCloseThreadMenus();});
-document.addEventListener('keydown',event=>{if(event.key==='Escape'&&document.querySelector('.preview-thread-more[aria-expanded="true"]')){event.preventDefault();previewCloseThreadMenus({focus:true});}});
+document.addEventListener('click',event=>{if(!event.target.closest('.preview-thread-row,.preview-thread-menu,.sidebar-group-more'))previewCloseThreadMenus();});
+document.addEventListener('keydown',event=>{if(event.key==='Escape'&&document.querySelector('.preview-thread-more[aria-expanded="true"],.sidebar-group-more[aria-expanded="true"]')){event.preventDefault();previewCloseThreadMenus({focus:true});}});
 document.addEventListener('scroll',()=>previewCloseThreadMenus(),true);
 window.addEventListener('resize',()=>previewCloseThreadMenus());
 function previewPositionThreadMenu(toggle,menu){
-  const anchor=toggle.getBoundingClientRect(),width=menu.offsetWidth,height=menu.offsetHeight;
-  menu.style.left=Math.max(8,Math.min(anchor.right-width,window.innerWidth-width-8))+'px';
-  const below=anchor.bottom+6,fits=below+height<=window.innerHeight-8;
-  menu.style.top=(fits?below:Math.max(8,anchor.top-height-6))+'px';menu.dataset.placement=fits?'below':'above';
+  const anchor=toggle.getBoundingClientRect(),sidebar=toggle.closest('#chatSidebar')?.getBoundingClientRect(),width=menu.offsetWidth,height=menu.offsetHeight,gap=8;
+  const right=(sidebar?.right??anchor.right)+gap,left=(sidebar?.left??anchor.left)-width-gap;
+  const fitsRight=right+width<=window.innerWidth-gap,fitsLeft=left>=gap;
+  menu.style.left=Math.max(gap,Math.min(fitsRight?right:fitsLeft?left:window.innerWidth-width-gap,window.innerWidth-width-gap))+'px';
+  menu.style.top=Math.max(gap,Math.min(anchor.top-5,window.innerHeight-height-gap))+'px';
+  menu.dataset.placement=fitsRight?'right':fitsLeft?'left':'in-viewport';
+}
+function previewBindHistoryMenu(more,menu){
+  const openMenu=()=>{previewCloseThreadMenus();menu.hidden=false;previewPositionThreadMenu(more,menu);more.setAttribute('aria-expanded','true');};
+  more.onclick=event=>{event.stopPropagation();if(more.getAttribute('aria-expanded')==='true')previewCloseThreadMenus();else{openMenu();if(event.detail===0)menu.querySelector('button').focus({preventScroll:true});}};
+  more.onkeydown=event=>{if(event.key==='ArrowDown'){event.preventDefault();openMenu();menu.querySelector('button').focus({preventScroll:true});}};
+  menu.addEventListener('keydown',event=>{const items=[...menu.querySelectorAll('button')],index=items.indexOf(document.activeElement);let target;if(event.key==='ArrowDown')target=(index+1)%items.length;else if(event.key==='ArrowUp')target=(index+items.length-1)%items.length;else if(event.key==='Home')target=0;else if(event.key==='End')target=items.length-1;else return;event.preventDefault();event.stopPropagation();items[target].focus();});
+}
+function previewDeleteGroup(name){
+  if(!previewThreads.some(t=>t.group===name))return;
+  previewRemember();previewCloseThreadMenus();
+  for(const thread of previewThreads)if(thread.group===name)delete thread.group;
+  previewCollapsedGroups.delete(name);try{sessionStorage.setItem('plant-thought-collapsed-groups-v1',JSON.stringify([...previewCollapsedGroups]));}catch{}
+  previewRenderHistory();previewRemember();
+  document.querySelector('#chatHistory .preview-thread.active')?.focus({preventScroll:true});
+  previewToast('묶음을 삭제했어요. 대화는 목록에 그대로 남아 있어요.');
 }
 let previewHistoryQuery='';
 const previewCollapsedGroups=new Set();
@@ -69,7 +86,7 @@ function previewToggleGroup(name,bar){
   requestAnimationFrame(previewUpdateTitleFade);
 }
 function previewSidebarIcon(name){
-  const paths={chevron:'<path d="m6 9 6 6 6-6"/>',project:'<path d="m8 3-4 3v5l-1 2 2 2v4l4 2 3-2 3 2 4-2v-4l2-2-1-2V6l-4-3-4 2-4-2ZM12 5v14"/>',filter:'<path d="M3 7h8m4 0h6M3 17h3m4 0h11"/><circle cx="13" cy="7" r="2"/><circle cx="8" cy="17" r="2"/>',plus:'<path d="M12 5v14M5 12h14"/>',compose:'<path d="m14 5 4 4M15 4a2.12 2.12 0 0 1 3 3l-8 8-4 1 1-4 8-8ZM11 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-7"/>'};
+  const paths={chevron:'<path d="m6 9 6 6 6-6"/>',project:'<path d="m8 3-4 3v5l-1 2 2 2v4l4 2 3-2 3 2 4-2v-4l2-2-1-2V6l-4-3-4 2-4-2ZM12 5v14"/>',filter:'<path d="M3 7h8m4 0h6M3 17h3m4 0h11"/><circle cx="13" cy="7" r="2"/><circle cx="8" cy="17" r="2"/>',more:'<circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/>',plus:'<path d="M12 5v14M5 12h14"/>',compose:'<path d="m14 5 4 4M15 4a2.12 2.12 0 0 1 3 3l-8 8-4 1 1-4 8-8ZM11 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-7"/>'};
   const icon=document.createElementNS('http://www.w3.org/2000/svg','svg');icon.setAttribute('viewBox','0 0 24 24');icon.setAttribute('aria-hidden','true');icon.innerHTML=paths[name];return icon;
 }
 function previewSidebarToolbar(text,kind){
@@ -80,6 +97,11 @@ function previewSidebarToolbar(text,kind){
   if(kind==='group'||kind==='recent'){
     const collapsed=kind==='recent'?previewRecentCollapsed:previewCollapsedGroups.has(text),label=(kind==='recent'?'최근 대화':text+' 묶음')+' '+(collapsed?'펼치기':'접기');
     const toggle=action('chevron',label,()=>previewToggleGroup(text,bar));toggle.classList.add('sidebar-group-toggle');toggle.setAttribute('aria-expanded',String(!collapsed));toggle.setAttribute('aria-controls',kind==='recent'?'chat-recent-content':'chat-group-content-'+encodeURIComponent(text));bar.append(toggle);
+  }
+  if(kind==='group'){
+    const more=action('more',text+' 묶음 메뉴',()=>{});more.classList.add('sidebar-group-more');more.setAttribute('aria-haspopup','menu');more.setAttribute('aria-expanded','false');
+    const menu=document.createElement('div');menu.className='preview-thread-menu preview-group-menu';menu.id='group-menu-'+encodeURIComponent(text);menu.hidden=true;menu.setAttribute('role','menu');menu.setAttribute('aria-label',text+' 묶음 메뉴');more.setAttribute('aria-controls',menu.id);
+    const remove=document.createElement('button');remove.type='button';remove.className='preview-delete-thread';remove.setAttribute('role','menuitem');remove.textContent='묶음 삭제';remove.onclick=()=>previewDeleteGroup(text);menu.append(remove);document.body.append(menu);previewBindHistoryMenu(more,menu);
   }
   action('plus','묶음 추가',previewCreateGroup);
   if(kind==='recent')action('compose','새 대화',()=>{previewCloseHistorySearch();newChat();});
@@ -105,7 +127,36 @@ function previewUpdateTitleFade(){
 }
 const previewTitleResizeObserver=new ResizeObserver(previewUpdateTitleFade);previewTitleResizeObserver.observe(document.getElementById('chatSidebar'));
 document.fonts.ready.then(previewUpdateTitleFade);
+function previewRenderHomeChats(){
+  const section=document.getElementById('homeRecentChats'),list=document.getElementById('homeRecentChatList');if(!section||!list)return;
+  const timestamp=value=>{const time=Date.parse(value);return Number.isFinite(time)?time:0;};
+  const recent=previewThreads.map((thread,index)=>({thread,index,time:Math.max(timestamp(thread.updatedAt),timestamp(thread.createdAt),timestamp(thread.messages.findLast(m=>m.createdAt)?.createdAt))})).filter(({thread})=>!thread.deletedAt&&thread.messages.some(m=>m.kind==='user'||m.kind==='assistant')).sort((a,b)=>b.time-a.time||b.index-a.index).slice(0,3);
+  list.replaceChildren();section.hidden=!recent.length;
+  for(const {thread}of recent){
+    const button=document.createElement('button');button.type='button';button.className='home-recent-chat';button.dataset.threadId=thread.id;
+    const title=thread.title||thread.messages.find(m=>m.kind==='user')?.text||'새 대화';button.title=title;button.setAttribute('aria-label',title+' 대화 이어가기');
+    const text=document.createElement('span');text.className='preview-thread-title';text.textContent=title;
+    const arrow=document.createElement('span');arrow.className='home-recent-chat-arrow';arrow.textContent='↗';arrow.setAttribute('aria-hidden','true');button.append(text,arrow);button.onclick=()=>previewOpenThread(thread.id);list.append(button);
+  }
+  requestAnimationFrame(previewUpdateTitleFade);
+}
+previewTitleResizeObserver.observe(document.getElementById('homeRecentChats'));
+
+function previewRenameThread(id){
+  const thread=previewThreads.find(t=>t.id===id&&!t.deletedAt);if(!thread)return;
+  previewCloseThreadMenus();document.getElementById('chatRenameDialog')?.remove();
+  const dialog=document.createElement('dialog');dialog.id='chatRenameDialog';dialog.className='chat-organize-dialog';dialog.setAttribute('aria-labelledby','chatRenameTitle');
+  const heading=document.createElement('h2');heading.id='chatRenameTitle';heading.textContent='대화 제목 변경';
+  const form=document.createElement('form'),label=document.createElement('label'),input=document.createElement('input');label.textContent='대화 제목';input.value=thread.title||'새 대화';input.required=true;input.maxLength=1000;label.append(input);
+  const error=document.createElement('p');error.className='sidebar-project-error';error.setAttribute('role','alert');
+  const actions=document.createElement('div');actions.className='chat-organize-actions';const cancel=document.createElement('button'),save=document.createElement('button');cancel.type='button';cancel.textContent='취소';cancel.onclick=()=>dialog.close();save.type='submit';save.textContent='저장';actions.append(cancel,save);form.append(label,error,actions);dialog.append(heading,form);document.body.append(dialog);
+  form.onsubmit=event=>{event.preventDefault();const name=input.value.trim();if(!name){error.textContent='대화 제목을 입력해 주세요.';input.focus();return;}if(thread.deletedAt||!previewThreads.includes(thread)){error.textContent='이 대화를 찾을 수 없습니다.';return;}
+    previewRemember();thread.title=name;thread.titleEdited=true;thread.updatedAt=new Date().toISOString();previewRenderHistory();previewRemember();dialog.close();previewToast('대화 제목을 변경했어요.');};
+  dialog.addEventListener('close',()=>{dialog.remove();[...document.querySelectorAll('.preview-thread-row')].find(row=>row.dataset.threadId===id)?.querySelector('.preview-thread-more')?.focus({preventScroll:true});},{once:true});dialog.showModal();input.focus();input.select();
+}
+
 function previewRenderHistory(){
+  const chatTitle=document.querySelector('.chat-title'),currentTitle=previewThread()?.title||'새 대화';if(chatTitle){chatTitle.textContent=currentTitle;chatTitle.title=currentTitle;chatTitle.setAttribute('aria-label','현재 대화: '+currentTitle);}
   previewCloseThreadMenus();for(const menu of document.querySelectorAll('.preview-thread-menu'))menu.remove();
   const history=document.getElementById('chatHistory');
   history.replaceChildren();
@@ -124,17 +175,15 @@ function previewRenderHistory(){
     const row=document.createElement('div');row.className='preview-thread-row';row.dataset.threadId=thread.id;
     row.dataset.pinned=String(thread.pinned===true);row.classList.toggle('is-active',thread.id===previewActiveId);
     const button=document.createElement('button');button.type='button';button.className='preview-thread'+(thread.id===previewActiveId?' active':'');
-    const titleText=document.createElement('span');titleText.className='preview-thread-title';titleText.textContent=thread.title||'새 대화';button.append(titleText);button.title=titleText.textContent;button.setAttribute('aria-label',button.textContent+' 열기');button.onclick=()=>previewOpenThread(thread.id);
+    const titleText=document.createElement('span');titleText.className='preview-thread-title';titleText.textContent=thread.title||'새 대화';button.append(titleText);button.title=titleText.textContent;button.setAttribute('aria-label',button.textContent+' 열기');button.onclick=()=>previewOpenThread(thread.id);if(thread.id===previewActiveId)button.setAttribute('aria-current','true');
     const remove=document.createElement('button');remove.type='button';remove.className='preview-delete-thread';remove.dataset.deleteThread=thread.id;remove.textContent='삭제';remove.title='대화 삭제';remove.setAttribute('aria-label',button.textContent+' 대화 삭제');remove.onclick=()=>previewDeleteThread(thread.id);
     const more=document.createElement('button');more.type='button';more.className='preview-thread-more';more.textContent='⋯';more.title='대화 메뉴';more.setAttribute('aria-label',button.textContent+' 대화 메뉴');more.setAttribute('aria-haspopup','menu');more.setAttribute('aria-expanded','false');
     const menu=document.createElement('div');menu.className='preview-thread-menu';menu.id='thread-menu-'+thread.id;menu.hidden=true;menu.setAttribute('role','menu');menu.setAttribute('aria-label','대화 메뉴');more.setAttribute('aria-controls',menu.id);remove.setAttribute('role','menuitem');
     const pin=document.createElement('button');pin.type='button';pin.className='preview-thread-action';pin.setAttribute('role','menuitem');pin.textContent=thread.pinned?'고정 해제':'대화 고정';pin.title=thread.pinned?'목록 상단에서 고정 해제':'대화 목록 상단에 고정';pin.onclick=()=>{previewRemember();thread.pinned=!thread.pinned;previewRenderHistory();previewRemember();previewToast(thread.pinned?'대화를 목록 상단에 고정했어요.':'대화 고정을 해제했어요.');};
     const group=document.createElement('button');group.type='button';group.className='preview-thread-action';group.setAttribute('role','menuitem');group.textContent='묶음으로 이동';group.onclick=()=>previewGroupThread(thread.id);
-    menu.append(pin,group,remove);
-    const openMenu=()=>{previewCloseThreadMenus();menu.hidden=false;previewPositionThreadMenu(more,menu);more.setAttribute('aria-expanded','true');};
-    more.onclick=event=>{event.stopPropagation();if(more.getAttribute('aria-expanded')==='true')previewCloseThreadMenus();else{openMenu();if(event.detail===0)menu.querySelector('button').focus({preventScroll:true});}};
-    more.onkeydown=event=>{if(event.key==='ArrowDown'){event.preventDefault();openMenu();menu.querySelector('button').focus({preventScroll:true});}};
-    menu.addEventListener('keydown',event=>{const items=[...menu.querySelectorAll('button')],index=items.indexOf(document.activeElement);let target;if(event.key==='ArrowDown')target=(index+1)%items.length;else if(event.key==='ArrowUp')target=(index+items.length-1)%items.length;else if(event.key==='Home')target=0;else if(event.key==='End')target=items.length-1;else return;event.preventDefault();event.stopPropagation();items[target].focus();});
+    const rename=document.createElement('button');rename.type='button';rename.className='preview-thread-action';rename.setAttribute('role','menuitem');rename.textContent='제목 변경';rename.onclick=()=>previewRenameThread(thread.id);
+    menu.append(rename,pin,group,remove);
+    previewBindHistoryMenu(more,menu);
     row.append(button,more);const section=sectionFor(thread);(section.querySelector('.chat-group-content')||section).append(row);document.body.append(menu);
   }
   if(sections.has('pinned'))history.append(sections.get('pinned'));
@@ -143,6 +192,7 @@ function previewRenderHistory(){
   if(sections.has('other'))history.append(sections.get('other'));
   else history.append(sectionFor({}));
   previewRenderDeletedChats();
+  previewRenderHomeChats();
   previewFilterHistory();
 }
 function previewRenderDeletedChats(){
@@ -221,10 +271,10 @@ function sendChat(){
   const input=document.getElementById('chatInput'),text=input.value.trim();if(!text)return;
   if(!previewThread()){const thread={id:crypto.randomUUID(),title:'새 대화',draft:input.value,messages:[]};previewThreads.push(thread);previewActiveId=thread.id;}
   const thread=previewThread();thread.draft=input.value;
-  if(thread.messages.at(-2)?.text!==text){thread.messages.push({kind:'user',text},{kind:'notice',text:previewNotice});thread.title=text.slice(0,28);}
+  if(thread.messages.at(-2)?.text!==text){thread.messages.push({kind:'user',text},{kind:'notice',text:previewNotice});if(!thread.titleEdited)thread.title=text.slice(0,28);}
   previewRenderMessages();previewRemember();input.focus();
 }
-function startChatFromHome(){const text=document.getElementById('homeSearch').value;if(!previewThread())newChat();else go('chat');if(text.trim()){document.getElementById('chatInput').value=text;updateChatInput();sendChat();}else document.getElementById('chatInput').focus();previewRemember();}
+function startChatFromHome(){const text=document.getElementById('homeSearch').value;newChat();if(text.trim()){document.getElementById('chatInput').value=text;updateChatInput();sendChat();}else document.getElementById('chatInput').focus();previewRemember();}
 function addRecord(){
   const title=document.getElementById('recordTitle').value.trim(),body=document.getElementById('recordBody').value.trim(),date=document.getElementById('recordDate').value;
   const target=document.getElementById('emotion');let card=document.getElementById('recordPreview');
@@ -243,7 +293,7 @@ function runSearch(reveal=false){
 const originalRenderRecent=renderRecent;renderRecent=function(){originalRenderRecent();document.getElementById('homeRecent').innerHTML='<li>'+previewEmpty('기록을 연결할 자리','실제 기록은 아직 불러오지 않았어요.')+'</li>';};
 const originalRenderSelected=renderSelected;renderSelected=function(){originalRenderSelected();document.getElementById('selectedCount').textContent='기록 연결 전';document.getElementById('selectedList').innerHTML=previewEmpty('선택한 날짜의 기록','기록 조회를 연결하면 이곳에서 확인할 수 있어요.');};
 const originalRenderTimeline=renderTimeline;renderTimeline=function(){originalRenderTimeline();document.getElementById('timelineCount').textContent='기록 연결 전';document.getElementById('timelineGroups').innerHTML=previewEmpty('시간순으로 이어질 이야기','아직 실제 기록을 불러오지 않았어요.');};
-const originalGo=go;go=function(id){originalGo(id);if(document.querySelector('.page.active')?.id===id){history.replaceState(null,'','#'+id);previewRemember();}};
+const originalGo=go;go=function(id){originalGo(id);if(document.querySelector('.page.active')?.id===id){history.replaceState(null,'','#'+id);if(id==='home')previewRenderHomeChats();previewRemember();}};
 function previewRestore(){
   let saved;try{saved=JSON.parse(sessionStorage.getItem(previewStorageKey)||'null');}catch{}
   if(saved?.version===1){
