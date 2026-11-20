@@ -95,6 +95,6 @@ function createChatRetrieval(parent,runtime){
   }catch(error){job.status=signal.aborted?'cancelled':'failed';job.progress=error.message;job.stage=stage;throw Object.assign(error,{stage:error.stage||'retrieval'});}
   finally{job.finished_at=new Date().toISOString();if(parent.busy===run.id){parent.busy=null;parent.abort=null;}}
  }
- return {search,status:id=>jobs.get(id)||null,indexes};
+ return {search,status:id=>jobs.get(id)||null,indexes,forget(){jobs.clear();}};
 }
 module.exports={createChatRetrieval,originalEvidence};

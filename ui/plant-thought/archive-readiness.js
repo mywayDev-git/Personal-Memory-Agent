@@ -1,16 +1,17 @@
 'use strict';
 // Read original availability; explicit preparation controls build the selected search index.
 (()=>{
-  const collection=window.PlantArchiveSamples;if(!collection)return;
+  let collection=window.PlantArchiveSamples;if(!collection)return;
   const node=(tag,text,cls)=>{const el=document.createElement(tag);if(text!=null)el.textContent=text;if(cls)el.className=cls;return el;};
-  const names={unchecked:'확인 전',checking:'확인 중',ready:'사용 가능',error:'상태 확인 실패'};
+  const names={unchecked:'확인 전',checking:'확인 중',ready:'사용 가능',excluded:'검색 제외',error:'상태 확인 실패'};
   const entries=new Map();let scopeKey='',scope=null,filter='all',dialogRecord=null,returnFocus=null,serviceChecked=0,serviceBusy=false;
-  const isArchive=()=>document.querySelector('.page.active')?.id==='archive';
+  const isArchive=()=>['archive','recordDetail'].includes(document.querySelector('.page.active')?.id);
   const entry=()=>entries.get(scopeKey);
   const recordMap=new Map(collection.records.map(r=>[r.id,r]));
   const overview=node('section',null,'archive-readiness-overview');overview.id='archiveReadinessOverview';overview.hidden=true;overview.setAttribute('role','dialog');overview.setAttribute('aria-label','기록 준비 상태');
   const compact=node('button','기록 준비 상태 · 확인 전','archive-readiness-compact');compact.type='button';compact.setAttribute('aria-label','기록 준비 상태 보기');compact.setAttribute('aria-haspopup','dialog');compact.setAttribute('aria-expanded','false');compact.setAttribute('aria-controls',overview.id);
-  const toolbarMain=node('div',null,'archive-toolbar-main'),viewSwitch=document.querySelector('#archive .archive-view-switch');viewSwitch.before(toolbarMain);toolbarMain.append(viewSwitch,compact);
+  const toolbarMain=node('div',null,'archive-toolbar-main'),viewSwitch=document.querySelector('#archive .archive-view-switch');viewSwitch.before(toolbarMain);toolbarMain.append(viewSwitch,compact,document.getElementById('calendarZoomButton'));
+  const toolbarSecondary=node('div',null,'archive-toolbar-secondary');document.querySelector('#archive .archive-toolbar').append(toolbarSecondary);toolbarSecondary.append(document.getElementById('timelineSortControl'));
   const dismiss=node('button','닫기','archive-readiness-dismiss');dismiss.type='button';dismiss.setAttribute('aria-label','기록 준비 상태 닫기');dismiss.addEventListener('click',()=>closeOverview(true));
   function closeOverview(focus=false){overview.hidden=true;compact.setAttribute('aria-expanded','false');if(focus)compact.focus({preventScroll:true});}
   function positionOverview(){const anchor=compact.getBoundingClientRect(),width=overview.offsetWidth,height=overview.offsetHeight;overview.style.left=Math.max(12,Math.min(anchor.left,innerWidth-width-12))+'px';const below=anchor.bottom+8;overview.style.top=(below+height<=innerHeight-12?below:Math.max(12,anchor.top-height-8))+'px';}
@@ -45,7 +46,7 @@
     prepare.hidden=busy;stop.hidden=!busy;prepare.disabled=preparationBusy||preparationChecking||chatBusy;stop.disabled=preparationBusy;preparationSelect.disabled=preparationBusy||busy;
     prepare.textContent=result?.status==='ready'?'기록 다시 준비':['failed','cancelled','stale'].includes(result?.status)?'기록 다시 준비':'기록 준비';
     preparationHelp.textContent=chatBusy?'대화 생성을 마친 뒤 기록을 준비할 수 있어요.':'선택한 자료함 전체를 그래프 검색에 사용할 수 있도록 준비합니다. 대화와 원문은 바뀌지 않습니다.';
-    if(result)compact.textContent='기록 준비 상태 · '+(labels[result.status]||'확인 필요');
+    // Keep the record counts visible; graph preparation has its own status below.
     if(!overview.hidden)positionOverview();
   }
   async function refreshPreparation(){
@@ -69,27 +70,29 @@
   const dialog=node('dialog',null,'archive-readiness-dialog');dialog.setAttribute('aria-label','기록 준비 상태 상세');document.body.append(dialog);
   dialog.addEventListener('click',event=>{if(event.target===dialog){const rect=dialog.getBoundingClientRect();if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom)dialog.close();}});
   dialog.addEventListener('close',()=>{dialogRecord=null;if(returnFocus?.isConnected)returnFocus.focus({preventScroll:true});});
-  document.addEventListener('click',event=>{const badge=event.target.closest('[data-readiness-record]');if(!badge)return;event.preventDefault();dialogRecord=badge.dataset.readinessRecord;returnFocus=badge;renderDialog();dialog.showModal();});
+
   function statusFor(id){const state=entry();if(!state||state.phase!=='done')return {status:state?.phase==='error'?'error':state?.phase==='checking'?'checking':'unchecked',reason:state?.error||(state?.phase==='checking'?'전체 원문 버전과 검색 가능 여부를 확인하고 있습니다.':'전체 원문의 준비 상태를 아직 확인하지 않았습니다.')};return state.items.get(id)||{status:'error',reason:'현재 원문을 상태 조회 결과에서 찾지 못했습니다.'};}
+  const detailBadge=node('button','확인 전','archive-readiness-status record-detail-readiness');detailBadge.id='detailReadiness';detailBadge.type='button';detailBadge.hidden=true;document.getElementById('detailDate').after(detailBadge);
+  function hydrateDetail(){
+    const record=window.PlantArchiveView?.detailRecord();detailBadge.hidden=!record||!recordMap.has(record.id);if(detailBadge.hidden){delete detailBadge.dataset.readinessRecord;return;}
+    const data=statusFor(record.id),label=names[data.status];detailBadge.dataset.readinessRecord=record.id;detailBadge.textContent=label;detailBadge.className='archive-readiness-status record-detail-readiness is-'+data.status;detailBadge.setAttribute('aria-label',record.title+' · '+label+' 상세');detailBadge.title=data.reason;
+  }
   function hydrate(){
+    hydrateDetail();
     for(const list of [document.getElementById('selectedList'),document.getElementById('searchResults')]){
       const items=[...list.querySelectorAll('.archive-record-item')];let shown=0;
-      if(list.id==='searchResults'){
-        for(const item of items){item.hidden=false;item.classList.remove('has-readiness');const badge=item.querySelector('[data-readiness-record]');if(badge)badge.hidden=true;}
-        const empty=list.querySelector('.archive-readiness-filter-empty');if(empty)empty.hidden=true;continue;
-      }
-      for(const item of items){const badge=item.querySelector('[data-readiness-record]'),data=statusFor(badge.dataset.readinessRecord);badge.hidden=false;item.classList.add('has-readiness');const label=names[data.status];if(badge.textContent!==label)badge.textContent=label;badge.className='archive-readiness-badge is-'+data.status;badge.setAttribute('aria-label',recordMap.get(badge.dataset.readinessRecord)?.title+' · '+label+' 상세');badge.title='기록 준비 상태 상세 보기';item.hidden=filter!=='all'&&data.status!==filter;if(!item.hidden)shown++;}
+      for(const item of items){const badge=item.querySelector('[data-readiness-record]'),data=statusFor(badge.dataset.readinessRecord);badge.hidden=false;item.classList.add('has-readiness');const label=names[data.status];if(badge.textContent!==label)badge.textContent=label;badge.className='archive-readiness-badge is-'+data.status;badge.setAttribute('aria-label',recordMap.get(badge.dataset.readinessRecord)?.title+' · '+label+' 상세');badge.title='기록 준비 상태 상세 보기';item.hidden=list.id!=='searchResults'&&filter!=='all'&&data.status!==filter;if(!item.hidden)shown++;}
       let empty=list.querySelector('.archive-readiness-filter-empty');if(items.length&&!shown&&filter!=='all'){if(!empty){empty=node('p','현재 날짜 또는 검색 결과에 이 상태의 기록이 없습니다.','archive-readiness-filter-empty');list.append(empty);}empty.hidden=false;}else if(empty)empty.hidden=true;
     }
   }
   function render(){
-    if(!scope)return;const state=entry(),all=collection.records,counts={all:all.length,unchecked:0,checking:0,ready:0,error:0};
+    if(!scope)return;const state=entry(),all=collection.records,counts={all:all.length,unchecked:0,checking:0,ready:0,excluded:0,error:0};
     for(const record of all)counts[statusFor(record.id).status]++;
     const sample=collection.examples.find(q=>q.id===scope.questionId),profile=collection.profiles.find(p=>p.id===scope.profile);
-    contextLabel.textContent='개발용·확인용 전체 원문 '+all.length+'개';contextLabel.title=scope.questionId;
+    contextLabel.textContent=(collection.synthetic?'개발용·확인용 전체 원문 ':'개인 자료함 · 전체 기록 ')+all.length+'개';contextLabel.title=scope.questionId;
     for(const [key,button]of filterButtons){button.textContent=(key==='all'?'전체':names[key])+' '+counts[key];button.setAttribute('aria-pressed',String(filter===key));}
     refresh.disabled=state.phase==='checking';refresh.textContent=state.phase==='checking'?'확인 중…':'다시 확인';
-    note.textContent=state.phase==='done'?'마지막 확인 '+formatTime(state.result.checked_at)+' · 전체 원문이 검색 대상입니다. 필터는 준비 상태만 구분합니다.':state.phase==='checking'?'전체 원문 버전과 검색 가능 여부를 확인하고 있습니다.':state.phase==='error'?state.error:'아직 상태를 확인하지 않았습니다.';
+    note.textContent=state.phase==='done'?'마지막 확인 '+formatTime(state.result.checked_at)+(collection.synthetic?' · 전체 원문이 검색 대상입니다. 필터는 준비 상태만 구분합니다.':' · 검색에 포함한 개인 기록의 원문 상태입니다. 검색 제외 기록은 답변 검색에 사용하지 않습니다.'):state.phase==='checking'?'전체 원문 버전과 검색 가능 여부를 확인하고 있습니다.':state.phase==='error'?state.error:'아직 상태를 확인하지 않았습니다.';
     compact.textContent='기록 준비 상태 · '+(state.phase==='done'?counts.ready+'/'+counts.all:names[state.phase==='error'?'error':state.phase==='checking'?'checking':'unchecked'])+(filter!=='all'?' · '+names[filter]:'');
     compact.title=state.phase==='done'?'사용 가능 '+counts.ready+'개 / 전체 '+counts.all+'개 · 눌러 상세 상태와 필터 보기':'눌러 기록 준비 상태와 다시 확인 보기';
     hydrate();renderPreparation();if(!overview.hidden)positionOverview();if(dialog.open)renderDialog();
@@ -99,7 +102,7 @@
     const source=recordMap.get(dialogRecord);if(!source)return;const state=entry(),data=statusFor(source.id),focused=document.activeElement?.dataset.readinessAction;dialog.replaceChildren();
     const head=node('div',null,'archive-readiness-dialog-head'),close=node('button','닫기');close.type='button';close.dataset.readinessAction='close';close.addEventListener('click',()=>dialog.close());head.append(node('h2','기록 준비 상태'),close);
     const badge=node('span',names[data.status],'archive-readiness-status is-'+data.status),facts=node('dl',null,'archive-readiness-facts');
-    const checked=state.phase==='done';for(const [label,value]of [['원문 확인',checked?(data.original_checked?'확인됨':'확인 필요'):names[data.status]],['원문 버전','v'+source.revision],['검색 사용 버전',data.search_revision?'v'+data.search_revision:names[data.status]],['검색 범위','전체 '+collection.record_count+'개 원문'],['마지막 확인',state.result?.checked_at?formatTime(state.result.checked_at):'확인 전']]){const row=node('div');row.append(node('dt',label),node('dd',value));facts.append(row);}
+    const checked=state.phase==='done';for(const [label,value]of [['원문 확인',checked?(data.original_checked?'확인됨':'확인 필요'):names[data.status]],['원문 버전','v'+source.revision],['검색 사용 버전',data.search_revision?'v'+data.search_revision:names[data.status]],['검색 범위',(collection.synthetic?'전체 원문 ':'개인 기록 전체 ')+collection.record_count+'개'],['마지막 확인',state.result?.checked_at?formatTime(state.result.checked_at):'확인 전']]){const row=node('div');row.append(node('dt',label),node('dd',value));facts.append(row);}
     const retry=node('button','다시 확인','archive-readiness-refresh');retry.type='button';retry.dataset.readinessAction='retry';retry.disabled=state.phase==='checking';retry.addEventListener('click',()=>checkRecords());
     dialog.append(head,node('h3',source.title),badge,node('p',data.reason,'archive-readiness-reason'),facts,retry);
     if(dialog.open&&focused)dialog.querySelector('[data-readiness-action="'+focused+'"]')?.focus({preventScroll:true});
@@ -107,13 +110,13 @@
   function showDetail(id,button){dialogRecord=id;returnFocus=button;renderDialog();if(!dialog.open)dialog.showModal();}
   document.addEventListener('click',event=>{const button=event.target.closest('[data-readiness-record]');if(button){event.preventDefault();showDetail(button.dataset.readinessRecord,button);}});
   async function checkRecords(){
-    if(!scope||(window.PlantTestMode&&!window.PlantTestMode.enabled)||!window.PlantArchiveSamples.synthetic)return;const key=scopeKey,state=entry(),version=++state.version;state.phase='checking';state.error=null;render();
+    if(!scope)return;const requestedCollection=collection,key=scopeKey,state=entry(),version=++state.version;state.phase='checking';state.error=null;render();
     try{
-      const query=new URLSearchParams({profile:scope.profile,example_id:scope.questionId});
+      const query=new URLSearchParams({collection:scope.collection,profile:scope.profile,example_id:scope.questionId});
       const response=await fetch('/api/archive/readiness?'+query,{cache:'no-store',signal:AbortSignal.timeout(15000)}),result=await response.json();if(!response.ok)throw Error(result.error||'기록 준비 상태를 확인하지 못했습니다.');
-      if(result.profile!==state.scope.profile||result.example_id!==state.scope.questionId||!Array.isArray(result.records)||!Number.isFinite(Date.parse(result.checked_at)))throw Error('선택한 사례와 상태 응답이 일치하지 않습니다. 다시 확인해 주세요.');
-      for(const file of ['sources.json','questions.json','contexts.json'])if(result.source_files?.[file]!==collection.provenance.files[file])throw Error('화면의 자료와 현재 원문 버전이 다릅니다. 최신 예시 자료를 불러온 후 다시 확인해 주세요.');
-      const expected=collection.records;if(result.records.length!==expected.length||expected.some(record=>!result.records.some(item=>item.record_id===record.id&&item.revision===record.revision&&['ready','error'].includes(item.status))))throw Error('현재 원문 목록과 상태 조회 결과가 일치하지 않습니다.');
+      if(result.collection!==state.scope.collection||result.profile!==state.scope.profile||result.example_id!==state.scope.questionId||!Array.isArray(result.records)||!Number.isFinite(Date.parse(result.checked_at)))throw Error('선택한 사례와 상태 응답이 일치하지 않습니다. 다시 확인해 주세요.');
+      for(const file of requestedCollection.synthetic?['sources.json','questions.json','contexts.json']:[])if(result.source_files?.[file]!==requestedCollection.provenance.files[file])throw Error('화면의 자료와 현재 원문 버전이 다릅니다. 최신 예시 자료를 불러온 후 다시 확인해 주세요.');
+      const expected=requestedCollection.records;if(result.records.length!==expected.length||expected.some(record=>!result.records.some(item=>item.record_id===record.id&&item.revision===record.revision&&['ready','error',...(requestedCollection.synthetic?[]:['excluded'])].includes(item.status))))throw Error('현재 원문 목록과 상태 조회 결과가 일치하지 않습니다.');
       if(state.version!==version)return;state.phase='done';state.result=result;state.items=new Map(result.records.map(item=>[item.record_id,item]));
     }catch(error){if(state.version!==version)return;state.phase='error';state.error=error.name==='TimeoutError'?'상태 확인 시간이 초과됐습니다. 다시 확인해 주세요.':error.name==='TypeError'?'상태 조회에 연결하지 못했습니다. 기록이 준비되지 않았다는 뜻은 아닙니다. 다시 확인해 주세요.':error.name==='SyntaxError'?'상태 응답을 읽지 못했습니다. 다시 확인해 주세요.':error.message;}
     if(scopeKey===key)render();
@@ -124,15 +127,20 @@
     catch{service.textContent='AI 상태 확인 실패';service.dataset.state='error';service.title='다시 눌러 AI 연결 상태를 확인하세요. 기록 준비 상태와 별개입니다.';}finally{serviceChecked=Date.now();serviceBusy=false;}
   }
   function sync(){
-    if((window.PlantTestMode&&!window.PlantTestMode.enabled)||!window.PlantArchiveSamples.synthetic){if(dialog.open)dialog.close();closeOverview();return;}
-    const next=previewSnapshot().sampleArchive;if(!next?.profile||!next.questionId)return;const key=next.profile+':'+next.questionId;
-    if(key!==scopeKey){if(dialog.open)dialog.close();scope={profile:next.profile,questionId:next.questionId};scopeKey=key;filter='all';if(!entries.has(key))entries.set(key,{phase:'unchecked',scope:{...scope},items:new Map(),version:0});}
+    collection=window.PlantArchiveSamples;if(!collection)return;recordMap.clear();for(const record of collection.records)recordMap.set(record.id,record);
+    const next=previewSnapshot().sampleArchive,personal=collection.synthetic===false;if(!personal&&(!next?.profile||!next.questionId))return;
+    const nextScope=personal?{collection:'personal',profile:'personal',questionId:''}:{collection:'samples',profile:next.profile,questionId:next.questionId};
+    const key=personal?'personal:'+JSON.stringify(collection.records.map(record=>[record.id,record.revision,record.search_enabled])):'samples:'+next.profile+':'+next.questionId;
+    if(key!==scopeKey){if(dialog.open)dialog.close();closeOverview();scope=nextScope;scopeKey=key;filter='all';preparationResult=null;preparationError='';if(!entries.has(key))entries.set(key,{phase:'unchecked',scope:{...scope},items:new Map(),version:0});}
     render();if(isArchive()){if(entry().phase==='unchecked')checkRecords();checkService();}
   }
+  document.addEventListener('plant:record-opened',sync);
+  document.addEventListener('plant:collection-changed',sync);
+  document.addEventListener('plant:test-mode-changed',sync);
   document.addEventListener('plant:archive-context',sync);
   document.addEventListener('plant:archive-show-all',()=>{filter='all';render();});
   const drawSelected=renderSelected;renderSelected=function(){drawSelected();hydrate();};
   const search=runSearch;runSearch=function(...args){search(...args);hydrate();};
-  const navigate=go;go=function(id){navigate(id);if(id==='archive')sync();else closeOverview();};
+  const navigate=go;go=function(id){navigate(id);if(id==='archive'||id==='recordDetail')sync();else closeOverview();};
   sync();
 })();

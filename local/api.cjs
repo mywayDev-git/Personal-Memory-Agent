@@ -7,6 +7,7 @@ function createApi(root,options={}){
  const summaryApi=require('./summary-api.cjs').createSummaryApi(engine,runtime);
  const chatSearch=require('./chat-retrieval.cjs').createChatRetrieval(engine,runtime);
  chatSearch.indexes.start({canRun:()=>!engine.busy&&setup?.status!=='RUNNING'&&!terminating});
+ const dataReset=require('./baseline-data-reset.cjs').createBaselineReset(engine,runtime,chatSearch,{cancelSetup:()=>{setupAbort?.abort();if(setup?.status==='RUNNING')setup={status:'CANCELLED',progress:'전체 삭제를 위해 모델 준비를 중지했습니다.'};}});
  const json=(res,code,data)=>{res.writeHead(code,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});res.end(JSON.stringify(data));};
  const body=async req=>{let size=0,parts=[];for await(const part of req){size+=part.length;if(size>200000)throw Error('요청 크기 초과');parts.push(part);}return JSON.parse(Buffer.concat(parts).toString()||'{}');};
  async function handle(req,res,url){
@@ -15,6 +16,8 @@ function createApi(root,options={}){
    const host=req.headers.host||'';if(!/^(127\.0\.0\.1|localhost):\d+$/.test(host))return json(res,403,{error:'로컬 호스트만 허용합니다.'}),true;
    if(req.headers.origin&&req.headers.origin!=='http://'+host)return json(res,403,{error:'다른 Origin의 요청은 허용하지 않습니다.'}),true;
    const route=url.pathname.slice('/api/baseline'.length);
+   if(dataReset.locked()&&!route.startsWith('/data-reset/')&&!['/bootstrap','/status'].includes(route))throw Error('전체 데이터를 정리 중입니다.');
+   if(req.method==='GET'&&route==='/data-reset/preview')return json(res,200,dataReset.preview()),true;
    if(req.method==='GET'&&route.startsWith('/summary-memory'))return json(res,200,await summaryApi.get(route,url)),true;
    if(req.method==='GET'&&route==='/bootstrap')return json(res,200,{token,runtime:runtime.status(),prompts:{extraction:prompts.extractionPrompts,answer:prompts.answerPrompts,query:prompts.queryPrompts},datasets:['pma-dev-v0.1.0',...(fs.existsSync(path.join(root,'datasets','pma-dev-v0.2.0'))?['pma-dev-v0.2.0']:[]),...(fs.existsSync(path.join(root,'datasets','pma-long-v1.0.1','manifest.json'))?['pma-long-v1.0.1']:[]),...(fs.existsSync(path.join(root,'datasets','pma-long-v2.0.0','manifest.json'))?['pma-long-v2.0.0']:[]),...(fs.existsSync(path.join(root,'datasets','pma-context-v1.0.0','manifest.json'))?['pma-context-v1.0.0']:[]),...(fs.existsSync(path.join(root,'datasets','pma-memory-v2.0.0','manifest.json'))?['pma-memory-v2.0.0']:[]),...(fs.existsSync(path.join(root,'datasets','pma-memory-v3.0.0','manifest.json'))?['pma-memory-v3.0.0']:[]),...(fs.existsSync(path.join(root,'datasets','pma-generalization-v1.0.0','manifest.json'))?['pma-generalization-v1.0.0']:[])],busy:engine.busy,setup}),true;
    if(req.method==='GET'&&route==='/chat-index-status')return json(res,200,await chatSearch.indexes.status(url.searchParams.get('collection'),url.searchParams.get('mode'))),true;
@@ -38,6 +41,9 @@ function createApi(root,options={}){
    if(req.method!=='POST')return json(res,405,{error:'지원하지 않는 메서드'}),true;
    if(req.headers['x-memory-lab-token']!==token)return json(res,403,{error:'실행 토큰 오류. 화면을 새로고침하세요.'}),true;
    const data=await body(req);
+   if(route==='/data-reset/begin')return json(res,200,await dataReset.begin(data.reset_id)),true;
+   if(route==='/data-reset/clear')return json(res,200,await dataReset.clear(data.reset_id)),true;
+   if(route==='/data-reset/release')return json(res,200,dataReset.release(data.reset_id)),true;
    if(/^\/runs\/[^/]+\/stage-review$/.test(route)){
     const id=route.split('/')[2],r=store.run(id);if(!r||r.deleted_at)throw Error('검토할 실행 기록이 없습니다.');if(!STAGES.includes(data.stage))throw Error('검토 단계 오류');
     let ds;try{ds=await engine.dataset(r.config.dataset);}catch{}

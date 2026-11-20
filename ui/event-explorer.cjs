@@ -104,6 +104,7 @@ function api(library,root){
    if(req.method!=='POST'||req.headers['x-graph-token']!==token)return json(403,{error:'화면을 새로고침하세요.'});
    let body='';for await(const chunk of req){body+=chunk;if(body.length>4096)return json(413,{error:'입력 길이 초과'});}
    let input;try{input=JSON.parse(body)}catch{return json(400,{error:'잘못된 입력'})}
+   try{library.assertEpoch(input?.storage_epoch);}catch(error){return json(error.status||409,{error:error.message});}
    const e=result.view.edges.find(e=>e.id===input?.edge);if(!e)return json(409,{error:'근거가 바뀌었습니다. 새로고침하세요.'});
    const history=rows.all(e.id),last=history.at(-1);
    if((last?.seq||0)!==input.revision)return json(409,{error:'검토 이력이 바뀌었습니다. 새로고침하세요.'});

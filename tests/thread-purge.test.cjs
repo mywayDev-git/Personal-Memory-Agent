@@ -67,3 +67,42 @@ test('purged conversations cannot replay cached responses, approve operations or
  for(const route of ['respond','operation','operation-status']){const response=await fetch(url+'/api/chat/'+route,{method:'POST',headers:{'Content-Type':'application/json','X-Plant-Token':token},body:JSON.stringify({thread_id:'trash'})});assert.equal(response.status,410);}
  assert.equal(calls,0);
 });
+
+test('bulk purge deletes only the confirmed trash snapshot and preserves active chats, personal records and indexes',t=>{
+ const {library}=store(t),actions=new ActionService(library);
+ const before=library.save(0,()=>({threads:[chat('trash-a'),chat('trash-b'),chat('keep-trash'),chat('active',false)],records:[savedRecord]}));
+ for(const name of ['trash-a','trash-b','active'])actions.task({thread_id:name,request_id:'request-'+name,text:'원문'},{action:'clarify'},{});
+ const notice=library.indexNotice(),result=library.purgeThreads(before.revision,['trash-a','trash-b','trash-a']);
+ assert.equal(result.revision,2);assert.deepEqual(result.threads.map(t=>t.id),['keep-trash','active']);assert.deepEqual(result.records,before.records);assert.deepEqual(library.indexNotice(),notice);
+ assert.deepEqual(new Set(result.purgedThreadIds),new Set(['trash-a','trash-b']));assert.equal(actions.tasks('trash-a').length,0);assert.equal(actions.tasks('trash-b').length,0);assert.equal(actions.tasks('active').length,1);
+ assert.equal(library.purgeThreads(0,['trash-a','trash-b']).revision,2);
+ const saved=library.save(2,()=>before);assert.deepEqual(saved.threads.map(t=>t.id),['keep-trash','active']);
+});
+test('bulk purge rejects mixed live chats, restored chats, unknown IDs, malformed inputs and stale snapshots atomically',t=>{
+ const {library}=store(t);library.save(0,()=>({threads:[chat('trash-a'),chat('trash-b'),chat('active',false)],records:[savedRecord]}));const before=library.read();
+ for(const [revision,ids,status] of [[1,['trash-a','active'],409],[1,['trash-a','unknown'],404],[1,[],400],[1,'trash-a',400],[1,['trash-a','../bad'],400],[0,['trash-a','trash-b'],409]]){
+  assert.throws(()=>library.purgeThreads(revision,ids),e=>e.status===status);assert.deepEqual(library.read(),before);assert.deepEqual(library.purgedThreadIds(),[]);
+ }
+ const restored=library.save(1,state=>({...state,threads:state.threads.map(t=>t.id==='trash-b'?{...t,deletedAt:null}:t)}));
+ assert.throws(()=>library.purgeThreads(restored.revision,['trash-a','trash-b']),e=>e.status===409);assert.deepEqual(library.read(),{revision:restored.revision,threads:restored.threads,records:restored.records});assert.deepEqual(library.purgedThreadIds(),[]);
+});
+test('bulk purge rolls back every target and action cache if a later target fails',t=>{
+ const {library}=store(t),actions=new ActionService(library);library.save(0,()=>({threads:[chat('trash-a'),chat('trash-b')],records:[savedRecord]}));const before=library.read();
+ for(const name of ['trash-a','trash-b'])actions.task({thread_id:name,request_id:'request-'+name,text:'원문'},{action:'clarify'},{});
+ library.db.exec("CREATE TRIGGER reject_second_purge BEFORE INSERT ON thread_tombstones WHEN NEW.id='trash-b' BEGIN SELECT RAISE(ABORT,'second target failure'); END");
+ assert.throws(()=>library.purgeThreads(1,['trash-a','trash-b']),/second target failure/);assert.deepEqual(library.read(),before);assert.deepEqual(library.purgedThreadIds(),[]);for(const name of ['trash-a','trash-b'])assert.equal(actions.tasks(name).length,1);
+});
+test('bulk purge API requires authentication and cannot affect unconfirmed or active conversations',async t=>{
+ const c=await client(t);await c.post('save',{revision:0,threads:[chat('trash-a'),chat('trash-b'),chat('active',false)]});
+ assert.equal((await c.post('threads-purge',{revision:1,threadIds:['trash-a','trash-b']},'wrong-token')).status,403);
+ assert.equal((await c.post('threads-purge',{revision:1,threadIds:['trash-a','active']})).status,409);
+ const result=await c.post('threads-purge',{revision:1,threadIds:['trash-a','trash-b']});assert.equal(result.status,200);assert.deepEqual(result.data.threads.map(t=>t.id),['active']);assert.equal(result.data.purgedThreadIds.length,2);
+ const repeat=await c.post('threads-purge',{revision:1,threadIds:['trash-a','trash-b']});assert.equal(repeat.status,200);assert.equal(repeat.data.revision,result.data.revision);
+});
+
+test('direct purge keeps unrelated stored legacy content and records unchanged without saving deletion status',t=>{
+ const {library}=store(t);library.save(0,()=>({threads:[chat('target'),chat('other',false)],records:[savedRecord]}));
+ const raw=library.read();raw.threads[1].messages[0].text=null;library.db.prepare('UPDATE library SET payload=? WHERE id=1').run(JSON.stringify({threads:raw.threads,records:raw.records}));
+ const before=library.read(),notice=library.indexNotice(),purged=library.purgeThreads(before.revision,['target']);
+ assert.equal(purged.revision,before.revision+1);assert.deepEqual(purged.threads,[before.threads[1]]);assert.deepEqual(purged.records,before.records);assert.deepEqual(library.indexNotice(),notice);
+});

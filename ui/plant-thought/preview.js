@@ -191,37 +191,81 @@ function previewRenderHistory(){
   for(const [key,section]of sections)if(key.startsWith('group:'))history.append(section);
   if(sections.has('other'))history.append(sections.get('other'));
   else history.append(sectionFor({}));
+  previewRenderChatManagement();
   previewRenderDeletedChats();
   previewRenderHomeChats();
   previewFilterHistory();
 }
+let previewManagedQuery='';const previewManagedSelection=new Set();
+function previewRenderChatManagement(){
+  const node=(tag,text,cls)=>{const element=document.createElement(tag);if(text!=null)element.textContent=text;if(cls)element.className=cls;return element;};
+  let card=document.getElementById('chatManagementSettings');
+  if(!card){
+    card=node('section',null,'card chat-management-settings');card.id='chatManagementSettings';card.setAttribute('aria-labelledby','chatManagementTitle');
+    const heading=node('h3','대화 관리');heading.id='chatManagementTitle';const description=node('p','선택한 대화를 휴지통으로 이동합니다. 삭제한 대화에서 다시 복원할 수 있어요.','muted small');
+    const header=node('div',null,'chat-management-heading'),remove=node('button','선택한 대화 휴지통으로 이동','chat-management-remove');remove.id='trashSelectedChats';remove.type='button';remove.onclick=()=>previewDeleteThreads([...previewManagedSelection]);header.append(heading,remove);
+    const search=node('input');search.id='settingsChatSearch';search.type='search';search.placeholder='제목으로 대화 검색';search.setAttribute('aria-label','관리할 대화 검색');search.oninput=()=>{previewManagedQuery=search.value;previewRenderChatManagement();};
+    const toolbar=node('div',null,'chat-management-toolbar'),label=node('label'),all=node('input'),allText=node('span','전체 선택'),count=node('span',null,'chat-management-count');all.id='selectAllSettingsChats';all.type='checkbox';allText.id='settingsChatSelectLabel';label.append(all,allText);count.id='settingsChatSelectionCount';count.setAttribute('role','status');toolbar.append(label,count);
+    const list=node('div',null,'chat-management-list');list.id='settingsChatList';list.setAttribute('aria-label','휴지통으로 이동할 대화');card.append(header,description,search,toolbar,list);
+    const deleted=document.getElementById('deletedChatSettings');if(deleted)deleted.before(card);else document.getElementById('settings').append(card);
+  }
+  const active=previewThreads.filter(t=>!t.deletedAt),ids=new Set(active.map(t=>t.id));for(const id of previewManagedSelection)if(!ids.has(id))previewManagedSelection.delete(id);
+  const query=previewManagedQuery.trim().toLocaleLowerCase('ko-KR'),visible=[...active].reverse().filter(t=>!query||(t.title||'새 대화').toLocaleLowerCase('ko-KR').includes(query));
+  const all=document.getElementById('selectAllSettingsChats'),list=document.getElementById('settingsChatList'),scroll=list.scrollTop||0;list.replaceChildren();document.getElementById('settingsChatSearch').value=previewManagedQuery;
+  document.getElementById('settingsChatSelectLabel').textContent=query?'검색 결과 전체 선택':'전체 선택';
+  const refreshSelection=()=>{const selected=visible.filter(t=>previewManagedSelection.has(t.id)).length;all.checked=visible.length>0&&selected===visible.length;all.indeterminate=selected>0&&selected<visible.length;all.disabled=!visible.length;document.getElementById('settingsChatSelectionCount').textContent='선택 '+previewManagedSelection.size+'개 · 전체 '+active.length+'개';document.getElementById('trashSelectedChats').disabled=!previewManagedSelection.size;};
+  const inputs=[];
+  for(const thread of visible){
+    const row=node('label',null,'chat-management-row'),input=node('input'),title=node('span',thread.title||'새 대화','chat-management-title');input.type='checkbox';input.checked=previewManagedSelection.has(thread.id);input.dataset.selectThread=thread.id;input.setAttribute('aria-label',(thread.title||'새 대화')+' 대화 선택');
+    input.onchange=()=>{if(input.checked)previewManagedSelection.add(thread.id);else previewManagedSelection.delete(thread.id);refreshSelection();};inputs.push(input);row.append(input,title);list.append(row);
+  }
+  if(!visible.length)list.append(node('p',active.length?'검색 결과가 없습니다.':'관리할 대화가 없습니다.','muted small'));
+  all.onchange=()=>{for(const thread of visible){if(all.checked)previewManagedSelection.add(thread.id);else previewManagedSelection.delete(thread.id);}for(const input of inputs)input.checked=previewManagedSelection.has(input.dataset.selectThread);refreshSelection();};refreshSelection();list.scrollTop=scroll;
+}
+function previewDeleteThreads(ids){
+  const wanted=new Set(ids),targets=previewThreads.filter(t=>!t.deletedAt&&wanted.has(t.id));if(!targets.length)return;
+  previewRemember();const at=Date.now(),deletedIds=targets.map(t=>t.id);for(const thread of targets)thread.deletedAt=at;
+  for(const id of deletedIds){previewManagedSelection.delete(id);document.dispatchEvent(new CustomEvent('plant:thread-deleted',{detail:{id}}));}
+  if(deletedIds.includes(previewActiveId)){const next=[...previewThreads].reverse().find(t=>!t.deletedAt);previewActiveId=next?.id||null;document.getElementById('chatInput').value=next?.draft||'';previewRenderMessages();}else previewRenderHistory();
+  previewRemember();previewToast('대화 '+targets.length+'개를 휴지통으로 이동했어요.',{label:'복원',run:()=>previewRestoreThreads(deletedIds)});
+}
+function previewRestoreThreads(ids){
+  const wanted=new Set(ids),targets=previewThreads.filter(t=>t.deletedAt&&wanted.has(t.id));if(!targets.length)return;
+  previewRemember();for(const thread of targets)delete thread.deletedAt;previewRenderHistory();previewRemember();previewToast('대화 '+targets.length+'개를 복원했어요.');
+}
 function previewRenderDeletedChats(){
   let card=document.getElementById('deletedChatSettings');
-  if(!card){card=document.createElement('section');card.id='deletedChatSettings';card.className='card deleted-chat-settings';card.setAttribute('aria-labelledby','deletedChatTitle');const heading=document.createElement('h3');heading.id='deletedChatTitle';heading.textContent='삭제한 대화';const note=document.createElement('p');note.className='muted small';note.textContent='삭제한 대화를 복원하거나 완전히 삭제할 수 있어요.';const list=document.createElement('div');list.id='deletedChatList';card.append(heading,note,list);document.getElementById('settings').append(card);}
+  if(!card){card=document.createElement('section');card.id='deletedChatSettings';card.className='card deleted-chat-settings';card.setAttribute('aria-labelledby','deletedChatTitle');const heading=document.createElement('h3');heading.id='deletedChatTitle';heading.textContent='삭제한 대화';const note=document.createElement('p');note.className='muted small';note.textContent='삭제한 대화를 복원하거나 완전히 삭제할 수 있어요.';const header=document.createElement('div');header.className='deleted-chat-heading';const clear=document.createElement('button');clear.id='purgeDeletedChats';clear.type='button';clear.className='preview-permanent-delete';clear.textContent='전체 삭제';clear.setAttribute('aria-label','삭제한 대화 전체 완전 삭제');clear.onclick=()=>previewConfirmPurgeThread();header.append(heading,clear);const list=document.createElement('div');list.id='deletedChatList';card.append(header,note,list);document.getElementById('settings').append(card);}
   const list=document.getElementById('deletedChatList'),deleted=previewThreads.filter(t=>t.deletedAt).sort((a,b)=>b.deletedAt-a.deletedAt);list.replaceChildren();
+  document.getElementById('purgeDeletedChats').disabled=!deleted.length;
   if(!deleted.length){const empty=document.createElement('p');empty.className='muted small';empty.textContent='삭제한 대화가 없습니다.';list.append(empty);return;}
   for(const thread of deleted){const row=document.createElement('div');row.className='preview-deleted-row';const title=document.createElement('span');title.textContent=thread.title||'새 대화';title.title=title.textContent;const restore=document.createElement('button');restore.type='button';restore.textContent='복원';restore.dataset.restoreThread=thread.id;restore.setAttribute('aria-label',title.textContent+' 대화 복원');restore.onclick=()=>previewRestoreThread(thread.id);const purge=document.createElement('button');purge.type='button';purge.textContent='완전 삭제';purge.className='preview-permanent-delete';purge.dataset.purgeThread=thread.id;purge.setAttribute('aria-label',title.textContent+' 대화 완전 삭제');purge.onclick=()=>previewConfirmPurgeThread(thread.id);row.append(title,restore,purge);list.append(row);}
+}
+async function previewPermanentlyDeleteThreads(ids){
+  if(!ids.length||ids.some(id=>!previewThreads.some(t=>t.id===id&&t.deletedAt)))throw Error('삭제한 대화만 완전히 삭제할 수 있습니다.');
+  previewThreads=previewThreads.filter(t=>!ids.includes(t.id));previewRenderHistory();previewRemember();
 }
 async function previewPermanentlyDeleteThread(id){
   if(!previewThreads.some(t=>t.id===id&&t.deletedAt))throw Error('삭제한 대화만 완전히 삭제할 수 있습니다.');
   previewThreads=previewThreads.filter(t=>t.id!==id);previewRenderHistory();previewRemember();
 }
 function previewConfirmPurgeThread(id){
-  const thread=previewThreads.find(t=>t.id===id&&t.deletedAt);if(!thread)return;
+  const targets=previewThreads.filter(t=>t.deletedAt&&(id===undefined||t.id===id));if(!targets.length)return;
+  const bulk=id===undefined,ids=targets.map(t=>t.id);
   document.getElementById('chatPurgeDialog')?.remove();
   const dialog=document.createElement('dialog');dialog.id='chatPurgeDialog';dialog.className='chat-organize-dialog chat-purge-dialog';dialog.setAttribute('aria-labelledby','chatPurgeTitle');dialog.setAttribute('aria-describedby','chatPurgeWarning');
-  const heading=document.createElement('h2');heading.id='chatPurgeTitle';heading.textContent='대화를 완전히 삭제할까요?';
-  const title=document.createElement('p');title.className='chat-purge-thread-title';title.textContent=thread.title||'새 대화';
-  const warning=document.createElement('p');warning.id='chatPurgeWarning';warning.textContent='이 대화와 메시지를 완전히 삭제합니다. 삭제 후에는 복원할 수 없습니다.';
-  const note=document.createElement('p');note.textContent='별도로 저장한 개인 기록과 내보낸 백업 파일은 유지됩니다.';
+  const heading=document.createElement('h2');heading.id='chatPurgeTitle';heading.textContent=bulk?'삭제한 대화를 모두 지울까요?':'대화를 완전히 삭제할까요?';
+  const title=document.createElement('p');title.className='chat-purge-thread-title';title.textContent=bulk?'삭제한 대화 '+targets.length+'개':targets[0].title||'새 대화';
+  const warning=document.createElement('p');warning.id='chatPurgeWarning';warning.textContent=bulk?'현재 삭제한 대화 '+targets.length+'개와 해당 메시지를 완전히 삭제합니다. 삭제 후에는 복원할 수 없습니다.':'이 대화와 메시지를 완전히 삭제합니다. 삭제 후에는 복원할 수 없습니다.';
+  const note=document.createElement('p');note.textContent='사용 중인 대화, 별도로 저장한 개인 기록과 내보낸 백업 파일은 유지됩니다.';
   const error=document.createElement('p');error.className='chat-purge-error';error.setAttribute('role','alert');error.hidden=true;
   const actions=document.createElement('div');actions.className='chat-organize-actions';
   const cancel=document.createElement('button');cancel.type='button';cancel.textContent='취소';cancel.autofocus=true;cancel.onclick=()=>dialog.close();
   const remove=document.createElement('button');remove.type='button';remove.className='preview-permanent-delete';remove.textContent='완전 삭제';
   let busy=false;dialog.addEventListener('cancel',event=>{if(busy)event.preventDefault();});
-  remove.onclick=async()=>{if(busy)return;busy=true;cancel.disabled=remove.disabled=true;remove.textContent='삭제 중…';error.hidden=true;try{await previewPermanentlyDeleteThread(id);dialog.close();previewToast('대화를 완전히 삭제했어요.');}catch(e){error.textContent=e.message||'삭제하지 못했습니다. 다시 시도해 주세요.';error.hidden=false;}finally{busy=false;cancel.disabled=remove.disabled=false;remove.textContent='완전 삭제';}};
+  remove.onclick=async()=>{if(busy)return;busy=true;cancel.disabled=remove.disabled=true;remove.textContent='삭제 중…';error.hidden=true;try{if(bulk)await previewPermanentlyDeleteThreads(ids);else await previewPermanentlyDeleteThread(id);dialog.close();previewToast(bulk?'삭제한 대화 '+targets.length+'개를 모두 삭제했어요.':'대화를 완전히 삭제했어요.');}catch(e){error.textContent=e.message||'삭제하지 못했습니다. 다시 시도해 주세요.';error.hidden=false;}finally{busy=false;cancel.disabled=remove.disabled=false;remove.textContent='완전 삭제';}};
   actions.append(cancel,remove);dialog.append(heading,title,warning,note,error,actions);document.body.append(dialog);
-  dialog.addEventListener('close',()=>{dialog.remove();(document.querySelector('[data-purge-thread="'+id+'"]')||document.getElementById('chatSettingsClose'))?.focus();},{once:true});dialog.showModal();cancel.focus();
+  dialog.addEventListener('close',()=>{dialog.remove();(bulk?document.getElementById('purgeDeletedChats'):(document.querySelector('[data-purge-thread="'+id+'"]')||document.getElementById('purgeDeletedChats')))?.focus();},{once:true});dialog.showModal();cancel.focus();
 }
 function previewGroupThread(id){
   previewCloseThreadMenus();const thread=previewThreads.find(t=>t.id===id&&!t.deletedAt);if(!thread)return;

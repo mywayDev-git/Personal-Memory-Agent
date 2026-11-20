@@ -8,7 +8,7 @@
   function section(title){const s=node('section');s.append(node('h4',title));content.append(s);return s;}
   function row(dl,key,value){dl.append(node('dt',key),node('dd',value));}
   function raw(parent,title,value){const detail=node('details',null,'ai-inspection-raw');detail.append(node('summary',title));const pre=node('pre');pre.tabIndex=0;pre.textContent=typeof value==='string'?value:JSON.stringify(value,null,2);detail.append(pre);parent.append(detail);}
-  const status={planned:'계획에 포함',completed:'조회 완료',awaiting_confirmation:'확인 대기 · 기록 미변경',committed:'반영 완료',cancelled:'취소 완료',needs_input:'사용자 구분 필요',failed:'단계 실패'};
+  const status={planned:'계획에 포함',completed:'조회 완료',awaiting_confirmation:'확인 대기 · 기록 미변경',committed:'반영 완료',cancelled:'취소 완료',needs_input:'사용자 구분 필요',failed:'단계 실패',skipped:'문맥 검토 · 준비하지 않음'};
   const tool={search:'기록 조회',create:'새 기록 초안',save_transcript:'대화 원문 보관 초안',update:'기록 수정 초안',delete:'기록 삭제 초안',restore:'기록 복원 초안',cancel:'확인 대기 초안 취소'};
   const goal=section('이번 요청에서 이해한 사용자 목표');goal.append(node('p',plan?.goal||(message.status==='pending'?'문맥에서 목표와 필요한 행동을 준비하고 있어요.':'아직 확인된 목표 계획이 없습니다.')));
   goal.append(node('p','입력을 하나의 의도 종류로 먼저 분류하지 않습니다. 목표에 필요한 여러 행동을 함께 계획합니다.','ai-inspection-note'));raw(goal,'제출한 입력 원문',message.submission?.text||'');
@@ -20,7 +20,8 @@
   const actual=section('응답 결과와 기록 반영');const dl=node('dl');row(dl,'응답 상태',({answered:'답변',partial:'일부 처리',not_found:'필요한 정보 미확인',conflict:'원문 간 차이 확인',needs_input:'구분 질문'})[trace?.response?.status]||({pending:'준비 중',error:'처리 실패',cancelled:'수신 중단'}[message.status]||'과정 기록 없음'));
   row(dl,'확인할 초안',String(result?.proposals?.filter(p=>p.status==='pending').length||0)+'개');row(dl,'실제 반영',String(result?.executions?.filter(r=>r.status==='succeeded').length||0)+'건');row(dl,'실제 취소',String(result?.executions?.filter(r=>r.status==='cancelled').length||0)+'건');row(dl,'연결한 인용',String(result?.citations?.length||0)+'개 구간');actual.append(dl);actual.append(node('p','계획, 초안 준비, 실제 반영을 구분합니다. 기록 반영 완료는 서버의 실행 영수증으로 확인합니다.','ai-inspection-note'));
   if(trace?.reply_error)raw(actual,'답변 생성 단계 오류',trace.reply_error);if(message.error)raw(actual,'요청 처리 오류',message.error);if(result?.executions?.length)raw(actual,'서버의 실제 실행 결과',result.executions);if(result)raw(actual,'표시한 답변 원문',result.answer);
-  if(trace?.model_calls?.length){const calls=section('이번 제출에서 실제 호출한 모델');const phase={goal_plan:'목표·행동 계획',goal_response:'목표에 맞는 답변 작성',tool_arguments:'기록 대상 확인',record_arguments:'기록 내용 준비',transcript_arguments:'대화 보관 범위 준비',record_patch:'수정할 구간 준비'};for(const [i,call]of trace.model_calls.entries())raw(calls,(i+1)+'. '+(phase[call.phase]||call.phase)+' · 실제 입력·출력',call);}
+  if(plan?.recording_review){const review=section('기록 준비 전 문맥 검토');for(const item of plan.recording_review.reviews||[])review.append(node('p',(tool[plan.steps[item.index]?.tool]||'기록 작업')+' · '+(item.decision==='prepare'?'초안 준비':'준비하지 않음')+' — '+item.reason));if(plan.recording_review.error)review.append(node('p','검토 실패 · '+plan.recording_review.error.message));}
+  if(trace?.model_calls?.length){const calls=section('이번 제출에서 실제 호출한 모델');const phase={goal_plan:'목표·행동 계획',recording_review:'문맥에서 기록 필요성과 동의 범위 확인',goal_response:'목표에 맞는 답변 작성',tool_arguments:'기록 대상 확인',record_arguments:'기록 내용 준비',transcript_arguments:'대화 보관 범위 준비',record_patch:'수정할 구간 준비'};for(const [i,call]of trace.model_calls.entries())raw(calls,(i+1)+'. '+(phase[call.phase]||call.phase)+' · 실제 입력·출력',call);}
   else if(trace)content.append(node('p','이번 응답에는 모델 호출 원문이 첨부되지 않았습니다. 실행한 계획과 실제 결과만 표시합니다.','ai-inspection-note'));
   if(trace)raw(content,'앱이 보관한 목표·행동 전체 기록',trace);
   return panel;

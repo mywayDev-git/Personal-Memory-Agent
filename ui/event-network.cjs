@@ -53,3 +53,5 @@ module.exports=async function graphData(root){
   }
   return cached;
 };
+
+module.exports.invalidate=()=>{cached=null;expires=0;};

@@ -72,7 +72,7 @@ async function existingRuntime(root){
   return runtime;
 }
 function createChatApi(root,options={}){
-  const sessionToken=crypto.randomBytes(32).toString('hex'),requests=new Map(),fingerprints=new Map(),completedParts=new Map();let active=null;
+  const sessionToken=crypto.randomBytes(32).toString('hex'),requests=new Map(),fingerprints=new Map(),completedParts=new Map();let active=null,suspended=false;
   const json=(res,status,data)=>{if(res.destroyed)return;res.writeHead(status,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});res.end(JSON.stringify(data));};
   const searchModes=require('./plant-thought/search-modes.js');
   async function searchRecords(data,scope,query,history=[],priority=[],signal){
@@ -97,7 +97,8 @@ function createChatApi(root,options={}){
     const disconnected=()=>{entry.waiters.delete(waiter);if(!entry.settled&&!entry.waiters.size)entry.controller.abort(cancelled());};res.once('close',disconnected);
     try{json(res,200,await entry.promise);}finally{entry.waiters.delete(waiter);res.off('close',disconnected);}
   }
-  async function executeSingle(data,signal){
+  async function executeSingle(data,signal,onProgress){
+    const progress=event=>onProgress?.(event);progress({phase:'understand',target:data.text});
     const config={seed:42,context_tokens:8192,output_tokens:1536};
     let expected=data.analysis_version==='v2'?null:classifyRequest(data.text),outputSchema=constrainSchema(schema,expected),flow=null,preparedMap=null,mapApp=null;
 const messages=[{role:'system',content:instruction}];
@@ -111,7 +112,8 @@ const messages=[{role:'system',content:instruction}];
       }else scope=await getScope(data);
       if(data.context&&!preparedMap){stage='context';flow=dialogue.resolve(data,scope,options.now?.()||new Date().toISOString());}
       if(flow){expected=flow.expected;outputSchema=constrainSchema(schema,expected);}
-      stage='retrieval';const skipRetrieval=preparedMap?preparedMap.decision.source!=='archive':!!(flow&&dialogue.policy(flow))||expected?.retrieval==='skip';const searchResult=skipRetrieval?{evidence:[],trace:null}:await searchRecords(data,scope,flow?.lookup||data.text,flow?[]:data.history,flow?.references.map(r=>r.source_id)||[],signal);const evidence=searchResult.evidence;
+      stage='retrieval';const skipRetrieval=preparedMap?preparedMap.decision.source!=='archive':!!(flow&&dialogue.policy(flow))||expected?.retrieval==='skip';const searchResult=skipRetrieval?{evidence:[],trace:null}:await (async()=>{progress({phase:'search',target:flow?.lookup||data.text,scope:data.collection_id});return searchRecords(data,scope,flow?.lookup||data.text,flow?[]:data.history,flow?.references.map(r=>r.source_id)||[],signal);})();const evidence=searchResult.evidence;
+      if(evidence.length)progress({phase:'evidence',target:data.text,titles:[...new Set(evidence.map(e=>e.metadata.title))]});
       const {schemaIssues,sentences}=require(path.join(root,'local/core.cjs'));
       const modelEvidence=evidence.map(({text,score,...row})=>({...row,sentences:sentences(text).map(s=>({sentence_id:s.id,text:s.text}))}));
       const target=flow&&!preparedMap?dialogue.targetEvidence(flow,data,evidence):null,completion=flow&&!preparedMap?dialogue.completionContract(flow,data,evidence,target):null;if(completion){expected=completion;outputSchema=constrainSchema(schema,expected);target.allowed=completion.evidence_ids;}outputSchema=dialogue.constrainEvidence(outputSchema,target);if(completion?.require_citation)outputSchema={...outputSchema,properties:{...outputSchema.properties,citations:{...outputSchema.properties.citations,minItems:1}}};if(target)flow.modelContext.target_constraints={selected_person:target.person?target.focus:null,work_terms:target.anchors,citable_evidence_ids:target.allowed};
@@ -127,7 +129,7 @@ const messages=[{role:'system',content:instruction}];
         const result={request_id:data.request_id,thread_id:data.thread_id,...app,retrieval_trace:{mode:data.search_mode||'legacy',status:'skipped',searches:[]},model:'Plant Thought',scope:{mode:scope.id==='personal'?'personal':'all-originals',profile:data.profile,example_id:data.example_id,context_id:scope.id,accessible_count:scope.sources.length,retrieved_count:0},stored:false,...(inspection?{inspection}:{})};
         result.context=preparedMap?dialogueMap.updateFlow(flow,data,result):dialogue.update(flow,data,result);result.context_info={relation:flow.relation,topic:flow.topic?.label||null,choices:flow.choices};return preparedMap?dialogueMap.finish(preparedMap,data,result):result;
       }
-      stage='connection';const runtime=await requestRuntime(signal);stage='model';
+      stage='connection';const runtime=await requestRuntime(signal);stage='model';progress({phase:'answer',target:flow?.lookup||data.text});
       let response=await runtime.chat(messages,outputSchema,config,AbortSignal.timeout(180000));
       if(inspection)inspection.model_response_received=true;
       if(preparedMap){
@@ -145,7 +147,7 @@ const messages=[{role:'system',content:instruction}];
         if(inspection)inspection.request_body=chatRequest(messages,outputSchema,config);
       }
       if(inspection)inspection.model_response_received=true;
-      stage='validation';const parsed=response.parsed;
+      stage='validation';progress({phase:'validate',target:data.text});const parsed=response.parsed;
       if(schemaIssues(parsed,schema).length||!parsed.answer.trim()){if(inspection)inspection.checks.schema='failed';throw Error('AI 응답 형식을 확인하지 못했습니다.');}
       if(inspection){inspection.checks.schema='passed';inspection.output=structuredClone(parsed);}
       const writeIntent=['experience','edit','delete'].includes(parsed.intent);
@@ -173,11 +175,11 @@ const messages=[{role:'system',content:instruction}];
       return preparedMap?dialogueMap.finish(preparedMap,data,result):result;
     }catch(error){const wrapped=error.stage?error:fault(stage,error.message||'AI 처리에 실패했습니다.');if(inspection){inspection.stage=stage;wrapped.inspection=normalizeInspection(inspection);}throw wrapped;}
   }
-  async function execute(data,signal){
+  async function execute(data,signal,onProgress){
     signal.throwIfAborted();
     if(data.analysis_version==='v3'&&!options.actions)throw fault('context','V3에는 연결 서버가 필요합니다.',503);
-    if(options.actions&&['v2','v3'].includes(data.analysis_version))return require('./goal-agent.cjs').respond({data,runtime:await requestRuntime(signal),service:requestActions(signal),conversation:options.conversation,getScope,retrieve,searchRecords:(scope,query)=>searchRecords(data,scope,query,[],[],signal)});
-    const texts=data.context&&data.analysis_version!=='v2'?dialogue.splitTasks(data.text):[data.text];if(texts.length===1)return executeSingle(data,signal);
+    if(options.actions&&['v2','v3'].includes(data.analysis_version))return require('./goal-agent.cjs').respond({data,runtime:await requestRuntime(signal),service:requestActions(signal),conversation:options.conversation,getScope,retrieve,onProgress,searchRecords:(scope,query)=>searchRecords(data,scope,query,[],[],signal)});
+    const texts=data.context&&data.analysis_version!=='v2'?dialogue.splitTasks(data.text):[data.text];if(texts.length===1)return executeSingle(data,signal,onProgress);
     const previous=await options.resume?.(data);
     if(previous){
       const keys=['request_id','thread_id','text','input_version','collection_id','profile','example_id','history','context','context_selection','pending_target','inspect','search_mode'];
@@ -191,7 +193,7 @@ const messages=[{role:'system',content:instruction}];
       try{
         let result=completedParts.get(id);
         if(result){const scope=await getScope(task);if(result.citations.some(r=>!dialogue.validReference(r,new Map(scope.sources.map(s=>[s.id,s])))))result=null;else{const flow=dialogue.resolve(task,scope,options.now?.()||new Date().toISOString());result={...result,context:dialogue.update(flow,task,result)};}}
-        if(!result){result=await executeSingle(task,signal);completedParts.set(id,result);if(completedParts.size>384)completedParts.delete(completedParts.keys().next().value);}
+        if(!result){result=await executeSingle(task,signal,onProgress);completedParts.set(id,result);if(completedParts.size>384)completedParts.delete(completedParts.keys().next().value);}
         working=result.context;parts.push({id,text:task.text,status:'success',result});
       }catch(error){parts.push({id,text:task.text,status:'error',error:error.message,stage:error.stage||'validation',...(error.inspection?{inspection:error.inspection}:{})});}
     }
@@ -209,13 +211,20 @@ const messages=[{role:'system',content:instruction}];
         let ready=false,note='';try{await getRuntime();ready=true;}catch(error){note=error.message;}
         json(res,200,{token:sessionToken,ready,model:'Qwen3.5 4B',note});return true;
       }
-      if(req.method!=='POST'||!['/api/chat/respond','/api/chat/operation','/api/chat/operation-status','/api/chat/cancel'].includes(url.pathname)){json(res,404,{error:'지원하지 않는 요청입니다.'});return true;}
+      if(suspended&&req.method==='POST'&&url.pathname!=='/api/chat/cancel')throw fault('connection','전체 데이터를 정리 중입니다.',503);
+      if(req.method!=='POST'||!['/api/chat/respond','/api/chat/operation','/api/chat/operation-status','/api/chat/cancel','/api/chat/progress'].includes(url.pathname)){json(res,404,{error:'지원하지 않는 요청입니다.'});return true;}
       if(req.headers['x-plant-token']!==sessionToken)throw fault('connection','연결 정보가 만료됐습니다. 화면을 새로고침해 주세요.',403);
       if(!String(req.headers['content-type']).startsWith('application/json'))throw fault('validation','JSON 요청이 필요합니다.',415);
       const parts=[];let bytes=0;for await(const part of req){bytes+=part.length;if(bytes>1000000)throw fault('validation','입력 크기가 너무 큽니다.',413);parts.push(part);}
       let data;try{data=JSON.parse(Buffer.concat(parts).toString());}catch{throw fault('validation','입력 형식을 확인하지 못했습니다.',400);}
       if(!data||typeof data!=='object'||Array.isArray(data))throw fault('validation','입력 형식이 올바르지 않습니다.',400);
+      if(url.pathname!=='/api/chat/cancel')options.actions?.library?.assertEpoch(data.storage_epoch);
       if(typeof data.thread_id==='string'&&options.actions?.library?.isThreadPurged(data.thread_id))throw fault('validation','완전히 삭제한 대화입니다. 새 대화를 시작해 주세요.',410);
+      if(url.pathname==='/api/chat/progress'){
+        if(typeof data.request_id!=='string'||typeof data.thread_id!=='string')throw fault('validation','진행 중인 대화를 확인할 수 없습니다.',400);
+        const entry=requests.get(data.request_id);if(entry&&entry.threadId!==data.thread_id)throw fault('validation','작업과 대화가 다릅니다.',409);
+        json(res,200,{request_id:data.request_id,thread_id:data.thread_id,status:!entry?'unknown':entry.settled?'finished':'pending',progress:entry&&!entry.settled?entry.progress?.snapshot()||null:null});return true;
+      }
       if(url.pathname==='/api/chat/cancel'){
         if(typeof data.request_id!=='string'||typeof data.thread_id!=='string')throw fault('validation','중지할 대화를 확인할 수 없습니다.',400);
         const entry=requests.get(data.request_id);if(entry&&entry.threadId!==data.thread_id)throw fault('validation','작업과 대화가 다릅니다.',409);
@@ -229,7 +238,7 @@ const messages=[{role:'system',content:instruction}];
       for(const field of ['context_selection','pending_target'])if(data[field]!=null&&(typeof data[field]!=='string'||data[field].length>160||!data.context))throw fault('context','대화 대상 선택을 확인하지 못했습니다.',400);
       if(data.search_mode!=null){try{searchModes.normalize(data.search_mode);}catch(error){throw fault('validation',error.message,400);}if(data.search_mode!=='legacy'&&data.inspect!==true)throw fault('validation','검색 방식 비교는 테스트 모드에서 사용할 수 있습니다.',400);}
       dialogueMap.normalizeRequest(data);
-      const fingerprint=crypto.createHash('sha256').update(JSON.stringify(data)).digest('hex'),known=requests.get(data.request_id);
+      const fingerprint=require('./library.cjs').hash(data),known=requests.get(data.request_id);
       if(fingerprints.has(data.request_id)&&fingerprints.get(data.request_id)!==fingerprint)throw fault('validation','같은 작업 ID의 제출 내용이 달라졌습니다.',409);
       fingerprints.set(data.request_id,fingerprint);if(fingerprints.size>256)fingerprints.delete(fingerprints.keys().next().value);
       if(known&&known.fingerprint!==fingerprint)throw fault('validation','같은 작업 ID의 제출 내용이 달라졌습니다.',409);
@@ -237,12 +246,15 @@ const messages=[{role:'system',content:instruction}];
       if(active)throw fault('connection','AI가 앞선 질문을 처리 중입니다. 완료 후 재시도해 주세요.',409);
       for(const [key,value]of requests)if(Date.now()-value.at>600000)requests.delete(key);
       if(requests.size>=128)requests.delete(requests.keys().next().value);
-      active=data.request_id;const controller=new AbortController(),entry={fingerprint,at:Date.now(),threadId:data.thread_id,controller,waiters:new Set(),settled:false};
-      entry.promise=execute(data,controller.signal).then(result=>{controller.signal.throwIfAborted();if(result.parts?.some(p=>p.status==='error'))requests.delete(data.request_id);return result;}).catch(error=>{requests.delete(data.request_id);throw controller.signal.aborted?cancelled():error;}).finally(()=>{entry.settled=true;if(active===data.request_id)active=null;});requests.set(data.request_id,entry);
+      active=data.request_id;const controller=new AbortController(),entry={fingerprint,at:Date.now(),threadId:data.thread_id,controller,waiters:new Set(),settled:false,progress:require('./chat-progress.cjs').createProgress()};
+      requests.set(data.request_id,entry);
+      const onProgress=event=>{if(!entry.settled&&!controller.signal.aborted)entry.progress.update(event);};
+      onProgress({phase:'understand',target:data.text});
+      entry.promise=execute(data,controller.signal,onProgress).then(result=>{controller.signal.throwIfAborted();if(result.parts?.some(p=>p.status==='error'))requests.delete(data.request_id);return {...result,processing_trace:entry.progress.finish()};}).catch(error=>{requests.delete(data.request_id);throw controller.signal.aborted?cancelled():error;}).finally(()=>{entry.settled=true;entry.progress=null;if(active===data.request_id)active=null;});
       await respondTo(entry,res);
     }catch(error){json(res,error.status||500,{error:error.message,stage:error.stage||'validation',...(error.inspection?{inspection:error.inspection}:{})});}
     return true;
   }
-  return {handle};
+  return {handle,async suspend(){suspended=true;const entries=[...requests.values()];for(const entry of entries)if(!entry.settled)entry.controller.abort(cancelled());await Promise.allSettled(entries.map(entry=>entry.promise));requests.clear();fingerprints.clear();completedParts.clear();active=null;},resume(){suspended=false;}};
 }
 module.exports={createChatApi,loadScope,retrieve,schema,instruction,existingRuntime};

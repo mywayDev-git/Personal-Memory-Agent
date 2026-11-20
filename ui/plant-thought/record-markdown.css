@@ -1,0 +1,34 @@
+#recordBody[hidden]{display:none!important}
+.record-markdown-hint{font-size:11px;line-height:1.7;color:var(--muted);margin:8px 0}
+.record-markdown-editor{margin-top:8px;min-width:0;border:1px solid var(--line);border-radius:12px;background:#fffefa;overflow:hidden;color:var(--text)}
+.record-markdown-editor:focus-within{border-color:#91a88c;box-shadow:0 0 0 3px #7d9c7615}
+.record-markdown-editor .cm-editor{min-height:320px;outline:none;font:400 14px/1.9 "Noto Sans KR",sans-serif}
+.record-markdown-editor .cm-scroller{max-height:65dvh;min-height:320px;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;line-height:1.9}
+.record-markdown-editor .cm-content{padding:20px 18px;min-height:320px;caret-color:var(--green)}
+.record-markdown-editor .cm-line{padding:1px 4px;overflow-wrap:anywhere}
+.record-markdown-editor .md-active-source{background:transparent;border-radius:4px;color:#34513d;font-family:Consolas,"Noto Sans KR",monospace;font-size:13px;font-weight:400}
+.record-markdown-editor .md-render-heading{color:var(--green);font-weight:650;line-height:1.6;padding-top:10px;padding-bottom:6px}
+.record-markdown-editor .md-heading-1{font-size:1.65em}.record-markdown-editor .md-heading-2{font-size:1.4em}.record-markdown-editor .md-heading-3{font-size:1.2em}.record-markdown-editor .md-heading-4,.record-markdown-editor .md-heading-5,.record-markdown-editor .md-heading-6{font-size:1.05em}
+.md-render-strong{font-weight:700}.md-render-em{font-style:italic}.md-render-strike{text-decoration:line-through}.md-render-link{color:#356c55;text-decoration:underline;text-underline-offset:3px}
+.md-render-code{font-family:Consolas,monospace;font-size:.92em;background:#edf2e7;border-radius:3px;padding:1px 2px}
+.record-markdown-editor .md-render-code-line{font-family:Consolas,monospace;font-size:13px;line-height:1.7;background:#f0f4eb;padding-left:14px;padding-right:14px;white-space:pre-wrap}
+.record-markdown-editor .md-render-quote{border-left:3px solid #bacdb3;color:#708267;padding-left:12px}
+.md-list-marker{display:inline-block;min-width:1em;color:#73856a}.md-task-marker{color:#68895e;font-size:1.1em}.md-render-rule{display:inline-block;width:100%;border-top:1px solid #d9e2d1;vertical-align:middle}
+.record-markdown-editor .md-render-table-line{max-width:100%;overflow-x:auto}.record-markdown-editor .md-render-table-line table{margin:0;width:100%;table-layout:fixed;border-collapse:collapse;font:inherit}.record-markdown-editor .md-render-table-line td,.record-markdown-editor .md-render-table-line th{min-width:0;padding:7px 10px;border:1px solid var(--line);overflow-wrap:anywhere}.record-markdown-editor .md-render-table-line th{background:#edf2e7;font-weight:600}.record-markdown-editor .md-table-delimiter{height:0}
+.chat-record-draft .record-markdown-preview{margin:12px 0;padding:14px;background:#fffefa;border-radius:8px;max-height:360px;overflow:auto;font-size:13px;line-height:1.85;white-space:normal}
+.chat-record-draft .record-markdown-preview pre{font-family:Consolas,monospace;white-space:pre;margin:12px 0;padding:12px;background:#f0f4eb;max-height:none;line-height:1.7}
+.chat-record-draft .record-markdown-preview pre code{font:inherit}.chat-record-draft .record-markdown-preview h1{font-size:1.55em}.chat-record-draft .record-markdown-preview h2{font-size:1.3em}.chat-record-draft .record-markdown-preview h3{font-size:1.15em}
+@media(max-width:600px){.record-markdown-editor .cm-content{padding:14px 10px}.record-markdown-editor .cm-editor{font-size:13px}.record-markdown-editor .cm-scroller{max-height:60dvh}.chat-record-draft .record-markdown-preview{padding:12px}}
+
+.record-markdown-preview .markdown-task-item{list-style:none}.markdown-task-checkbox{width:13px;height:13px;vertical-align:middle;accent-color:#76916b;margin:0 5px 0 -2px}
+
+.record-content.record-markdown-read{white-space:normal;line-height:1.9;color:var(--text)}.record-content.record-markdown-read>:first-child{margin-top:0}.record-content.record-markdown-read .markdown-task-item{list-style:none}
+.record-edit-form .record-markdown-editor{margin:0}.record-edit-form .record-markdown-editor .cm-editor,.record-edit-form .record-markdown-editor .cm-content{min-height:220px}.record-edit-form .record-markdown-editor .cm-scroller{min-height:220px;max-height:42dvh}.record-edit-form .record-markdown-hint{margin:0;font-size:11px;line-height:1.7}.record-markdown-source[hidden]{display:none!important}
+
+/* Keep the drawn caret steady even when reduced-motion rules override durations. */
+.record-markdown-editor .cm-editor.cm-focused > .cm-scroller > .cm-cursorLayer{animation:none!important;opacity:1}
+.record-markdown-editor .cm-content,.record-markdown-editor .cm-line{caret-color:transparent!important}
+.record-markdown-editor .cm-cursor{border-left-color:var(--green)}
+/* Source lines must stay transparent: the selection layer is behind their text. */
+.record-markdown-editor .cm-editor .cm-selectionLayer .cm-selectionBackground{background:#b8d1ad!important}
+@media(forced-colors:active){.record-markdown-editor .cm-editor .cm-selectionLayer .cm-selectionBackground{background:Highlight!important;forced-color-adjust:none}}

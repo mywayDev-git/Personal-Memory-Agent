@@ -28,7 +28,7 @@ function createGraphIndex(parent,runtime){
  db.prepare('INSERT OR IGNORE INTO chat_graph_profiles VALUES(?)').run('G1-linked');
  // An interrupted build must be resumed as an indexing job, never by a search request.
  db.prepare("UPDATE chat_graph_jobs SET status='queued' WHERE status='indexing'").run();
- let timer,running=null,active=null,closed=false,checking=false,watchLibrary=null,canRun=()=>!parent.busy;
+ let timer,running=null,active=null,closed=false,paused=false,checking=false,watchLibrary=null,canRun=()=>!parent.busy;
  const readJob=(collection,mode)=>{const row=db.prepare('SELECT * FROM chat_graph_jobs WHERE collection=? AND mode=?').get(collection,mode);return row?{...JSON.parse(row.payload),revision:row.revision,status:row.status}:null;};
  function saveJob(job){db.prepare('INSERT INTO chat_graph_jobs VALUES(?,?,?,?,?) ON CONFLICT(collection,mode) DO UPDATE SET revision=excluded.revision,status=excluded.status,payload=excluded.payload').run(job.collection,job.mode,job.revision,job.status,JSON.stringify(job));}
  function enable(mode){if(!isGraph(mode))throw Error('그래프 검색 방식을 선택해 주세요.');db.prepare('INSERT OR IGNORE INTO chat_graph_profiles VALUES(?)').run(mode);}
@@ -95,7 +95,7 @@ function createGraphIndex(parent,runtime){
   finally{if(parent.busy===run.id){parent.busy=null;parent.abort=null;}active=null;}
  }
  async function tick(){
-  if(closed||checking)return;checking=true;
+  if(closed||paused||checking)return;checking=true;
   try{
    if(!watchLibrary)watchLibrary=new (require('../ui/library.cjs').Library)(parent.root);
    {
@@ -117,6 +117,8 @@ function createGraphIndex(parent,runtime){
  }
  return {isGraph,configFor:mode=>configFor(parent,mode),dataset,cached,status,enable,enqueue,cancel,
   start(options={}){canRun=options.canRun||canRun;if(!timer){timer=setInterval(()=>{void tick();},1500);timer.unref?.();}},
+  async suspend(){paused=true;active?.controller.abort();await running;},
+  resume(){db.prepare('INSERT OR IGNORE INTO chat_graph_profiles VALUES(?)').run('G1-linked');paused=false;},
   async close(){closed=true;clearInterval(timer);active?.controller.abort();await running;watchLibrary?.close();}};
 }
 module.exports={createGraphIndex,isGraph,configFor,signature,dataset,sourcesFor};

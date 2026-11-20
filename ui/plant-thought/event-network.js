@@ -49,7 +49,7 @@
    svg.querySelectorAll('[data-id]').forEach(n=>n.setAttribute('aria-pressed',String(n.dataset.id===item.id)));
  }
  async function review(e,status,name){if(busy||!name.trim())return;busy=true;
-   try{const response=await fetch(href(),{method:'POST',headers:{'Content-Type':'application/json','X-Graph-Token':data.token},body:JSON.stringify({edge:e.id,status,label:name,revision:latest(e)?.seq||0})});
+   try{const response=await fetch(href(),{method:'POST',headers:{'Content-Type':'application/json','X-Graph-Token':data.token},body:JSON.stringify({edge:e.id,status,label:name,revision:latest(e)?.seq||0,storage_epoch:window.PlantLibraryPersistence?.epoch?.()})});
    const d=await response.json();if(!response.ok)throw Error(d.error);e.history=d.history;filters();draw();detail(e);
    }catch(err){$('egStatus').textContent=err.message}finally{busy=false}}
  function filters(){const sel=$('egRelation'),prev=sel.value;sel.replaceChildren(new Option('모든 관계',''),...Array.from(new Set(data.view.edges.map(label))).sort().map(t=>new Option(t,t)));sel.value=prev;if(sel.selectedIndex<0)sel.selectedIndex=0}

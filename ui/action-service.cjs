@@ -13,7 +13,7 @@ class ActionService{
    CREATE TABLE IF NOT EXISTS action_requests(id TEXT PRIMARY KEY,fingerprint TEXT NOT NULL,result TEXT NOT NULL);
    CREATE TABLE IF NOT EXISTS action_goal_plans(id TEXT PRIMARY KEY,fingerprint TEXT NOT NULL,payload TEXT NOT NULL);`);
  }
- assertThread(threadId){if(this.library.isThreadPurged(threadId))fail('완전히 삭제한 대화입니다. 새 대화를 시작해 주세요.',410);}
+ assertThread(threadId){this.library.assertWritable();if(this.library.isThreadPurged(threadId))fail('완전히 삭제한 대화입니다. 새 대화를 시작해 주세요.',410);}
  tasks(threadId){return this.db.prepare("SELECT * FROM action_tasks WHERE thread_id=? ORDER BY (state='waiting') DESC,rowid DESC LIMIT 24").all(threadId).map(r=>({...r,detail:JSON.parse(r.detail)}));}
  pending(threadId){return this.db.prepare("SELECT * FROM action_proposals WHERE thread_id=? AND state='pending' ORDER BY rowid DESC").all(threadId).map(r=>this.decode(r));}
  decode(row){return row?{...JSON.parse(row.payload),id:row.id,version:row.version,status:row.state}:null;}

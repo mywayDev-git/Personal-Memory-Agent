@@ -102,3 +102,41 @@
 
 .ai-record-draft{border:1px solid var(--line);border-radius:18px;background:transparent;color:#7b8977;font:inherit;font-size:11px;padding:7px 14px;cursor:pointer}.ai-record-draft:hover,.ai-record-draft[aria-expanded="true"]{background:#edf1e6;color:var(--green)}
 .ai-answer-actions{flex-wrap:wrap}.chat-record-draft{margin:14px 0 18px;padding:18px;border:1px solid #dce4d5;border-radius:12px;background:#f5f7ef;color:#435b44;font-size:12px;line-height:1.8;outline:none}.chat-record-draft:focus-visible{outline:2px solid var(--green);outline-offset:3px}.chat-record-draft h3{margin:10px 0 4px;font-size:17px;font-weight:500}.chat-record-draft-date,.chat-record-draft-note{color:#87917e;font-size:11px;margin:6px 0 12px}.chat-record-draft pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;max-height:300px;overflow-y:auto;padding:14px;background:#fffefa;border-radius:8px;margin:12px 0}.chat-record-draft .transfer-actions{margin-top:14px}.chat-record-draft button{border:1px solid #ccd7c3;border-radius:8px;background:#fffefa;color:inherit;font:inherit;padding:7px 14px;cursor:pointer}.chat-record-draft button:first-child{background:#e5eddd}.chat-record-draft-merge{display:flex;align-items:center;gap:8px;font-size:12px}.chat-record-draft-merge input{width:15px;height:15px;accent-color:var(--green)}
+
+/* User messages expose copy on hover without moving the message bubble. */
+#chat .user-message{display:flex;flex-direction:column;align-items:flex-end;align-self:flex-end;gap:3px;max-width:85%;min-width:0;margin-bottom:-12px}
+#chat .user-message .bubble.user{max-width:100%;margin:0}
+#chat .user-copy-message{min-height:26px;padding:4px 8px;opacity:0;pointer-events:none;transition:opacity .15s ease}
+#chat .user-message:hover .user-copy-message,#chat .user-message:focus-within .user-copy-message,#chat .user-copy-message.is-copied{opacity:1;pointer-events:auto}
+@media(max-width:680px){#chat .user-message{max-width:90%}}
+@media(hover:none){#chat .user-copy-message{opacity:1;pointer-events:auto}}
+@media(prefers-reduced-motion:reduce){#chat .user-copy-message{transition:none}}
+
+/* Live stages accumulate; completed stages remain in a collapsed disclosure. */
+#chat .ai-progress{min-width:0;margin:0;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;color:#758168;font-size:12px;line-height:1.8}
+#chat .ai-progress-heading{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0;padding:0;color:#56694f}
+#chat .ai-progress-total,#chat .ai-progress-time{font-variant-numeric:tabular-nums;white-space:nowrap;font-size:11px}
+#chat .ai-progress-list{display:flex;flex-direction:column;gap:0;list-style:none;margin:0;padding:0}
+#chat .ai-progress-step{display:grid;grid-template-columns:10px minmax(0,1fr) auto;align-items:start;column-gap:8px;margin:0;padding:0;color:#8a9383}
+#chat .ai-progress-marker{font-size:13px;line-height:1.7;text-align:center;color:#a2b196}
+#chat .ai-progress-text{white-space:normal;overflow-wrap:anywhere}
+#chat .ai-progress-step.is-running{color:#48623d}
+#chat .ai-progress-step.is-running .ai-progress-marker{font-size:8px;line-height:2.7;color:#6d8a5d}
+#chat .ai-progress-current{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+@media(max-width:600px){#chat .ai-progress-step{grid-template-columns:10px minmax(0,1fr)}#chat .ai-progress-time{grid-column:2}}
+
+#chat .ai-progress-complete{margin:0}
+#chat .ai-progress > summary{justify-content:flex-start;list-style:none;cursor:pointer;margin:0;padding:0;background:transparent;gap:10px;font-size:12px;color:#7b8772}
+#chat .ai-progress > summary::-webkit-details-marker{display:none}
+#chat .ai-progress > summary::before{content:'';width:5px;height:5px;border-right:1px solid currentColor;border-bottom:1px solid currentColor;transform:rotate(-45deg);flex:none}
+#chat .ai-progress[open] > summary::before{transform:rotate(45deg)}
+#chat .ai-progress > summary:focus-visible{outline:2px solid #a7b89a;outline-offset:4px;border-radius:3px}
+#chat .ai-progress > summary .ai-progress-total{color:#8b9582}
+#chat .ai-progress > .ai-progress-list{margin:0;padding:0}
+
+/* Pending activity is collapsed initially; its summary always shows live work. */
+#chat .ai-progress-live > summary{display:grid;grid-template-columns:8px minmax(0,1fr) auto;align-items:start;gap:10px}
+#chat .ai-progress-live > summary::before{margin-top:7px}
+#chat .ai-progress-live .ai-progress-current{position:static;width:auto;height:auto;padding:0;overflow:visible;clip-path:none;white-space:normal;overflow-wrap:anywhere;min-width:0;color:#48623d}
+#chat details.ai-progress:not([open]) > .ai-progress-list{display:none}
+@media(max-width:600px){#chat .ai-progress-live > summary{grid-template-columns:8px minmax(0,1fr)}#chat .ai-progress-live > summary .ai-progress-total{grid-column:2;margin-top:-5px}}

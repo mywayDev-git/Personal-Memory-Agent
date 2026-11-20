@@ -55,15 +55,17 @@
     const record=sourceMap.get(id);if(!record)return;detailRecordId=id;
     detailContext=context&&typeof context.threadId==='string'&&Array.isArray(context.citations)&&(!context.recordId||context.recordId===id)?{...context,recordId:id}:null;
     openSource(id);el('detailTitle').textContent=record.title;el('detailBody').replaceChildren();
-    for(const part of window.PlantRecordEvidence.segments(record,detailContext?.citations||[])){
+    if(window.PlantRecordMarkdown)window.PlantRecordMarkdown.render(el('detailBody'),record,detailContext?.citations||[]);
+    else for(const part of window.PlantRecordEvidence.segments(record,detailContext?.citations||[])){
       if(part.highlighted){const mark=textNode('mark',part.text,'record-evidence-highlight');mark.tabIndex=-1;mark.setAttribute('aria-label','대화에서 참고한 구간');el('detailBody').append(mark);}else el('detailBody').append(document.createTextNode(part.text));
     }
-    const highlighted=!!el('detailBody').querySelector('mark');el('detailEvidenceNote').hidden=!detailContext;el('detailEvidenceNote').textContent=highlighted?'대화에서 참고한 구간을 표시했어요.':'현재 기록에서 일치하는 참고 구간을 찾지 못했어요.';
+    const highlighted=!!el('detailBody').querySelector('.record-evidence-highlight');el('detailEvidenceNote').hidden=!detailContext;el('detailEvidenceNote').textContent=highlighted?'대화에서 참고한 구간을 표시했어요.':'현재 기록에서 일치하는 참고 구간을 찾지 못했어요.';
     el('detailBack').textContent=detailContext?'← 대화로 돌아가기':'← 서재 보관소로 돌아가기';
     el('detailDate').textContent=(record.date||'날짜 미상')+' · '+collection.profiles.find(p=>p.id===record.profile).label+(collection.synthetic?' · 가상 원문 · v':' · 개인 자료함 · v')+record.revision;
     go('recordDetail');remember();document.dispatchEvent(new CustomEvent('plant:record-opened'));
-    if(highlighted)requestAnimationFrame(()=>{if(document.querySelector('.page.active')?.id!=='recordDetail'||detailRecordId!==id)return;const mark=el('detailBody').querySelector('mark');if(mark){const bounds=mark.getBoundingClientRect(),headerBottom=document.querySelector('body>header').getBoundingClientRect().bottom;if(bounds.top<headerBottom+16||bounds.bottom>window.innerHeight-16)mark.scrollIntoView({block:'center'});mark.focus({preventScroll:true});}});
+    if(highlighted)requestAnimationFrame(()=>{if(document.querySelector('.page.active')?.id!=='recordDetail'||detailRecordId!==id)return;const mark=el('detailBody').querySelector('.record-evidence-highlight');if(mark){const bounds=mark.getBoundingClientRect(),headerBottom=document.querySelector('body>header').getBoundingClientRect().bottom;if(bounds.top<headerBottom+16||bounds.bottom>window.innerHeight-16)mark.scrollIntoView({block:'center'});mark.focus({preventScroll:true});}});
   }
+  document.addEventListener('plant:record-markdown-ready',()=>{if(detailRecordId&&document.querySelector('.page.active')?.id==='recordDetail')showFullSource(detailRecordId,detailContext);});
   returnFromRecord=function(){
     if(!detailContext){go('archive');return;}
     const origin=detailContext,thread=previewThreads.find(t=>t.id===origin.threadId&&!t.deletedAt);
@@ -150,7 +152,7 @@
     button.appendChild(textNode('small',collection.profiles.find(p=>p.id===sourceMap.get(record.sampleId).profile).label+(search?' · '+record.date:'')+(sourceMap.get(record.sampleId).synthetic?' · 가상 원문':' · 개인 기록')));
     button.append(textNode('span',record.title,'archive-record-row-title'),textNode('span',search?bodyExcerpt(record.body,el('archiveInput').value.trim()):record.body,'archive-record-row-body'),textNode('span','더블클릭으로 원문 전체 보기 ↗','archive-record-row-open'));
     const item=document.createElement('div');item.className='archive-record-item';
-    if(search){item.dataset.unrestrictedSearch='true';item.append(button);return item;}
+    if(search)item.dataset.unrestrictedSearch='true';
     const badge=textNode('button','확인 전','archive-readiness-badge');badge.type='button';badge.hidden=true;badge.dataset.readinessRecord=record.sampleId;
     item.append(button,badge);return item;
   }

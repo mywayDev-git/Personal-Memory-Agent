@@ -7,8 +7,25 @@
   const stageName={context:'대화 맥락 확인',scope:'기록 범위 확인',retrieval:'원문 검색',connection:'AI 연결',model:'AI 응답 생성',validation:'답변 검증'};
   const actionName={committed:'기록 반영 완료',cancelled:'취소 완료',multi_result:'작업별 결과',answer:'답변',partial_answer:'부분 확인',abstain:'확인 불가',clarify:'확인 질문',report_conflict:'기록 충돌',deny:'전제 확인',draft:'기록 초안 · 저장되지 않음',empathy:'감정 나누기',advice:'작은 제안'};
   const node=(tag,text,cls)=>{const n=document.createElement(tag);if(text!=null)n.textContent=text;if(cls)n.className=cls;return n;};
+  let recordDraftsPromise=null,recordDraftsError=null;
+  const draftsReady=()=>['candidates','button','automatic','reconcile','origin','saved'].every(name=>typeof window.PlantRecordDrafts?.[name]==='function');
+  function loadRecordDrafts(){
+    if(draftsReady())return Promise.resolve(window.PlantRecordDrafts);
+    if(recordDraftsPromise)return recordDraftsPromise;
+    recordDraftsError=null;
+    const pending=new Promise((resolve,reject)=>{
+      const script=document.createElement('script');let timer;
+      const fail=()=>{clearTimeout(timer);script.onload=script.onerror=null;script.remove();reject(Error('기록 기능을 불러오지 못했어요. 다시 불러오거나 새로고침해 주세요.'));};
+      script.src='/plant-thought/record-drafts.js?v='+Date.now();script.async=true;
+      script.onload=()=>{clearTimeout(timer);if(draftsReady())resolve(window.PlantRecordDrafts);else fail();};script.onerror=fail;
+      timer=setTimeout(fail,15000);document.head.append(script);
+    });
+    recordDraftsPromise=pending.then(drafts=>{recordDraftsError=null;document.dispatchEvent(new Event('plant:record-drafts-ready'));if(typeof previewRenderMessages==='function')previewRenderMessages();return drafts;}).catch(error=>{recordDraftsPromise=null;recordDraftsError=error;throw error;});
+    return recordDraftsPromise;
+  }
+  window.PlantLoadRecordDrafts=loadRecordDrafts;
   const operationBusy=new Set();
-  async function operationRequest(route,body){await bootstrap();const response=await fetch('/api/chat/'+route,{method:'POST',headers:{'Content-Type':'application/json','X-Plant-Token':token},body:JSON.stringify(body)});const data=await response.json();if(!response.ok)throw Object.assign(Error(data.error||'기록 처리를 확인하지 못했습니다.'),{status:response.status});return data;}
+  async function operationRequest(route,body){await bootstrap();const response=await fetch('/api/chat/'+route,{method:'POST',headers:{'Content-Type':'application/json','X-Plant-Token':token},body:JSON.stringify({...body,...(window.PlantLibraryPersistence?.epoch?{storage_epoch:window.PlantLibraryPersistence.epoch()}: {})})});const data=await response.json();if(!response.ok)throw Object.assign(Error(data.error||'기록 처리를 확인하지 못했습니다.'),{status:response.status});return data;}
   function proposalList(result){return result.proposals||(result.proposal?[result.proposal]:[]);}
   function receiptFor(result,p){return result.executions?.find(r=>r.proposal_id===p.id)||(result.execution?.proposal_id===p.id?result.execution:null);}
   function applyReceipt(thread,receipt){
@@ -30,12 +47,12 @@
     applyReceipt(thread,receipt);
    });}catch(error){p.operationError=error.message;}finally{operationBusy.delete(p.id);previewRemember();if(previewActiveId===thread.id)previewRenderMessages();}
   }
-  function proposalCard(result,thread,message,p){const card=node('section',null,'chat-action-proposal');card.append(node('strong',p.status==='succeeded'?'반영된 기록 · 개인 자료함':p.status==='cancelled'?'취소한 초안':({create:'기록 초안 · 개인 자료함',update:'기록 수정',delete:'기록 삭제',restore:'기록 복원'})[p.operation]));
+  function proposalCard(result,thread,message,p){if(p.operation==='create'&&p.status==='pending'){if(draftsReady())return window.PlantRecordDrafts.panel(thread,message,result,p);const fallback=node('section',null,'chat-record-draft');fallback.append(node('strong','기록 초안 · 저장 전'),node('h3',p.after?.title||'기록 초안'),node('pre',p.after?.body||''),recordDraftButton(result,thread,message,fallback));return fallback;}const card=node('section',null,'chat-action-proposal');card.append(node('strong',p.status==='succeeded'?'반영된 기록 · 개인 자료함':p.status==='cancelled'?'취소한 초안':({create:'기록 초안 · 개인 자료함',update:'기록 수정',delete:'기록 삭제',restore:'기록 복원'})[p.operation]));
    if(p.before){const details=node('details');details.append(node('summary','대상 · '+p.before.title+' · v'+p.expected_revision),node('pre',p.before.body));card.append(details);}
    if(p.after)card.append(node('p',p.after.title),node('pre',p.after.body));
    const receipt=receiptFor(result,p);
    if(receipt){card.append(node('p',receipt.message,'chat-action-status'));if(receipt.status==='succeeded'&&p.operation!=='delete'){const link=node('button','기록 열기');link.type='button';link.addEventListener('click',()=>{const index=records.findIndex(r=>r.sampleId===receipt.record_id);if(index>=0)openRecord(index);else previewToast('서재 보관소에서 개인 자료함을 선택해 주세요.');});card.append(link);}}
-   else if(!message.archived){const actions=node('div',null,'transfer-actions');for(const [label,decision]of [[({create:'기록하기',update:'수정 반영',delete:'삭제 확인',restore:'복원 확인'})[p.operation],'confirm'],['취소','cancel']]){const b=node('button',operationBusy.has(p.id)?'처리 확인 중…':label);b.type='button';b.disabled=operationBusy.size>0||thread.deletedAt||pending(thread)||p.status!=='pending';if(p.operation==='delete'&&decision==='confirm'){b.style.background='#a43d35';b.style.color='white';}b.addEventListener('click',()=>{if(p.operation==='create'&&decision==='confirm'){editRecordDraft(state.recordDraft(thread,message,{...result,proposals:[p],proposal:undefined},seoulDate()));return;}executeProposal(thread,message,p,decision);});actions.append(b);}card.append(actions);}
+   else if(!message.archived){const actions=node('div',null,'transfer-actions');for(const [label,decision]of [[({create:'기록하기',update:'수정 반영',delete:'삭제 확인',restore:'복원 확인'})[p.operation],'confirm'],['취소','cancel']]){const b=node('button',operationBusy.has(p.id)?'처리 확인 중…':label);b.type='button';b.disabled=operationBusy.size>0||thread.deletedAt||pending(thread)||p.status!=='pending';if(p.operation==='delete'&&decision==='confirm'){b.style.background='#a43d35';b.style.color='white';}b.addEventListener('click',()=>{if(p.operation==='create'&&decision==='confirm'){window.PlantRecordDrafts.edit(thread,state.ensureRecordDraft(thread,message,result,p));return;}executeProposal(thread,message,p,decision);});actions.append(b);}card.append(actions);}
    if(p.operationError)card.append(node('p',p.operationError,'ai-error-message'));return card;
   }
   function appendActionRetry(parent,result,thread,message){
@@ -158,9 +175,9 @@
     details.addEventListener('toggle',()=>{message.evidenceExpanded=details.open;previewRemember();});
     return details;
   }
-  function copyAnswer(text){
-    const button=node('button',null,'ai-copy-answer');button.type='button';
-    button.setAttribute('aria-label','AI 답변 복사');button.title='답변을 마크다운 형식으로 복사';
+  function copyAnswer(text,{user=false}={}){
+    const button=node('button',null,'ai-copy-answer'+(user?' user-copy-message':''));button.type='button';
+    button.setAttribute('aria-label',user?'사용자 메시지 복사':'AI 답변 복사');button.title=user?'메시지 복사':'답변을 마크다운 형식으로 복사';
     const icon=document.createElementNS('http://www.w3.org/2000/svg','svg');
     icon.setAttribute('viewBox','0 0 24 24');icon.setAttribute('width','14');icon.setAttribute('height','14');icon.setAttribute('fill','none');icon.setAttribute('stroke','currentColor');icon.setAttribute('stroke-width','1.6');icon.setAttribute('aria-hidden','true');
     const outline=document.createElementNS('http://www.w3.org/2000/svg','path');outline.setAttribute('d','M8 8h12v12H8z M16 8V4H4v12h4');icon.append(outline);
@@ -169,48 +186,20 @@
       if(button.disabled)return;clearTimeout(resetTimer);button.disabled=true;
       try{
         await navigator.clipboard.writeText(text);
-        label.textContent='복사됨';button.classList.add('is-copied');previewToast('답변을 복사했어요.');
+        label.textContent='복사됨';button.classList.add('is-copied');previewToast(user?'메시지를 복사했어요.':'답변을 복사했어요.');
       }catch{
-        label.textContent='다시 복사';button.classList.remove('is-copied');previewToast('답변을 복사하지 못했어요. 다시 눌러 주세요.');
+        label.textContent='다시 복사';button.classList.remove('is-copied');previewToast(user?'메시지를 복사하지 못했어요. 다시 눌러 주세요.':'답변을 복사하지 못했어요. 다시 눌러 주세요.');
       }finally{button.disabled=false;}
       resetTimer=setTimeout(()=>{label.textContent='복사';button.classList.remove('is-copied');},2200);
     });
     return button;
   }
 
-  function recordEditorValues(){return {title:el('recordTitle').value,date:el('recordDate').value,body:el('recordBody').value};}
-  function editRecordDraft(draft,append=true){
-    if(!draft.body.trim())return;
-    const next=state.mergeRecordDraft(recordEditorValues(),draft,append);
-    el('recordTitle').value=next.title;el('recordDate').value=next.date;el('recordBody').value=next.body;
-    el('recordPreview')?.remove();previewRemember();go('emotion');el('recordBody').focus({preventScroll:true});
-    previewToast('대화의 초안을 옮겼어요. 내용을 수정한 뒤 기록해 주세요.');
-  }
-  function recordDraftPanel(result,thread,message){
-    const draft=state.recordDraft(thread,message,result,seoulDate()),card=node('section',null,'chat-record-draft');
-    card.setAttribute('aria-label','대화 기록 초안');card.tabIndex=-1;
-    card.append(node('strong','기록 초안 · 저장 전'),node('h3',draft.title),node('p',draft.date,'chat-record-draft-date'),node('pre',draft.body));
-    card.append(node('p','선택한 대화에서 준비한 초안입니다. 감정 갈무리에서 내용을 수정한 뒤 저장하세요.','chat-record-draft-note'));
-    let appendInput=null;
-    const current=recordEditorValues();
-    if(current.title.trim()||current.body.trim()){
-      const label=node('label','작성 중인 기록에 이어 쓰기','chat-record-draft-merge');appendInput=node('input');appendInput.type='checkbox';appendInput.checked=true;label.prepend(appendInput);card.append(label);
-      card.append(node('p','선택을 해제하면 이 초안으로 새로 작성합니다.','chat-record-draft-note'));
-    }
-    const actions=node('div',null,'transfer-actions'),proceed=node('button','기록하기'),cancel=node('button','취소');proceed.type=cancel.type='button';
-    proceed.addEventListener('click',()=>editRecordDraft(draft,appendInput?appendInput.checked:true));
-    cancel.addEventListener('click',()=>{const opener=card.previousElementSibling?.querySelector('.ai-record-draft');card.remove();opener?.setAttribute('aria-expanded','false');opener?.focus({preventScroll:true});});
-    actions.append(proceed,cancel);card.append(actions);return card;
-  }
   function recordDraftButton(result,thread,message,actions){
-    const button=node('button','기록하기','ai-record-draft');button.type='button';button.setAttribute('aria-expanded','false');button.title='이 대화로 기록 초안 만들기';button.disabled=!!thread.deletedAt;
-    button.addEventListener('click',()=>{
-      let card=actions.nextElementSibling;
-      if(card?.classList.contains('chat-record-draft')){card.remove();button.setAttribute('aria-expanded','false');return;}
-      card=recordDraftPanel(result,thread,message);actions.after(card);button.setAttribute('aria-expanded','true');card.focus({preventScroll:true});card.scrollIntoView({behavior:'smooth',block:'nearest'});
-    });return button;
+    if(draftsReady())return window.PlantRecordDrafts.button(result,thread,message,actions);
+    const retry=node('button',recordDraftsError?'기록 기능 다시 불러오기':'기록 기능 불러오는 중…','ai-record-draft');retry.type='button';retry.disabled=!recordDraftsError;
+    retry.addEventListener('click',()=>{retry.disabled=true;loadRecordDrafts().catch(error=>{previewToast(error.message);previewRenderMessages();});});return retry;
   }
-
   function submitContextChoice(thread,text,options={}){
     if(thread.deletedAt||pending(thread))return;
     const submission=state.submission(thread,currentScope(),{text,inspect:window.PlantTestMode?.enabled===true,...options}),message={kind:'assistant',status:'pending',submission,createdAt:new Date().toISOString()};
@@ -227,9 +216,9 @@
         body.append(section);
       }return;
     }
-    const answer=node('div',null,'ai-answer');const displayAction=result.execution?(result.execution.status==='cancelled'?'cancelled':'committed'):result.action;if(displayAction!=='answer')header.append(node('span',actionName[displayAction]||'답변','ai-response-state'));
+    const answer=node('div',null,'ai-answer');const preparedDrafts=draftsReady()?window.PlantRecordDrafts.candidates(thread,message,result):(state.recordDraftProposals?.(thread,message,result)||[]),displayAction=preparedDrafts.length?(preparedDrafts.some(p=>thread.recordDrafts?.find(d=>d.id==='proposal-'+p.id)?.status!=='saved')?'draft':'committed'):result.execution?(result.execution.status==='cancelled'?'cancelled':'committed'):result.action;if(displayAction!=='answer')header.append(node('span',actionName[displayAction]||'답변','ai-response-state'));
     if(window.PlantMarkdown)answer.innerHTML=window.PlantMarkdown.render(result.answer);else answer.textContent=result.answer;
-    const actions=node('div',null,'ai-answer-actions');if(result.citations.length)actions.append(sourceLink(result.citations[0],'기록 열기','ai-source-open',{citations:result.citations,threadId:result.thread_id,requestId:result.request_id}));actions.append(recordDraftButton(result,thread,message,actions),copyAnswer(result.answer));body.append(answer,actions);
+    const actions=node('div',null,'ai-answer-actions');if(result.citations.length)actions.append(sourceLink(result.citations[0],'기록 열기','ai-source-open',{citations:result.citations,threadId:result.thread_id,requestId:result.request_id}));actions.append(recordDraftButton(result,thread,message,actions),copyAnswer(result.answer));body.append(answer,actions);if(draftsReady())window.PlantRecordDrafts.automatic(body,actions,thread,message,result);
     if(result.citations.length)body.append(evidenceDetails(result,message));
     const searchDetails=window.PlantSearchResult?.(result);if(searchDetails)body.append(searchDetails);
     if(result.recording?.status==='draft'&&result.action!=='draft'){
@@ -248,21 +237,22 @@
     }
     if(!thread?.messages.length){const welcome=node('div',null,'preview-chat-welcome');welcome.append(node('div','♧','iconbox'),node('span','로컬 AI · 원문 근거 대화','tag'),node('h2','이야기가 시작되는 자리'),node('p',window.PlantArchiveSamples.synthetic?'플로팅에서 예시 질문을 선택하거나 직접 물어보세요. 가상 원문 199개에서 검색해 답합니다.':'떠오르는 생각이나 기억을 들려주세요. 개인 자료함에서 검색에 포함한 기록을 찾아 답합니다.'));log.append(welcome);}
     for(const message of thread?.messages||[]){
-      if(message.kind==='user'){log.append(node('div',message.text,'bubble user'));continue;}
+      if(message.kind==='user'){const row=node('div',null,'user-message');row.append(node('div',message.text,'bubble user'),copyAnswer(message.text,{user:true}));log.append(row);continue;}
       if(message.kind!=='assistant'){if(message.kind==='notice')log.append(node('div',message.text,'preview-message notice'));continue;}
       const card=node('article',null,'ai-response');card.setAttribute('aria-label','AI 응답');card.dataset.requestId=message.submission.request_id;
       const avatar=node('span','♧','ai-response-avatar');avatar.setAttribute('aria-hidden','true');
       const body=node('div',null,'ai-response-body'),header=node('div',null,'ai-response-header');
       const brand=node('span','Plant Thought','ai-response-brand');header.append(brand,node('span',['v2','v3'].includes(message.submission.analysis_version)?(message.submission.analysis_version==='v3'?'V3 · 카테고리 대화':'V2 · 문맥 목표와 행동'):'V1','chat-version-label'));const searchInfo=window.PlantSearchModes.describe(message.submission,message.result,message.status),searchLabel=node('span',searchInfo.label,'chat-search-label');searchLabel.title=searchInfo.title;searchLabel.setAttribute('aria-label','기록 검색: '+searchInfo.label);header.append(searchLabel);body.append(header);card.append(avatar,body);
       if(message.archived&&message.status!=='success'){body.append(node('p','가져온 대화의 중단된 요청입니다. 자동으로 재실행하지 않습니다.'),node('p',message.error||''));}
-      else if(message.status==='pending'){card.setAttribute('role','status');const pendingLabel=node('p','대화 문맥에서 목표와 필요한 행동을 준비하고 있어요.','ai-pending');pendingLabel.dataset.requestId=message.submission.request_id;body.append(pendingLabel);if(message.result?.action_trace?.version==='goal-actions-v1'){for(const p of state.recordActionProposals(message.result,message,thread))body.append(proposalCard(message.result,thread,message,p));}}
+      else if(message.status==='pending'){card.setAttribute('role','status');const panel=node('details',null,'ai-progress ai-progress-live');panel.dataset.requestId=message.submission.request_id;panel.setAttribute('aria-label','답변 준비 과정');body.append(panel);renderProgress(panel,message,controllers.get(message.submission.request_id)||{});if(message.result?.action_trace?.version==='goal-actions-v1'){for(const p of state.recordActionProposals(message.result,message,thread))body.append(proposalCard(message.result,thread,message,p));}}
       else if(['error','cancelled'].includes(message.status)){
         const cancelled=message.status==='cancelled';
         card.classList.add(cancelled?'ai-cancelled':'ai-error');card.setAttribute('role',cancelled?'status':'alert');
         body.append(node('strong',cancelled?'응답 수신을 중단했어요.':(stageName[message.stage]||'AI 처리')+'에 실패했어요.','ai-error-label'),node('p',message.error,'ai-error-message'));
         const retry=node('button','재시도','ai-retry');retry.type='button';retry.addEventListener('click',()=>run(thread,message));retry.disabled=pending(thread);body.append(retry);if(message.result?.action_trace?.version==='goal-actions-v1'){body.append(node('p','이전에 준비한 작업은 유지됩니다.'));for(const p of state.recordActionProposals(message.result,message,thread))body.append(proposalCard(message.result,thread,message,p));}
       }else if(message.result){
-        renderResult(body,header,message.result,thread,message);if(message.result.action_trace?.version==='goal-actions-v1')appendActionRetry(body,message.result,thread,message);for(const p of state.recordActionProposals(message.result,message,thread))body.append(proposalCard(message.result,thread,message,p));
+        const completed=completedProgress(message.result);if(completed)body.append(completed);
+        renderResult(body,header,message.result,thread,message);if(message.result.action_trace?.version==='goal-actions-v1')appendActionRetry(body,message.result,thread,message);for(const p of state.recordActionProposals(message.result,message,thread).filter(p=>!(p.operation==='create'&&p.status==='pending')))body.append(proposalCard(message.result,thread,message,p));
       }
       log.append(card);
     }
@@ -294,15 +284,51 @@
     const thread=previewThreads.find(t=>t.id===event.detail.id);
     for(const message of thread?.messages||[])if(message.kind==='assistant'&&message.status==='pending'&&!message.archived){message.status='cancelled';message.error='대화를 삭제하여 응답 수신을 중단했습니다. 복원 후 재시도할 수 있어요.';}
   });
-  function watchSearch(message,controller){
-    if(!message.submission.search_mode||message.submission.search_mode==='legacy')return ()=>{};
-    let stopped=false,polling=false;
-    const poll=async()=>{if(stopped||polling||controller.signal.aborted)return;polling=true;try{
-      const response=await fetch('/api/baseline/chat-search-status?id='+encodeURIComponent(message.submission.request_id),{signal:controller.signal});
-      if(!response.ok)return;const {job}=await response.json();if(!job||stopped)return;
-      for(const label of document.querySelectorAll('.ai-pending[data-request-id]'))if(label.dataset.requestId===message.submission.request_id)label.textContent=job.label+' · '+job.progress;
+  function progressDuration(ms){const seconds=Math.max(0,ms||0)/1000;return seconds<60?seconds.toFixed(1)+'초':Math.floor(seconds/60)+'분 '+(seconds%60).toFixed(1)+'초';}
+  function renderProgress(panel,message,request){
+    if(message.status!=='pending')return;const now=performance.now();request.startedAt??=now;
+    const progress=request.progress,delta=progress?Math.max(0,now-(request.receivedAt??now)):0;
+    const total=Math.max(now-request.startedAt,(progress?.elapsed_ms||0)+delta);
+    const steps=progress?.steps?.length?progress.steps:[{sequence:0,label:'질문을 전달하고 있어요.',status:'running',elapsed_ms:total}];
+    if(!panel.querySelector('.ai-progress-list')){
+      panel.open=request.expanded===true;
+      panel.addEventListener('toggle',()=>{request.expanded=panel.open;});
+      const heading=node('summary',null,'ai-progress-heading'),totalTime=node('span',null,'ai-progress-total'),current=node('span',steps.at(-1).label,'ai-progress-current');totalTime.setAttribute('aria-live','off');current.setAttribute('aria-live','polite');current.setAttribute('aria-atomic','true');heading.append(current,totalTime);
+      const list=node('ol',null,'ai-progress-list');list.setAttribute('aria-label','실제 처리 단계');list.setAttribute('aria-live','off');
+      panel.append(heading,list);
+    }
+    panel.querySelector('.ai-progress-total').textContent='전체 경과 '+progressDuration(total);
+    const sequence=String(progress?.sequence||0);
+    if(panel.dataset.sequence!==sequence){
+      const list=panel.querySelector('.ai-progress-list');list.replaceChildren();
+      for(const step of steps){const row=node('li',null,'ai-progress-step'+(step.status==='running'?' is-running':'')),marker=node('span',step.status==='running'?'●':'·','ai-progress-marker'),text=node('span',step.label,'ai-progress-text'),time=node('span',null,'ai-progress-time');marker.setAttribute('aria-hidden','true');time.setAttribute('aria-live','off');row.dataset.step=String(step.sequence);if(step.status==='running')row.setAttribute('aria-current','step');row.append(marker,text,time);list.append(row);}
+      panel.dataset.sequence=sequence;panel.querySelector('.ai-progress-current').textContent=steps.at(-1).label;
+    }
+    const rows=panel.querySelectorAll('.ai-progress-step');for(let i=0;i<steps.length;i++){const step=steps[i],ms=step.elapsed_ms+(progress&&step.status==='running'?delta:0);rows[i].querySelector('.ai-progress-time').textContent=(step.status==='running'?'진행 중 · ':'')+progressDuration(ms);}
+  }
+  function retainProcessingTrace(result,request){
+    if(!result.processing_trace)return;
+    const elapsed=request?.startedAt==null?0:Math.max(0,performance.now()-request.startedAt);
+    result.processing_trace={...result.processing_trace,elapsed_ms:Math.max(result.processing_trace.elapsed_ms,elapsed)};
+  }
+  function completedProgress(result){
+    const trace=result.processing_trace;if(!trace||!Number.isFinite(trace.elapsed_ms)||!Array.isArray(trace.steps))return null;
+    const panel=node('details',null,'ai-progress ai-progress-complete'),summary=node('summary',null,'ai-progress-heading');
+    panel.setAttribute('aria-label','완료된 처리 과정');summary.append(node('span','처리 과정'),node('span','전체 소요 '+progressDuration(trace.elapsed_ms),'ai-progress-total'));panel.append(summary);
+    const list=node('ol',null,'ai-progress-list');list.setAttribute('aria-label','완료된 처리 단계');
+    for(const step of trace.steps){const row=node('li',null,'ai-progress-step'),marker=node('span','·','ai-progress-marker');marker.setAttribute('aria-hidden','true');row.append(marker,node('span',step.label,'ai-progress-text'),node('span',progressDuration(step.elapsed_ms),'ai-progress-time'));list.append(row);}
+    panel.append(list);return panel;
+  }
+  function watchProgress(message,controller){
+    let stopped=false,polling=false,lastPoll=-Infinity;
+    const redraw=()=>{const request=controllers.get(message.submission.request_id);if(stopped||controller.signal.aborted||message.status!=='pending'||request?.controller!==controller)return;const scroll=document.querySelector('#chat .chat-scroll'),follow=scroll&&scroll.scrollHeight-scroll.scrollTop-scroll.clientHeight<64;for(const panel of document.querySelectorAll('.ai-progress[data-request-id]'))if(panel.dataset.requestId===message.submission.request_id)renderProgress(panel,message,request);if(follow)scroll.scrollTop=scroll.scrollHeight;};
+    const poll=async()=>{redraw();if(stopped||polling||controller.signal.aborted||message.status!=='pending'||controllers.get(message.submission.request_id)?.controller!==controller||!token||performance.now()-lastPoll<500)return;polling=true;lastPoll=performance.now();try{
+      const response=await fetch('/api/chat/progress',{method:'POST',headers:{'Content-Type':'application/json','X-Plant-Token':token},body:JSON.stringify({request_id:message.submission.request_id,thread_id:message.submission.thread_id,...(window.PlantLibraryPersistence?.epoch?{storage_epoch:window.PlantLibraryPersistence.epoch()}:{})}),signal:controller.signal});
+      if(!response.ok)return;const result=await response.json();
+      if(stopped||controller.signal.aborted||message.status!=='pending'||result.status!=='pending'||result.request_id!==message.submission.request_id||result.thread_id!==message.submission.thread_id||typeof result.progress?.label!=='string'||!Array.isArray(result.progress.steps))return;
+      const request=controllers.get(message.submission.request_id);if(request?.controller!==controller)return;request.progress=result.progress;request.receivedAt=performance.now();redraw();
     }catch{}finally{polling=false;}};
-    const timer=setInterval(poll,1500);return ()=>{stopped=true;clearInterval(timer);};
+    const timer=setInterval(poll,250);return ()=>{stopped=true;clearInterval(timer);};
   }
   async function run(thread,message){
     if(modelActionBusy){if(message.status==='pending'){message.status='error';message.stage='connection';message.error='모델 연결 작업을 마친 뒤 재시도해 주세요.';previewRemember();if(previewActiveId===thread.id)previewRenderMessages();}else previewToast('모델 연결 작업을 마친 뒤 재시도해 주세요.');return;}
@@ -310,10 +336,10 @@
     if(window.PlantTestMode&&!window.PlantTestMode.enabled&&message.submission.collection_id!=='personal'){previewToast('이 요청은 가상 예시를 사용합니다. 설정에서 테스트 기능을 켠 뒤 재시도해 주세요.');return;}
     if(pending(thread)&&message.status!=='pending')return;
     thread.contextRequest=message.submission.request_id;
-    const controller=new AbortController();controllers.set(message.submission.request_id,{threadId:thread.id,controller});
+    const controller=new AbortController();controllers.set(message.submission.request_id,{threadId:thread.id,controller,startedAt:performance.now()});
     message.status='pending';delete message.error;if(!message.result?.parts&&message.result?.action_trace?.version!=='goal-actions-v1')delete message.result;delete message.inspection;
     if(previewActiveId===thread.id)previewRenderMessages();previewRemember();scrollChatToBottom();
-    const stopWatching=watchSearch(message,controller);
+    const stopWatching=watchProgress(message,controller);
     try{
       await bootstrap();
       if(['v2','v3'].includes(message.submission.analysis_version))await window.PlantLibraryPersistence?.flush();
@@ -323,6 +349,7 @@
       if(thread.deletedAt||controller.signal.aborted)return;
       if(!response.ok){if(response.status===403){token=null;bootstrapPromise=null;}throw Object.assign(Error(result.error||'AI 요청에 실패했습니다.'),{stage:result.stage||'connection',inspection:result.inspection});}
       if(result.request_id!==message.submission.request_id||result.thread_id!==thread.id||typeof result.answer!=='string'||!Array.isArray(result.citations))throw Object.assign(Error('응답이 제출한 작업과 일치하지 않습니다.'),{stage:'validation'});
+      retainProcessingTrace(result,controllers.get(message.submission.request_id));
       message.result=result;for(const receipt of result.executions||[])applyReceipt(thread,receipt);message.status='success';state.applyContext(thread,message.submission,result.context,result.map_context);thread.updatedAt=new Date().toISOString();ready=true;
     }catch(error){if(thread.deletedAt||controller.signal.aborted)return;message.status='error';message.stage=error.stage||'connection';message.error=error.name==='TimeoutError'?'응답을 기다리는 시간이 초과됐습니다. 같은 질문을 재시도할 수 있어요.':error.message;if(error.inspection)message.inspection=error.inspection;}
     finally{stopWatching();if(controllers.get(message.submission.request_id)?.controller===controller)controllers.delete(message.submission.request_id);}
@@ -340,11 +367,24 @@
     thread.draft='';thread.inputVersion=(thread.inputVersion||0)+1;input.value='';updateChatInput();
     run(thread,message);input.focus();
   };
+  let recovering=false;
+  async function resumeInterrupted(){
+    if(recovering||controllers.size||modelActionBusy||!window.PlantLibraryPersistence?.ready||document.querySelector('.page.active')?.id!=='chat')return;
+    const thread=previewThread(),message=state.interruptedRequest(thread);if(!message)return;
+    if(window.PlantTestMode&&!window.PlantTestMode.enabled&&message.submission.collection_id!=='personal')return;
+    recovering=true;
+    try{const connection=await bootstrap();if(!connection.ready||controllers.size||!window.PlantLibraryPersistence?.ready||document.querySelector('.page.active')?.id!=='chat'||previewThread()!==thread||state.interruptedRequest(thread)!==message)return;
+      // Reuse the captured submission verbatim: cached results and prepared writes stay idempotent.
+      await run(thread,message);
+    }finally{recovering=false;}
+  }
+  window.PlantChatRecovery=Object.freeze({busy:()=>controllers.size>0});
+  for(const name of ['plant:library-ready','plant:chat-visible'])document.addEventListener(name,()=>{resumeInterrupted().catch(()=>{});});
   for(const thread of previewThreads)for(const message of thread.messages){
     if(message.kind==='assistant'&&message.status==='error'&&message.error==='대화를 삭제하여 응답 수신을 중단했습니다. 복원 후 재시도할 수 있어요.')message.status='cancelled';
-    if(message.kind==='assistant'&&message.status==='pending'&&!message.archived){message.status='error';message.stage='connection';message.error='화면이 새로 열려 이전 처리 결과를 확인해야 합니다. 같은 제출본으로 재시도해 주세요.';}
+    if(message.kind==='assistant'&&message.status==='pending'&&!message.archived){message.status='error';message.stage='interrupted';message.error='중단된 마지막 답변을 이어서 확인할 수 있어요.';}
   }
   el('chatSend').setAttribute('aria-label','질문 보내기');
   const note=document.querySelector('#chat .chat-disclaimer');if(note)note.textContent='현재 자료함에서 원문을 찾아 답합니다. 대화 내용은 보관소 기록으로 자동 추가되지 않습니다.';
-  previewRenderMessages();bootstrap().catch(()=>{});
+  previewRenderMessages();loadRecordDrafts().catch(()=>previewRenderMessages());bootstrap().catch(()=>{});
 })();
